@@ -1,3 +1,4 @@
+import { getSummaryUrl } from "config/api";
 import { StateNames } from "data/StateNameToAbbrevsMap";
 import React, { useEffect, useState } from "react";
 import { CloseLeftSidebarButton } from "./CloseLeftSidebarButton";
@@ -46,9 +47,8 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
   useEffect(() => {
     const fetchSummaryInfoData = async () => {
       try {
-        const response = await fetch(
-          "https://major-sculpin.nceas.ucsb.edu/api/summary_info",
-        );
+        const url = getSummaryUrl();
+        const response = await fetch(url);
         const csvText = await response.text();
 
         const lines = csvText.trim().split("\n");

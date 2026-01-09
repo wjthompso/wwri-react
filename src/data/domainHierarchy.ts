@@ -1,1360 +1,617 @@
 import { Domain } from "../types/domainTypes";
 
+/**
+ * Domain Hierarchy for WWRI (Western Wildfire Resilience Index)
+ * 
+ * This file defines the structure of domains and metrics displayed in the UI.
+ * The IDs must match the metric names in the backend API.
+ * 
+ * Structure: Domain > Status/Resilience > Resistance/Recovery > Individual Metrics
+ */
+
 const domainHierarchy: Domain[] = [
+  // ============================================================================
+  // AIR QUALITY
+  // ============================================================================
+  {
+    id: "air_quality",
+    label: "Air Quality",
+    description: "Air quality resilience measures the ability to maintain healthy air during wildfire events.",
+    colorGradient: {
+      startColor: { r: 255, g: 255, b: 255 },
+      endColor: { r: 73, g: 0, b: 106 }, // Purple
+    },
+    status: {
+      id: "air_quality_status",
+      label: "Status",
+      description: "Current air quality status indicators.",
+      metrics: [
+        {
+          id: "air_quality_status_aqi_100",
+          label: "Days AQI > 100",
+          description: "Number of days with Air Quality Index exceeding 100 (unhealthy for sensitive groups).",
+        },
+        {
+          id: "air_quality_status_aqi_300",
+          label: "Days AQI > 300",
+          description: "Number of days with Air Quality Index exceeding 300 (hazardous).",
+        },
+      ],
+    },
+    resilience: {
+      id: "air_quality_resilience",
+      label: "Resilience",
+      description: "Capacity to resist and recover from air quality impacts.",
+      resistance: {
+        id: "air_quality_resistance",
+        label: "Resistance",
+        description: "Ability to resist air quality degradation impacts.",
+        metrics: [
+          {
+            id: "air_quality_resistance_copd",
+            label: "COPD Prevalence",
+            description: "Chronic obstructive pulmonary disease prevalence in the population.",
+          },
+          {
+            id: "air_quality_resistance_asthma",
+            label: "Asthma Prevalence",
+            description: "Asthma prevalence in the population.",
+          },
+          {
+            id: "air_quality_resistance_vulnerable_populations",
+            label: "Vulnerable Populations",
+            description: "Demographics of populations vulnerable to air quality impacts.",
+          },
+          {
+            id: "air_quality_resistance_vulnerable_workers",
+            label: "Vulnerable Workers",
+            description: "Employment in forestry, construction, or farmwork.",
+          },
+          {
+            id: "air_quality_resistance_hospital_density",
+            label: "Medical Infrastructure",
+            description: "Access to medical infrastructure and hospitals.",
+          },
+        ],
+      },
+      recovery: undefined, // Air quality domain doesn't have recovery metrics
+    },
+  },
+
+  // ============================================================================
+  // WATER
+  // ============================================================================
   {
     id: "water",
-    label: "Domain 1",
-    description: "The overall score for Domain 1.",
+    label: "Water",
+    description: "Water resources resilience to wildfire impacts.",
     colorGradient: {
       startColor: { r: 255, g: 255, b: 255 },
-      endColor: { r: 78, g: 160, b: 220 },
+      endColor: { r: 78, g: 160, b: 220 }, // Blue
     },
     status: {
-      id: "status_summary",
-      label: "Subdomain 1",
-      description: "The subdomain 1 score of Domain 1.",
+      id: "water_status",
+      label: "Status",
+      description: "Current water resource status.",
       metrics: [
         {
-          id: "status_metric_1",
-          label: "Subdomain 1 Metric 1",
-          description: "Description text for Status Metric 1",
+          id: "water_status_surface_water_quantity",
+          label: "Water Quantity",
+          description: "Surface water quantity availability.",
         },
         {
-          id: "status_metric_2",
-          label: "Subdomain 1 Metric 2",
-          description: "Description text for Status Metric 2",
-        },
-        {
-          id: "status_metric_3",
-          label: "Subdomain 1 Metric 3",
-          description: "Description text for Status Metric 3",
-        },
-        {
-          id: "status_metric_4",
-          label: "Subdomain 1 Metric 4",
-          description: "Description text for Status Metric 4",
-        },
-        {
-          id: "status_metric_5",
-          label: "Subdomain 1 Metric 5",
-          description: "Description text for Status Metric 5",
-        },
-        {
-          id: "status_metric_6",
-          label: "Subdomain 1 Metric 6",
-          description: "Description text for Status Metric 6",
+          id: "water_status_surface_water_timing",
+          label: "Water Timing",
+          description: "Timing of surface water availability.",
         },
       ],
     },
     resilience: {
-      id: "resilience_summary",
-      label: "Subdomain 2",
-      description: "The subdomain 2 score for Domain 1.",
+      id: "water_resilience",
+      label: "Resilience",
+      description: "Capacity to maintain water resources during and after wildfires.",
       resistance: {
-        id: "resistance_summary",
-        label: "Section 1",
-        description: "The subsubdomain 1 score of Domain 1.",
+        id: "water_resistance",
+        label: "Resistance",
+        description: "Ability to resist water quality and quantity impacts.",
         metrics: [
           {
-            id: "resilience_resistance_metric_1",
-            label: "Section 1 Metric 1",
-            description: "Description text for Section 1 Metric 1",
+            id: "water_resistance_water_treatment",
+            label: "Water Treatment Compliance",
+            description: "Water treatment plant compliance rates.",
           },
           {
-            id: "resilience_resistance_metric_2",
-            label: "Section 1 Metric 2",
-            description: "Description text for Section 1 Metric 2",
-          },
-          {
-            id: "resilience_resistance_metric_3",
-            label: "Section 1 Metric 3",
-            description: "Description text for Section 1 Metric 3",
-          },
-          {
-            id: "resilience_resistance_metric_4",
-            label: "Section 1 Metric 4",
-            description: "Description text for Section 1 Metric 4",
-          },
-          {
-            id: "resilience_resistance_metric_5",
-            label: "Section 1 Metric 5",
-            description: "Description text for Section 1 Metric 5",
-          },
-          {
-            id: "resilience_resistance_metric_6",
-            label: "Section 1 Metric 6",
-            description: "Description text for Section 1 Metric 6",
-          },
-          {
-            id: "resilience_resistance_metric_7",
-            label: "Section 1 Metric 7",
-            description: "Description text for Section 1 Metric 7",
-          },
-          {
-            id: "resilience_resistance_metric_8",
-            label: "Section 1 Metric 8",
-            description: "Description text for Section 1 Metric 8",
+            id: "water_resistance_drought_plans",
+            label: "Drought Plans",
+            description: "State and local drought planning coverage.",
           },
         ],
       },
-      recovery: {
-        id: "recovery_summary",
-        label: "Section 2",
-        description: "The subsubdomain 2 score for domain 1.",
-        metrics: [
-          {
-            id: "resilience_recovery_metric_1",
-            label: "Section 2 Metric 1",
-            description: "Description text for Recovery Metric 1",
-          },
-          {
-            id: "resilience_recovery_metric_2",
-            label: "Section 2 Metric 2",
-            description: "Description text for Recovery Metric 2",
-          },
-          {
-            id: "resilience_recovery_metric_3",
-            label: "Section 2 Metric 3",
-            description: "Description text for Recovery Metric 3",
-          },
-          {
-            id: "resilience_recovery_metric_4",
-            label: "Section 2 Metric 4",
-            description: "Description text for Recovery Metric 4",
-          },
-          {
-            id: "resilience_recovery_metric_5",
-            label: "Section 2 Metric 5",
-            description: "Description text for Recovery Metric 5",
-          },
-          {
-            id: "resilience_recovery_metric_6",
-            label: "Section 2 Metric 6",
-            description: "Description text for Recovery Metric 6",
-          },
-          {
-            id: "resilience_recovery_metric_7",
-            label: "Section 2 Metric 7",
-            description: "Description text for Recovery Metric 7",
-          },
-          {
-            id: "resilience_recovery_metric_8",
-            label: "Section 2 Metric 8",
-            description: "Description text for Recovery Metric 8",
-          },
-          {
-            id: "resilience_recovery_metric_9",
-            label: "Section 2 Metric 9",
-            description: "Description text for Recovery Metric 9",
-          },
-        ],
-      },
+      recovery: undefined, // Water domain doesn't have recovery metrics
     },
   },
-  // Air Quality Metrics
-  {
-    id: "air",
-    label: "Domain 2",
-    description: "The overall score for Domain 2",
-    colorGradient: {
-      startColor: { r: 255, g: 255, b: 255 },
-      endColor: { r: 73, g: 0, b: 106 },
-    },
-    status: {
-      id: "status_summary",
-      label: "Subdomain 1",
-      description: "The subdomain 1 score of domain 2.",
 
-      metrics: [
-        {
-          id: "status_metric_1",
-          label: "Subdomain 1 Metric 1",
-          description: "Description text for Status Metric 1",
-        },
-        {
-          id: "status_metric_2",
-          label: "Subdomain 1 Metric 2",
-          description: "Description text for Status Metric 2",
-        },
-        {
-          id: "status_metric_3",
-          label: "Subdomain 1 Metric 3",
-          description: "Description text for Status Metric 3",
-        },
-        {
-          id: "status_metric_4",
-          label: "Subdomain 1 Metric 4",
-          description: "Description text for Status Metric 4",
-        },
-        {
-          id: "status_metric_5",
-          label: "Subdomain 1 Metric 5",
-          description: "Description text for Status Metric 5",
-        },
-        {
-          id: "status_metric_6",
-          label: "Subdomain 1 Metric 6",
-          description: "Description text for Status Metric 6",
-        },
-      ],
-    },
-    resilience: {
-      id: "resilience_summary",
-      label: "Subdomain 2",
-      description: "The subdomain 2 score for Domain 2.",
-      resistance: {
-        id: "resistance_summary",
-        label: "Section 1",
-        description: "The subsubdomain 1 score of Domain 2.",
-        metrics: [
-          {
-            id: "resilience_resistance_metric_1",
-            label: "Section 1 Metric 1",
-            description: "Description text for Section 1 Metric 1",
-          },
-          {
-            id: "resilience_resistance_metric_2",
-            label: "Section 1 Metric 2",
-            description: "Description text for Section 1 Metric 2",
-          },
-          {
-            id: "resilience_resistance_metric_3",
-            label: "Section 1 Metric 3",
-            description: "Description text for Section 1 Metric 3",
-          },
-          {
-            id: "resilience_resistance_metric_4",
-            label: "Section 1 Metric 4",
-            description: "Description text for Section 1 Metric 4",
-          },
-          {
-            id: "resilience_resistance_metric_5",
-            label: "Section 1 Metric 5",
-            description: "Description text for Section 1 Metric 5",
-          },
-          {
-            id: "resilience_resistance_metric_6",
-            label: "Section 1 Metric 6",
-            description: "Description text for Section 1 Metric 6",
-          },
-          {
-            id: "resilience_resistance_metric_7",
-            label: "Section 1 Metric 7",
-            description: "Description text for Section 1 Metric 7",
-          },
-          {
-            id: "resilience_resistance_metric_8",
-            label: "Section 1 Metric 8",
-            description: "Description text for Section 1 Metric 8",
-          },
-        ],
-      },
-      recovery: {
-        id: "recovery_summary",
-        label: "Section 2",
-        description: "The subsubdomain 2 score for Domain 2.",
-        metrics: [
-          {
-            id: "resilience_recovery_metric_1",
-            label: "Section 2 Metric 1",
-            description: "Description text for Recovery Metric 1",
-          },
-          {
-            id: "resilience_recovery_metric_2",
-            label: "Section 2 Metric 2",
-            description: "Description text for Recovery Metric 2",
-          },
-          {
-            id: "resilience_recovery_metric_3",
-            label: "Section 2 Metric 3",
-            description: "Description text for Recovery Metric 3",
-          },
-          {
-            id: "resilience_recovery_metric_4",
-            label: "Section 2 Metric 4",
-            description: "Description text for Recovery Metric 4",
-          },
-          {
-            id: "resilience_recovery_metric_5",
-            label: "Section 2 Metric 5",
-            description: "Description text for Recovery Metric 5",
-          },
-          {
-            id: "resilience_recovery_metric_6",
-            label: "Section 2 Metric 6",
-            description: "Description text for Recovery Metric 6",
-          },
-          {
-            id: "resilience_recovery_metric_7",
-            label: "Section 2 Metric 7",
-            description: "Description text for Recovery Metric 7",
-          },
-          {
-            id: "resilience_recovery_metric_8",
-            label: "Section 2 Metric 8",
-            description: "Description text for Recovery Metric 8",
-          },
-          {
-            id: "resilience_recovery_metric_9",
-            label: "Section 2 Metric 9",
-            description: "Description text for Recovery Metric 9",
-          },
-        ],
-      },
-    },
-  },
-  // Ecosystems Metrics
-  {
-    id: "ecosystems",
-    label: "Domain 3",
-    description: "The overall score for Domain 3.",
-    colorGradient: {
-      startColor: { r: 255, g: 255, b: 255 },
-      endColor: { r: 255, g: 145, b: 178 },
-    },
-    status: {
-      id: "status_summary",
-      label: "Subdomain 1",
-      description: "The subdomain 1 score of Domain 3.",
-      metrics: [
-        {
-          id: "status_metric_1",
-          label: "Subdomain 1 Metric 1",
-          description: "Description text for Status Metric 1",
-        },
-        {
-          id: "status_metric_2",
-          label: "Subdomain 1 Metric 2",
-          description: "Description text for Status Metric 2",
-        },
-        {
-          id: "status_metric_3",
-          label: "Subdomain 1 Metric 3",
-          description: "Description text for Status Metric 3",
-        },
-        {
-          id: "status_metric_4",
-          label: "Subdomain 1 Metric 4",
-          description: "Description text for Status Metric 4",
-        },
-        {
-          id: "status_metric_5",
-          label: "Subdomain 1 Metric 5",
-          description: "Description text for Status Metric 5",
-        },
-        {
-          id: "status_metric_6",
-          label: "Subdomain 1 Metric 6",
-          description: "Description text for Status Metric 6",
-        },
-      ],
-    },
-    resilience: {
-      id: "resilience_summary",
-      label: "Subdomain 2",
-      description: "The subdomain 2 score for Domain 3.",
-      resistance: {
-        id: "resistance_summary",
-        label: "Section 1",
-        description: "The subsubdomain 1 score of Domain 3.",
-        metrics: [
-          {
-            id: "resilience_resistance_metric_1",
-            label: "Section 1 Metric 1",
-            description: "Description text for Section 1 Metric 1",
-          },
-          {
-            id: "resilience_resistance_metric_2",
-            label: "Section 1 Metric 2",
-            description: "Description text for Section 1 Metric 2",
-          },
-          {
-            id: "resilience_resistance_metric_3",
-            label: "Section 1 Metric 3",
-            description: "Description text for Section 1 Metric 3",
-          },
-          {
-            id: "resilience_resistance_metric_4",
-            label: "Section 1 Metric 4",
-            description: "Description text for Section 1 Metric 4",
-          },
-          {
-            id: "resilience_resistance_metric_5",
-            label: "Section 1 Metric 5",
-            description: "Description text for Section 1 Metric 5",
-          },
-          {
-            id: "resilience_resistance_metric_6",
-            label: "Section 1 Metric 6",
-            description: "Description text for Section 1 Metric 6",
-          },
-          {
-            id: "resilience_resistance_metric_7",
-            label: "Section 1 Metric 7",
-            description: "Description text for Section 1 Metric 7",
-          },
-          {
-            id: "resilience_resistance_metric_8",
-            label: "Section 1 Metric 8",
-            description: "Description text for Section 1 Metric 8",
-          },
-        ],
-      },
-      recovery: {
-        id: "recovery_summary",
-        label: "Section 2",
-        description: "The subsubdomain 2 score for Domain 3.",
-        metrics: [
-          {
-            id: "resilience_recovery_metric_1",
-            label: "Section 2 Metric 1",
-            description: "Description text for Recovery Metric 1",
-          },
-          {
-            id: "resilience_recovery_metric_2",
-            label: "Section 2 Metric 2",
-            description: "Description text for Recovery Metric 2",
-          },
-          {
-            id: "resilience_recovery_metric_3",
-            label: "Section 2 Metric 3",
-            description: "Description text for Recovery Metric 3",
-          },
-          {
-            id: "resilience_recovery_metric_4",
-            label: "Section 2 Metric 4",
-            description: "Description text for Recovery Metric 4",
-          },
-          {
-            id: "resilience_recovery_metric_5",
-            label: "Section 2 Metric 5",
-            description: "Description text for Recovery Metric 5",
-          },
-          {
-            id: "resilience_recovery_metric_6",
-            label: "Section 2 Metric 6",
-            description: "Description text for Recovery Metric 6",
-          },
-          {
-            id: "resilience_recovery_metric_7",
-            label: "Section 2 Metric 7",
-            description: "Description text for Recovery Metric 7",
-          },
-          {
-            id: "resilience_recovery_metric_8",
-            label: "Section 2 Metric 8",
-            description: "Description text for Recovery Metric 8",
-          },
-          {
-            id: "resilience_recovery_metric_9",
-            label: "Section 2 Metric 9",
-            description: "Description text for Recovery Metric 9",
-          },
-        ],
-      },
-    },
-  },
-  // Biodiversity domain
-  {
-    id: "biodiversity",
-    label: "Domain 4",
-    description: "The overall score for Domain 4",
-    colorGradient: {
-      startColor: { r: 255, g: 255, b: 255 },
-      endColor: { r: 103, g: 14, b: 10 },
-    },
-    status: {
-      id: "status_summary",
-      label: "Subdomain 1",
-      description: "The subdomain 1 score of Domain 4.",
-      metrics: [
-        {
-          id: "status_metric_1",
-          label: "Subdomain 1 Metric 1",
-          description: "Description text for Status Metric 1",
-        },
-        {
-          id: "status_metric_2",
-          label: "Subdomain 1 Metric 2",
-          description: "Description text for Status Metric 2",
-        },
-        {
-          id: "status_metric_3",
-          label: "Subdomain 1 Metric 3",
-          description: "Description text for Status Metric 3",
-        },
-        {
-          id: "status_metric_4",
-          label: "Subdomain 1 Metric 4",
-          description: "Description text for Status Metric 4",
-        },
-        {
-          id: "status_metric_5",
-          label: "Subdomain 1 Metric 5",
-          description: "Description text for Status Metric 5",
-        },
-        {
-          id: "status_metric_6",
-          label: "Subdomain 1 Metric 6",
-          description: "Description text for Status Metric 6",
-        },
-      ],
-    },
-    resilience: {
-      id: "resilience_summary",
-      label: "Subdomain 2",
-      description: "The subdomain 2 score for Domain 4.",
-      resistance: {
-        id: "resistance_summary",
-        label: "Section 1",
-        description: "The subsubdomain 1 score of Domain 4.",
-        metrics: [
-          {
-            id: "resilience_resistance_metric_1",
-            label: "Section 1 Metric 1",
-            description: "Description text for Section 1 Metric 1",
-          },
-          {
-            id: "resilience_resistance_metric_2",
-            label: "Section 1 Metric 2",
-            description: "Description text for Section 1 Metric 2",
-          },
-          {
-            id: "resilience_resistance_metric_3",
-            label: "Section 1 Metric 3",
-            description: "Description text for Section 1 Metric 3",
-          },
-          {
-            id: "resilience_resistance_metric_4",
-            label: "Section 1 Metric 4",
-            description: "Description text for Section 1 Metric 4",
-          },
-          {
-            id: "resilience_resistance_metric_5",
-            label: "Section 1 Metric 5",
-            description: "Description text for Section 1 Metric 5",
-          },
-          {
-            id: "resilience_resistance_metric_6",
-            label: "Section 1 Metric 6",
-            description: "Description text for Section 1 Metric 6",
-          },
-          {
-            id: "resilience_resistance_metric_7",
-            label: "Section 1 Metric 7",
-            description: "Description text for Section 1 Metric 7",
-          },
-          {
-            id: "resilience_resistance_metric_8",
-            label: "Section 1 Metric 8",
-            description: "Description text for Section 1 Metric 8",
-          },
-        ],
-      },
-      recovery: {
-        id: "recovery_summary",
-        label: "Section 2",
-        description: "The subsubdomain 2 score for Domain 4.",
-        metrics: [
-          {
-            id: "resilience_recovery_metric_1",
-            label: "Section 2 Metric 1",
-            description: "Description text for Recovery Metric 1",
-          },
-          {
-            id: "resilience_recovery_metric_2",
-            label: "Section 2 Metric 2",
-            description: "Description text for Recovery Metric 2",
-          },
-          {
-            id: "resilience_recovery_metric_3",
-            label: "Section 2 Metric 3",
-            description: "Description text for Recovery Metric 3",
-          },
-          {
-            id: "resilience_recovery_metric_4",
-            label: "Section 2 Metric 4",
-            description: "Description text for Recovery Metric 4",
-          },
-          {
-            id: "resilience_recovery_metric_5",
-            label: "Section 2 Metric 5",
-            description: "Description text for Recovery Metric 5",
-          },
-          {
-            id: "resilience_recovery_metric_6",
-            label: "Section 2 Metric 6",
-            description: "Description text for Recovery Metric 6",
-          },
-          {
-            id: "resilience_recovery_metric_7",
-            label: "Section 2 Metric 7",
-            description: "Description text for Recovery Metric 7",
-          },
-          {
-            id: "resilience_recovery_metric_8",
-            label: "Section 2 Metric 8",
-            description: "Description text for Recovery Metric 8",
-          },
-          {
-            id: "resilience_recovery_metric_9",
-            label: "Section 2 Metric 9",
-            description: "Description text for Recovery Metric 9",
-          },
-        ],
-      },
-    },
-  },
-  // Infrastructure
+  // ============================================================================
+  // INFRASTRUCTURE
+  // ============================================================================
   {
     id: "infrastructure",
-    label: "Domain 5",
-    description: "The overall score for Domain 5.",
+    label: "Infrastructure",
+    description: "Built infrastructure resilience to wildfire damage.",
     colorGradient: {
       startColor: { r: 255, g: 255, b: 255 },
-      endColor: { r: 78, g: 160, b: 220 },
+      endColor: { r: 128, g: 128, b: 128 }, // Gray
     },
     status: {
-      id: "status_summary",
-      label: "Subdomain 1",
-      description: "The subdomain 1 score of Domain 5.",
-      metrics: [
-        {
-          id: "status_metric_1",
-          label: "Subdomain 1 Metric 1",
-          description: "Description text for Status Metric 1",
-        },
-        {
-          id: "status_metric_2",
-          label: "Subdomain 1 Metric 2",
-          description: "Description text for Status Metric 2",
-        },
-        {
-          id: "status_metric_3",
-          label: "Subdomain 1 Metric 3",
-          description: "Description text for Status Metric 3",
-        },
-        {
-          id: "status_metric_4",
-          label: "Subdomain 1 Metric 4",
-          description: "Description text for Status Metric 4",
-        },
-        {
-          id: "status_metric_5",
-          label: "Subdomain 1 Metric 5",
-          description: "Description text for Status Metric 5",
-        },
-        {
-          id: "status_metric_6",
-          label: "Subdomain 1 Metric 6",
-          description: "Description text for Status Metric 6",
-        },
-      ],
+      id: "infrastructure_status",
+      label: "Status",
+      description: "Current infrastructure status.",
+      metrics: [], // No status metrics for infrastructure
     },
     resilience: {
-      id: "resilience_summary",
-      label: "Subdomain 2",
-      description: "The subdomain 2 score for Domain 5.",
+      id: "infrastructure_resilience",
+      label: "Resilience",
+      description: "Infrastructure capacity to resist and recover from wildfire.",
       resistance: {
-        id: "resistance_summary",
-        label: "Section 1",
-        description: "The subsubdomain 1 score of the Domain 5.",
+        id: "infrastructure_resistance",
+        label: "Resistance",
+        description: "Structural resistance to wildfire damage.",
         metrics: [
           {
-            id: "resilience_resistance_metric_1",
-            label: "Section 1 Metric 1",
-            description: "Description text for Section 1 Metric 1",
+            id: "infrastructure_resistance_building_codes",
+            label: "Building Codes",
+            description: "Adoption of wildfire-resistant building codes.",
           },
           {
-            id: "resilience_resistance_metric_2",
-            label: "Section 1 Metric 2",
-            description: "Description text for Section 1 Metric 2",
+            id: "infrastructure_resistance_wildland_urban_interface",
+            label: "Wildland Urban Interface",
+            description: "Exposure in the wildland-urban interface zone.",
           },
           {
-            id: "resilience_resistance_metric_3",
-            label: "Section 1 Metric 3",
-            description: "Description text for Section 1 Metric 3",
+            id: "infrastructure_resistance_egress",
+            label: "Road Access",
+            description: "Evacuation route accessibility and egress capacity.",
           },
           {
-            id: "resilience_resistance_metric_4",
-            label: "Section 1 Metric 4",
-            description: "Description text for Section 1 Metric 4",
+            id: "infrastructure_resistance_fire_resource_density",
+            label: "Fire Fighting Access",
+            description: "Fire resource density and response capability.",
           },
           {
-            id: "resilience_resistance_metric_5",
-            label: "Section 1 Metric 5",
-            description: "Description text for Section 1 Metric 5",
-          },
-          {
-            id: "resilience_resistance_metric_6",
-            label: "Section 1 Metric 6",
-            description: "Description text for Section 1 Metric 6",
-          },
-          {
-            id: "resilience_resistance_metric_7",
-            label: "Section 1 Metric 7",
-            description: "Description text for Section 1 Metric 7",
-          },
-          {
-            id: "resilience_resistance_metric_8",
-            label: "Section 1 Metric 8",
-            description: "Description text for Section 1 Metric 8",
+            id: "infrastructure_resistance_d_space",
+            label: "Defensible Space",
+            description: "Defensible space around structures.",
           },
         ],
       },
       recovery: {
-        id: "recovery_summary",
-        label: "Section 2",
-        description: "The subsubdomain 2 score for Domain 5.",
+        id: "infrastructure_recovery",
+        label: "Recovery",
+        description: "Capacity to recover infrastructure after wildfire.",
         metrics: [
           {
-            id: "resilience_recovery_metric_1",
-            label: "Section 2 Metric 1",
-            description: "Description text for Recovery Metric 1",
+            id: "infrastructure_recovery_income",
+            label: "Income",
+            description: "Household income levels supporting recovery.",
           },
           {
-            id: "resilience_recovery_metric_2",
-            label: "Section 2 Metric 2",
-            description: "Description text for Recovery Metric 2",
+            id: "infrastructure_recovery_incorporation",
+            label: "Incorporation",
+            description: "Municipal incorporation status.",
           },
           {
-            id: "resilience_recovery_metric_3",
-            label: "Section 2 Metric 3",
-            description: "Description text for Recovery Metric 3",
-          },
-          {
-            id: "resilience_recovery_metric_4",
-            label: "Section 2 Metric 4",
-            description: "Description text for Recovery Metric 4",
-          },
-          {
-            id: "resilience_recovery_metric_5",
-            label: "Section 2 Metric 5",
-            description: "Description text for Recovery Metric 5",
-          },
-          {
-            id: "resilience_recovery_metric_6",
-            label: "Section 2 Metric 6",
-            description: "Description text for Recovery Metric 6",
-          },
-          {
-            id: "resilience_recovery_metric_7",
-            label: "Section 2 Metric 7",
-            description: "Description text for Recovery Metric 7",
-          },
-          {
-            id: "resilience_recovery_metric_8",
-            label: "Section 2 Metric 8",
-            description: "Description text for Recovery Metric 8",
-          },
-          {
-            id: "resilience_recovery_metric_9",
-            label: "Section 2 Metric 9",
-            description: "Description text for Recovery Metric 9",
+            id: "infrastructure_recovery_owners",
+            label: "Home Ownership",
+            description: "Home ownership rates.",
           },
         ],
       },
     },
   },
-  // Social
+
+  // ============================================================================
+  // COMMUNITIES
+  // ============================================================================
   {
-    id: "social",
-    label: "Domain 6",
-    description: "The overall score for Domain 6.",
+    id: "communities",
+    label: "Communities",
+    description: "Community social resilience to wildfire impacts.",
     colorGradient: {
       startColor: { r: 255, g: 255, b: 255 },
-      endColor: { r: 23, g: 46, b: 106 },
+      endColor: { r: 255, g: 87, b: 51 }, // Orange-red
     },
-    status: {
-      id: "status_summary",
-      label: "Subdomain 1",
-      description: "The subdomain 1 score of Domain 6.",
-      metrics: [
-        {
-          id: "status_metric_1",
-          label: "Subdomain 1 Metric 1",
-          description: "Description text for Status Metric 1",
-        },
-        {
-          id: "status_metric_2",
-          label: "Subdomain 1 Metric 2",
-          description: "Description text for Status Metric 2",
-        },
-        {
-          id: "status_metric_3",
-          label: "Subdomain 1 Metric 3",
-          description: "Description text for Status Metric 3",
-        },
-        {
-          id: "status_metric_4",
-          label: "Subdomain 1 Metric 4",
-          description: "Description text for Status Metric 4",
-        },
-        {
-          id: "status_metric_5",
-          label: "Subdomain 1 Metric 5",
-          description: "Description text for Status Metric 5",
-        },
-        {
-          id: "status_metric_6",
-          label: "Subdomain 1 Metric 6",
-          description: "Description text for Status Metric 6",
-        },
-      ],
-    },
+    status: undefined, // Communities doesn't have status metrics
     resilience: {
-      id: "resilience_summary",
-      label: "Subdomain 2",
-      description: "The subdomain 2 score for Domain 6.",
+      id: "communities_resilience",
+      label: "Resilience",
+      description: "Community capacity to resist and recover from wildfire.",
       resistance: {
-        id: "resistance_summary",
-        label: "Section 1",
-        description: "The subsubdomain 1 score of Domain 6.",
+        id: "communities_resistance",
+        label: "Resistance",
+        description: "Community resistance to wildfire impacts.",
         metrics: [
           {
-            id: "resilience_resistance_metric_1",
-            label: "Section 1 Metric 1",
-            description: "Description text for Section 1 Metric 1",
+            id: "communities_resistance_cwpps",
+            label: "Community Wildfire Protection Plans",
+            description: "Presence of Community Wildfire Protection Plans.",
           },
           {
-            id: "resilience_resistance_metric_2",
-            label: "Section 1 Metric 2",
-            description: "Description text for Section 1 Metric 2",
+            id: "communities_resistance_firewise_communities",
+            label: "Firewise Communities",
+            description: "Firewise USA community recognition.",
           },
           {
-            id: "resilience_resistance_metric_3",
-            label: "Section 1 Metric 3",
-            description: "Description text for Section 1 Metric 3",
+            id: "communities_resistance_volunteer_fire_stations",
+            label: "Volunteer Firefighters",
+            description: "Volunteer fire station coverage.",
           },
           {
-            id: "resilience_resistance_metric_4",
-            label: "Section 1 Metric 4",
-            description: "Description text for Section 1 Metric 4",
+            id: "communities_resistance_age_65_plus",
+            label: "Age (65+)",
+            description: "Population age 65 and older.",
           },
           {
-            id: "resilience_resistance_metric_5",
-            label: "Section 1 Metric 5",
-            description: "Description text for Section 1 Metric 5",
+            id: "communities_resistance_disability",
+            label: "Disability",
+            description: "Population with disabilities.",
           },
           {
-            id: "resilience_resistance_metric_6",
-            label: "Section 1 Metric 6",
-            description: "Description text for Section 1 Metric 6",
+            id: "communities_resistance_no_vehicle",
+            label: "Car Access",
+            description: "Households without vehicle access.",
           },
           {
-            id: "resilience_resistance_metric_7",
-            label: "Section 1 Metric 7",
-            description: "Description text for Section 1 Metric 7",
-          },
-          {
-            id: "resilience_resistance_metric_8",
-            label: "Section 1 Metric 8",
-            description: "Description text for Section 1 Metric 8",
+            id: "communities_resistance_egress",
+            label: "Evacuation Routes",
+            description: "Evacuation route accessibility.",
           },
         ],
       },
       recovery: {
-        id: "recovery_summary",
-        label: "Section 2",
-        description: "The subsubdomain 2 score for Domain 6.",
+        id: "communities_recovery",
+        label: "Recovery",
+        description: "Community capacity to recover after wildfire.",
         metrics: [
           {
-            id: "resilience_recovery_metric_1",
-            label: "Section 2 Metric 1",
-            description: "Description text for Recovery Metric 1",
+            id: "communities_recovery_income",
+            label: "Income",
+            description: "Household income levels.",
           },
           {
-            id: "resilience_recovery_metric_2",
-            label: "Section 2 Metric 2",
-            description: "Description text for Recovery Metric 2",
+            id: "communities_recovery_incorporation",
+            label: "Incorporation",
+            description: "Municipal incorporation status.",
           },
           {
-            id: "resilience_recovery_metric_3",
-            label: "Section 2 Metric 3",
-            description: "Description text for Recovery Metric 3",
-          },
-          {
-            id: "resilience_recovery_metric_4",
-            label: "Section 2 Metric 4",
-            description: "Description text for Recovery Metric 4",
-          },
-          {
-            id: "resilience_recovery_metric_5",
-            label: "Section 2 Metric 5",
-            description: "Description text for Recovery Metric 5",
-          },
-          {
-            id: "resilience_recovery_metric_6",
-            label: "Section 2 Metric 6",
-            description: "Description text for Recovery Metric 6",
-          },
-          {
-            id: "resilience_recovery_metric_7",
-            label: "Section 2 Metric 7",
-            description: "Description text for Recovery Metric 7",
-          },
-          {
-            id: "resilience_recovery_metric_8",
-            label: "Section 2 Metric 8",
-            description: "Description text for Recovery Metric 8",
-          },
-          {
-            id: "resilience_recovery_metric_9",
-            label: "Section 2 Metric 9",
-            description: "Description text for Recovery Metric 9",
+            id: "communities_recovery_owners",
+            label: "Home Ownership",
+            description: "Home ownership rates.",
           },
         ],
       },
     },
   },
-  // Economy
+
+  // ============================================================================
+  // LIVELIHOODS
+  // ============================================================================
   {
-    id: "economy",
-    label: "Domain 7",
-    description: "The overall score for Domain 7.",
+    id: "livelihoods",
+    label: "Livelihoods",
+    description: "Economic livelihood resilience to wildfire impacts.",
     colorGradient: {
       startColor: { r: 255, g: 255, b: 255 },
-      endColor: { r: 90, g: 56, b: 15 },
+      endColor: { r: 34, g: 139, b: 34 }, // Forest green
     },
     status: {
-      id: "status_summary",
-      label: "Subdomain 1",
-      description: "The subdomain 1 score of Domain 7.",
+      id: "livelihoods_status",
+      label: "Status",
+      description: "Current economic status indicators.",
       metrics: [
         {
-          id: "status_metric_1",
-          label: "Subdomain 1 Metric 1",
-          description: "Description text for Status Metric 1",
+          id: "livelihoods_status_unemployment",
+          label: "Unemployment",
+          description: "Unemployment rate.",
         },
         {
-          id: "status_metric_2",
-          label: "Subdomain 1 Metric 2",
-          description: "Description text for Status Metric 2",
+          id: "livelihoods_status_median_income",
+          label: "Median Income",
+          description: "Median household income.",
         },
         {
-          id: "status_metric_3",
-          label: "Subdomain 1 Metric 3",
-          description: "Description text for Status Metric 3",
-        },
-        {
-          id: "status_metric_4",
-          label: "Subdomain 1 Metric 4",
-          description: "Description text for Status Metric 4",
-        },
-        {
-          id: "status_metric_5",
-          label: "Subdomain 1 Metric 5",
-          description: "Description text for Status Metric 5",
-        },
-        {
-          id: "status_metric_6",
-          label: "Subdomain 1 Metric 6",
-          description: "Description text for Status Metric 6",
+          id: "livelihoods_status_housing_burden",
+          label: "Housing Burden",
+          description: "Housing cost burden as percentage of income.",
         },
       ],
     },
     resilience: {
-      id: "resilience_summary",
-      label: "Subdomain 2",
-      description: "The subdomain 2 score for Domain 7.",
+      id: "livelihoods_resilience",
+      label: "Resilience",
+      description: "Economic capacity to resist and recover from wildfire.",
       resistance: {
-        id: "resistance_summary",
-        label: "Section 1",
-        description: "The subsubdomain 1 score of Domain 7.",
+        id: "livelihoods_resistance",
+        label: "Resistance",
+        description: "Economic resistance to wildfire impacts.",
         metrics: [
           {
-            id: "resilience_resistance_metric_1",
-            label: "Section 1 Metric 1",
-            description: "Description text for Section 1 Metric 1",
-          },
-          {
-            id: "resilience_resistance_metric_2",
-            label: "Section 1 Metric 2",
-            description: "Description text for Section 1 Metric 2",
-          },
-          {
-            id: "resilience_resistance_metric_3",
-            label: "Section 1 Metric 3",
-            description: "Description text for Section 1 Metric 3",
-          },
-          {
-            id: "resilience_resistance_metric_4",
-            label: "Section 1 Metric 4",
-            description: "Description text for Section 1 Metric 4",
-          },
-          {
-            id: "resilience_resistance_metric_5",
-            label: "Section 1 Metric 5",
-            description: "Description text for Section 1 Metric 5",
-          },
-          {
-            id: "resilience_resistance_metric_6",
-            label: "Section 1 Metric 6",
-            description: "Description text for Section 1 Metric 6",
-          },
-          {
-            id: "resilience_resistance_metric_7",
-            label: "Section 1 Metric 7",
-            description: "Description text for Section 1 Metric 7",
-          },
-          {
-            id: "resilience_resistance_metric_8",
-            label: "Section 1 Metric 8",
-            description: "Description text for Section 1 Metric 8",
+            id: "livelihoods_resistance_job_vulnerability",
+            label: "Vulnerable Jobs",
+            description: "Jobs vulnerable to wildfire disruption.",
           },
         ],
       },
       recovery: {
-        id: "recovery_summary",
-        label: "Section 2",
-        description: "The subsubdomain 2 score for Domain 7.",
+        id: "livelihoods_recovery",
+        label: "Recovery",
+        description: "Economic recovery capacity.",
         metrics: [
           {
-            id: "resilience_recovery_metric_1",
-            label: "Section 2 Metric 1",
-            description: "Description text for Recovery Metric 1",
-          },
-          {
-            id: "resilience_recovery_metric_2",
-            label: "Section 2 Metric 2",
-            description: "Description text for Recovery Metric 2",
-          },
-          {
-            id: "resilience_recovery_metric_3",
-            label: "Section 2 Metric 3",
-            description: "Description text for Recovery Metric 3",
-          },
-          {
-            id: "resilience_recovery_metric_4",
-            label: "Section 2 Metric 4",
-            description: "Description text for Recovery Metric 4",
-          },
-          {
-            id: "resilience_recovery_metric_5",
-            label: "Section 2 Metric 5",
-            description: "Description text for Recovery Metric 5",
-          },
-          {
-            id: "resilience_recovery_metric_6",
-            label: "Section 2 Metric 6",
-            description: "Description text for Recovery Metric 6",
-          },
-          {
-            id: "resilience_recovery_metric_7",
-            label: "Section 2 Metric 7",
-            description: "Description text for Recovery Metric 7",
-          },
-          {
-            id: "resilience_recovery_metric_8",
-            label: "Section 2 Metric 8",
-            description: "Description text for Recovery Metric 8",
-          },
-          {
-            id: "resilience_recovery_metric_9",
-            label: "Section 2 Metric 9",
-            description: "Description text for Recovery Metric 9",
+            id: "livelihoods_recovery_diversity_of_jobs",
+            label: "Job Diversity",
+            description: "Economic diversity of employment.",
           },
         ],
       },
     },
   },
-  // Culture
+
+  // ============================================================================
+  // BIODIVERSITY (Species)
+  // ============================================================================
   {
-    id: "culture",
-    label: "Domain 8",
-    description: "The overall score for Domain 8.",
+    id: "biodiversity",
+    label: "Species",
+    description: "Biodiversity and species resilience to wildfire.",
     colorGradient: {
       startColor: { r: 255, g: 255, b: 255 },
-      endColor: { r: 20, g: 13, b: 70 },
+      endColor: { r: 103, g: 14, b: 10 }, // Dark red
     },
     status: {
-      id: "status_summary",
-      label: "Subdomain 1",
-      description: "The subdomain 1 score for Domain 8.",
+      id: "biodiversity_status",
+      label: "Status",
+      description: "Current species conservation status.",
       metrics: [
         {
-          id: "status_metric_1",
-          label: "Subdomain 1 Metric 1",
-          description: "Description text for Status Metric 1",
-        },
-        {
-          id: "status_metric_2",
-          label: "Subdomain 1 Metric 2",
-          description: "Description text for Status Metric 2",
-        },
-        {
-          id: "status_metric_3",
-          label: "Subdomain 1 Metric 3",
-          description: "Description text for Status Metric 3",
-        },
-        {
-          id: "status_metric_4",
-          label: "Subdomain 1 Metric 4",
-          description: "Description text for Status Metric 4",
-        },
-        {
-          id: "status_metric_5",
-          label: "Subdomain 1 Metric 5",
-          description: "Description text for Status Metric 5",
-        },
-        {
-          id: "status_metric_6",
-          label: "Subdomain 1 Metric 6",
-          description: "Description text for Status Metric 6",
+          id: "biodiversity_status",
+          label: "Conservation Threat",
+          description: "Species conservation threat level.",
         },
       ],
     },
     resilience: {
-      id: "resilience_summary",
-      label: "Subdomain 2",
-      description: "The subdomain 2 score for Domain 8.",
+      id: "biodiversity_resilience",
+      label: "Resilience",
+      description: "Species capacity to resist and recover from wildfire.",
       resistance: {
-        id: "resistance_summary",
-        label: "Section 1",
-        description: "The subsubdomain 1 score of Domain 8.",
+        id: "biodiversity_resistance",
+        label: "Resistance",
+        description: "Species resistance to wildfire impacts.",
         metrics: [
           {
-            id: "resilience_resistance_metric_1",
-            label: "Section 1 Metric 1",
-            description: "Description text for Section 1 Metric 1",
-          },
-          {
-            id: "resilience_resistance_metric_2",
-            label: "Section 1 Metric 2",
-            description: "Description text for Section 1 Metric 2",
-          },
-          {
-            id: "resilience_resistance_metric_3",
-            label: "Section 1 Metric 3",
-            description: "Description text for Section 1 Metric 3",
-          },
-          {
-            id: "resilience_resistance_metric_4",
-            label: "Section 1 Metric 4",
-            description: "Description text for Section 1 Metric 4",
-          },
-          {
-            id: "resilience_resistance_metric_5",
-            label: "Section 1 Metric 5",
-            description: "Description text for Section 1 Metric 5",
-          },
-          {
-            id: "resilience_resistance_metric_6",
-            label: "Section 1 Metric 6",
-            description: "Description text for Section 1 Metric 6",
-          },
-          {
-            id: "resilience_resistance_metric_7",
-            label: "Section 1 Metric 7",
-            description: "Description text for Section 1 Metric 7",
-          },
-          {
-            id: "resilience_resistance_metric_8",
-            label: "Section 1 Metric 8",
-            description: "Description text for Section 1 Metric 8",
+            id: "biodiversity_resistance_traits",
+            label: "Resistance Traits",
+            description: "Species traits conferring fire resistance.",
           },
         ],
       },
       recovery: {
-        id: "recovery_summary",
-        label: "Section 2",
-        description: "The subsubdomain 2 score for Domain 8.",
+        id: "biodiversity_recovery",
+        label: "Recovery",
+        description: "Species recovery capacity after wildfire.",
         metrics: [
           {
-            id: "resilience_recovery_metric_1",
-            label: "Section 2 Metric 1",
-            description: "Description text for Recovery Metric 1",
+            id: "biodiversity_recovery_traits",
+            label: "Recovery Traits",
+            description: "Species traits supporting post-fire recovery.",
           },
           {
-            id: "resilience_recovery_metric_2",
-            label: "Section 2 Metric 2",
-            description: "Description text for Recovery Metric 2",
-          },
-          {
-            id: "resilience_recovery_metric_3",
-            label: "Section 2 Metric 3",
-            description: "Description text for Recovery Metric 3",
-          },
-          {
-            id: "resilience_recovery_metric_4",
-            label: "Section 2 Metric 4",
-            description: "Description text for Recovery Metric 4",
-          },
-          {
-            id: "resilience_recovery_metric_5",
-            label: "Section 2 Metric 5",
-            description: "Description text for Recovery Metric 5",
-          },
-          {
-            id: "resilience_recovery_metric_6",
-            label: "Section 2 Metric 6",
-            description: "Description text for Recovery Metric 6",
-          },
-          {
-            id: "resilience_recovery_metric_7",
-            label: "Section 2 Metric 7",
-            description: "Description text for Recovery Metric 7",
-          },
-          {
-            id: "resilience_recovery_metric_8",
-            label: "Section 2 Metric 8",
-            description: "Description text for Recovery Metric 8",
-          },
-          {
-            id: "resilience_recovery_metric_9",
-            label: "Section 2 Metric 9",
-            description: "Description text for Recovery Metric 9",
+            id: "biodiversity_recovery_range_area",
+            label: "Range Size",
+            description: "Species geographic range area.",
           },
         ],
       },
     },
   },
-  // Carbon
+
+  // ============================================================================
+  // NATURAL HABITATS (Habitats)
+  // ============================================================================
   {
-    id: "carbon",
-    label: "Domain 9",
-    description: "The overall score for Domain 9.",
+    id: "natural_habitats",
+    label: "Habitats",
+    description: "Natural habitat resilience to wildfire.",
     colorGradient: {
       startColor: { r: 255, g: 255, b: 255 },
-      endColor: { r: 15, g: 15, b: 15 },
+      endColor: { r: 0, g: 100, b: 0 }, // Dark green
     },
     status: {
-      id: "status_summary",
-      label: "Subdomain 1",
-      description: "The subdomain 1 score of Domain 9.",
+      id: "natural_habitats_status",
+      label: "Status",
+      description: "Current habitat status.",
       metrics: [
         {
-          id: "status_metric_1",
-          label: "Subdomain 1 Metric 1",
-          description: "Description text for Status Metric 1",
+          id: "natural_habitats_status_percent_protected",
+          label: "Protection Status",
+          description: "Percentage of habitat under protection.",
         },
         {
-          id: "status_metric_2",
-          label: "Subdomain 1 Metric 2",
-          description: "Description text for Status Metric 2",
-        },
-        {
-          id: "status_metric_3",
-          label: "Subdomain 1 Metric 3",
-          description: "Description text for Status Metric 3",
-        },
-        {
-          id: "status_metric_4",
-          label: "Subdomain 1 Metric 4",
-          description: "Description text for Status Metric 4",
-        },
-        {
-          id: "status_metric_5",
-          label: "Subdomain 1 Metric 5",
-          description: "Description text for Status Metric 5",
-        },
-        {
-          id: "status_metric_6",
-          label: "Subdomain 1 Metric 6",
-          description: "Description text for Status Metric 6",
+          id: "natural_habitats_status_extent_change_2005",
+          label: "Development",
+          description: "Habitat extent change since 2005.",
         },
       ],
     },
     resilience: {
-      id: "resilience_summary",
-      label: "Subdomain 2",
-      description: "The subdomain 2 score for Domain 9.",
+      id: "natural_habitats_resilience",
+      label: "Resilience",
+      description: "Habitat capacity to resist and recover from wildfire.",
       resistance: {
-        id: "resistance_summary",
-        label: "Section 1",
-        description: "The subsubdomain 1 score of Domain 9.",
+        id: "natural_habitats_resistance",
+        label: "Resistance",
+        description: "Habitat resistance to wildfire impacts.",
         metrics: [
           {
-            id: "resilience_resistance_metric_1",
-            label: "Section 1 Metric 1",
-            description: "Description text for Section 1 Metric 1",
+            id: "natural_habitats_resistance_tree_traits",
+            label: "Tree Traits",
+            description: "Tree species traits conferring fire resistance.",
           },
           {
-            id: "resilience_resistance_metric_2",
-            label: "Section 1 Metric 2",
-            description: "Description text for Section 1 Metric 2",
+            id: "natural_habitats_resistance_density",
+            label: "Stand Density",
+            description: "Forest stand density.",
           },
           {
-            id: "resilience_resistance_metric_3",
-            label: "Section 1 Metric 3",
-            description: "Description text for Section 1 Metric 3",
+            id: "natural_habitats_resistance_NDVI",
+            label: "NDVI Heterogeneity",
+            description: "Normalized Difference Vegetation Index heterogeneity.",
           },
           {
-            id: "resilience_resistance_metric_4",
-            label: "Section 1 Metric 4",
-            description: "Description text for Section 1 Metric 4",
+            id: "natural_habitats_resistance_npp",
+            label: "Net Primary Production",
+            description: "Net primary productivity.",
           },
           {
-            id: "resilience_resistance_metric_5",
-            label: "Section 1 Metric 5",
-            description: "Description text for Section 1 Metric 5",
-          },
-          {
-            id: "resilience_resistance_metric_6",
-            label: "Section 1 Metric 6",
-            description: "Description text for Section 1 Metric 6",
-          },
-          {
-            id: "resilience_resistance_metric_7",
-            label: "Section 1 Metric 7",
-            description: "Description text for Section 1 Metric 7",
-          },
-          {
-            id: "resilience_resistance_metric_8",
-            label: "Section 1 Metric 8",
-            description: "Description text for Section 1 Metric 8",
+            id: "natural_habitats_resistance_vpd",
+            label: "Vapor Pressure Deficit",
+            description: "Vapor pressure deficit indicating drought stress.",
           },
         ],
       },
       recovery: {
-        id: "recovery_summary",
-        label: "Section 2",
-        description: "The subsubdomain 2 score for Domain 9.",
+        id: "natural_habitats_recovery",
+        label: "Recovery",
+        description: "Habitat recovery capacity after wildfire.",
         metrics: [
           {
-            id: "resilience_recovery_metric_1",
-            label: "Section 2 Metric 1",
-            description: "Description text for Recovery Metric 1",
+            id: "natural_habitats_recovery_tree_traits",
+            label: "Tree Traits",
+            description: "Tree species traits supporting recovery.",
           },
           {
-            id: "resilience_recovery_metric_2",
-            label: "Section 2 Metric 2",
-            description: "Description text for Recovery Metric 2",
+            id: "natural_habitats_recovery_diversity",
+            label: "Stand Diversity",
+            description: "Forest stand species diversity.",
           },
           {
-            id: "resilience_recovery_metric_3",
-            label: "Section 2 Metric 3",
-            description: "Description text for Recovery Metric 3",
+            id: "natural_habitats_recovery_ppt",
+            label: "Precipitation",
+            description: "Rainfall supporting post-fire recovery.",
+          },
+        ],
+      },
+    },
+  },
+
+  // ============================================================================
+  // SENSE OF PLACE - ICONIC PLACES
+  // ============================================================================
+  {
+    id: "sense_of_place",
+    label: "Sense of Place",
+    description: "Cultural and iconic value resilience to wildfire.",
+    colorGradient: {
+      startColor: { r: 255, g: 255, b: 255 },
+      endColor: { r: 255, g: 165, b: 0 }, // Orange
+    },
+    status: {
+      id: "sense_of_place_status",
+      label: "Status",
+      description: "Presence and status of iconic places and species.",
+      metrics: [
+        {
+          id: "sense_of_place_iconic_places_status_presence",
+          label: "Places Presence",
+          description: "Presence of nationally recognized iconic places.",
+        },
+        {
+          id: "sense_of_place_iconic_species_status",
+          label: "Species Status",
+          description: "Conservation status of iconic species.",
+        },
+        {
+          id: "sense_of_place_iconic_species_status_75_extinction_rescaled",
+          label: "Extinction Risk",
+          description: "Iconic species extinction risk assessment.",
+        },
+      ],
+    },
+    resilience: {
+      id: "sense_of_place_resilience",
+      label: "Resilience",
+      description: "Iconic places and species capacity to resist and recover from wildfire.",
+      resistance: {
+        id: "sense_of_place_resistance",
+        label: "Resistance",
+        description: "Resistance to wildfire impacts.",
+        metrics: [
+          {
+            id: "sense_of_place_iconic_places_resistance_wui",
+            label: "WUI Exposure",
+            description: "Iconic places exposure in WUI.",
           },
           {
-            id: "resilience_recovery_metric_4",
-            label: "Section 2 Metric 4",
-            description: "Description text for Recovery Metric 4",
+            id: "sense_of_place_iconic_places_resistance_egress",
+            label: "Road Access",
+            description: "Access routes to iconic places.",
           },
           {
-            id: "resilience_recovery_metric_5",
-            label: "Section 2 Metric 5",
-            description: "Description text for Recovery Metric 5",
+            id: "sense_of_place_iconic_places_resistance_fire_resource_density",
+            label: "Fire Access",
+            description: "Fire resource access to iconic places.",
           },
           {
-            id: "resilience_recovery_metric_6",
-            label: "Section 2 Metric 6",
-            description: "Description text for Recovery Metric 6",
+            id: "sense_of_place_iconic_places_resistance_structures",
+            label: "Structures",
+            description: "Structural vulnerability of iconic places.",
           },
           {
-            id: "resilience_recovery_metric_7",
-            label: "Section 2 Metric 7",
-            description: "Description text for Recovery Metric 7",
+            id: "sense_of_place_iconic_places_resistance_national_parks",
+            label: "Nat'l Parks",
+            description: "National park fire resistance.",
           },
           {
-            id: "resilience_recovery_metric_8",
-            label: "Section 2 Metric 8",
-            description: "Description text for Recovery Metric 8",
+            id: "sense_of_place_iconic_species_resistance",
+            label: "Species",
+            description: "Iconic species resistance to fire.",
           },
           {
-            id: "resilience_recovery_metric_9",
-            label: "Section 2 Metric 9",
-            description: "Description text for Recovery Metric 9",
+            id: "sense_of_place_iconic_species_traits_resistance",
+            label: "Species Traits",
+            description: "Iconic species fire resistance traits.",
+          },
+        ],
+      },
+      recovery: {
+        id: "sense_of_place_recovery",
+        label: "Recovery",
+        description: "Recovery capacity for iconic places and species.",
+        metrics: [
+          {
+            id: "sense_of_place_iconic_places_recovery_degree_of_protection",
+            label: "Protection",
+            description: "Level of protection for iconic places.",
+          },
+          {
+            id: "sense_of_place_iconic_places_recovery_national_parks",
+            label: "Nat'l Parks",
+            description: "National park recovery capacity.",
+          },
+          {
+            id: "sense_of_place_iconic_species_recovery",
+            label: "Species",
+            description: "Iconic species recovery capacity.",
+          },
+          {
+            id: "sense_of_place_iconic_species_traits_recovery",
+            label: "Species Traits",
+            description: "Iconic species recovery traits.",
+          },
+          {
+            id: "sense_of_place_iconic_species_area_recovery",
+            label: "Range Size",
+            description: "Iconic species range recovery potential.",
           },
         ],
       },

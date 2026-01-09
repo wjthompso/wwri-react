@@ -1,3 +1,4 @@
+import { getLocationsUrl, getMetricUrl } from "config/api";
 import MapOfFullStatenameToAbbreviation, {
   StateNames,
 } from "data/StateNameToAbbrevsMap";
@@ -53,9 +54,8 @@ const MAP_STYLE: StyleSpecification = {
 const fetchData = async (
   metric: SelectedMetricIdObject,
 ): Promise<Record<string, number>> => {
-  const response = await fetch(
-    `https://major-sculpin.nceas.ucsb.edu/api/${metric.domainId}/${metric.metricId}`,
-  );
+  const url = getMetricUrl(metric.domainId, metric.metricId);
+  const response = await fetch(url);
   const csvText = await response.text();
   const results = Papa.parse(csvText, { header: true });
 
@@ -72,9 +72,8 @@ const fetchData = async (
 const fetchLocationData = async (): Promise<
   Record<string, { county_name: string; state_name: StateNames }>
 > => {
-  const response = await fetch(
-    `https://major-sculpin.nceas.ucsb.edu/api/locations`,
-  );
+  const url = getLocationsUrl();
+  const response = await fetch(url);
   const csvText = await response.text();
   const results = Papa.parse(csvText, { header: true });
 

@@ -22,16 +22,16 @@ export interface Resilience {
   id: string;
   label: string;
   description: string;
-  resistance: ResilienceSubdomain;
-  recovery: ResilienceSubdomain;
+  resistance?: ResilienceSubdomain;  // Optional - not all domains have resistance
+  recovery?: ResilienceSubdomain;    // Optional - not all domains have recovery
 }
 
 export interface Domain {
   id: string;
   label: string;
   description: string;
-  status: Status;
-  resilience: Resilience;
+  status?: Status;           // Optional - not all domains have status
+  resilience?: Resilience;   // Optional - not all domains have resilience
   colorGradient: {
     startColor: { r: number; g: number; b: number };
     endColor: { r: number; g: number; b: number };

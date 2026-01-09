@@ -15,114 +15,104 @@ export interface IndicatorObject {
 
 /**
  * Flattens the domain hierarchy into a list of indicator objects that can be used for search suggestions.
- *
- * @param domains - The domain hierarchy to flatten.
- * @returns An array of indicator objects with the following structure:
- * {
- *   id: string;          // The id of the indicator, formed by concatenating the domain id, status id, and metric id.
- *   traversedPathForSearchSuggestions: string;  // The path of the indicator, formed by concatenating the domain label, status label, and metric label.
- *   label: string;      // The label of the indicator, formed by concatenating the domain label, status label, and metric label.
- * }
- *
- * Example inputs:
- * [
- *   {
- *     id: "air",
- *     label: "Air",
- *     status: {
- *       id: "status",
- *       label: "Status",
- *       metrics: [
- *         { id: "status_metric_1", label: "Status Metric 1" },
- *         { id: "status_metric_2", label: "Status Metric 2" },
- *       ],
- *     },
- *   },
- *   {
- *     id: "infrastructure",
- *     label: "Infrastructure",
- *     status: {
- *       id: "status",
- *       label: "Status",
- *       metrics: [
- *         { id: "status_metric_3", label: "Status Metric 3" },
- *         { id: "status_metric_4", label: "Status Metric 4" },
- *       ],
- *     },
- *   },
- * ]
- *
- * Example outputs:
- * [
- *   {
- *     id: "air-status-status_metric_1",
- *     traversedPathForSearchSuggestions: "Air > Status > Status Metric 1",
- *     label: "Air Status Metric 1",
- *   },
- *   {
- *     id: "air-status-status_metric_2",
- *     traversedPathForSearchSuggestions: "Air > Status > Status Metric 2",
- *     label: "Air Status Metric 2",
- *   },
- *   {
- *     id: "infrastructure-status-status_metric_3",
- *     traversedPathForSearchSuggestions: "Infrastructure > Status > Status Metric 3",
- *     label: "Infrastructure Status Metric 3",
- *   },
- *   {
- *     id: "infrastructure-status-status_metric_4",
- *     traversedPathForSearchSuggestions: "Infrastructure > Status > Status Metric 4",
- *     label: "Infrastructure Status Metric 4",
- *   },
- * ]
+ * Handles optional status, resilience, resistance, and recovery fields.
  */
 const flattenDomainHierarchy = (domains: Domain[]): IndicatorObject[] => {
   const result: IndicatorObject[] = [];
 
-  const traverse = (domain: Domain, path: string) => {
-    const newPath = `${domain.label}`;
+  const traverse = (domain: Domain) => {
+    const domainLabel = domain.label;
 
-    // Add status metrics
-    domain.status.metrics.forEach((metric) => {
-      result.push({
-        domainId: domain.id,
-        metricId: metric.id,
-        traversedPathForSearchSuggestions: `${newPath} > ${domain.status.label} > ${metric.label}`,
-        label: metric.label,
-        description: metric.description,
-        colorGradient: domain.colorGradient,
-      });
+    // Add domain-level score metric
+    result.push({
+      domainId: domain.id,
+      metricId: `${domain.id}_domain_score`,
+      traversedPathForSearchSuggestions: `${domainLabel} > Domain Score`,
+      label: `${domainLabel} Score`,
+      description: domain.description,
+      colorGradient: domain.colorGradient,
     });
 
-    // Add resistance metrics
-    domain.resilience.resistance.metrics.forEach((metric) => {
-      result.push({
-        domainId: domain.id,
-        metricId: metric.id,
-        traversedPathForSearchSuggestions: `${newPath} > ${domain.resilience.label} > ${domain.resilience.resistance.label} > ${metric.label}`,
-        label: metric.label,
-        description: metric.description,
-        colorGradient: domain.colorGradient,
+    // Add status metrics (if present)
+    if (domain.status?.metrics) {
+      domain.status.metrics.forEach((metric) => {
+        result.push({
+          domainId: domain.id,
+          metricId: metric.id,
+          traversedPathForSearchSuggestions: `${domainLabel} > ${domain.status!.label} > ${metric.label}`,
+          label: metric.label,
+          description: metric.description,
+          colorGradient: domain.colorGradient,
+        });
       });
-    });
+    }
 
-    // Add recovery metrics
-    domain.resilience.recovery.metrics.forEach((metric) => {
+    // Add resilience-level metric (if present)
+    if (domain.resilience) {
       result.push({
         domainId: domain.id,
-        metricId: metric.id,
-        traversedPathForSearchSuggestions: `${newPath} > ${domain.resilience.label} > ${domain.resilience.recovery.label} > ${metric.label}`,
-        label: metric.label,
-        description: metric.description,
+        metricId: `${domain.id}_resilience`,
+        traversedPathForSearchSuggestions: `${domainLabel} > ${domain.resilience.label}`,
+        label: `${domainLabel} Resilience`,
+        description: domain.resilience.description,
         colorGradient: domain.colorGradient,
       });
-    });
+
+      // Add resistance metrics (if present)
+      if (domain.resilience.resistance?.metrics) {
+        // Add resistance summary metric
+        result.push({
+          domainId: domain.id,
+          metricId: `${domain.id}_resistance`,
+          traversedPathForSearchSuggestions: `${domainLabel} > ${domain.resilience.label} > ${domain.resilience.resistance.label}`,
+          label: `${domainLabel} Resistance`,
+          description: domain.resilience.resistance.description,
+          colorGradient: domain.colorGradient,
+        });
+
+        domain.resilience.resistance.metrics.forEach((metric) => {
+          result.push({
+            domainId: domain.id,
+            metricId: metric.id,
+            traversedPathForSearchSuggestions: `${domainLabel} > ${domain.resilience!.label} > ${domain.resilience!.resistance!.label} > ${metric.label}`,
+            label: metric.label,
+            description: metric.description,
+            colorGradient: domain.colorGradient,
+          });
+        });
+      }
+
+      // Add recovery metrics (if present)
+      if (domain.resilience.recovery?.metrics) {
+        // Add recovery summary metric
+        result.push({
+          domainId: domain.id,
+          metricId: `${domain.id}_recovery`,
+          traversedPathForSearchSuggestions: `${domainLabel} > ${domain.resilience.label} > ${domain.resilience.recovery.label}`,
+          label: `${domainLabel} Recovery`,
+          description: domain.resilience.recovery.description,
+          colorGradient: domain.colorGradient,
+        });
+
+        domain.resilience.recovery.metrics.forEach((metric) => {
+          result.push({
+            domainId: domain.id,
+            metricId: metric.id,
+            traversedPathForSearchSuggestions: `${domainLabel} > ${domain.resilience!.label} > ${domain.resilience!.recovery!.label} > ${metric.label}`,
+            label: metric.label,
+            description: metric.description,
+            colorGradient: domain.colorGradient,
+          });
+        });
+      }
+    }
   };
 
-  domains.forEach((domain) => traverse(domain, ""));
+  domains.forEach((domain) => traverse(domain));
   return result;
 };
 
-// Assuming domainHierarchy is imported
+// Pre-compute flattened hierarchy for search
 const hierarchicalStrings = flattenDomainHierarchy(domainHierarchy);
+export { hierarchicalStrings };
 export default flattenDomainHierarchy;

@@ -4,13 +4,12 @@ import { useEffect, useState } from "react";
 import SelectedMetricIdObject from "types/componentStatetypes";
 import { Domain } from "types/domainTypes";
 import DownArrow from "../assets/DownArrow.svg";
-import HierarchyArrows from "../assets/HierarchyArrows.svg";
 import RightSideArrow from "../assets/RightSideArrow.svg";
 import SearchIcon from "../assets/SearchIcon.svg";
-import SubHierarchyArrows from "../assets/SubHierarchyArrows.svg";
 import flattenDomainHierarchy, {
   IndicatorObject,
 } from "../utils/flattenDomainHierarchyForSearch";
+import { LayoutUnified } from "./RightSidebar/layouts";
 
 interface RightSidebarProps {
   selectedMetricIdObject: SelectedMetricIdObject | null;
@@ -38,7 +37,7 @@ const stateBGColorMapPossibilities: string[] = [
 ];
 
 const getHexFromClass = (colorClass: string) => {
-  return colorClass.slice(4, -1); // Remove "bg-[" from the beginning and "]" from the end
+  return colorClass.slice(4, -1);
 };
 
 const isDarkColor = (colorClass: string) => {
@@ -66,33 +65,15 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
   selectedMetricIdObject,
   setSelectedMetricIdObject,
 }) => {
-  const [showIndicatorSuggestions, setShowIndicatorSuggestions] =
-    useState(false);
+  const [showIndicatorSuggestions, setShowIndicatorSuggestions] = useState(false);
   const [activeButton, setActiveButton] = useState<string | null>(null);
   const [statusLabel, setStatusLabel] = useState<string | null>(null);
   const [resistanceLabel, setResistanceLabel] = useState<string | null>(null);
   const [recoveryLabel, setRecoveryLabel] = useState<string | null>(null);
-  const [selectedIndicator, setSelectedIndicator] = useState<string | null>(
-    "Water Pollutants Resistance",
-  );
-  const [expandedSections, setExpandedSections] = useState<{
-    [key: string]: boolean;
-  }>({
-    water: true,
-    air: false,
-    ecosystems: false,
-    biodiversity: false,
-    infrastructure: false,
-    social: false,
-    economy: false,
-    culture: false,
-    carbon: false,
-  });
-
+  const [selectedIndicator, setSelectedIndicator] = useState<string | null>(null);
+  const [expandedSections, setExpandedSections] = useState<{ [key: string]: boolean }>({});
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [filteredSuggestions, setFilteredSuggestions] = useState<
-    IndicatorObject[]
-  >([]);
+  const [filteredSuggestions, setFilteredSuggestions] = useState<IndicatorObject[]>([]);
 
   const hierarchicalStrings = flattenDomainHierarchy(domainHierarchy);
 
@@ -115,11 +96,10 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
     setExpandedSections((prevState) => {
       const newState: { [key: string]: boolean } = {};
       for (const key in prevState) {
-        if (key === section) {
-          newState[key] = !prevState[key];
-        } else {
-          newState[key] = false;
-        }
+        newState[key] = key === section ? !prevState[key] : false;
+      }
+      if (!(section in prevState)) {
+        newState[section] = true;
       }
       return newState;
     });
@@ -136,6 +116,8 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
       >
         Indicator Navigation
       </h1>
+      
+      {/* Search Box */}
       <div
         id="indicator-search-box"
         className={`relative mb-2 flex w-full flex-row border-[1px] border-rightSidebarSearchBoxGray px-2 py-1 ${
@@ -198,6 +180,8 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
           </div>
         )}
       </div>
+
+      {/* Overall Resilience & Domain List */}
       <div id="overall-resilience" className="relative mb-1 ml-[0.35rem]">
         <div className="flex items-center">
           <button
@@ -223,18 +207,21 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
                 : "border-metricSelectorBoxesBorderDefault bg-metricSelectorBoxesDefault"
             }`}
           ></button>
-          <span className="font-bold">Overall Score.DS</span>
+          <span className="font-bold">Overall Score</span>
         </div>
+
+        {/* Domain List */}
         {domainHierarchy.map((domain: Domain) => (
           <div
             id={domain.id}
             className="ml-[calc(2.05rem-0.35rem)] mt-1"
             key={domain.id}
           >
-            <div className="flex w-[39%] items-center justify-between">
+            {/* Domain Header */}
+            <div className="flex w-[39%] text-sm items-center justify-between">
               <div className="flex items-center">
                 <button
-                  id={domain.id}
+                  id={`${domain.id}-btn`}
                   onClick={() => {
                     setActiveButton(domain.id);
                     setSelectedIndicator(domain.label);
@@ -273,282 +260,29 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
                 )}
               </button>
             </div>
+
+            {/* Unified Layout - Same structure for ALL domains */}
+            {/* Missing sections show muted text with N/A indicator */}
             {expandedSections[domain.id] && (
-              <div
-                id="subdomain-container"
-                className="ml-[0.95rem] mt-1 h-[9.5rem]"
-              >
-                <div
-                  id="arrows-first-two-sub-domains-container"
-                  className="ml-2 h-5 flex-shrink-0"
-                >
-                  <img
-                    src={HierarchyArrows}
-                    alt="arrows-first-two-sub-domains"
-                    className="ml-3 h-full w-auto"
-                  />
-                </div>
-                <div className="flex max-w-[390px] flex-1 justify-between">
-                  <div
-                    id="status"
-                    className="ml-[0.9rem] mr-3 flex flex-shrink-0 flex-col items-start"
-                  >
-                    <div className="flex items-center">
-                      <button
-                        id={domain.status.id}
-                        onClick={() => {
-                          setActiveButton(`${domain.id}-${domain.status.id}`);
-                          setSelectedIndicator(
-                            `${domain.label} ${domain.status.label}`,
-                          );
-                          setSelectedMetricIdObject({
-                            domainId: domain.id,
-                            metricId: domain.status.id,
-                            label: `${domain.status.label}`,
-                            description: domain.status.description,
-                            colorGradient: domain.colorGradient,
-                          });
-                        }}
-                        className={`mr-1 h-4 w-4 rounded-[0.2rem] border-[1px] ${
-                          activeButton === `${domain.id}-${domain.status.id}`
-                            ? "border-metricSelectorBoxesBorderDefault bg-selectedMetricBGColorDefault"
-                            : "border-metricSelectorBoxesBorderDefault bg-metricSelectorBoxesDefault"
-                        }`}
-                      ></button>
-                      <span>{domain.status.label}</span>
-                    </div>
-                    <div className="ml-[1.14rem] grid grid-cols-5 gap-x-1 gap-y-1">
-                      {domain.status.metrics.map((metric, index) => (
-                        <button
-                          key={`${domain.id}-${metric.id}`}
-                          id={`${domain.id}-${metric.id}`}
-                          onMouseEnter={() => setStatusLabel(metric.label)}
-                          onMouseLeave={() => setStatusLabel(null)}
-                          onClick={() => {
-                            setActiveButton(`${domain.id}-${metric.id}`);
-                            setSelectedMetricIdObject({
-                              domainId: domain.id,
-                              metricId: metric.id,
-                              label: `${domain.label} ${metric.label}`,
-                              description: metric.description,
-                              colorGradient: domain.colorGradient,
-                            });
-                            setSelectedIndicator(
-                              `${domain.label} ${metric.label}`,
-                            );
-                          }}
-                          className={`h-3.5 w-3.5 rounded-sm border-[1px] ${
-                            activeButton === `${domain.id}-${metric.id}`
-                              ? "border-metricSelectorBoxesBorderDefault bg-selectedMetricBGColorDefault"
-                              : "border-metricSelectorBoxesBorderDefault bg-metricSelectorBoxesDefault"
-                          }`}
-                        ></button>
-                      ))}
-                    </div>
-                    {statusLabel && (
-                      <span className="ml-[1.125rem] mt-1 block max-w-[6rem] font-BeVietnamPro text-xs text-selectedMetricTextLabel">
-                        {statusLabel}
-                      </span>
-                    )}
-                  </div>
-                  <div
-                    id="resilience"
-                    className="ml-2 flex w-[60%] flex-shrink-0 flex-col items-center"
-                  >
-                    <div className="ml-[4.4rem] flex items-center self-start">
-                      <button
-                        id={`${domain.id}-${domain.resilience.id}`}
-                        onClick={() => {
-                          setActiveButton(
-                            `${domain.id}-${domain.resilience.id}`,
-                          );
-                          setSelectedIndicator(
-                            `${domain.label} ${domain.resilience.label}`,
-                          );
-                          setSelectedMetricIdObject({
-                            domainId: domain.id,
-                            metricId: domain.resilience.id,
-                            label: `${domain.resilience.label}`,
-                            description: domain.resilience.description,
-                            colorGradient: domain.colorGradient,
-                          });
-                        }}
-                        className={`mr-1 h-4 w-4 rounded-[0.2rem] border-[1px] ${
-                          activeButton ===
-                          `${domain.id}-${domain.resilience.id}`
-                            ? "border-metricSelectorBoxesBorderDefault bg-selectedMetricBGColorDefault"
-                            : "border-metricSelectorBoxesBorderDefault bg-metricSelectorBoxesDefault"
-                        }`}
-                      ></button>
-                      <span>{domain.resilience.label}</span>
-                    </div>
-                    <div
-                      id="arrows-for-resilience"
-                      className="ml-[0.6rem] h-5 flex-shrink-0 self-start"
-                    >
-                      <img
-                        src={SubHierarchyArrows}
-                        alt="arrows-first-two-sub-domains"
-                        className="h-full w-auto"
-                      />
-                    </div>
-                    <div
-                      id="resilience-content"
-                      className="flex w-full flex-row justify-between"
-                    >
-                      <div
-                        id="resistance"
-                        className="ml-1 flex w-[45%] flex-shrink-0 flex-col items-start"
-                      >
-                        <div className="flex items-center">
-                          <button
-                            id={`${domain.id}-${domain.resilience.resistance.id}`}
-                            onClick={() => {
-                              setActiveButton(
-                                `${domain.id}-${domain.resilience.resistance.id}`,
-                              );
-                              setSelectedIndicator(
-                                `${domain.label} ${domain.resilience.resistance.label}`,
-                              );
-                              setSelectedMetricIdObject({
-                                domainId: domain.id,
-                                metricId: domain.resilience.resistance.id,
-                                label: `${domain.resilience.resistance.label}`,
-                                description:
-                                  domain.resilience.resistance.description,
-                                colorGradient: domain.colorGradient,
-                              });
-                            }}
-                            className={`mr-1 h-4 w-4 rounded-[0.2rem] border-[1px] ${
-                              activeButton ===
-                              `${domain.id}-${domain.resilience.resistance.id}`
-                                ? "border-metricSelectorBoxesBorderDefault bg-selectedMetricBGColorDefault"
-                                : "border-metricSelectorBoxesBorderDefault bg-metricSelectorBoxesDefault"
-                            }`}
-                          ></button>
-                          {/* TODO: increase the font size later */}
-                          <span>{domain.resilience.resistance.label}</span>
-                        </div>
-                        <div className="ml-[1.14rem] grid grid-cols-5 gap-x-1 gap-y-1">
-                          {domain.resilience.resistance.metrics.map(
-                            (metric, index) => (
-                              <button
-                                key={`${domain.id}-${metric.id}`}
-                                id={`${domain.id}-${metric.id}`}
-                                onMouseEnter={() => {
-                                  setResistanceLabel(metric.label);
-                                }}
-                                onMouseLeave={() => {
-                                  setResistanceLabel(null);
-                                }}
-                                onClick={() => {
-                                  setActiveButton(`${domain.id}-${metric.id}`);
-                                  setSelectedMetricIdObject({
-                                    domainId: domain.id,
-                                    metricId: metric.id,
-                                    label: `${domain.label} ${metric.label}`,
-                                    description: metric.description,
-                                    colorGradient: domain.colorGradient,
-                                  });
-                                  setSelectedIndicator(
-                                    `${domain.label} ${metric.label}`,
-                                  );
-                                }}
-                                className={`h-3.5 w-3.5 rounded-sm border-[1px] ${
-                                  activeButton === `${domain.id}-${metric.id}`
-                                    ? "border-metricSelectorBoxesBorderDefault bg-selectedMetricBGColorDefault"
-                                    : "border-metricSelectorBoxesBorderDefault bg-metricSelectorBoxesDefault"
-                                }`}
-                              ></button>
-                            ),
-                          )}
-                        </div>
-                        {resistanceLabel && (
-                          <span className="ml-[1.125rem] mt-1 block font-BeVietnamPro text-xs text-selectedMetricTextLabel">
-                            {resistanceLabel}
-                          </span>
-                        )}
-                      </div>
-                      <div
-                        id="recovery"
-                        className="ml-5 flex min-w-[50%] flex-col items-start"
-                      >
-                        <div className="flex items-center">
-                          <button
-                            id={`${domain.id}-${domain.resilience.recovery.id}`}
-                            onClick={() => {
-                              setActiveButton(
-                                `${domain.id}-${domain.resilience.recovery.id}`,
-                              );
-                              setSelectedIndicator(
-                                `${domain.label} ${domain.resilience.recovery.label}`,
-                              );
-                              setSelectedMetricIdObject({
-                                domainId: domain.id,
-                                metricId: domain.resilience.recovery.id,
-                                label: `${domain.resilience.recovery.label}`,
-                                description:
-                                  domain.resilience.recovery.description,
-                                colorGradient: domain.colorGradient,
-                              });
-                            }}
-                            className={`mr-1 h-4 w-4 rounded-[0.2rem] border-[1px] ${
-                              activeButton ===
-                              `${domain.id}-${domain.resilience.recovery.id}`
-                                ? "border-metricSelectorBoxesBorderDefault bg-selectedMetricBGColorDefault"
-                                : "border-metricSelectorBoxesBorderDefault bg-metricSelectorBoxesDefault"
-                            }`}
-                          ></button>
-                          <span>{domain.resilience.recovery.label}</span>
-                        </div>
-                        <div className="ml-[1.14rem] grid grid-cols-5 gap-x-1 gap-y-1">
-                          {domain.resilience.recovery.metrics.map(
-                            (metric, index) => (
-                              <button
-                                key={`${domain.id}-${metric.id}`}
-                                id={`${domain.id}-${metric.id}`}
-                                onClick={() => {
-                                  setActiveButton(`${domain.id}-${metric.id}`);
-                                  setSelectedMetricIdObject({
-                                    domainId: domain.id,
-                                    metricId: metric.id,
-                                    label: `${domain.label} ${metric.label}`,
-                                    description: metric.description,
-                                    colorGradient: domain.colorGradient,
-                                  });
-                                  setSelectedIndicator(
-                                    `${domain.label} ${metric.label}`,
-                                  );
-                                }}
-                                onMouseEnter={() => {
-                                  setRecoveryLabel(metric.label);
-                                }}
-                                onMouseLeave={() => {
-                                  setRecoveryLabel(null);
-                                }}
-                                className={`h-3.5 w-3.5 rounded-sm border-[1px] ${
-                                  activeButton === `${domain.id}-${metric.id}`
-                                    ? "border-metricSelectorBoxesBorderDefault bg-selectedMetricBGColorDefault"
-                                    : "border-metricSelectorBoxesBorderDefault bg-metricSelectorBoxesDefault"
-                                }`}
-                              ></button>
-                            ),
-                          )}
-                        </div>
-                        {recoveryLabel && (
-                          <span className="ml-[1.125rem] mt-1 block font-BeVietnamPro text-xs text-selectedMetricTextLabel">
-                            {recoveryLabel}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <LayoutUnified
+                domain={domain}
+                activeButton={activeButton}
+                setActiveButton={setActiveButton}
+                setSelectedIndicator={setSelectedIndicator}
+                setSelectedMetricIdObject={setSelectedMetricIdObject}
+                statusLabel={statusLabel}
+                setStatusLabel={setStatusLabel}
+                resistanceLabel={resistanceLabel}
+                setResistanceLabel={setResistanceLabel}
+                recoveryLabel={recoveryLabel}
+                setRecoveryLabel={setRecoveryLabel}
+              />
             )}
           </div>
         ))}
       </div>
+
+      {/* Selected Indicator Display */}
       <div
         id="selected-indicator-right-sidebar"
         className="relative -ml-4 -mr-4 mt-3 flex w-[calc(100%+2rem)] flex-col bg-subheaderBackground p-2"
@@ -566,10 +300,12 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
           <span className="ml-2 font-BeVietnamPro font-semibold">
             {selectedMetricIdObject
               ? selectedMetricIdObject.label
-              : "Water Pollutants Resistance"}
+              : "Select an indicator"}
           </span>
         </div>
       </div>
+
+      {/* Geographic Context */}
       <h1 className="font-BeVietnamePro mt-1 text-lg font-medium text-geopgrahicContextLabelTextColor">
         Geographic Context
       </h1>

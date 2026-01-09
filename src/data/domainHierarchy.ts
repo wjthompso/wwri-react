@@ -505,7 +505,7 @@ const domainHierarchy: Domain[] = [
   },
 
   // ============================================================================
-  // SENSE OF PLACE - ICONIC PLACES
+  // SENSE OF PLACE - With Iconic Places & Iconic Species subdomains
   // ============================================================================
   {
     id: "sense_of_place",
@@ -515,107 +515,146 @@ const domainHierarchy: Domain[] = [
       startColor: { r: 255, g: 255, b: 255 },
       endColor: { r: 255, g: 165, b: 0 }, // Orange
     },
-    status: {
-      id: "sense_of_place_status",
-      label: "Status",
-      description: "Presence and status of iconic places and species.",
-      metrics: [
-        {
-          id: "sense_of_place_iconic_places_status_presence",
-          label: "Places Presence",
-          description: "Presence of nationally recognized iconic places.",
+    // Sense of Place uses subdomains instead of direct status/resilience
+    subdomains: [
+      {
+        id: "iconic_places",
+        label: "Iconic Places",
+        description: "Nationally recognized iconic places resilience to wildfire.",
+        status: {
+          id: "iconic_places_status",
+          label: "Status",
+          description: "Presence and status of iconic places.",
+          metrics: [
+            {
+              id: "sense_of_place_iconic_places_status_presence",
+              label: "Places Presence",
+              description: "Presence of nationally recognized iconic places.",
+            },
+          ],
         },
-        {
-          id: "sense_of_place_iconic_species_status",
-          label: "Species Status",
+        resilience: {
+          id: "iconic_places_resilience",
+          label: "Resilience",
+          description: "Iconic places capacity to resist and recover from wildfire.",
+          resistance: {
+            id: "iconic_places_resistance",
+            label: "Resistance",
+            description: "Resistance to wildfire impacts on iconic places.",
+            metrics: [
+              {
+                id: "sense_of_place_iconic_places_resistance_wui",
+                label: "WUI Exposure",
+                description: "Iconic places exposure in WUI.",
+              },
+              {
+                id: "sense_of_place_iconic_places_resistance_egress",
+                label: "Road Access",
+                description: "Access routes to iconic places.",
+              },
+              {
+                id: "sense_of_place_iconic_places_resistance_fire_resource_density",
+                label: "Fire Access",
+                description: "Fire resource access to iconic places.",
+              },
+              {
+                id: "sense_of_place_iconic_places_resistance_structures",
+                label: "Structures",
+                description: "Structural vulnerability of iconic places.",
+              },
+              {
+                id: "sense_of_place_iconic_places_resistance_national_parks",
+                label: "Nat'l Parks",
+                description: "National park fire resistance.",
+              },
+            ],
+          },
+          recovery: {
+            id: "iconic_places_recovery",
+            label: "Recovery",
+            description: "Recovery capacity for iconic places.",
+            metrics: [
+              {
+                id: "sense_of_place_iconic_places_recovery_degree_of_protection",
+                label: "Protection",
+                description: "Level of protection for iconic places.",
+              },
+              {
+                id: "sense_of_place_iconic_places_recovery_national_parks",
+                label: "Nat'l Parks",
+                description: "National park recovery capacity.",
+              },
+            ],
+          },
+        },
+      },
+      {
+        id: "iconic_species",
+        label: "Iconic Species",
+        description: "Iconic species resilience to wildfire.",
+        status: {
+          id: "iconic_species_status",
+          label: "Status",
           description: "Conservation status of iconic species.",
+          metrics: [
+            {
+              id: "sense_of_place_iconic_species_status",
+              label: "Species Status",
+              description: "Conservation status of iconic species.",
+            },
+            {
+              id: "sense_of_place_iconic_species_status_75_extinction_rescaled",
+              label: "Extinction Risk",
+              description: "Iconic species extinction risk assessment.",
+            },
+          ],
         },
-        {
-          id: "sense_of_place_iconic_species_status_75_extinction_rescaled",
-          label: "Extinction Risk",
-          description: "Iconic species extinction risk assessment.",
-        },
-      ],
-    },
-    resilience: {
-      id: "sense_of_place_resilience",
-      label: "Resilience",
-      description: "Iconic places and species capacity to resist and recover from wildfire.",
-      resistance: {
-        id: "sense_of_place_resistance",
-        label: "Resistance",
-        description: "Resistance to wildfire impacts.",
-        metrics: [
-          {
-            id: "sense_of_place_iconic_places_resistance_wui",
-            label: "WUI Exposure",
-            description: "Iconic places exposure in WUI.",
-          },
-          {
-            id: "sense_of_place_iconic_places_resistance_egress",
-            label: "Road Access",
-            description: "Access routes to iconic places.",
-          },
-          {
-            id: "sense_of_place_iconic_places_resistance_fire_resource_density",
-            label: "Fire Access",
-            description: "Fire resource access to iconic places.",
-          },
-          {
-            id: "sense_of_place_iconic_places_resistance_structures",
-            label: "Structures",
-            description: "Structural vulnerability of iconic places.",
-          },
-          {
-            id: "sense_of_place_iconic_places_resistance_national_parks",
-            label: "Nat'l Parks",
-            description: "National park fire resistance.",
-          },
-          {
-            id: "sense_of_place_iconic_species_resistance",
-            label: "Species",
+        resilience: {
+          id: "iconic_species_resilience",
+          label: "Resilience",
+          description: "Iconic species capacity to resist and recover from wildfire.",
+          resistance: {
+            id: "iconic_species_resistance",
+            label: "Resistance",
             description: "Iconic species resistance to fire.",
+            metrics: [
+              {
+                id: "sense_of_place_iconic_species_resistance",
+                label: "Species",
+                description: "Iconic species resistance to fire.",
+              },
+              {
+                id: "sense_of_place_iconic_species_traits_resistance",
+                label: "Species Traits",
+                description: "Iconic species fire resistance traits.",
+              },
+            ],
           },
-          {
-            id: "sense_of_place_iconic_species_traits_resistance",
-            label: "Species Traits",
-            description: "Iconic species fire resistance traits.",
-          },
-        ],
-      },
-      recovery: {
-        id: "sense_of_place_recovery",
-        label: "Recovery",
-        description: "Recovery capacity for iconic places and species.",
-        metrics: [
-          {
-            id: "sense_of_place_iconic_places_recovery_degree_of_protection",
-            label: "Protection",
-            description: "Level of protection for iconic places.",
-          },
-          {
-            id: "sense_of_place_iconic_places_recovery_national_parks",
-            label: "Nat'l Parks",
-            description: "National park recovery capacity.",
-          },
-          {
-            id: "sense_of_place_iconic_species_recovery",
-            label: "Species",
+          recovery: {
+            id: "iconic_species_recovery",
+            label: "Recovery",
             description: "Iconic species recovery capacity.",
+            metrics: [
+              {
+                id: "sense_of_place_iconic_species_recovery",
+                label: "Species",
+                description: "Iconic species recovery capacity.",
+              },
+              {
+                id: "sense_of_place_iconic_species_traits_recovery",
+                label: "Species Traits",
+                description: "Iconic species recovery traits.",
+              },
+              {
+                id: "sense_of_place_iconic_species_area_recovery",
+                label: "Range Size",
+                description: "Iconic species range recovery potential.",
+              },
+            ],
           },
-          {
-            id: "sense_of_place_iconic_species_traits_recovery",
-            label: "Species Traits",
-            description: "Iconic species recovery traits.",
-          },
-          {
-            id: "sense_of_place_iconic_species_area_recovery",
-            label: "Range Size",
-            description: "Iconic species range recovery potential.",
-          },
-        ],
+        },
       },
-    },
+    ],
   },
 ];
 

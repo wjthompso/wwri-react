@@ -9,7 +9,7 @@ import SearchIcon from "../assets/SearchIcon.svg";
 import flattenDomainHierarchy, {
   IndicatorObject,
 } from "../utils/flattenDomainHierarchyForSearch";
-import { LayoutUnified } from "./RightSidebar/layouts";
+import { LayoutUnified, LayoutUnifiedCompact } from "./RightSidebar/layouts";
 
 interface RightSidebarProps {
   selectedMetricIdObject: SelectedMetricIdObject | null;
@@ -94,13 +94,35 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
 
   const toggleSection = (section: string) => {
     setExpandedSections((prevState) => {
+      const isSubdomain = section.includes("-") && section.split("-").length > 1;
       const newState: { [key: string]: boolean } = {};
+      
       for (const key in prevState) {
-        newState[key] = key === section ? !prevState[key] : false;
+        if (isSubdomain) {
+          // For subdomains: keep parent open, toggle siblings at same level
+          const parentId = section.split("-")[0];
+          const keyIsParent = key === parentId;
+          const keyIsSibling = key.startsWith(parentId + "-") && key !== section;
+          
+          if (keyIsParent) {
+            newState[key] = true; // Keep parent expanded
+          } else if (keyIsSibling) {
+            newState[key] = false; // Collapse sibling subdomains
+          } else if (key === section) {
+            newState[key] = !prevState[key]; // Toggle this subdomain
+          } else {
+            newState[key] = prevState[key]; // Keep other domains as-is
+          }
+        } else {
+          // For top-level domains: collapse all others
+          newState[key] = key === section ? !prevState[key] : false;
+        }
       }
+      
       if (!(section in prevState)) {
         newState[section] = true;
       }
+      
       return newState;
     });
   };
@@ -261,22 +283,88 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
               </button>
             </div>
 
-            {/* Unified Layout - Same structure for ALL domains */}
-            {/* Missing sections show muted text with N/A indicator */}
+            {/* Expanded Section */}
             {expandedSections[domain.id] && (
-              <LayoutUnified
-                domain={domain}
-                activeButton={activeButton}
-                setActiveButton={setActiveButton}
-                setSelectedIndicator={setSelectedIndicator}
-                setSelectedMetricIdObject={setSelectedMetricIdObject}
-                statusLabel={statusLabel}
-                setStatusLabel={setStatusLabel}
-                resistanceLabel={resistanceLabel}
-                setResistanceLabel={setResistanceLabel}
-                recoveryLabel={recoveryLabel}
-                setRecoveryLabel={setRecoveryLabel}
-              />
+              <>
+                {/* Domains with subdomains (e.g., Sense of Place) */}
+                {domain.subdomains ? (
+                  <div id={`subdomains-${domain.id}`} className="ml-[1.7rem] mt-1">
+                    {domain.subdomains.map((subdomain) => (
+                      <div key={subdomain.id} id={`subdomain-${subdomain.id}`}>
+                        {/* Subdomain Header */}
+                        <div className="flex w-[50%] items-center justify-between text-sm">
+                          <div className="flex items-center">
+                            <button
+                              id={`${domain.id}-${subdomain.id}-btn`}
+                              onClick={() => {
+                                setActiveButton(`${domain.id}-${subdomain.id}`);
+                                setSelectedIndicator(subdomain.label);
+                                setSelectedMetricIdObject({
+                                  domainId: domain.id,
+                                  metricId: subdomain.id,
+                                  label: subdomain.label,
+                                  description: subdomain.description,
+                                  colorGradient: domain.colorGradient,
+                                });
+                              }}
+                              className={`mr-2 h-[18px] w-[18px] rounded-[0.2rem] border-[1px] ${
+                                activeButton === `${domain.id}-${subdomain.id}`
+                                  ? "border-metricSelectorBoxesBorderDefault bg-selectedMetricBGColorDefault"
+                                  : "border-metricSelectorBoxesBorderDefault bg-metricSelectorBoxesDefault"
+                              }`}
+                            />
+                            <span className="font-semibold">{subdomain.label}</span>
+                          </div>
+                          <button
+                            onClick={() => toggleSection(`${domain.id}-${subdomain.id}`)}
+                            className="ml-2 text-[lightgray]"
+                          >
+                            {expandedSections[`${domain.id}-${subdomain.id}`] ? (
+                              <img src={DownArrow} alt="down-arrow" className="min-h-3 min-w-3" />
+                            ) : (
+                              <img src={RightSideArrow} alt="right-side-arrow" className="min-h-3 min-w-3" />
+                            )}
+                          </button>
+                        </div>
+
+                        {/* Subdomain Expanded Layout */}
+                        {expandedSections[`${domain.id}-${subdomain.id}`] && (
+                          <LayoutUnifiedCompact
+                            subdomain={subdomain}
+                            parentDomainId={domain.id}
+                            colorGradient={domain.colorGradient}
+                            activeButton={activeButton}
+                            setActiveButton={setActiveButton}
+                            setSelectedIndicator={setSelectedIndicator}
+                            setSelectedMetricIdObject={setSelectedMetricIdObject}
+                            statusLabel={statusLabel}
+                            setStatusLabel={setStatusLabel}
+                            resistanceLabel={resistanceLabel}
+                            setResistanceLabel={setResistanceLabel}
+                            recoveryLabel={recoveryLabel}
+                            setRecoveryLabel={setRecoveryLabel}
+                          />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  /* Regular domains without subdomains */
+                  <LayoutUnified
+                    domain={domain}
+                    activeButton={activeButton}
+                    setActiveButton={setActiveButton}
+                    setSelectedIndicator={setSelectedIndicator}
+                    setSelectedMetricIdObject={setSelectedMetricIdObject}
+                    statusLabel={statusLabel}
+                    setStatusLabel={setStatusLabel}
+                    resistanceLabel={resistanceLabel}
+                    setResistanceLabel={setResistanceLabel}
+                    recoveryLabel={recoveryLabel}
+                    setRecoveryLabel={setRecoveryLabel}
+                  />
+                )}
+              </>
             )}
           </div>
         ))}

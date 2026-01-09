@@ -214,7 +214,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
               setSelectedMetricIdObject({
                 domainId: "overall_resilience",
                 metricId: "overall_resilience",
-                label: "Overall Score.DS",
+                label: "Overall Score",
                 description:
                   "The overall resilience score to wildfires. This score is calculated from the resilience scores of each domain (e.g. Water, Air, etc.).",
                 colorGradient: {

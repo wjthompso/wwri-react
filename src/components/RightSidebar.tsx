@@ -203,36 +203,9 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
         )}
       </div>
 
-      {/* Overall Resilience & Domain List */}
-      <div id="overall-resilience" className="relative mb-1 ml-[0.35rem]">
-        <div className="flex items-center">
-          <button
-            id="overall_resilience"
-            onClick={() => {
-              setActiveButton("overall_resilience");
-              setSelectedIndicator("Overall Resilience");
-              setSelectedMetricIdObject({
-                domainId: "overall_resilience",
-                metricId: "overall_resilience",
-                label: "Overall Score",
-                description:
-                  "The overall resilience score to wildfires. This score is calculated from the resilience scores of each domain (e.g. Water, Air, etc.).",
-                colorGradient: {
-                  startColor: { r: 250, g: 250, b: 244 },
-                  endColor: { r: 26, g: 41, b: 60 },
-                },
-              });
-            }}
-            className={`mr-2 h-6 w-6 rounded-[0.2rem] border-[1px] ${
-              activeButton === "overall_resilience"
-                ? "border-metricSelectorBoxesBorderDefault bg-selectedMetricBGColorDefault"
-                : "border-metricSelectorBoxesBorderDefault bg-metricSelectorBoxesDefault"
-            }`}
-          ></button>
-          <span className="font-bold">Overall Score</span>
-        </div>
-
-        {/* Domain List */}
+      {/* Domain List */}
+      <div id="domain-list" className="relative mb-1 ml-[0.35rem]">
+        {/* NOTE: Overall Score button removed - no overall_resilience metric exists in DB */}
         {domainHierarchy.map((domain: Domain) => (
           <div
             id={domain.id}
@@ -249,8 +222,8 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
                     setSelectedIndicator(domain.label);
                     setSelectedMetricIdObject({
                       domainId: domain.id,
-                      metricId: domain.id,
-                      label: domain.label,
+                      metricId: `${domain.id}_domain_score`,
+                      label: `${domain.label} Score`,
                       description: domain.description,
                       colorGradient: domain.colorGradient,
                     });

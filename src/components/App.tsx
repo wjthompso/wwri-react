@@ -11,14 +11,14 @@ import Subheader from "./Subheader/Subheader";
 function App() {
   const [selectedMetricIdObject, setSelectedMetricIdObject] =
     useState<SelectedMetricIdObject>({
-      domainId: "air",
-      metricId: "status_metric_1",
-      label: "Overall Domain Score",
+      domainId: "air_quality",
+      metricId: "air_quality_domain_score",
+      label: "Air Quality Score",
       description:
-        "The overall domain score for each area. This score is calculated from the subdomain scores of each domain.",
+        "Air quality resilience measures the ability to maintain healthy air during wildfire events.",
       colorGradient: {
-        startColor: { r: 250, g: 250, b: 244 },
-        endColor: { r: 26, g: 41, b: 60 },
+        startColor: { r: 255, g: 255, b: 255 },
+        endColor: { r: 73, g: 0, b: 106 },
       },
     });
   const [selectedMetricValue, setSelectedMetricValue] = useState<number | null>(

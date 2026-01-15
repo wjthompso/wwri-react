@@ -1,4 +1,4 @@
-import { getLocationsUrl, getMetricUrl } from "config/api";
+import { getLocationsUrl, getMetricUrl, GEO_LEVEL_CONFIG, DEFAULT_COUNTRY, DEFAULT_GEO_LEVEL } from "config/api";
 import MapOfFullStatenameToAbbreviation, {
   StateNames,
 } from "data/StateNameToAbbrevsMap";
@@ -15,6 +15,17 @@ import ZoomInIcon from "../../assets/ZoomInIcon.svg";
 import ZoomOutIcon from "../../assets/ZoomOutIcon.svg";
 import MapLegend from "./MapLegend";
 
+// Get config for current geo level (defaults to US tracts)
+const getGeoConfig = (country: string, geoLevel: string) => {
+  const countryConfig = GEO_LEVEL_CONFIG[country as keyof typeof GEO_LEVEL_CONFIG];
+  if (!countryConfig) return GEO_LEVEL_CONFIG.us.tract;
+  const levelConfig = countryConfig[geoLevel as keyof typeof countryConfig];
+  return levelConfig || GEO_LEVEL_CONFIG.us.tract;
+};
+
+// Default geo config for initial map style
+const defaultGeoConfig = getGeoConfig(DEFAULT_COUNTRY, DEFAULT_GEO_LEVEL);
+
 const MAP_STYLE: StyleSpecification = {
   version: 8,
   sources: {
@@ -26,9 +37,7 @@ const MAP_STYLE: StyleSpecification = {
     },
     tilesource: {
       type: "vector",
-      tiles: [
-        "https://major-sculpin.nceas.ucsb.edu/censustracts/data/tiles/{z}/{x}/{y}.pbf",
-      ],
+      tiles: [defaultGeoConfig.tileUrl],
       minzoom: 0,
       maxzoom: 14,
     },
@@ -43,9 +52,27 @@ const MAP_STYLE: StyleSpecification = {
       id: "tiles",
       type: "fill",
       source: "tilesource",
-      "source-layer": "cb_2023_us_tract_5m_with_geoid",
+      "source-layer": defaultGeoConfig.sourceLayer,
       paint: {
         "fill-color": ["coalesce", ["feature-state", "color"], "#D3D3D3"],
+        "fill-opacity": 0.7,
+      },
+    },
+    // Selection highlight layer - shows cyan outline on selected polygon
+    {
+      id: "tiles-highlight",
+      type: "line",
+      source: "tilesource",
+      "source-layer": defaultGeoConfig.sourceLayer,
+      paint: {
+        "line-color": "#00FFFF",
+        "line-width": 3,
+        "line-opacity": [
+          "case",
+          ["boolean", ["feature-state", "selected"], false],
+          1,
+          0,
+        ],
       },
     },
   ],
@@ -59,14 +86,16 @@ const fetchData = async (
   const csvText = await response.text();
   const results = Papa.parse(csvText, { header: true });
 
-  const censusTractMetrics: Record<string, number> = {};
+  // Use the idField from config (e.g., "geoid" for US tracts)
+  const idField = defaultGeoConfig.idField;
+  const geoMetrics: Record<string, number> = {};
   results.data.forEach((item: any) => {
-    if (item.geoid && item[metric.metricId]) {
-      censusTractMetrics[item.geoid] = parseFloat(item[metric.metricId]);
+    if (item[idField] && item[metric.metricId]) {
+      geoMetrics[item[idField]] = parseFloat(item[metric.metricId]);
     }
   });
 
-  return censusTractMetrics;
+  return geoMetrics;
 };
 
 const fetchLocationData = async (): Promise<
@@ -77,13 +106,15 @@ const fetchLocationData = async (): Promise<
   const csvText = await response.text();
   const results = Papa.parse(csvText, { header: true });
 
+  // Use the idField from config (e.g., "geoid" for US tracts)
+  const idField = defaultGeoConfig.idField;
   const locationData: Record<
     string,
     { county_name: string; state_name: StateNames }
   > = {};
   results.data.forEach((item: any) => {
-    if (item.geoid) {
-      locationData[item.geoid] = {
+    if (item[idField]) {
+      locationData[item[idField]] = {
         county_name: item.county_name,
         state_name: item.state_name,
       };
@@ -111,13 +142,11 @@ const MapArea: React.FC<MapAreaProps> = ({
   setSelectedCensusTract,
 }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
-  const [censusTractMetrics, setCensusTractMetrics] = useState<
-    Record<string, number>
-  >({});
+  const [geoMetrics, setGeoMetrics] = useState<Record<string, number>>({});
   const [locationData, setLocationData] = useState<
     Record<string, { county_name: string; state_name: StateNames }>
   >({});
-  const censusTractMetricsRef = useRef<Record<string, number>>({});
+  const geoMetricsRef = useRef<Record<string, number>>({});
   const locationDataRef = useRef<
     Record<string, { county_name: string; state_name: StateNames }>
   >({});
@@ -128,6 +157,13 @@ const MapArea: React.FC<MapAreaProps> = ({
   const [suggestions, setSuggestions] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchExpanded, setSearchExpanded] = useState(false);
+  
+  // Track selected feature for highlight
+  const selectedFeatureRef = useRef<{
+    source: string;
+    sourceLayer: string;
+    id: number | string;
+  } | null>(null);
 
   const startColorRef = useRef(selectedMetricIdObject.colorGradient.startColor);
   const endColorRef = useRef(selectedMetricIdObject.colorGradient.endColor);
@@ -143,10 +179,10 @@ const MapArea: React.FC<MapAreaProps> = ({
       const fetchLocationDataPromise = fetchLocationData();
       const metrics = await fetchDataPromise;
       const locations = await fetchLocationDataPromise;
-      setCensusTractMetrics(metrics);
+      setGeoMetrics(metrics);
       setLocationData(locations);
-      censusTractMetricsRef.current = metrics; // Update ref
-      locationDataRef.current = locations; // Update ref
+      geoMetricsRef.current = metrics;
+      locationDataRef.current = locations;
       setDataLoaded(true);
     };
     initializeData();
@@ -172,14 +208,36 @@ const MapArea: React.FC<MapAreaProps> = ({
         const features = event.features;
         if (features && features.length > 0) {
           const feature = features[0];
-          const { GEOID } = feature.properties;
-          const metric = censusTractMetricsRef.current[GEOID];
+          const geoId = feature.properties[defaultGeoConfig.idField];
+          const metric = geoMetricsRef.current[geoId];
+          
+          // Clear previous selection highlight
+          if (selectedFeatureRef.current && mapRef.current) {
+            mapRef.current.setFeatureState(
+              selectedFeatureRef.current,
+              { selected: false }
+            );
+          }
+          
+          // Set new selection highlight
+          if (feature.id !== undefined) {
+            const featureRef = {
+              source: "tilesource",
+              sourceLayer: defaultGeoConfig.sourceLayer,
+              id: feature.id,
+            };
+            map.setFeatureState(featureRef, { selected: true });
+            selectedFeatureRef.current = featureRef;
+          }
+          
           if (typeof metric === "number" && setSelectedMetricValue) {
-            setSelectedCountyName(locationDataRef.current[GEOID].county_name);
-            setSelectedStateName(locationDataRef.current[GEOID].state_name);
-            setSelectedCensusTract(GEOID);
+            const location = locationDataRef.current[geoId];
+            if (location) {
+              setSelectedCountyName(location.county_name);
+              setSelectedStateName(location.state_name);
+            }
+            setSelectedCensusTract(geoId);
             setSelectedMetricValue(metric);
-            console.log("Selected metric value:", metric);
           }
         }
       });
@@ -206,12 +264,10 @@ const MapArea: React.FC<MapAreaProps> = ({
   }, []);
 
   useEffect(() => {
-    console.log("Reloading the colors A");
     if (dataLoaded && mapLoaded && mapRef.current) {
-      console.log("Reloading the colors B");
       loadColors(mapRef.current);
     }
-  }, [censusTractMetrics, dataLoaded, mapLoaded]);
+  }, [geoMetrics, dataLoaded, mapLoaded]);
 
   useEffect(() => {
     if (mapRef.current) {
@@ -221,9 +277,10 @@ const MapArea: React.FC<MapAreaProps> = ({
         const features = event.features;
         if (features && features.length > 0) {
           const feature = features[0];
-          const { GEOID } = feature.properties;
-          const metric = censusTractMetricsRef.current[GEOID];
-          const location = locationDataRef.current[GEOID];
+          const geoId = feature.properties[defaultGeoConfig.idField];
+          const metric = geoMetricsRef.current[geoId];
+          const location = locationDataRef.current[geoId];
+          const displayName = feature.properties[defaultGeoConfig.nameField] || geoId;
 
           if (!popupRef.current) {
             popupRef.current = new maplibregl.Popup({
@@ -233,7 +290,7 @@ const MapArea: React.FC<MapAreaProps> = ({
           }
 
           const stateAbbrev: string =
-            MapOfFullStatenameToAbbreviation[location?.state_name];
+            MapOfFullStatenameToAbbreviation[location?.state_name] || "";
 
           const color: string = getColor(
             startColorRef.current,
@@ -244,9 +301,9 @@ const MapArea: React.FC<MapAreaProps> = ({
           const tooltipHTML = `
             <div id="map-tooltip" class="rounded">
               <h1 class="font-bold text-[0.8rem] text-selectedIndicatorTextColor">
-                ${location?.county_name?.toUpperCase() || "N/A"}, ${stateAbbrev}
+                ${location?.county_name?.toUpperCase() || "N/A"}${stateAbbrev ? `, ${stateAbbrev}` : ""}
               </h1>
-              <h2 class="text-xs tracking-widest">TRACT ${GEOID}</h2>
+              <h2 class="text-xs tracking-widest">${displayName}</h2>
               <div class="mt-1 flex items-center">
                 <div class="blackc mr-1 inline-block min-h-4 min-w-4 rounded-sm border-[1px] border-solid border-black" style="background-color: ${color}"></div>
                 <span class="font-bold text-black">
@@ -259,9 +316,9 @@ const MapArea: React.FC<MapAreaProps> = ({
 
           // Adjust the tooltip position 5 pixels above the mouse pointer
           const mouseLngLat = event.lngLat;
-          const mousePoint = map.project(mouseLngLat); // Convert to point on screen
-          mousePoint.y -= 5; // Move the point 8 pixels up
-          const adjustedLngLat = map.unproject(mousePoint); // Convert back to map coordinates
+          const mousePoint = map.project(mouseLngLat);
+          mousePoint.y -= 5;
+          const adjustedLngLat = map.unproject(mousePoint);
 
           popupRef.current
             .setLngLat(adjustedLngLat)
@@ -281,13 +338,16 @@ const MapArea: React.FC<MapAreaProps> = ({
         map.off("mousemove", "tiles", handleMousemove);
       };
     }
-  }, [censusTractMetrics, dataLoaded, mapLoaded, selectedMetricIdObject]);
+  }, [geoMetrics, dataLoaded, mapLoaded, selectedMetricIdObject]);
 
   const loadColors = (map: maplibregl.Map) => {
     const features = map.queryRenderedFeatures({ layers: ["tiles"] });
     features.forEach((feature) => {
-      const censusTractId = feature.properties.GEOID;
-      const metric = censusTractMetricsRef.current[censusTractId];
+      // Skip features without an id (required for setFeatureState)
+      if (feature.id === undefined) return;
+      
+      const geoId = feature.properties[defaultGeoConfig.idField];
+      const metric = geoMetricsRef.current[geoId];
 
       if (metric !== undefined) {
         const color = getColor(
@@ -298,7 +358,7 @@ const MapArea: React.FC<MapAreaProps> = ({
         map.setFeatureState(
           {
             source: "tilesource",
-            sourceLayer: "cb_2023_us_tract_5m_with_geoid",
+            sourceLayer: defaultGeoConfig.sourceLayer,
             id: feature.id,
           },
           { color },

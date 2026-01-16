@@ -210,7 +210,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
         {domainHierarchy.map((domain: Domain) => (
           <div
             id={domain.id}
-            className="ml-[calc(2.05rem-0.35rem)] mt-1"
+            className="mt-1"
             key={domain.id}
           >
             {/* Domain Header */}

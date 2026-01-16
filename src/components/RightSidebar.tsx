@@ -67,7 +67,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
 }) => {
   const [showIndicatorSuggestions, setShowIndicatorSuggestions] = useState(false);
   // Initialize activeButton to match default metric in App.tsx
-  const [activeButton, setActiveButton] = useState<string | null>("air_quality");
+  const [activeButton, setActiveButton] = useState<string | null>("infrastructure");
   const [statusLabel, setStatusLabel] = useState<string | null>(null);
   const [resistanceLabel, setResistanceLabel] = useState<string | null>(null);
   const [recoveryLabel, setRecoveryLabel] = useState<string | null>(null);
@@ -220,7 +220,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
                 description: "Overall wildfire resilience score combining all domains.",
                 colorGradient: {
                   startColor: { r: 255, g: 255, b: 255 },
-                  endColor: { r: 73, g: 0, b: 106 },
+                  endColor: { r: 64, g: 64, b: 64 }, // Dark charcoal for Overall Score
                 },
               });
             }}

@@ -12,14 +12,13 @@ import Subheader from "./Subheader/Subheader";
 function App() {
   const [selectedMetricIdObject, setSelectedMetricIdObject] =
     useState<SelectedMetricIdObject>({
-      domainId: "air_quality",
-      metricId: "air_quality_domain_score",
-      label: "Air Quality Score",
-      description:
-        "Air quality resilience measures the ability to maintain healthy air during wildfire events.",
+      domainId: "infrastructure",
+      metricId: "infrastructure_domain_score",
+      label: "Infrastructure Score",
+      description: "Built infrastructure resilience to wildfire damage.",
       colorGradient: {
         startColor: { r: 255, g: 255, b: 255 },
-        endColor: { r: 73, g: 0, b: 106 },
+        endColor: { r: 171, g: 16, b: 78 }, // #ab104e Infrastructure brand color
       },
     });
   const [selectedMetricValue, setSelectedMetricValue] = useState<number | null>(

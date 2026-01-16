@@ -7,130 +7,19 @@ import { Domain } from "../types/domainTypes";
  * The IDs must match the metric names in the backend API.
  * 
  * Structure: Domain > Status/Resilience > Resistance/Recovery > Individual Metrics
+ * 
+ * Domain Order (matches brand color palette):
+ * 1. Infrastructure (#ab104e)
+ * 2. Communities (#e16b5d)
+ * 3. Livelihoods (#f9b267)
+ * 4. Sense of Place (#7dc8a5)
+ * 5. Species (#6da993)
+ * 6. Habitats (#36726f)
+ * 7. Water (#416e92)
+ * 8. Air Quality (#464555)
  */
 
 const domainHierarchy: Domain[] = [
-  // ============================================================================
-  // AIR QUALITY
-  // ============================================================================
-  {
-    id: "air_quality",
-    label: "Air Quality",
-    description: "Air quality resilience measures the ability to maintain healthy air during wildfire events.",
-    colorGradient: {
-      startColor: { r: 255, g: 255, b: 255 },
-      endColor: { r: 73, g: 0, b: 106 }, // Purple
-    },
-    status: {
-      id: "air_quality_status",
-      label: "Status",
-      description: "Current air quality status indicators.",
-      metrics: [
-        {
-          id: "air_quality_status_aqi_100",
-          label: "Days AQI > 100",
-          description: "Number of days with Air Quality Index exceeding 100 (unhealthy for sensitive groups).",
-        },
-        {
-          id: "air_quality_status_aqi_300",
-          label: "Days AQI > 300",
-          description: "Number of days with Air Quality Index exceeding 300 (hazardous).",
-        },
-      ],
-    },
-    resilience: {
-      id: "air_quality_resilience",
-      label: "Resilience",
-      description: "Capacity to resist and recover from air quality impacts.",
-      resistance: {
-        id: "air_quality_resistance",
-        label: "Resistance",
-        description: "Ability to resist air quality degradation impacts.",
-        metrics: [
-          {
-            id: "air_quality_resistance_copd",
-            label: "COPD Prevalence",
-            description: "Chronic obstructive pulmonary disease prevalence in the population.",
-          },
-          {
-            id: "air_quality_resistance_asthma",
-            label: "Asthma Prevalence",
-            description: "Asthma prevalence in the population.",
-          },
-          {
-            id: "air_quality_resistance_vulnerable_populations",
-            label: "Vulnerable Populations",
-            description: "Demographics of populations vulnerable to air quality impacts.",
-          },
-          {
-            id: "air_quality_resistance_vulnerable_workers",
-            label: "Vulnerable Workers",
-            description: "Employment in forestry, construction, or farmwork.",
-          },
-          {
-            id: "air_quality_resistance_hospital_density",
-            label: "Medical Infrastructure",
-            description: "Access to medical infrastructure and hospitals.",
-          },
-        ],
-      },
-      recovery: undefined, // Air quality domain doesn't have recovery metrics
-    },
-  },
-
-  // ============================================================================
-  // WATER
-  // ============================================================================
-  {
-    id: "water",
-    label: "Water",
-    description: "Water resources resilience to wildfire impacts.",
-    colorGradient: {
-      startColor: { r: 255, g: 255, b: 255 },
-      endColor: { r: 78, g: 160, b: 220 }, // Blue
-    },
-    status: {
-      id: "water_status",
-      label: "Status",
-      description: "Current water resource status.",
-      metrics: [
-        {
-          id: "water_status_surface_water_quantity",
-          label: "Water Quantity",
-          description: "Surface water quantity availability.",
-        },
-        {
-          id: "water_status_surface_water_timing",
-          label: "Water Timing",
-          description: "Timing of surface water availability.",
-        },
-      ],
-    },
-    resilience: {
-      id: "water_resilience",
-      label: "Resilience",
-      description: "Capacity to maintain water resources during and after wildfires.",
-      resistance: {
-        id: "water_resistance",
-        label: "Resistance",
-        description: "Ability to resist water quality and quantity impacts.",
-        metrics: [
-          {
-            id: "water_resistance_water_treatment",
-            label: "Water Treatment Compliance",
-            description: "Water treatment plant compliance rates.",
-          },
-          {
-            id: "water_resistance_drought_plans",
-            label: "Drought Plans",
-            description: "State and local drought planning coverage.",
-          },
-        ],
-      },
-      recovery: undefined, // Water domain doesn't have recovery metrics
-    },
-  },
-
   // ============================================================================
   // INFRASTRUCTURE
   // ============================================================================
@@ -140,7 +29,7 @@ const domainHierarchy: Domain[] = [
     description: "Built infrastructure resilience to wildfire damage.",
     colorGradient: {
       startColor: { r: 255, g: 255, b: 255 },
-      endColor: { r: 128, g: 128, b: 128 }, // Gray
+      endColor: { r: 171, g: 16, b: 78 }, // #ab104e
     },
     status: {
       id: "infrastructure_status",
@@ -218,7 +107,7 @@ const domainHierarchy: Domain[] = [
     description: "Community social resilience to wildfire impacts.",
     colorGradient: {
       startColor: { r: 255, g: 255, b: 255 },
-      endColor: { r: 255, g: 87, b: 51 }, // Orange-red
+      endColor: { r: 225, g: 107, b: 93 }, // #e16b5d
     },
     status: undefined, // Communities doesn't have status metrics
     resilience: {
@@ -301,7 +190,7 @@ const domainHierarchy: Domain[] = [
     description: "Economic livelihood resilience to wildfire impacts.",
     colorGradient: {
       startColor: { r: 255, g: 255, b: 255 },
-      endColor: { r: 34, g: 139, b: 34 }, // Forest green
+      endColor: { r: 249, g: 178, b: 103 }, // #f9b267
     },
     status: {
       id: "livelihoods_status",
@@ -357,154 +246,6 @@ const domainHierarchy: Domain[] = [
   },
 
   // ============================================================================
-  // BIODIVERSITY (Species)
-  // ============================================================================
-  {
-    id: "biodiversity",
-    label: "Species",
-    description: "Biodiversity and species resilience to wildfire.",
-    colorGradient: {
-      startColor: { r: 255, g: 255, b: 255 },
-      endColor: { r: 103, g: 14, b: 10 }, // Dark red
-    },
-    status: {
-      id: "biodiversity_status",
-      label: "Status",
-      description: "Current species conservation status.",
-      metrics: [
-        {
-          id: "biodiversity_status",
-          label: "Conservation Threat",
-          description: "Species conservation threat level.",
-        },
-      ],
-    },
-    resilience: {
-      id: "biodiversity_resilience",
-      label: "Resilience",
-      description: "Species capacity to resist and recover from wildfire.",
-      resistance: {
-        id: "biodiversity_resistance",
-        label: "Resistance",
-        description: "Species resistance to wildfire impacts.",
-        metrics: [
-          {
-            id: "biodiversity_resistance_traits",
-            label: "Resistance Traits",
-            description: "Species traits conferring fire resistance.",
-          },
-        ],
-      },
-      recovery: {
-        id: "biodiversity_recovery",
-        label: "Recovery",
-        description: "Species recovery capacity after wildfire.",
-        metrics: [
-          {
-            id: "biodiversity_recovery_traits",
-            label: "Recovery Traits",
-            description: "Species traits supporting post-fire recovery.",
-          },
-          {
-            id: "biodiversity_recovery_range_area",
-            label: "Range Size",
-            description: "Species geographic range area.",
-          },
-        ],
-      },
-    },
-  },
-
-  // ============================================================================
-  // NATURAL HABITATS (Habitats)
-  // ============================================================================
-  {
-    id: "natural_habitats",
-    label: "Habitats",
-    description: "Natural habitat resilience to wildfire.",
-    colorGradient: {
-      startColor: { r: 255, g: 255, b: 255 },
-      endColor: { r: 0, g: 100, b: 0 }, // Dark green
-    },
-    status: {
-      id: "natural_habitats_status",
-      label: "Status",
-      description: "Current habitat status.",
-      metrics: [
-        {
-          id: "natural_habitats_status_percent_protected",
-          label: "Protection Status",
-          description: "Percentage of habitat under protection.",
-        },
-        {
-          id: "natural_habitats_status_extent_change_2005",
-          label: "Development",
-          description: "Habitat extent change since 2005.",
-        },
-      ],
-    },
-    resilience: {
-      id: "natural_habitats_resilience",
-      label: "Resilience",
-      description: "Habitat capacity to resist and recover from wildfire.",
-      resistance: {
-        id: "natural_habitats_resistance",
-        label: "Resistance",
-        description: "Habitat resistance to wildfire impacts.",
-        metrics: [
-          {
-            id: "natural_habitats_resistance_tree_traits",
-            label: "Tree Traits",
-            description: "Tree species traits conferring fire resistance.",
-          },
-          {
-            id: "natural_habitats_resistance_density",
-            label: "Stand Density",
-            description: "Forest stand density.",
-          },
-          {
-            id: "natural_habitats_resistance_NDVI",
-            label: "NDVI Heterogeneity",
-            description: "Normalized Difference Vegetation Index heterogeneity.",
-          },
-          {
-            id: "natural_habitats_resistance_npp",
-            label: "Net Primary Production",
-            description: "Net primary productivity.",
-          },
-          {
-            id: "natural_habitats_resistance_vpd",
-            label: "Vapor Pressure Deficit",
-            description: "Vapor pressure deficit indicating drought stress.",
-          },
-        ],
-      },
-      recovery: {
-        id: "natural_habitats_recovery",
-        label: "Recovery",
-        description: "Habitat recovery capacity after wildfire.",
-        metrics: [
-          {
-            id: "natural_habitats_recovery_tree_traits",
-            label: "Tree Traits",
-            description: "Tree species traits supporting recovery.",
-          },
-          {
-            id: "natural_habitats_recovery_diversity",
-            label: "Stand Diversity",
-            description: "Forest stand species diversity.",
-          },
-          {
-            id: "natural_habitats_recovery_ppt",
-            label: "Precipitation",
-            description: "Rainfall supporting post-fire recovery.",
-          },
-        ],
-      },
-    },
-  },
-
-  // ============================================================================
   // SENSE OF PLACE - With Iconic Places & Iconic Species subdomains
   // ============================================================================
   {
@@ -513,7 +254,7 @@ const domainHierarchy: Domain[] = [
     description: "Cultural and iconic value resilience to wildfire.",
     colorGradient: {
       startColor: { r: 255, g: 255, b: 255 },
-      endColor: { r: 255, g: 165, b: 0 }, // Orange
+      endColor: { r: 125, g: 200, b: 165 }, // #7dc8a5
     },
     // Sense of Place uses subdomains instead of direct status/resilience
     subdomains: [
@@ -655,6 +396,275 @@ const domainHierarchy: Domain[] = [
         },
       },
     ],
+  },
+
+  // ============================================================================
+  // BIODIVERSITY (Species)
+  // ============================================================================
+  {
+    id: "biodiversity",
+    label: "Species",
+    description: "Biodiversity and species resilience to wildfire.",
+    colorGradient: {
+      startColor: { r: 255, g: 255, b: 255 },
+      endColor: { r: 109, g: 169, b: 147 }, // #6da993
+    },
+    status: {
+      id: "biodiversity_status",
+      label: "Status",
+      description: "Current species conservation status.",
+      metrics: [
+        {
+          id: "biodiversity_status",
+          label: "Conservation Threat",
+          description: "Species conservation threat level.",
+        },
+      ],
+    },
+    resilience: {
+      id: "biodiversity_resilience",
+      label: "Resilience",
+      description: "Species capacity to resist and recover from wildfire.",
+      resistance: {
+        id: "biodiversity_resistance",
+        label: "Resistance",
+        description: "Species resistance to wildfire impacts.",
+        metrics: [
+          {
+            id: "biodiversity_resistance_traits",
+            label: "Resistance Traits",
+            description: "Species traits conferring fire resistance.",
+          },
+        ],
+      },
+      recovery: {
+        id: "biodiversity_recovery",
+        label: "Recovery",
+        description: "Species recovery capacity after wildfire.",
+        metrics: [
+          {
+            id: "biodiversity_recovery_traits",
+            label: "Recovery Traits",
+            description: "Species traits supporting post-fire recovery.",
+          },
+          {
+            id: "biodiversity_recovery_range_area",
+            label: "Range Size",
+            description: "Species geographic range area.",
+          },
+        ],
+      },
+    },
+  },
+
+  // ============================================================================
+  // NATURAL HABITATS (Habitats)
+  // ============================================================================
+  {
+    id: "natural_habitats",
+    label: "Habitats",
+    description: "Natural habitat resilience to wildfire.",
+    colorGradient: {
+      startColor: { r: 255, g: 255, b: 255 },
+      endColor: { r: 54, g: 114, b: 111 }, // #36726f
+    },
+    status: {
+      id: "natural_habitats_status",
+      label: "Status",
+      description: "Current habitat status.",
+      metrics: [
+        {
+          id: "natural_habitats_status_percent_protected",
+          label: "Protection Status",
+          description: "Percentage of habitat under protection.",
+        },
+        {
+          id: "natural_habitats_status_extent_change_2005",
+          label: "Development",
+          description: "Habitat extent change since 2005.",
+        },
+      ],
+    },
+    resilience: {
+      id: "natural_habitats_resilience",
+      label: "Resilience",
+      description: "Habitat capacity to resist and recover from wildfire.",
+      resistance: {
+        id: "natural_habitats_resistance",
+        label: "Resistance",
+        description: "Habitat resistance to wildfire impacts.",
+        metrics: [
+          {
+            id: "natural_habitats_resistance_tree_traits",
+            label: "Tree Traits",
+            description: "Tree species traits conferring fire resistance.",
+          },
+          {
+            id: "natural_habitats_resistance_density",
+            label: "Stand Density",
+            description: "Forest stand density.",
+          },
+          {
+            id: "natural_habitats_resistance_NDVI",
+            label: "NDVI Heterogeneity",
+            description: "Normalized Difference Vegetation Index heterogeneity.",
+          },
+          {
+            id: "natural_habitats_resistance_npp",
+            label: "Net Primary Production",
+            description: "Net primary productivity.",
+          },
+          {
+            id: "natural_habitats_resistance_vpd",
+            label: "Vapor Pressure Deficit",
+            description: "Vapor pressure deficit indicating drought stress.",
+          },
+        ],
+      },
+      recovery: {
+        id: "natural_habitats_recovery",
+        label: "Recovery",
+        description: "Habitat recovery capacity after wildfire.",
+        metrics: [
+          {
+            id: "natural_habitats_recovery_tree_traits",
+            label: "Tree Traits",
+            description: "Tree species traits supporting recovery.",
+          },
+          {
+            id: "natural_habitats_recovery_diversity",
+            label: "Stand Diversity",
+            description: "Forest stand species diversity.",
+          },
+          {
+            id: "natural_habitats_recovery_ppt",
+            label: "Precipitation",
+            description: "Rainfall supporting post-fire recovery.",
+          },
+        ],
+      },
+    },
+  },
+
+  // ============================================================================
+  // WATER
+  // ============================================================================
+  {
+    id: "water",
+    label: "Water",
+    description: "Water resources resilience to wildfire impacts.",
+    colorGradient: {
+      startColor: { r: 255, g: 255, b: 255 },
+      endColor: { r: 65, g: 110, b: 146 }, // #416e92
+    },
+    status: {
+      id: "water_status",
+      label: "Status",
+      description: "Current water resource status.",
+      metrics: [
+        {
+          id: "water_status_surface_water_quantity",
+          label: "Water Quantity",
+          description: "Surface water quantity availability.",
+        },
+        {
+          id: "water_status_surface_water_timing",
+          label: "Water Timing",
+          description: "Timing of surface water availability.",
+        },
+      ],
+    },
+    resilience: {
+      id: "water_resilience",
+      label: "Resilience",
+      description: "Capacity to maintain water resources during and after wildfires.",
+      resistance: {
+        id: "water_resistance",
+        label: "Resistance",
+        description: "Ability to resist water quality and quantity impacts.",
+        metrics: [
+          {
+            id: "water_resistance_water_treatment",
+            label: "Water Treatment Compliance",
+            description: "Water treatment plant compliance rates.",
+          },
+          {
+            id: "water_resistance_drought_plans",
+            label: "Drought Plans",
+            description: "State and local drought planning coverage.",
+          },
+        ],
+      },
+      recovery: undefined, // Water domain doesn't have recovery metrics
+    },
+  },
+
+  // ============================================================================
+  // AIR QUALITY
+  // ============================================================================
+  {
+    id: "air_quality",
+    label: "Air Quality",
+    description: "Air quality resilience measures the ability to maintain healthy air during wildfire events.",
+    colorGradient: {
+      startColor: { r: 255, g: 255, b: 255 },
+      endColor: { r: 70, g: 69, b: 85 }, // #464555
+    },
+    status: {
+      id: "air_quality_status",
+      label: "Status",
+      description: "Current air quality status indicators.",
+      metrics: [
+        {
+          id: "air_quality_status_aqi_100",
+          label: "Days AQI > 100",
+          description: "Number of days with Air Quality Index exceeding 100 (unhealthy for sensitive groups).",
+        },
+        {
+          id: "air_quality_status_aqi_300",
+          label: "Days AQI > 300",
+          description: "Number of days with Air Quality Index exceeding 300 (hazardous).",
+        },
+      ],
+    },
+    resilience: {
+      id: "air_quality_resilience",
+      label: "Resilience",
+      description: "Capacity to resist and recover from air quality impacts.",
+      resistance: {
+        id: "air_quality_resistance",
+        label: "Resistance",
+        description: "Ability to resist air quality degradation impacts.",
+        metrics: [
+          {
+            id: "air_quality_resistance_copd",
+            label: "COPD Prevalence",
+            description: "Chronic obstructive pulmonary disease prevalence in the population.",
+          },
+          {
+            id: "air_quality_resistance_asthma",
+            label: "Asthma Prevalence",
+            description: "Asthma prevalence in the population.",
+          },
+          {
+            id: "air_quality_resistance_vulnerable_populations",
+            label: "Vulnerable Populations",
+            description: "Demographics of populations vulnerable to air quality impacts.",
+          },
+          {
+            id: "air_quality_resistance_vulnerable_workers",
+            label: "Vulnerable Workers",
+            description: "Employment in forestry, construction, or farmwork.",
+          },
+          {
+            id: "air_quality_resistance_hospital_density",
+            label: "Medical Infrastructure",
+            description: "Access to medical infrastructure and hospitals.",
+          },
+        ],
+      },
+      recovery: undefined, // Air quality domain doesn't have recovery metrics
+    },
   },
 ];
 

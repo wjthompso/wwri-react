@@ -1,3 +1,4 @@
+import { UnifiedGeoLevel } from "config/api";
 import { StateNames } from "data/StateNameToAbbrevsMap";
 import { useState } from "react";
 import "../index.css";
@@ -27,6 +28,8 @@ function App() {
   const [selectedCountyName, setSelectedCountyName] = useState<string>("");
   const [selectedStateName, setSelectedStateName] = useState<StateNames>("");
   const [selectedCensusTract, setSelectedCensusTract] = useState<string>("");
+  const [selectedGeoLevel, setSelectedGeoLevel] = useState<UnifiedGeoLevel>("tract");
+  const [leftSidebarOpen, setLeftSidebarOpen] = useState<boolean>(true);
 
   return (
     <div className="h-full w-full">
@@ -42,6 +45,8 @@ function App() {
             selectedStateName={selectedStateName}
             selectedCensusTract={selectedCensusTract}
             selectedMetricValue={selectedMetricValue}
+            isOpen={leftSidebarOpen}
+            setIsOpen={setLeftSidebarOpen}
           />
           <MapArea
             selectedMetricIdObject={selectedMetricIdObject}
@@ -50,6 +55,9 @@ function App() {
             setSelectedStateName={setSelectedStateName}
             setSelectedCensusTract={setSelectedCensusTract}
             setSelectedMetricValue={setSelectedMetricValue}
+            selectedGeoLevel={selectedGeoLevel}
+            setSelectedGeoLevel={setSelectedGeoLevel}
+            leftSidebarOpen={leftSidebarOpen}
           />
         </div>
         <RightSidebar

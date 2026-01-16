@@ -66,11 +66,12 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
   setSelectedMetricIdObject,
 }) => {
   const [showIndicatorSuggestions, setShowIndicatorSuggestions] = useState(false);
-  const [activeButton, setActiveButton] = useState<string | null>(null);
+  // Initialize activeButton to match default metric in App.tsx
+  const [activeButton, setActiveButton] = useState<string | null>("air_quality");
   const [statusLabel, setStatusLabel] = useState<string | null>(null);
   const [resistanceLabel, setResistanceLabel] = useState<string | null>(null);
   const [recoveryLabel, setRecoveryLabel] = useState<string | null>(null);
-  const [selectedIndicator, setSelectedIndicator] = useState<string | null>(null);
+  const [selectedIndicator, setSelectedIndicator] = useState<string | null>("Air Quality Score");
   const [expandedSections, setExpandedSections] = useState<{ [key: string]: boolean }>({});
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filteredSuggestions, setFilteredSuggestions] = useState<IndicatorObject[]>([]);

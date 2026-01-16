@@ -11,7 +11,7 @@ import MapOfFullStatenameToAbbreviation, {
 import maplibregl, { StyleSpecification } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import Papa from "papaparse";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import SelectedMetricIdObject from "types/componentStatetypes";
 import getColor from "utils/getColor";
 import CloseIcon from "../../assets/CloseIcon.svg";
@@ -21,15 +21,14 @@ import ZoomInIcon from "../../assets/ZoomInIcon.svg";
 import ZoomOutIcon from "../../assets/ZoomOutIcon.svg";
 import MapLegend from "./MapLegend";
 
-// Current unified geographic level (will be made dynamic in Task 11b)
-const CURRENT_GEO_LEVEL: UnifiedGeoLevel = "tract";
+// Layer IDs for querying (fill layers are interactive)
+const INTERACTIVE_LAYERS = ["us-fill", "canada-fill"];
 
-// Get configs for both US and Canada at current level
-const geoLevelConfig = UNIFIED_GEO_LEVELS[CURRENT_GEO_LEVEL];
-const usConfig = geoLevelConfig.us;
-const canadaConfig = geoLevelConfig.canada;
-
-const MAP_STYLE: StyleSpecification = {
+/**
+ * Creates the initial map style with OSM base layer only.
+ * Vector tile sources/layers are added dynamically based on selected geo level.
+ */
+const getBaseMapStyle = (): StyleSpecification => ({
   version: 8,
   sources: {
     osm: {
@@ -38,20 +37,6 @@ const MAP_STYLE: StyleSpecification = {
       tileSize: 256,
       attribution: "Map data © OpenStreetMap contributors",
     },
-    // US tile source
-    "us-tiles": {
-      type: "vector",
-      tiles: [usConfig.tileUrl],
-      minzoom: 0,
-      maxzoom: 14,
-    },
-    // Canada tile source
-    "canada-tiles": {
-      type: "vector",
-      tiles: [canadaConfig.tileUrl],
-      minzoom: 0,
-      maxzoom: 14,
-    },
   },
   layers: [
     {
@@ -59,67 +44,8 @@ const MAP_STYLE: StyleSpecification = {
       type: "raster",
       source: "osm",
     },
-    // US fill layer
-    {
-      id: "us-fill",
-      type: "fill",
-      source: "us-tiles",
-      "source-layer": usConfig.sourceLayer,
-      paint: {
-        "fill-color": ["coalesce", ["feature-state", "color"], "#D3D3D3"],
-        "fill-opacity": 0.7,
-      },
-    },
-    // Canada fill layer
-    {
-      id: "canada-fill",
-      type: "fill",
-      source: "canada-tiles",
-      "source-layer": canadaConfig.sourceLayer,
-      paint: {
-        "fill-color": ["coalesce", ["feature-state", "color"], "#D3D3D3"],
-        "fill-opacity": 0.7,
-      },
-    },
-    // US selection highlight layer
-    {
-      id: "us-highlight",
-      type: "line",
-      source: "us-tiles",
-      "source-layer": usConfig.sourceLayer,
-      paint: {
-        "line-color": "#00FFFF",
-        "line-width": 3,
-        "line-opacity": [
-          "case",
-          ["boolean", ["feature-state", "selected"], false],
-          1,
-          0,
-        ],
-      },
-    },
-    // Canada selection highlight layer
-    {
-      id: "canada-highlight",
-      type: "line",
-      source: "canada-tiles",
-      "source-layer": canadaConfig.sourceLayer,
-      paint: {
-        "line-color": "#00FFFF",
-        "line-width": 3,
-        "line-opacity": [
-          "case",
-          ["boolean", ["feature-state", "selected"], false],
-          1,
-          0,
-        ],
-      },
-    },
   ],
-};
-
-// Layer IDs for querying (fill layers are interactive)
-const INTERACTIVE_LAYERS = ["us-fill", "canada-fill"];
+});
 
 /**
  * Location data structure - supports both US and Canada fields
@@ -134,10 +60,11 @@ interface LocationInfo {
  * Fetches metric data from both US and Canada APIs, merges into single object.
  * Keys are the tile attribute IDs (geoid for US, csduid for Canada).
  */
-const fetchData = async (
+const fetchMetricData = async (
   metric: SelectedMetricIdObject,
+  geoLevel: UnifiedGeoLevel,
 ): Promise<Record<string, number>> => {
-  const urls = getUnifiedMetricUrls(metric.domainId, metric.metricId, CURRENT_GEO_LEVEL);
+  const urls = getUnifiedMetricUrls(metric.domainId, metric.metricId, geoLevel);
   
   // Fetch both endpoints in parallel
   const [usResponse, canadaResponse] = await Promise.all([
@@ -179,7 +106,7 @@ const fetchData = async (
     }
   });
 
-  console.log(`Loaded metrics: US=${usResults.data.length}, Canada=${canadaResults.data.length}, Total=${Object.keys(geoMetrics).length}`);
+  console.log(`[${geoLevel}] Loaded metrics: US=${usResults.data.length}, Canada=${canadaResults.data.length}, Total=${Object.keys(geoMetrics).length}`);
   
   return geoMetrics;
 };
@@ -187,8 +114,8 @@ const fetchData = async (
 /**
  * Fetches location data from both US and Canada APIs, merges into single object.
  */
-const fetchLocationData = async (): Promise<Record<string, LocationInfo>> => {
-  const urls = getUnifiedLocationUrls(CURRENT_GEO_LEVEL);
+const fetchLocationData = async (geoLevel: UnifiedGeoLevel): Promise<Record<string, LocationInfo>> => {
+  const urls = getUnifiedLocationUrls(geoLevel);
   
   // Fetch both endpoints in parallel
   const [usResponse, canadaResponse] = await Promise.all([
@@ -228,7 +155,7 @@ const fetchLocationData = async (): Promise<Record<string, LocationInfo>> => {
     }
   });
 
-  console.log(`Loaded locations: US=${usResults.data.length}, Canada=${canadaResults.data.length}, Total=${Object.keys(locationData).length}`);
+  console.log(`[${geoLevel}] Loaded locations: US=${usResults.data.length}, Canada=${canadaResults.data.length}, Total=${Object.keys(locationData).length}`);
   
   return locationData;
 };
@@ -240,6 +167,9 @@ interface MapAreaProps {
   setSelectedCountyName: (countyName: string) => void;
   setSelectedStateName: (stateName: StateNames) => void;
   setSelectedCensusTract: (censusTract: string) => void;
+  selectedGeoLevel: UnifiedGeoLevel;
+  setSelectedGeoLevel: (level: UnifiedGeoLevel) => void;
+  leftSidebarOpen: boolean;
 }
 
 const MapArea: React.FC<MapAreaProps> = ({
@@ -249,6 +179,9 @@ const MapArea: React.FC<MapAreaProps> = ({
   setSelectedStateName,
   setSelectedMetricValue,
   setSelectedCensusTract,
+  selectedGeoLevel,
+  setSelectedGeoLevel,
+  leftSidebarOpen,
 }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const [geoMetrics, setGeoMetrics] = useState<Record<string, number>>({});
@@ -269,6 +202,19 @@ const MapArea: React.FC<MapAreaProps> = ({
     sourceLayer: string;
     id: number | string;
   } | null>(null);
+  
+  // Get configs for current geo level
+  const geoLevelConfig = UNIFIED_GEO_LEVELS[selectedGeoLevel];
+  const usConfig = geoLevelConfig.us;
+  const canadaConfig = geoLevelConfig.canada;
+  
+  // Keep refs to configs for use in event handlers
+  const usConfigRef = useRef(usConfig);
+  const canadaConfigRef = useRef(canadaConfig);
+  useEffect(() => {
+    usConfigRef.current = usConfig;
+    canadaConfigRef.current = canadaConfig;
+  }, [usConfig, canadaConfig]);
 
   const startColorRef = useRef(selectedMetricIdObject.colorGradient.startColor);
   const endColorRef = useRef(selectedMetricIdObject.colorGradient.endColor);
@@ -278,10 +224,12 @@ const MapArea: React.FC<MapAreaProps> = ({
     endColorRef.current = selectedMetricIdObject.colorGradient.endColor;
   }, [selectedMetricIdObject]);
 
+  // Fetch data when metric or geo level changes
   useEffect(() => {
     const initializeData = async () => {
-      const fetchDataPromise = fetchData(selectedMetricIdObject);
-      const fetchLocationDataPromise = fetchLocationData();
+      setDataLoaded(false);
+      const fetchDataPromise = fetchMetricData(selectedMetricIdObject, selectedGeoLevel);
+      const fetchLocationDataPromise = fetchLocationData(selectedGeoLevel);
       const metrics = await fetchDataPromise;
       const locations = await fetchLocationDataPromise;
       setGeoMetrics(metrics);
@@ -291,13 +239,190 @@ const MapArea: React.FC<MapAreaProps> = ({
       setDataLoaded(true);
     };
     initializeData();
-  }, [selectedMetricIdObject]);
+  }, [selectedMetricIdObject, selectedGeoLevel]);
 
+  /**
+   * Adds vector tile sources and layers for the specified geo level.
+   */
+  const addGeoLevelLayers = useCallback((map: maplibregl.Map, geoLevel: UnifiedGeoLevel) => {
+    const config = UNIFIED_GEO_LEVELS[geoLevel];
+    
+    // Add US tile source
+    map.addSource("us-tiles", {
+      type: "vector",
+      tiles: [config.us.tileUrl],
+      minzoom: 0,
+      maxzoom: 14,
+    });
+    
+    // Add Canada tile source
+    map.addSource("canada-tiles", {
+      type: "vector",
+      tiles: [config.canada.tileUrl],
+      minzoom: 0,
+      maxzoom: 14,
+    });
+    
+    // Add US fill layer
+    map.addLayer({
+      id: "us-fill",
+      type: "fill",
+      source: "us-tiles",
+      "source-layer": config.us.sourceLayer,
+      paint: {
+        "fill-color": ["coalesce", ["feature-state", "color"], "#D3D3D3"],
+        "fill-opacity": 0.7,
+      },
+    });
+    
+    // Add Canada fill layer
+    map.addLayer({
+      id: "canada-fill",
+      type: "fill",
+      source: "canada-tiles",
+      "source-layer": config.canada.sourceLayer,
+      paint: {
+        "fill-color": ["coalesce", ["feature-state", "color"], "#D3D3D3"],
+        "fill-opacity": 0.7,
+      },
+    });
+    
+    // Add US highlight layer
+    map.addLayer({
+      id: "us-highlight",
+      type: "line",
+      source: "us-tiles",
+      "source-layer": config.us.sourceLayer,
+      paint: {
+        "line-color": "#00FFFF",
+        "line-width": 3,
+        "line-opacity": [
+          "case",
+          ["boolean", ["feature-state", "selected"], false],
+          1,
+          0,
+        ],
+      },
+    });
+    
+    // Add Canada highlight layer
+    map.addLayer({
+      id: "canada-highlight",
+      type: "line",
+      source: "canada-tiles",
+      "source-layer": config.canada.sourceLayer,
+      paint: {
+        "line-color": "#00FFFF",
+        "line-width": 3,
+        "line-opacity": [
+          "case",
+          ["boolean", ["feature-state", "selected"], false],
+          1,
+          0,
+        ],
+      },
+    });
+    
+    console.log(`Added layers for geo level: ${geoLevel}`);
+  }, []);
+  
+  /**
+   * Removes vector tile sources and layers.
+   */
+  const removeGeoLevelLayers = useCallback((map: maplibregl.Map) => {
+    // Remove layers first (must be done before removing sources)
+    const layersToRemove = ["us-highlight", "canada-highlight", "us-fill", "canada-fill"];
+    layersToRemove.forEach(layerId => {
+      if (map.getLayer(layerId)) {
+        map.removeLayer(layerId);
+      }
+    });
+    
+    // Remove sources
+    const sourcesToRemove = ["us-tiles", "canada-tiles"];
+    sourcesToRemove.forEach(sourceId => {
+      if (map.getSource(sourceId)) {
+        map.removeSource(sourceId);
+      }
+    });
+    
+    // Clear any selection
+    selectedFeatureRef.current = null;
+    
+    console.log("Removed geo level layers");
+  }, []);
+  
+  /**
+   * Colors map features based on metric data.
+   * Must be defined before useEffects that reference it.
+   */
+  const loadColors = useCallback((map: maplibregl.Map) => {
+    let coloredCount = 0;
+    let noDataCount = 0;
+    
+    // Color US features
+    if (map.getLayer("us-fill")) {
+      const usFeatures = map.queryRenderedFeatures({ layers: ["us-fill"] });
+      usFeatures.forEach((feature) => {
+        if (feature.id === undefined) return;
+        
+        const geoId = feature.properties[usConfigRef.current.idField];
+        const metric = geoMetricsRef.current[geoId];
+
+        const featureRef = {
+          source: "us-tiles",
+          sourceLayer: usConfigRef.current.sourceLayer,
+          id: feature.id,
+        };
+
+        if (metric !== undefined) {
+          const color = getColor(startColorRef.current, endColorRef.current, metric);
+          map.setFeatureState(featureRef, { color });
+          coloredCount++;
+        } else {
+          map.setFeatureState(featureRef, { color: "#D3D3D3" });
+          noDataCount++;
+        }
+      });
+    }
+    
+    // Color Canada features
+    if (map.getLayer("canada-fill")) {
+      const canadaFeatures = map.queryRenderedFeatures({ layers: ["canada-fill"] });
+      canadaFeatures.forEach((feature) => {
+        if (feature.id === undefined) return;
+        
+        const geoId = feature.properties[canadaConfigRef.current.idField];
+        const metric = geoMetricsRef.current[geoId];
+
+        const featureRef = {
+          source: "canada-tiles",
+          sourceLayer: canadaConfigRef.current.sourceLayer,
+          id: feature.id,
+        };
+
+        if (metric !== undefined) {
+          const color = getColor(startColorRef.current, endColorRef.current, metric);
+          map.setFeatureState(featureRef, { color });
+          coloredCount++;
+        } else {
+          map.setFeatureState(featureRef, { color: "#D3D3D3" });
+          noDataCount++;
+        }
+      });
+    }
+    
+    console.log(`loadColors: colored=${coloredCount}, noData=${noDataCount}`);
+  }, []);
+  
+  // Track the current geo level in a ref for the initial setup
+  const currentGeoLevelRef = useRef(selectedGeoLevel);
+  
   useEffect(() => {
     if (mapContainerRef.current && !mapRef.current) {
       const map = new maplibregl.Map({
         container: mapContainerRef.current,
-        style: MAP_STYLE,
+        style: getBaseMapStyle(),
         center: [-103.9375, 38.7888894],
         zoom: 3.3,
       });
@@ -306,6 +431,8 @@ const MapArea: React.FC<MapAreaProps> = ({
       map.getCanvas().style.cursor = "pointer";
 
       map.on("load", () => {
+        // Add initial geo level layers
+        addGeoLevelLayers(map, currentGeoLevelRef.current);
         setMapLoaded(true);
       });
 
@@ -318,7 +445,7 @@ const MapArea: React.FC<MapAreaProps> = ({
           
           // Determine which country's config to use based on layer
           const isCanada = layerId.startsWith("canada-");
-          const config = isCanada ? canadaConfig : usConfig;
+          const config = isCanada ? canadaConfigRef.current : usConfigRef.current;
           const sourceName = isCanada ? "canada-tiles" : "us-tiles";
           
           const geoId = feature.properties[config.idField];
@@ -346,7 +473,6 @@ const MapArea: React.FC<MapAreaProps> = ({
           if (typeof metric === "number" && setSelectedMetricValue) {
             const location = locationDataRef.current[geoId];
             if (location) {
-              // Map to existing props (will be refactored in Task 11b)
               setSelectedCountyName(location.name);
               setSelectedStateName(location.region as StateNames);
             }
@@ -383,18 +509,76 @@ const MapArea: React.FC<MapAreaProps> = ({
       return () => {
         map.off("moveend", handleMoveEnd);
         mapRef.current?.remove();
+        mapRef.current = null;
       };
     }
-  }, []);
+  }, [addGeoLevelLayers]);
+  
+  // Handle geo level changes after map is loaded
+  useEffect(() => {
+    if (mapRef.current && mapLoaded) {
+      const map = mapRef.current;
+      
+      // Skip if this is the initial render (layers already added in onLoad)
+      if (currentGeoLevelRef.current === selectedGeoLevel && map.getSource("us-tiles")) {
+        return;
+      }
+      
+      console.log(`Switching geo level: ${currentGeoLevelRef.current} -> ${selectedGeoLevel}`);
+      
+      // Remove old layers and sources
+      removeGeoLevelLayers(map);
+      
+      // Add new layers and sources
+      addGeoLevelLayers(map, selectedGeoLevel);
+      
+      // Update ref
+      currentGeoLevelRef.current = selectedGeoLevel;
+      
+      // Trigger re-coloring once tiles load
+      const handleSourceData = (e: maplibregl.MapSourceDataEvent) => {
+        if (e.sourceId === "us-tiles" && e.isSourceLoaded) {
+          loadColors(map);
+          map.off("sourcedata", handleSourceData);
+        }
+      };
+      map.on("sourcedata", handleSourceData);
+    }
+  }, [selectedGeoLevel, mapLoaded, addGeoLevelLayers, removeGeoLevelLayers]);
 
+  // Color features when data loads - need to wait for tiles to be rendered
   useEffect(() => {
     if (dataLoaded && mapLoaded && mapRef.current) {
-      loadColors(mapRef.current);
+      const map = mapRef.current;
+      
+      // Try to color immediately
+      loadColors(map);
+      
+      // Also listen for idle event to catch when tiles finish rendering
+      const handleIdle = () => {
+        loadColors(map);
+      };
+      
+      // Listen for sourcedata to catch when tile data arrives
+      const handleSourceData = (e: maplibregl.MapSourceDataEvent) => {
+        if ((e.sourceId === "us-tiles" || e.sourceId === "canada-tiles") && e.isSourceLoaded) {
+          // Small delay to ensure features are rendered
+          setTimeout(() => loadColors(map), 100);
+        }
+      };
+      
+      map.on("idle", handleIdle);
+      map.on("sourcedata", handleSourceData);
+      
+      return () => {
+        map.off("idle", handleIdle);
+        map.off("sourcedata", handleSourceData);
+      };
     }
-  }, [geoMetrics, dataLoaded, mapLoaded]);
+  }, [geoMetrics, dataLoaded, mapLoaded, loadColors]);
 
   useEffect(() => {
-    if (mapRef.current) {
+    if (mapRef.current && mapLoaded) {
       const map = mapRef.current;
 
       const handleMousemove = (event: maplibregl.MapMouseEvent & { features?: maplibregl.MapGeoJSONFeature[] }) => {
@@ -405,7 +589,7 @@ const MapArea: React.FC<MapAreaProps> = ({
           
           // Determine which country's config to use based on layer
           const isCanada = layerId.startsWith("canada-");
-          const config = isCanada ? canadaConfig : usConfig;
+          const config = isCanada ? canadaConfigRef.current : usConfigRef.current;
           
           const geoId = feature.properties[config.idField];
           const metric = geoMetricsRef.current[geoId];
@@ -464,73 +648,22 @@ const MapArea: React.FC<MapAreaProps> = ({
 
       // Remove any previous handlers and add new ones for both layers
       INTERACTIVE_LAYERS.forEach(layerId => {
-        map.off("mousemove", layerId, handleMousemove);
-        map.on("mousemove", layerId, handleMousemove);
+        if (map.getLayer(layerId)) {
+          map.off("mousemove", layerId, handleMousemove);
+          map.on("mousemove", layerId, handleMousemove);
+        }
       });
 
       // Cleanup function
       return () => {
         INTERACTIVE_LAYERS.forEach(layerId => {
-          map.off("mousemove", layerId, handleMousemove);
+          if (map.getLayer(layerId)) {
+            map.off("mousemove", layerId, handleMousemove);
+          }
         });
       };
     }
-  }, [geoMetrics, dataLoaded, mapLoaded, selectedMetricIdObject]);
-
-  const loadColors = (map: maplibregl.Map) => {
-    let coloredCount = 0;
-    let noDataCount = 0;
-    
-    // Color US features
-    const usFeatures = map.queryRenderedFeatures({ layers: ["us-fill"] });
-    usFeatures.forEach((feature) => {
-      if (feature.id === undefined) return;
-      
-      const geoId = feature.properties[usConfig.idField];
-      const metric = geoMetricsRef.current[geoId];
-
-      const featureRef = {
-        source: "us-tiles",
-        sourceLayer: usConfig.sourceLayer,
-        id: feature.id,
-      };
-
-      if (metric !== undefined) {
-        const color = getColor(startColorRef.current, endColorRef.current, metric);
-        map.setFeatureState(featureRef, { color });
-        coloredCount++;
-      } else {
-        map.setFeatureState(featureRef, { color: "#D3D3D3" });
-        noDataCount++;
-      }
-    });
-    
-    // Color Canada features
-    const canadaFeatures = map.queryRenderedFeatures({ layers: ["canada-fill"] });
-    canadaFeatures.forEach((feature) => {
-      if (feature.id === undefined) return;
-      
-      const geoId = feature.properties[canadaConfig.idField];
-      const metric = geoMetricsRef.current[geoId];
-
-      const featureRef = {
-        source: "canada-tiles",
-        sourceLayer: canadaConfig.sourceLayer,
-        id: feature.id,
-      };
-
-      if (metric !== undefined) {
-        const color = getColor(startColorRef.current, endColorRef.current, metric);
-        map.setFeatureState(featureRef, { color });
-        coloredCount++;
-      } else {
-        map.setFeatureState(featureRef, { color: "#D3D3D3" });
-        noDataCount++;
-      }
-    });
-    
-    console.log(`loadColors: colored=${coloredCount}, noData=${noDataCount}`);
-  };
+  }, [geoMetrics, dataLoaded, mapLoaded, selectedMetricIdObject, selectedGeoLevel]);
 
   const handleSearchInputChange = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -677,6 +810,29 @@ const MapArea: React.FC<MapAreaProps> = ({
             )}
           </>
         )}
+      </div>
+
+      {/* Geographic Level Selector - positioned at top-left over the map, shifts when sidebar is open */}
+      <div
+        id="geo-level-selector"
+        className={`absolute top-2 z-10 flex rounded bg-white/95 shadow-md backdrop-blur-sm transition-[left] duration-300 ease-in-out ${
+          leftSidebarOpen ? "left-[245px]" : "left-2"
+        }`}
+      >
+        {(Object.keys(UNIFIED_GEO_LEVELS) as UnifiedGeoLevel[]).map((level) => (
+          <button
+            key={level}
+            id={`geo-level-${level}`}
+            onClick={() => setSelectedGeoLevel(level)}
+            className={`px-2 py-1 text-xs font-medium transition-colors first:rounded-l last:rounded-r ${
+              selectedGeoLevel === level
+                ? "bg-purple-700 text-white"
+                : "bg-white/95 text-gray-700 hover:bg-gray-100"
+            } border-r border-gray-200 last:border-r-0`}
+          >
+            {UNIFIED_GEO_LEVELS[level].label}
+          </button>
+        ))}
       </div>
 
       <div

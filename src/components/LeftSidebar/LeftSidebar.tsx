@@ -11,6 +11,8 @@ interface LeftSidebarProps {
   selectedStateName: StateNames;
   selectedCensusTract: string;
   selectedMetricValue: number | null;
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
 }
 
 interface SummaryInfo {
@@ -33,16 +35,17 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
   selectedStateName,
   selectedCensusTract,
   selectedMetricValue,
+  isOpen,
+  setIsOpen,
 }) => {
-  const [openLeftSidebar, setOpenLeftSidebar] = useState<boolean>(true);
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
   const [summaryInfoData, setSummaryInfoData] = useState<SummaryInfo>({});
 
   useEffect(() => {
-    if (!openLeftSidebar) {
+    if (!isOpen) {
       setIsAnimating(true);
     }
-  }, [openLeftSidebar]);
+  }, [isOpen]);
 
   useEffect(() => {
     const fetchSummaryInfoData = async () => {
@@ -82,7 +85,7 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
   }, []);
 
   const handleTransitionEnd = () => {
-    if (!openLeftSidebar) {
+    if (!isOpen) {
       setIsAnimating(false);
     }
   };
@@ -99,11 +102,11 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
       <aside
         id="left-sidebar"
         className={`absolute z-10 h-[calc(100vh-140px)] w-[233px] border-r-[1px] border-solid border-leftSidebarRightBorder bg-white transition-transform duration-300 ease-in-out ${
-          openLeftSidebar ? "translate-x-0" : "-translate-x-full"
+          isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
         onTransitionEnd={handleTransitionEnd}
       >
-        <CloseLeftSidebarButton setOpenLeftSidebar={setOpenLeftSidebar} />
+        <CloseLeftSidebarButton setOpenLeftSidebar={setIsOpen} />
         <LeftSidebarHeader
           selectedCountyName={selectedCountyName}
           selectedStateName={selectedStateName}
@@ -114,12 +117,12 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
           domainScores={domainScoresForCensusTract}
         />
       </aside>
-      {!openLeftSidebar && !isAnimating && (
+      {!isOpen && !isAnimating && (
         <div
           id="hamburger-toggle-for-left-sidebar"
           className="relative flex min-w-10 max-w-10"
         >
-          <LeftSidebarHamburgerIcon onClick={() => setOpenLeftSidebar(true)} />
+          <LeftSidebarHamburgerIcon onClick={() => setIsOpen(true)} />
         </div>
       )}
     </div>

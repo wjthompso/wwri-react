@@ -89,9 +89,16 @@ const fetchData = async (
   // Use the idField from config (e.g., "geoid" for US tracts)
   const idField = defaultGeoConfig.idField;
   const geoMetrics: Record<string, number> = {};
+  
+  // Domain score metrics are 0-100, individual metrics are 0-1
+  // Normalize domain scores to 0-1 for consistent color mapping
+  const isDomainScore = metric.metricId.endsWith("_domain_score");
+  
   results.data.forEach((item: any) => {
     if (item[idField] && item[metric.metricId]) {
-      geoMetrics[item[idField]] = parseFloat(item[metric.metricId]);
+      let value = parseFloat(item[metric.metricId]);
+      if (isDomainScore) value = value / 100;
+      geoMetrics[item[idField]] = value;
     }
   });
 
@@ -349,20 +356,23 @@ const MapArea: React.FC<MapAreaProps> = ({
       const geoId = feature.properties[defaultGeoConfig.idField];
       const metric = geoMetricsRef.current[geoId];
 
+      const featureRef = {
+        source: "tilesource",
+        sourceLayer: defaultGeoConfig.sourceLayer,
+        id: feature.id,
+      };
+
       if (metric !== undefined) {
+        // Feature has data - set the color
         const color = getColor(
           startColorRef.current,
           endColorRef.current,
           metric,
         );
-        map.setFeatureState(
-          {
-            source: "tilesource",
-            sourceLayer: defaultGeoConfig.sourceLayer,
-            id: feature.id,
-          },
-          { color },
-        );
+        map.setFeatureState(featureRef, { color });
+      } else {
+        // Feature has no data - reset to default gray
+        map.setFeatureState(featureRef, { color: "#D3D3D3" });
       }
     });
   };

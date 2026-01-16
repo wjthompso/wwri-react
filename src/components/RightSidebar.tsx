@@ -215,25 +215,34 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
             {/* Domain Header */}
             <div className="flex w-[39%] text-sm items-center justify-between">
               <div className="flex items-center">
-                <button
-                  id={`${domain.id}-btn`}
-                  onClick={() => {
-                    setActiveButton(domain.id);
-                    setSelectedIndicator(domain.label);
-                    setSelectedMetricIdObject({
-                      domainId: domain.id,
-                      metricId: `${domain.id}_domain_score`,
-                      label: `${domain.label} Score`,
-                      description: domain.description,
-                      colorGradient: domain.colorGradient,
-                    });
-                  }}
-                  className={`mr-2 h-[20px] w-[20px] justify-self-start rounded-[0.2rem] border-[1px] ${
-                    activeButton === domain.id
-                      ? "border-metricSelectorBoxesBorderDefault bg-selectedMetricBGColorDefault"
-                      : "border-metricSelectorBoxesBorderDefault bg-metricSelectorBoxesDefault"
-                  }`}
-                ></button>
+                {/* Domains with subdomains (e.g., Sense of Place) don't have an overall domain_score */}
+                {domain.subdomains ? (
+                  <div
+                    id={`${domain.id}-btn`}
+                    className="mr-2 h-[20px] w-[20px] rounded-[0.2rem] border-[1px] border-gray-300 bg-gray-200"
+                    title="Expand to select a subdomain"
+                  />
+                ) : (
+                  <button
+                    id={`${domain.id}-btn`}
+                    onClick={() => {
+                      setActiveButton(domain.id);
+                      setSelectedIndicator(domain.label);
+                      setSelectedMetricIdObject({
+                        domainId: domain.id,
+                        metricId: `${domain.id}_domain_score`,
+                        label: `${domain.label} Score`,
+                        description: domain.description,
+                        colorGradient: domain.colorGradient,
+                      });
+                    }}
+                    className={`mr-2 h-[20px] w-[20px] justify-self-start rounded-[0.2rem] border-[1px] ${
+                      activeButton === domain.id
+                        ? "border-metricSelectorBoxesBorderDefault bg-selectedMetricBGColorDefault"
+                        : "border-metricSelectorBoxesBorderDefault bg-metricSelectorBoxesDefault"
+                    }`}
+                  />
+                )}
                 <span className="font-bold">{domain.label}</span>
               </div>
               <button
@@ -274,8 +283,8 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
                                 setSelectedIndicator(subdomain.label);
                                 setSelectedMetricIdObject({
                                   domainId: domain.id,
-                                  metricId: subdomain.id,
-                                  label: subdomain.label,
+                                  metricId: `${domain.id}_${subdomain.id}_domain_score`,
+                                  label: `${subdomain.label} Score`,
                                   description: subdomain.description,
                                   colorGradient: domain.colorGradient,
                                 });

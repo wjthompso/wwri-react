@@ -522,7 +522,7 @@ const domainHierarchy: Domain[] = [
         label: "Iconic Places",
         description: "Nationally recognized iconic places resilience to wildfire.",
         status: {
-          id: "iconic_places_status",
+          id: "sense_of_place_iconic_places_status_presence", // No aggregated status metric; use the only status metric
           label: "Status",
           description: "Presence and status of iconic places.",
           metrics: [
@@ -534,11 +534,11 @@ const domainHierarchy: Domain[] = [
           ],
         },
         resilience: {
-          id: "iconic_places_resilience",
+          id: "sense_of_place_iconic_places_resilience",
           label: "Resilience",
           description: "Iconic places capacity to resist and recover from wildfire.",
           resistance: {
-            id: "iconic_places_resistance",
+            id: "sense_of_place_iconic_places_resistance",
             label: "Resistance",
             description: "Resistance to wildfire impacts on iconic places.",
             metrics: [
@@ -570,7 +570,7 @@ const domainHierarchy: Domain[] = [
             ],
           },
           recovery: {
-            id: "iconic_places_recovery",
+            id: "sense_of_place_iconic_places_recovery",
             label: "Recovery",
             description: "Recovery capacity for iconic places.",
             metrics: [
@@ -593,7 +593,7 @@ const domainHierarchy: Domain[] = [
         label: "Iconic Species",
         description: "Iconic species resilience to wildfire.",
         status: {
-          id: "iconic_species_status",
+          id: "sense_of_place_iconic_species_status",
           label: "Status",
           description: "Conservation status of iconic species.",
           metrics: [
@@ -610,11 +610,11 @@ const domainHierarchy: Domain[] = [
           ],
         },
         resilience: {
-          id: "iconic_species_resilience",
+          id: "sense_of_place_iconic_species_resilience",
           label: "Resilience",
           description: "Iconic species capacity to resist and recover from wildfire.",
           resistance: {
-            id: "iconic_species_resistance",
+            id: "sense_of_place_iconic_species_resistance",
             label: "Resistance",
             description: "Iconic species resistance to fire.",
             metrics: [
@@ -631,7 +631,7 @@ const domainHierarchy: Domain[] = [
             ],
           },
           recovery: {
-            id: "iconic_species_recovery",
+            id: "sense_of_place_iconic_species_recovery",
             label: "Recovery",
             description: "Iconic species recovery capacity.",
             metrics: [

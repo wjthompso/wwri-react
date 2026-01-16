@@ -19,49 +19,108 @@ const DEFAULT_COUNTRY = "us";
 const DEFAULT_GEO_LEVEL = "tract";
 
 /**
- * Tile server configuration for each geographic level.
- * Maps country + geo level to tile URL, source layer, and attribute field names.
+ * Configuration for each tile source (country + geography type).
+ * - tileUrl: URL template for vector tiles
+ * - sourceLayer: Layer name in the MBTiles
+ * - idField: Attribute name in tiles for the geographic ID
+ * - nameField: Attribute name in tiles for display name
+ * - apiCountry: Country path segment for API calls
+ * - apiGeoLevel: Geo level path segment for API calls
+ * - displayName: Human-readable name for tooltips
  */
-export const GEO_LEVEL_CONFIG = {
-  us: {
-    tract: {
+interface TileSourceConfig {
+  tileUrl: string;
+  sourceLayer: string;
+  idField: string;
+  nameField: string;
+  apiCountry: string;
+  apiGeoLevel: string;
+  displayName: string;
+}
+
+/**
+ * Unified geographic levels that combine US and Canada data.
+ * Each level has configs for both countries to display simultaneously.
+ */
+export const UNIFIED_GEO_LEVELS = {
+  tract: {
+    label: "Census Tracts",
+    us: {
       tileUrl: `${TILE_SERVER_URL}/data/us_tracts/{z}/{x}/{y}.pbf`,
       sourceLayer: "us_tracts",
       idField: "geoid",
       nameField: "tract",
-    },
-    county: {
-      tileUrl: `${TILE_SERVER_URL}/data/us_counties/{z}/{x}/{y}.pbf`,
-      sourceLayer: "us_counties",
-      idField: "stco_fips",
-      nameField: "county",
-    },
-    state: {
-      tileUrl: `${TILE_SERVER_URL}/data/us_states/{z}/{x}/{y}.pbf`,
-      sourceLayer: "us_states",
-      idField: "name",
-      nameField: "name",
-    },
-  },
-  canada: {
-    subdivision: {
+      apiCountry: "us",
+      apiGeoLevel: "tract",
+      displayName: "Census Tract",
+    } as TileSourceConfig,
+    canada: {
       tileUrl: `${TILE_SERVER_URL}/data/ca_subdivisions/{z}/{x}/{y}.pbf`,
       sourceLayer: "ca_subdivisions",
       idField: "csduid",
       nameField: "subdvsn",
-    },
-    division: {
+      apiCountry: "canada",
+      apiGeoLevel: "subdivision",
+      displayName: "Census Subdivision",
+    } as TileSourceConfig,
+  },
+  county: {
+    label: "Counties / Divisions",
+    us: {
+      tileUrl: `${TILE_SERVER_URL}/data/us_counties/{z}/{x}/{y}.pbf`,
+      sourceLayer: "us_counties",
+      idField: "stco_fips",
+      nameField: "county",
+      apiCountry: "us",
+      apiGeoLevel: "county",
+      displayName: "County",
+    } as TileSourceConfig,
+    canada: {
       tileUrl: `${TILE_SERVER_URL}/data/ca_divisions/{z}/{x}/{y}.pbf`,
       sourceLayer: "ca_divisions",
       idField: "cduid",
       nameField: "division",
-    },
-    province: {
+      apiCountry: "canada",
+      apiGeoLevel: "division",
+      displayName: "Census Division",
+    } as TileSourceConfig,
+  },
+  state: {
+    label: "States / Provinces",
+    us: {
+      tileUrl: `${TILE_SERVER_URL}/data/us_states/{z}/{x}/{y}.pbf`,
+      sourceLayer: "us_states",
+      idField: "name",
+      nameField: "name",
+      apiCountry: "us",
+      apiGeoLevel: "state",
+      displayName: "State",
+    } as TileSourceConfig,
+    canada: {
       tileUrl: `${TILE_SERVER_URL}/data/ca_provinces/{z}/{x}/{y}.pbf`,
       sourceLayer: "ca_provinces",
       idField: "name",
       nameField: "name",
-    },
+      apiCountry: "canada",
+      apiGeoLevel: "province",
+      displayName: "Province",
+    } as TileSourceConfig,
+  },
+} as const;
+
+export type UnifiedGeoLevel = keyof typeof UNIFIED_GEO_LEVELS;
+
+// Keep old config for backward compatibility during transition
+export const GEO_LEVEL_CONFIG = {
+  us: {
+    tract: UNIFIED_GEO_LEVELS.tract.us,
+    county: UNIFIED_GEO_LEVELS.county.us,
+    state: UNIFIED_GEO_LEVELS.state.us,
+  },
+  canada: {
+    subdivision: UNIFIED_GEO_LEVELS.tract.canada,
+    division: UNIFIED_GEO_LEVELS.county.canada,
+    province: UNIFIED_GEO_LEVELS.state.canada,
   },
 } as const;
 
@@ -70,16 +129,33 @@ export type USGeoLevel = keyof typeof GEO_LEVEL_CONFIG.us;
 export type CanadaGeoLevel = keyof typeof GEO_LEVEL_CONFIG.canada;
 
 /**
+ * The API always uses 'geoid' as the ID column name, regardless of geography type.
+ * This is different from tile attributes which vary (geoid, csduid, stco_fips, etc.)
+ */
+export const API_ID_FIELD = "geoid";
+
+/**
  * Builds the URL for fetching metric data.
- * New API: /:country/:geoLevel/:domain/:metric
+ * API: /:country/:geoLevel/:domain/:metric
  */
 export function getMetricUrl(domain: string, metric: string, country = DEFAULT_COUNTRY, geoLevel = DEFAULT_GEO_LEVEL): string {
     return `${API_BASE_URL}/${country}/${geoLevel}/${domain}/${metric}`;
 }
 
 /**
+ * Builds metric URLs for both US and Canada at a unified geo level.
+ */
+export function getUnifiedMetricUrls(domain: string, metric: string, unifiedLevel: UnifiedGeoLevel): { us: string; canada: string } {
+    const levelConfig = UNIFIED_GEO_LEVELS[unifiedLevel];
+    return {
+        us: `${API_BASE_URL}/${levelConfig.us.apiCountry}/${levelConfig.us.apiGeoLevel}/${domain}/${metric}`,
+        canada: `${API_BASE_URL}/${levelConfig.canada.apiCountry}/${levelConfig.canada.apiGeoLevel}/${domain}/${metric}`,
+    };
+}
+
+/**
  * Builds the URL for fetching summary data (all domain scores).
- * New API: /:country/:geoLevel/summary
+ * API: /:country/:geoLevel/summary
  */
 export function getSummaryUrl(country = DEFAULT_COUNTRY, geoLevel = DEFAULT_GEO_LEVEL): string {
     return `${API_BASE_URL}/${country}/${geoLevel}/summary`;
@@ -87,15 +163,26 @@ export function getSummaryUrl(country = DEFAULT_COUNTRY, geoLevel = DEFAULT_GEO_
 
 /**
  * Builds the URL for fetching location data.
- * New API: /:country/:geoLevel/locations
+ * API: /:country/:geoLevel/locations
  */
 export function getLocationsUrl(country = DEFAULT_COUNTRY, geoLevel = DEFAULT_GEO_LEVEL): string {
     return `${API_BASE_URL}/${country}/${geoLevel}/locations`;
 }
 
 /**
+ * Builds location URLs for both US and Canada at a unified geo level.
+ */
+export function getUnifiedLocationUrls(unifiedLevel: UnifiedGeoLevel): { us: string; canada: string } {
+    const levelConfig = UNIFIED_GEO_LEVELS[unifiedLevel];
+    return {
+        us: `${API_BASE_URL}/${levelConfig.us.apiCountry}/${levelConfig.us.apiGeoLevel}/locations`,
+        canada: `${API_BASE_URL}/${levelConfig.canada.apiCountry}/${levelConfig.canada.apiGeoLevel}/locations`,
+    };
+}
+
+/**
  * Builds the URL for fetching available domains and metrics.
- * New API: /:country/:geoLevel/domains
+ * API: /:country/:geoLevel/domains
  */
 export function getDomainsUrl(country = DEFAULT_COUNTRY, geoLevel = DEFAULT_GEO_LEVEL): string {
     return `${API_BASE_URL}/${country}/${geoLevel}/domains`;

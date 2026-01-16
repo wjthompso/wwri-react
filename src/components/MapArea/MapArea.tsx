@@ -1,4 +1,10 @@
-import { getLocationsUrl, getMetricUrl, GEO_LEVEL_CONFIG, DEFAULT_COUNTRY, DEFAULT_GEO_LEVEL } from "config/api";
+import { 
+  getUnifiedMetricUrls, 
+  getUnifiedLocationUrls, 
+  UNIFIED_GEO_LEVELS, 
+  API_ID_FIELD,
+  UnifiedGeoLevel 
+} from "config/api";
 import MapOfFullStatenameToAbbreviation, {
   StateNames,
 } from "data/StateNameToAbbrevsMap";
@@ -15,16 +21,13 @@ import ZoomInIcon from "../../assets/ZoomInIcon.svg";
 import ZoomOutIcon from "../../assets/ZoomOutIcon.svg";
 import MapLegend from "./MapLegend";
 
-// Get config for current geo level (defaults to US tracts)
-const getGeoConfig = (country: string, geoLevel: string) => {
-  const countryConfig = GEO_LEVEL_CONFIG[country as keyof typeof GEO_LEVEL_CONFIG];
-  if (!countryConfig) return GEO_LEVEL_CONFIG.us.tract;
-  const levelConfig = countryConfig[geoLevel as keyof typeof countryConfig];
-  return levelConfig || GEO_LEVEL_CONFIG.us.tract;
-};
+// Current unified geographic level (will be made dynamic in Task 11b)
+const CURRENT_GEO_LEVEL: UnifiedGeoLevel = "tract";
 
-// Default geo config for initial map style
-const defaultGeoConfig = getGeoConfig(DEFAULT_COUNTRY, DEFAULT_GEO_LEVEL);
+// Get configs for both US and Canada at current level
+const geoLevelConfig = UNIFIED_GEO_LEVELS[CURRENT_GEO_LEVEL];
+const usConfig = geoLevelConfig.us;
+const canadaConfig = geoLevelConfig.canada;
 
 const MAP_STYLE: StyleSpecification = {
   version: 8,
@@ -35,9 +38,17 @@ const MAP_STYLE: StyleSpecification = {
       tileSize: 256,
       attribution: "Map data © OpenStreetMap contributors",
     },
-    tilesource: {
+    // US tile source
+    "us-tiles": {
       type: "vector",
-      tiles: [defaultGeoConfig.tileUrl],
+      tiles: [usConfig.tileUrl],
+      minzoom: 0,
+      maxzoom: 14,
+    },
+    // Canada tile source
+    "canada-tiles": {
+      type: "vector",
+      tiles: [canadaConfig.tileUrl],
       minzoom: 0,
       maxzoom: 14,
     },
@@ -48,22 +59,51 @@ const MAP_STYLE: StyleSpecification = {
       type: "raster",
       source: "osm",
     },
+    // US fill layer
     {
-      id: "tiles",
+      id: "us-fill",
       type: "fill",
-      source: "tilesource",
-      "source-layer": defaultGeoConfig.sourceLayer,
+      source: "us-tiles",
+      "source-layer": usConfig.sourceLayer,
       paint: {
         "fill-color": ["coalesce", ["feature-state", "color"], "#D3D3D3"],
         "fill-opacity": 0.7,
       },
     },
-    // Selection highlight layer - shows cyan outline on selected polygon
+    // Canada fill layer
     {
-      id: "tiles-highlight",
+      id: "canada-fill",
+      type: "fill",
+      source: "canada-tiles",
+      "source-layer": canadaConfig.sourceLayer,
+      paint: {
+        "fill-color": ["coalesce", ["feature-state", "color"], "#D3D3D3"],
+        "fill-opacity": 0.7,
+      },
+    },
+    // US selection highlight layer
+    {
+      id: "us-highlight",
       type: "line",
-      source: "tilesource",
-      "source-layer": defaultGeoConfig.sourceLayer,
+      source: "us-tiles",
+      "source-layer": usConfig.sourceLayer,
+      paint: {
+        "line-color": "#00FFFF",
+        "line-width": 3,
+        "line-opacity": [
+          "case",
+          ["boolean", ["feature-state", "selected"], false],
+          1,
+          0,
+        ],
+      },
+    },
+    // Canada selection highlight layer
+    {
+      id: "canada-highlight",
+      type: "line",
+      source: "canada-tiles",
+      "source-layer": canadaConfig.sourceLayer,
       paint: {
         "line-color": "#00FFFF",
         "line-width": 3,
@@ -78,56 +118,118 @@ const MAP_STYLE: StyleSpecification = {
   ],
 };
 
+// Layer IDs for querying (fill layers are interactive)
+const INTERACTIVE_LAYERS = ["us-fill", "canada-fill"];
+
+/**
+ * Location data structure - supports both US and Canada fields
+ */
+interface LocationInfo {
+  name: string;           // Geographic unit name (county, subdivision, etc.)
+  region: string;         // State/Province name
+  country: "us" | "canada";
+}
+
+/**
+ * Fetches metric data from both US and Canada APIs, merges into single object.
+ * Keys are the tile attribute IDs (geoid for US, csduid for Canada).
+ */
 const fetchData = async (
   metric: SelectedMetricIdObject,
 ): Promise<Record<string, number>> => {
-  const url = getMetricUrl(metric.domainId, metric.metricId);
-  const response = await fetch(url);
-  const csvText = await response.text();
-  const results = Papa.parse(csvText, { header: true });
-
-  // Use the idField from config (e.g., "geoid" for US tracts)
-  const idField = defaultGeoConfig.idField;
+  const urls = getUnifiedMetricUrls(metric.domainId, metric.metricId, CURRENT_GEO_LEVEL);
+  
+  // Fetch both endpoints in parallel
+  const [usResponse, canadaResponse] = await Promise.all([
+    fetch(urls.us),
+    fetch(urls.canada),
+  ]);
+  
+  const [usText, canadaText] = await Promise.all([
+    usResponse.text(),
+    canadaResponse.text(),
+  ]);
+  
+  const usResults = Papa.parse(usText, { header: true });
+  const canadaResults = Papa.parse(canadaText, { header: true });
+  
   const geoMetrics: Record<string, number> = {};
   
   // Domain score metrics are 0-100, individual metrics are 0-1
   // Normalize domain scores to 0-1 for consistent color mapping
   const isDomainScore = metric.metricId.endsWith("_domain_score");
   
-  results.data.forEach((item: any) => {
-    if (item[idField] && item[metric.metricId]) {
+  // Process US data - API uses 'geoid', tiles use 'geoid' (same)
+  usResults.data.forEach((item: any) => {
+    if (item[API_ID_FIELD] && item[metric.metricId]) {
       let value = parseFloat(item[metric.metricId]);
       if (isDomainScore) value = value / 100;
-      geoMetrics[item[idField]] = value;
+      geoMetrics[item[API_ID_FIELD]] = value;
+    }
+  });
+  
+  // Process Canada data - API uses 'geoid', tiles use 'csduid'
+  // Store with 'geoid' key since we'll look up by tile attribute value
+  // (which matches the geoid value in the API)
+  canadaResults.data.forEach((item: any) => {
+    if (item[API_ID_FIELD] && item[metric.metricId]) {
+      let value = parseFloat(item[metric.metricId]);
+      if (isDomainScore) value = value / 100;
+      geoMetrics[item[API_ID_FIELD]] = value;
     }
   });
 
+  console.log(`Loaded metrics: US=${usResults.data.length}, Canada=${canadaResults.data.length}, Total=${Object.keys(geoMetrics).length}`);
+  
   return geoMetrics;
 };
 
-const fetchLocationData = async (): Promise<
-  Record<string, { county_name: string; state_name: StateNames }>
-> => {
-  const url = getLocationsUrl();
-  const response = await fetch(url);
-  const csvText = await response.text();
-  const results = Papa.parse(csvText, { header: true });
-
-  // Use the idField from config (e.g., "geoid" for US tracts)
-  const idField = defaultGeoConfig.idField;
-  const locationData: Record<
-    string,
-    { county_name: string; state_name: StateNames }
-  > = {};
-  results.data.forEach((item: any) => {
-    if (item[idField]) {
-      locationData[item[idField]] = {
-        county_name: item.county_name,
-        state_name: item.state_name,
+/**
+ * Fetches location data from both US and Canada APIs, merges into single object.
+ */
+const fetchLocationData = async (): Promise<Record<string, LocationInfo>> => {
+  const urls = getUnifiedLocationUrls(CURRENT_GEO_LEVEL);
+  
+  // Fetch both endpoints in parallel
+  const [usResponse, canadaResponse] = await Promise.all([
+    fetch(urls.us),
+    fetch(urls.canada),
+  ]);
+  
+  const [usText, canadaText] = await Promise.all([
+    usResponse.text(),
+    canadaResponse.text(),
+  ]);
+  
+  const usResults = Papa.parse(usText, { header: true });
+  const canadaResults = Papa.parse(canadaText, { header: true });
+  
+  const locationData: Record<string, LocationInfo> = {};
+  
+  // Process US data - has 'geoid', 'name' (county), 'state_name'
+  usResults.data.forEach((item: any) => {
+    if (item[API_ID_FIELD]) {
+      locationData[item[API_ID_FIELD]] = {
+        name: item.name || item.county_name || "",
+        region: item.state_name || "",
+        country: "us",
+      };
+    }
+  });
+  
+  // Process Canada data - has 'geoid', 'name' (subdivision), 'province'
+  canadaResults.data.forEach((item: any) => {
+    if (item[API_ID_FIELD]) {
+      locationData[item[API_ID_FIELD]] = {
+        name: item.name || "",
+        region: item.province || "",
+        country: "canada",
       };
     }
   });
 
+  console.log(`Loaded locations: US=${usResults.data.length}, Canada=${canadaResults.data.length}, Total=${Object.keys(locationData).length}`);
+  
   return locationData;
 };
 
@@ -150,13 +252,9 @@ const MapArea: React.FC<MapAreaProps> = ({
 }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const [geoMetrics, setGeoMetrics] = useState<Record<string, number>>({});
-  const [locationData, setLocationData] = useState<
-    Record<string, { county_name: string; state_name: StateNames }>
-  >({});
+  const [locationData, setLocationData] = useState<Record<string, LocationInfo>>({});
   const geoMetricsRef = useRef<Record<string, number>>({});
-  const locationDataRef = useRef<
-    Record<string, { county_name: string; state_name: StateNames }>
-  >({});
+  const locationDataRef = useRef<Record<string, LocationInfo>>({});
   const [dataLoaded, setDataLoaded] = useState(false);
   const [mapLoaded, setMapLoaded] = useState(false);
   const mapRef = useRef<maplibregl.Map | null>(null);
@@ -211,11 +309,19 @@ const MapArea: React.FC<MapAreaProps> = ({
         setMapLoaded(true);
       });
 
-      map.on("click", "tiles", (event) => {
+      // Click handler for both US and Canada layers
+      const handleClick = (event: maplibregl.MapMouseEvent & { features?: maplibregl.MapGeoJSONFeature[] }) => {
         const features = event.features;
         if (features && features.length > 0) {
           const feature = features[0];
-          const geoId = feature.properties[defaultGeoConfig.idField];
+          const layerId = feature.layer.id;
+          
+          // Determine which country's config to use based on layer
+          const isCanada = layerId.startsWith("canada-");
+          const config = isCanada ? canadaConfig : usConfig;
+          const sourceName = isCanada ? "canada-tiles" : "us-tiles";
+          
+          const geoId = feature.properties[config.idField];
           const metric = geoMetricsRef.current[geoId];
           
           // Clear previous selection highlight
@@ -229,8 +335,8 @@ const MapArea: React.FC<MapAreaProps> = ({
           // Set new selection highlight
           if (feature.id !== undefined) {
             const featureRef = {
-              source: "tilesource",
-              sourceLayer: defaultGeoConfig.sourceLayer,
+              source: sourceName,
+              sourceLayer: config.sourceLayer,
               id: feature.id,
             };
             map.setFeatureState(featureRef, { selected: true });
@@ -240,20 +346,31 @@ const MapArea: React.FC<MapAreaProps> = ({
           if (typeof metric === "number" && setSelectedMetricValue) {
             const location = locationDataRef.current[geoId];
             if (location) {
-              setSelectedCountyName(location.county_name);
-              setSelectedStateName(location.state_name);
+              // Map to existing props (will be refactored in Task 11b)
+              setSelectedCountyName(location.name);
+              setSelectedStateName(location.region as StateNames);
             }
             setSelectedCensusTract(geoId);
             setSelectedMetricValue(metric);
           }
         }
+      };
+
+      // Register click handler for both layers
+      INTERACTIVE_LAYERS.forEach(layerId => {
+        map.on("click", layerId, handleClick);
       });
 
-      map.on("mouseleave", "tiles", () => {
+      // Mouseleave handler for both layers
+      const handleMouseLeave = () => {
         if (popupRef.current) {
           popupRef.current.remove();
           popupRef.current = null;
         }
+      };
+      
+      INTERACTIVE_LAYERS.forEach(layerId => {
+        map.on("mouseleave", layerId, handleMouseLeave);
       });
 
       const handleMoveEnd = () => {
@@ -280,14 +397,20 @@ const MapArea: React.FC<MapAreaProps> = ({
     if (mapRef.current) {
       const map = mapRef.current;
 
-      const handleMousemove = (event: any) => {
+      const handleMousemove = (event: maplibregl.MapMouseEvent & { features?: maplibregl.MapGeoJSONFeature[] }) => {
         const features = event.features;
         if (features && features.length > 0) {
           const feature = features[0];
-          const geoId = feature.properties[defaultGeoConfig.idField];
+          const layerId = feature.layer.id;
+          
+          // Determine which country's config to use based on layer
+          const isCanada = layerId.startsWith("canada-");
+          const config = isCanada ? canadaConfig : usConfig;
+          
+          const geoId = feature.properties[config.idField];
           const metric = geoMetricsRef.current[geoId];
           const location = locationDataRef.current[geoId];
-          const displayName = feature.properties[defaultGeoConfig.nameField] || geoId;
+          const displayName = feature.properties[config.nameField] || geoId;
 
           if (!popupRef.current) {
             popupRef.current = new maplibregl.Popup({
@@ -296,8 +419,10 @@ const MapArea: React.FC<MapAreaProps> = ({
             });
           }
 
-          const stateAbbrev: string =
-            MapOfFullStatenameToAbbreviation[location?.state_name] || "";
+          // Get region abbreviation (state abbrev for US, full province name for Canada)
+          const regionDisplay: string = isCanada 
+            ? location?.region || ""
+            : MapOfFullStatenameToAbbreviation[location?.region as StateNames] || "";
 
           const color: string = getColor(
             startColorRef.current,
@@ -305,12 +430,15 @@ const MapArea: React.FC<MapAreaProps> = ({
             metric,
           );
 
+          // Show geographic level type in tooltip (e.g., "Census Tract" or "Census Subdivision")
+          const geoLevelDisplay = config.displayName;
+
           const tooltipHTML = `
             <div id="map-tooltip" class="rounded">
               <h1 class="font-bold text-[0.8rem] text-selectedIndicatorTextColor">
-                ${location?.county_name?.toUpperCase() || "N/A"}${stateAbbrev ? `, ${stateAbbrev}` : ""}
+                ${location?.name?.toUpperCase() || "N/A"}${regionDisplay ? `, ${regionDisplay}` : ""}
               </h1>
-              <h2 class="text-xs tracking-widest">${displayName}</h2>
+              <h2 class="text-xs tracking-widest">${geoLevelDisplay}: ${displayName}</h2>
               <div class="mt-1 flex items-center">
                 <div class="blackc mr-1 inline-block min-h-4 min-w-4 rounded-sm border-[1px] border-solid border-black" style="background-color: ${color}"></div>
                 <span class="font-bold text-black">
@@ -334,47 +462,74 @@ const MapArea: React.FC<MapAreaProps> = ({
         }
       };
 
-      // Remove the previous event handler
-      map.off("mousemove", "tiles", handleMousemove);
+      // Remove any previous handlers and add new ones for both layers
+      INTERACTIVE_LAYERS.forEach(layerId => {
+        map.off("mousemove", layerId, handleMousemove);
+        map.on("mousemove", layerId, handleMousemove);
+      });
 
-      // Add the new event handler
-      map.on("mousemove", "tiles", handleMousemove);
-
-      // Cleanup function to remove the event handler when the component unmounts or before re-registering it
+      // Cleanup function
       return () => {
-        map.off("mousemove", "tiles", handleMousemove);
+        INTERACTIVE_LAYERS.forEach(layerId => {
+          map.off("mousemove", layerId, handleMousemove);
+        });
       };
     }
   }, [geoMetrics, dataLoaded, mapLoaded, selectedMetricIdObject]);
 
   const loadColors = (map: maplibregl.Map) => {
-    const features = map.queryRenderedFeatures({ layers: ["tiles"] });
-    features.forEach((feature) => {
-      // Skip features without an id (required for setFeatureState)
+    let coloredCount = 0;
+    let noDataCount = 0;
+    
+    // Color US features
+    const usFeatures = map.queryRenderedFeatures({ layers: ["us-fill"] });
+    usFeatures.forEach((feature) => {
       if (feature.id === undefined) return;
       
-      const geoId = feature.properties[defaultGeoConfig.idField];
+      const geoId = feature.properties[usConfig.idField];
       const metric = geoMetricsRef.current[geoId];
 
       const featureRef = {
-        source: "tilesource",
-        sourceLayer: defaultGeoConfig.sourceLayer,
+        source: "us-tiles",
+        sourceLayer: usConfig.sourceLayer,
         id: feature.id,
       };
 
       if (metric !== undefined) {
-        // Feature has data - set the color
-        const color = getColor(
-          startColorRef.current,
-          endColorRef.current,
-          metric,
-        );
+        const color = getColor(startColorRef.current, endColorRef.current, metric);
         map.setFeatureState(featureRef, { color });
+        coloredCount++;
       } else {
-        // Feature has no data - reset to default gray
         map.setFeatureState(featureRef, { color: "#D3D3D3" });
+        noDataCount++;
       }
     });
+    
+    // Color Canada features
+    const canadaFeatures = map.queryRenderedFeatures({ layers: ["canada-fill"] });
+    canadaFeatures.forEach((feature) => {
+      if (feature.id === undefined) return;
+      
+      const geoId = feature.properties[canadaConfig.idField];
+      const metric = geoMetricsRef.current[geoId];
+
+      const featureRef = {
+        source: "canada-tiles",
+        sourceLayer: canadaConfig.sourceLayer,
+        id: feature.id,
+      };
+
+      if (metric !== undefined) {
+        const color = getColor(startColorRef.current, endColorRef.current, metric);
+        map.setFeatureState(featureRef, { color });
+        coloredCount++;
+      } else {
+        map.setFeatureState(featureRef, { color: "#D3D3D3" });
+        noDataCount++;
+      }
+    });
+    
+    console.log(`loadColors: colored=${coloredCount}, noData=${noDataCount}`);
   };
 
   const handleSearchInputChange = (

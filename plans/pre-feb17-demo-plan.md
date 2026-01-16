@@ -288,3 +288,132 @@ When working on tasks:
 3. Mark tasks complete in both the summary table and the task details section
 4. Add any discovered context or notes to the relevant task section
 5. If blocked, note what's needed and who to contact
+
+### 🔍 Clarifying Questions Checklist
+
+Before starting work on any task, consider asking:
+
+**For Frontend Tasks:**
+- What screen sizes should I test for? (mobile, tablet, desktop, specific resolution)
+- Are there any browser compatibility requirements?
+- Should changes work with the left/right sidebar open, closed, or both?
+- Are there any existing design patterns or components I should follow?
+- Should changes be responsive/adaptive?
+
+**For Backend Tasks:**
+- What is the expected data format/schema?
+- Are there existing API endpoints I should use or modify?
+- What error handling is expected?
+- Are there performance considerations (e.g., large datasets)?
+- Should changes be backward compatible?
+
+**For Data/Database Tasks:**
+- What is the source of truth for this data?
+- Are there existing migration scripts I should follow?
+- What happens to existing data when changes are made?
+- Who owns/maintains the upstream data source?
+
+**For Styling Tasks:**
+- Are there specific brand guidelines beyond what's documented?
+- Should the design work in both light/dark modes (if applicable)?
+- Are there accessibility requirements (color contrast, font sizes)?
+- Should animations/transitions be added?
+
+The main idea here is that you want to ask the user clarifying questions to ensure that you are aligned.
+
+### ✅ Manual Verification Steps
+
+**Backend/API Verification (wwri-metrics-api):**
+
+1. **Check server is running:**
+   ```bash
+   # SSH into major-sculpin.nceas.ucsb.edu
+   # Check running processes
+   ps aux | grep node
+   # Or check specific port
+   lsof -i :3000
+   ```
+
+2. **Test API endpoints:**
+   ```bash
+   # Test basic health/status
+   curl https://major-sculpin.nceas.ucsb.edu/api/health
+   
+   # Test specific metric endpoint
+   curl "https://major-sculpin.nceas.ucsb.edu/api/metrics?geolevel=counties&geoid=06053&metric=infrastructure_domain_score"
+   
+   # Verify response format and data
+   ```
+
+3. **Check tile server:**
+   ```bash
+   # Test tile endpoint (adjust z/x/y as needed)
+   curl "https://major-sculpin.nceas.ucsb.edu/tiles/us_counties/5/5/12.pbf" --output test.pbf
+   
+   # Verify PBF file is valid (not empty, not HTML error page)
+   file test.pbf
+   ```
+
+4. **Check logs:**
+   ```bash
+   # View recent logs
+   tail -f /path/to/output.log
+   
+   # Or check systemd logs if running as service
+   sudo journalctl -u wwri-metrics-api -n 100 -f
+   ```
+
+5. **Database verification:**
+   ```bash
+   # If changes affect database, connect and verify
+   psql -h localhost -U username -d dbname
+   
+   # Check table schema
+   \d table_name
+   
+   # Sample some data
+   SELECT * FROM metrics LIMIT 5;
+   ```
+
+**Frontend Verification (wwri-react):**
+
+1. **Build and deploy:**
+   ```bash
+   # In wwri-react directory
+   npm run build
+   
+   # Verify no build errors
+   # Check dist/ folder was created
+   ls -lh dist/
+   
+   # Transfer to server (if deploying)
+   scp -r dist/* user@major-sculpin.nceas.ucsb.edu:/var/www/wwri/
+   ```
+
+2. **Browser testing:**
+   - Open https://major-sculpin.nceas.ucsb.edu in browser
+   - Open browser DevTools Console (check for errors)
+   - Open Network tab (verify API calls succeed)
+   - Test functionality manually
+   - Test at different viewport sizes
+   - Check on different browsers if possible
+
+3. **Visual regression check:**
+   - Take screenshots before and after changes
+   - Compare key UI elements
+   - Verify colors, spacing, alignment match expectations
+
+**Cross-System Verification:**
+
+1. **Frontend → Backend communication:**
+   - Open browser DevTools Network tab
+   - Trigger actions that should call API
+   - Verify requests are sent to correct endpoints
+   - Verify response status codes (200, 404, etc.)
+   - Verify response data structure matches expectations
+
+2. **Data flow verification:**
+   - Click through the app workflow
+   - Verify each step updates correctly
+   - Check that selections persist/update as expected
+   - Test edge cases (no data, missing data, null values)

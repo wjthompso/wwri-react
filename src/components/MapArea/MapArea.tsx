@@ -271,7 +271,7 @@ const MapArea: React.FC<MapAreaProps> = ({
       "source-layer": config.us.sourceLayer,
       paint: {
         "fill-color": ["coalesce", ["feature-state", "color"], "#D3D3D3"],
-        "fill-opacity": 0.7,
+        "fill-opacity": 1,
       },
     });
     
@@ -283,7 +283,7 @@ const MapArea: React.FC<MapAreaProps> = ({
       "source-layer": config.canada.sourceLayer,
       paint: {
         "fill-color": ["coalesce", ["feature-state", "color"], "#D3D3D3"],
-        "fill-opacity": 0.7,
+        "fill-opacity": 1,
       },
     });
     

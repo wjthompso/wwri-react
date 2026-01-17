@@ -6,14 +6,24 @@ import { Domain } from "types/domainTypes";
 import DownArrow from "../assets/DownArrow.svg";
 import RightSideArrow from "../assets/RightSideArrow.svg";
 import SearchIcon from "../assets/SearchIcon.svg";
+import {
+  DomainScores,
+  getDomainScoreColor,
+  getMetricColor,
+  getOverallScoreColor,
+} from "../utils/domainScoreColors";
 import flattenDomainHierarchy, {
   IndicatorObject,
 } from "../utils/flattenDomainHierarchyForSearch";
 import { LayoutUnified, LayoutUnifiedCompact } from "./RightSidebar/layouts";
+import { RegionAllMetrics } from "./App";
 
 interface RightSidebarProps {
   selectedMetricIdObject: SelectedMetricIdObject | null;
   setSelectedMetricIdObject: (metric: SelectedMetricIdObject) => void;
+  domainScores: DomainScores | null;
+  selectedMetricValue: number | null;
+  regionAllMetrics: RegionAllMetrics | null;
 }
 
 const stateMap = [
@@ -64,6 +74,9 @@ const highlightMatches = (text: string, searchTerm: string) => {
 const RightSidebar: React.FC<RightSidebarProps> = ({
   selectedMetricIdObject,
   setSelectedMetricIdObject,
+  domainScores,
+  selectedMetricValue,
+  regionAllMetrics,
 }) => {
   const [showIndicatorSuggestions, setShowIndicatorSuggestions] = useState(false);
   // Initialize activeButton to match default metric in App.tsx
@@ -224,11 +237,14 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
                 },
               });
             }}
-            className={`mr-2 h-[20px] w-[20px] justify-self-start rounded-[0.2rem] border-[1px] ${
+            className={`mr-2 h-[20px] w-[20px] justify-self-start rounded-[0.2rem] border-[1px] transition-colors duration-200 ${
               activeButton === "overall_resilience"
-                ? "border-metricSelectorBoxesBorderDefault bg-selectedMetricBGColorDefault"
-                : "border-metricSelectorBoxesBorderDefault bg-metricSelectorBoxesDefault"
+                ? "border-black ring-2 ring-blue-400"
+                : "border-metricSelectorBoxesBorderDefault"
             }`}
+            style={{
+              backgroundColor: getOverallScoreColor(domainScores?.overall_resilience),
+            }}
           />
           <span className="font-bold">Overall Score</span>
         </div>
@@ -256,11 +272,14 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
                       colorGradient: domain.colorGradient,
                     });
                   }}
-                  className={`mr-2 h-[20px] w-[20px] justify-self-start rounded-[0.2rem] border-[1px] ${
+                  className={`mr-2 h-[20px] w-[20px] justify-self-start rounded-[0.2rem] border-[1px] transition-colors duration-200 ${
                     activeButton === domain.id
-                      ? "border-metricSelectorBoxesBorderDefault bg-selectedMetricBGColorDefault"
-                      : "border-metricSelectorBoxesBorderDefault bg-metricSelectorBoxesDefault"
+                      ? "border-black ring-2 ring-blue-400"
+                      : "border-metricSelectorBoxesBorderDefault"
                   }`}
+                  style={{
+                    backgroundColor: getDomainScoreColor(domain.id, domainScores),
+                  }}
                 />
                 <span className="font-bold">{domain.label}</span>
               </div>
@@ -308,11 +327,14 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
                                   colorGradient: domain.colorGradient,
                                 });
                               }}
-                              className={`mr-2 h-[18px] w-[18px] rounded-[0.2rem] border-[1px] ${
+                              className={`mr-2 h-[18px] w-[18px] rounded-[0.2rem] border-[1px] transition-colors duration-200 ${
                                 activeButton === `${domain.id}-${subdomain.id}`
-                                  ? "border-metricSelectorBoxesBorderDefault bg-selectedMetricBGColorDefault"
-                                  : "border-metricSelectorBoxesBorderDefault bg-metricSelectorBoxesDefault"
+                                  ? "border-black ring-2 ring-blue-400"
+                                  : "border-metricSelectorBoxesBorderDefault"
                               }`}
+                              style={{
+                                backgroundColor: getDomainScoreColor(domain.id, domainScores),
+                              }}
                             />
                             <span className="font-semibold">{subdomain.label}</span>
                           </div>
@@ -344,6 +366,9 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
                             setResistanceLabel={setResistanceLabel}
                             recoveryLabel={recoveryLabel}
                             setRecoveryLabel={setRecoveryLabel}
+                            domainScores={domainScores}
+                            selectedMetricValue={selectedMetricValue}
+                            regionAllMetrics={regionAllMetrics}
                           />
                         )}
                       </div>
@@ -363,6 +388,9 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
                     setResistanceLabel={setResistanceLabel}
                     recoveryLabel={recoveryLabel}
                     setRecoveryLabel={setRecoveryLabel}
+                    domainScores={domainScores}
+                    selectedMetricValue={selectedMetricValue}
+                    regionAllMetrics={regionAllMetrics}
                   />
                 )}
               </>
@@ -380,12 +408,35 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
           SELECTED INDICATOR
         </h1>
         <div id="box-holder" className="ml-2 flex flex-row items-center">
-          <button
+          <div
             id="selected-indicator-box"
-            className="flex h-5 w-5 items-center justify-center rounded-[0.2rem] border-[1px] border-black bg-[#2693C4]"
-          >
-            <div className="h-full w-full rounded-sm"></div>
-          </button>
+            className="flex h-5 w-5 items-center justify-center rounded-[0.2rem] border-[1px] border-black"
+            style={{
+              // Use the actual metric value from regionAllMetrics if available
+              backgroundColor: (() => {
+                if (!selectedMetricIdObject) return "rgb(200, 200, 200)";
+                
+                // Try to get from regionAllMetrics first
+                if (regionAllMetrics) {
+                  const domainMetrics = regionAllMetrics[selectedMetricIdObject.domainId];
+                  if (domainMetrics && selectedMetricIdObject.metricId in domainMetrics) {
+                    const metricValue = domainMetrics[selectedMetricIdObject.metricId];
+                    if (metricValue !== null && metricValue !== undefined) {
+                      return getMetricColor(selectedMetricIdObject.domainId, metricValue);
+                    }
+                  }
+                }
+                
+                // Fallback to selectedMetricValue from map click
+                if (selectedMetricValue !== null) {
+                  return getMetricColor(selectedMetricIdObject.domainId, selectedMetricValue);
+                }
+                
+                // Final fallback to domain color
+                return getDomainScoreColor(selectedMetricIdObject.domainId, domainScores);
+              })(),
+            }}
+          />
           <span className="ml-2 font-BeVietnamPro font-semibold">
             {selectedMetricIdObject
               ? selectedMetricIdObject.label

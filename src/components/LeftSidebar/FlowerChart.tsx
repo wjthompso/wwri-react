@@ -1,124 +1,91 @@
 import React, { useEffect, useRef, useState } from "react";
-
-interface DataItem {
-  id: string;
-  value: number;
-  color: string;
-  name: string;
-  bgColorTWClass: string;
-}
-
-let data: DataItem[] = [
-  {
-    id: "water",
-    value: 0.91,
-    color: "#A7344E",
-    name: "Domain 1",
-    bgColorTWClass: "bg-[#A7344E]",
-  },
-  {
-    id: "social",
-    value: 0.72,
-    color: "#B94E31",
-    name: "Domain 2",
-    bgColorTWClass: "bg-[#B94E31]",
-  },
-  {
-    id: "air",
-    value: 0.9,
-    color: "#E16727",
-    name: "Domain 3",
-    bgColorTWClass: "bg-[#E16727]",
-  },
-  {
-    id: "economy",
-    value: 0.64,
-    color: "#D78935",
-    name: "Domain 4",
-    bgColorTWClass: "bg-[#D78935]",
-  },
-  {
-    id: "ecosystems",
-    value: 0.8,
-    color: "#D5A227",
-    name: "Domain 5",
-    bgColorTWClass: "bg-[#D5A227]",
-  },
-  {
-    id: "culture",
-    value: 0.05,
-    color: "#DAC32F",
-    name: "Domain 6",
-    bgColorTWClass: "bg-[#DAC32F]",
-  },
-  {
-    id: "biodiversity",
-    value: 0.72,
-    color: "#A9B646",
-    name: "Domain 7",
-    bgColorTWClass: "bg-[#A9B646]",
-  },
-  {
-    id: "carbon",
-    value: 0.84,
-    color: "#2FBD89",
-    name: "Domain 8",
-    bgColorTWClass: "bg-[#2FBD89]",
-  },
-  {
-    id: "infrastructure",
-    value: 1.0,
-    color: "#4EA09F",
-    name: "Domain 9",
-    bgColorTWClass: "bg-[#4EA09F]",
-  },
-];
+import {
+  DomainScores,
+  FLOWER_CHART_DOMAINS,
+  normalizeScore,
+} from "utils/domainScoreColors";
+import getColor from "../../utils/getColor";
 
 interface FlowerChartProps {
-  domainScores: {
-    overall_resilience: number;
-    air: number;
-    water: number;
-    ecosystems: number;
-    biodiversity: number;
-    infrastructure: number;
-    social: number;
-    economy: number;
-    culture: number;
-    carbon: number;
-  };
+  domainScores: DomainScores | null;
+}
+
+// White color for gradient interpolation
+const WHITE = { r: 255, g: 255, b: 255 };
+
+// Neutral gray for no-data state
+const NEUTRAL_GRAY = "#c8c8c8";
+
+/**
+ * Converts hex color to RGB object
+ */
+function hexToRgb(hex: string): { r: number; g: number; b: number } {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result
+    ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16),
+      }
+    : { r: 200, g: 200, b: 200 };
+}
+
+/**
+ * Gets the color for a domain based on its score.
+ * - No score/null: neutral gray
+ * - Score 0-1: interpolate from white to brand color
+ */
+function getDomainColor(
+  score: number | undefined | null,
+  brandColorHex: string
+): string {
+  if (score === undefined || score === null || isNaN(score)) {
+    return NEUTRAL_GRAY;
+  }
+  const normalizedScore = normalizeScore(score);
+  const brandColorRgb = hexToRgb(brandColorHex);
+  return getColor(WHITE, brandColorRgb, normalizedScore);
 }
 
 const FlowerChart: React.FC<FlowerChartProps> = ({ domainScores }) => {
   const chartRef = useRef<SVGGElement | null>(null);
-  const legendRef = useRef<HTMLDivElement | null>(null);
   const [centerText, setCenterText] = useState("--");
   const [textColor, setTextColor] = useState("currentColor");
-  const [hoveredSlice, setHoveredSlice] = useState<string | null>(null);
+  const [hoveredDomain, setHoveredDomain] = useState<string | null>(null);
 
-  const domainKeys = Object.keys(domainScores) as (keyof typeof domainScores)[];
+  // Build data array from domain scores using new brand colors
+  const data = FLOWER_CHART_DOMAINS.map((domain) => {
+    const score = domainScores?.[domain.apiKey] ?? null;
+    const normalizedValue = score !== null ? normalizeScore(score) : 0;
+    const color = getDomainColor(score, domain.brandColor);
 
-  if (domainKeys.length > 0) {
-    const updatedData = data.map((item) => {
-      const score = domainScores[item.id as keyof typeof domainScores];
-      return { ...item, value: score };
-    });
-    data = updatedData;
-  }
+    return {
+      id: domain.apiKey,
+      name: domain.displayName,
+      value: normalizedValue,
+      color: color,
+      brandColor: domain.brandColor,
+      hasData: score !== null,
+    };
+  });
 
   useEffect(() => {
     const chart = chartRef.current;
     if (!chart) return;
 
+    // Clear existing paths
+    chart.querySelectorAll("path").forEach((path) => path.remove());
+
     const totalArcs = data.length;
     const arcAngle = (2 * Math.PI) / totalArcs;
-    const offsetAngle = Math.PI / 2; // Adjust this value to set the starting angle of the "Water" slice
+    const offsetAngle = Math.PI / 2; // Start from top
 
     data.forEach((d, i) => {
       const startAngle = i * arcAngle - offsetAngle;
       const endAngle = startAngle + arcAngle;
       const innerRadius = 40;
-      const outerRadius = innerRadius + d.value * 125;
+      // Use a minimum outer radius so slices are visible even with 0 value
+      const outerRadius = innerRadius + Math.max(d.value * 125, 10);
 
       const x0 = Math.cos(startAngle) * innerRadius;
       const y0 = Math.sin(startAngle) * innerRadius;
@@ -141,39 +108,47 @@ const FlowerChart: React.FC<FlowerChartProps> = ({ domainScores }) => {
 
       const path = document.createElementNS(
         "http://www.w3.org/2000/svg",
-        "path",
+        "path"
       );
       path.setAttribute("d", pathData);
       path.setAttribute("fill", d.color);
       path.setAttribute(
         "class",
-        "aster__solid-arc transition-colors duration-100 ease-out",
+        "aster__solid-arc transition-colors duration-100 ease-out cursor-pointer"
       );
 
-      // Add event listeners for hover effect
+      // Hover event handlers
       path.addEventListener("mouseover", () => {
         chart.querySelectorAll("path.aster__solid-arc").forEach((p) => {
           if (p !== path) {
             p.setAttribute("fill", "#d3d3d3");
           }
         });
-        setCenterText((d.value * 100).toFixed(0));
-        setTextColor(d.color);
-        setHoveredSlice(d.name);
+        if (d.hasData) {
+          setCenterText((d.value * 100).toFixed(0));
+          setTextColor(d.brandColor);
+        } else {
+          setCenterText("--");
+          setTextColor(NEUTRAL_GRAY);
+        }
+        setHoveredDomain(d.name);
       });
 
       path.addEventListener("mouseout", () => {
-        chart.querySelectorAll("path.aster__solid-arc").forEach((p, index) => {
-          p.setAttribute("fill", data[index].color);
+        data.forEach((domain, index) => {
+          const paths = chart.querySelectorAll("path.aster__solid-arc");
+          if (paths[index]) {
+            paths[index].setAttribute("fill", domain.color);
+          }
         });
         setCenterText("--");
         setTextColor("currentColor");
-        setHoveredSlice(null);
+        setHoveredDomain(null);
       });
 
       chart.appendChild(path);
 
-      // Add outline arc
+      // Add outline arc (shows max possible size)
       const outlineRadius = innerRadius + 125;
       const outlinePathData = [
         `M ${Math.cos(startAngle) * innerRadius} ${Math.sin(startAngle) * innerRadius}`,
@@ -185,7 +160,7 @@ const FlowerChart: React.FC<FlowerChartProps> = ({ domainScores }) => {
 
       const outlinePath = document.createElementNS(
         "http://www.w3.org/2000/svg",
-        "path",
+        "path"
       );
       outlinePath.setAttribute("d", outlinePathData);
       outlinePath.setAttribute("fill", "none");
@@ -193,23 +168,23 @@ const FlowerChart: React.FC<FlowerChartProps> = ({ domainScores }) => {
       outlinePath.setAttribute("stroke-width", "1");
       chart.appendChild(outlinePath);
     });
+
     return () => {
-      // Delete all of the path objects so that we can re-render them
-      chart.querySelectorAll("path.aster__solid-arc").forEach((path) => {
-        path.remove();
-      });
+      // Cleanup on unmount or data change
+      chart.querySelectorAll("path").forEach((path) => path.remove());
     };
   }, [domainScores]);
 
   return (
-    <div>
+    <div id="flower-chart-container">
       <div className="h-[11rem] w-full">
         <svg
+          id="flower-chart-svg"
           className="aster__plot flex flex-shrink flex-row justify-start"
           preserveAspectRatio="xMidYMid"
           viewBox="0 0 400 400"
         >
-          <g id="chart" transform="translate(165,170)" ref={chartRef}>
+          <g id="flower-chart-arcs" transform="translate(165,170)" ref={chartRef}>
             <text
               className="text-3xl font-bold text-leftSidebarRightBorder"
               dy=".35em"
@@ -221,30 +196,30 @@ const FlowerChart: React.FC<FlowerChartProps> = ({ domainScores }) => {
           </g>
         </svg>
       </div>
-      <div className="mb-2 ml-1">
+      <div id="flower-chart-legend" className="mb-2 ml-1">
         <h1 className="pb-2 font-BeVietnamPro text-sm font-bold text-leftSidebarOverallResilience">
           Legend
         </h1>
-        <div
-          className="flex max-w-[194px] flex-wrap items-center justify-between"
-          ref={legendRef}
-        >
+        <div className="flex max-w-[194px] flex-wrap items-center justify-between">
           {data.map((domain, index) => (
             <div
               key={index}
-              className={`mb-1 inline-flex min-w-[50%] items-center ${
-                hoveredSlice && hoveredSlice !== domain.name
-                  ? "text-gray-400 opacity-50"
-                  : "text-black opacity-100"
+              id={`legend-item-${domain.id}`}
+              className={`mb-1 inline-flex min-w-[50%] items-center transition-opacity duration-100 ${
+                hoveredDomain && hoveredDomain !== domain.name
+                  ? "opacity-50"
+                  : "opacity-100"
               }`}
             >
               <div
-                className={`mr-1 h-[14px] w-[14px] rounded-sm transition-colors duration-100 ease-out ${
-                  hoveredSlice && hoveredSlice !== domain.name
-                    ? "bg-gray-400"
-                    : domain.bgColorTWClass
-                }`}
-              ></div>
+                className="mr-1 h-[14px] w-[14px] rounded-sm transition-colors duration-100 ease-out"
+                style={{
+                  backgroundColor:
+                    hoveredDomain && hoveredDomain !== domain.name
+                      ? "#d3d3d3"
+                      : domain.color,
+                }}
+              />
               <p className="font-BeVietnamPro text-xs">{domain.name}</p>
             </div>
           ))}

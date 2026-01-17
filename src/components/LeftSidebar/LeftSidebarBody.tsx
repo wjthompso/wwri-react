@@ -1,21 +1,11 @@
+import { DomainScores } from "utils/domainScoreColors";
 import GraphReport from "../../assets/GraphReport.svg";
 import CircularProgressBar from "./CircularProgressBar";
 import FlowerChart from "./FlowerChart";
 
 interface LeftSidebarBodyProps {
   overallResilienceScore: number | null;
-  domainScores: {
-    overall_resilience: number;
-    air: number;
-    water: number;
-    ecosystems: number;
-    biodiversity: number;
-    infrastructure: number;
-    social: number;
-    economy: number;
-    culture: number;
-    carbon: number;
-  };
+  domainScores: DomainScores | null;
 }
 
 export function LeftSidebarBody({

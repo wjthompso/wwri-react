@@ -11,7 +11,7 @@
 | # | Task | Status |
 |---|------|--------|
 | 1 | Update domain colors to brand colors | ✅ Done |
-| 2 | Dynamic metric highlighting on polygon selection | ⬜ Pending |
+| 2 | Dynamic metric highlighting on polygon selection | ✅ Done |
 | 3 | Restore Sense of Place + Overall Score (with Carlo) | ⬜ Pending |
 | 4 | Fix geographic context display | ⬜ Pending |
 | 5 | Redesign subheader: selected region + breadcrumb path | ⬜ Pending |
@@ -25,7 +25,7 @@
 | 13 | Reports page (waiting on Tessa's doc) | ⬜ Blocked |
 | 14 | Additional pages (waiting on Tessa's doc) | ⬜ Blocked |
 
-**Progress:** 1/14 complete
+**Progress:** 2/14 complete
 
 ---
 
@@ -34,6 +34,7 @@
 | Date | Changes |
 |------|---------|
 | Jan 16 | Created plan from meeting notes. Task 1 (domain colors) completed during meeting via AI. |
+| Jan 16 | Task 2 (dynamic metric highlighting) completed. Domain boxes now color based on selected polygon's scores. |
 
 ---
 
@@ -63,15 +64,28 @@
 
 ---
 
-### Task 2: Dynamic Metric Highlighting on Polygon Selection
+### Task 2: Dynamic Metric Highlighting on Polygon Selection ✅
 
-**Status:** Pending
+**Status:** Complete (Jan 16, 2026)
 
 **Description:** When user clicks a polygon (selects a region), the individual domain score boxes in the left sidebar should dynamically color based on that region's values. Reference: Climate Vulnerability Index does this.
 
 **Example:** If Infrastructure score is 0.8 for selected region, the Infrastructure box should be 80% of the way to the brand color.
 
-**Files to modify:** `LeftSidebar.tsx`, `LeftSidebarBody.tsx`
+**Files modified:**
+- `src/utils/domainScoreColors.ts` - New utility for domain score → color mapping
+- `src/components/App.tsx` - Lifted summary data fetching, passes scores to sidebars
+- `src/components/LeftSidebar/LeftSidebar.tsx` - Receives domain scores as prop
+- `src/components/LeftSidebar/LeftSidebarBody.tsx` - Updated types
+- `src/components/LeftSidebar/FlowerChart.tsx` - Updated to use new brand colors, removed carbon domain
+- `src/components/RightSidebar.tsx` - Domain boxes now color dynamically based on scores
+
+**Implementation notes:**
+- Domain API key mapping: infrastructure→Infrastructure, social→Communities, economy→Livelihoods, culture→Sense of Place, biodiversity→Species, ecosystems→Habitats, water→Water, air→Air Quality
+- Carbon domain removed (no longer in new domain structure)
+- No selection → neutral gray (#c8c8c8)
+- With selection → white-to-brand-color gradient based on 0-1 (or 0-100) score
+- Active/selected state shown with blue ring instead of background color change
 
 ---
 

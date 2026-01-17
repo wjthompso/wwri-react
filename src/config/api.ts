@@ -188,5 +188,14 @@ export function getDomainsUrl(country = DEFAULT_COUNTRY, geoLevel = DEFAULT_GEO_
     return `${API_BASE_URL}/${country}/${geoLevel}/domains`;
 }
 
+/**
+ * Builds the URL for fetching all metrics for a single region.
+ * API: /:country/:geoLevel/region/:geoid
+ * Returns JSON with all metric values for the specified region.
+ */
+export function getRegionMetricsUrl(geoid: string, country = DEFAULT_COUNTRY, geoLevel = DEFAULT_GEO_LEVEL): string {
+    return `${API_BASE_URL}/${country}/${geoLevel}/region/${geoid}`;
+}
+
 export { API_BASE_URL, DEFAULT_COUNTRY, DEFAULT_GEO_LEVEL };
 

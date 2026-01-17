@@ -1,6 +1,6 @@
-import { getSummaryUrl } from "config/api";
 import { StateNames } from "data/StateNameToAbbrevsMap";
 import React, { useEffect, useState } from "react";
+import { DomainScores } from "utils/domainScoreColors";
 import { CloseLeftSidebarButton } from "./CloseLeftSidebarButton";
 import { LeftSidebarBody } from "./LeftSidebarBody";
 import LeftSidebarHamburgerIcon from "./LeftSidebarHamburgerIcon";
@@ -13,21 +13,7 @@ interface LeftSidebarProps {
   selectedMetricValue: number | null;
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
-}
-
-interface SummaryInfo {
-  [geoid: string]: {
-    overall_resilience: number;
-    air: number;
-    water: number;
-    ecosystems: number;
-    biodiversity: number;
-    infrastructure: number;
-    social: number;
-    economy: number;
-    culture: number;
-    carbon: number;
-  };
+  domainScores: DomainScores | null;
 }
 
 const LeftSidebar: React.FC<LeftSidebarProps> = ({
@@ -37,9 +23,9 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
   selectedMetricValue,
   isOpen,
   setIsOpen,
+  domainScores,
 }) => {
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
-  const [summaryInfoData, setSummaryInfoData] = useState<SummaryInfo>({});
 
   useEffect(() => {
     if (!isOpen) {
@@ -47,55 +33,14 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
     }
   }, [isOpen]);
 
-  useEffect(() => {
-    const fetchSummaryInfoData = async () => {
-      try {
-        const url = getSummaryUrl();
-        const response = await fetch(url);
-        const csvText = await response.text();
-
-        const lines = csvText.trim().split("\n");
-        const headers = lines[0].split(",");
-
-        const data: SummaryInfo = lines.slice(1).reduce((acc, line) => {
-          const values = line.split(",");
-          const geoid = values[0];
-
-          const record = headers.reduce(
-            (obj, header, index) => {
-              if (header !== "geoid") {
-                obj[header] = parseFloat(values[index]);
-              }
-              return obj;
-            },
-            {} as Record<string, number>,
-          );
-
-          acc[geoid] = record as SummaryInfo[string];
-          return acc;
-        }, {} as SummaryInfo);
-
-        setSummaryInfoData(data);
-      } catch (error) {
-        console.error("Error fetching summary info data:", error);
-      }
-    };
-
-    fetchSummaryInfoData();
-  }, []);
-
   const handleTransitionEnd = () => {
     if (!isOpen) {
       setIsAnimating(false);
     }
   };
 
-  // Attempt to get the overall-resilience score for the selected census tract
-  const overallResilienceScoreForCensusTract =
-    summaryInfoData[selectedCensusTract]?.overall_resilience || null;
-
-  // Attempt to get the domain scores for the chosen census tract
-  const domainScoresForCensusTract = summaryInfoData[selectedCensusTract] || {};
+  // Get the overall resilience score from domain scores
+  const overallResilienceScore = domainScores?.overall_resilience ?? null;
 
   return (
     <div className="">
@@ -113,8 +58,8 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
           selectedCensusTract={selectedCensusTract}
         />
         <LeftSidebarBody
-          overallResilienceScore={overallResilienceScoreForCensusTract}
-          domainScores={domainScoresForCensusTract}
+          overallResilienceScore={overallResilienceScore}
+          domainScores={domainScores}
         />
       </aside>
       {!isOpen && !isAnimating && (

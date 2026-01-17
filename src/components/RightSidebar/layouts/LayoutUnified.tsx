@@ -6,11 +6,15 @@
  * Missing sections show muted text with no metric boxes below.
  * - Infrastructure, Communities: Missing Status
  * - Air Quality, Water: Missing Recovery
+ * 
+ * All boxes now dynamically color based on the selected polygon's domain score.
  */
 
 import { Domain, ResilienceSubdomain, Status } from "types/domainTypes";
+import { DomainScores, getDomainScoreColor, getMetricColor } from "utils/domainScoreColors";
 import HierarchyArrows from "../../../assets/HierarchyArrows.svg";
 import SubHierarchyArrows from "../../../assets/SubHierarchyArrows.svg";
+import { RegionAllMetrics } from "../../App";
 
 interface LayoutUnifiedProps {
   domain: Domain;
@@ -24,6 +28,9 @@ interface LayoutUnifiedProps {
   setResistanceLabel: (label: string | null) => void;
   recoveryLabel: string | null;
   setRecoveryLabel: (label: string | null) => void;
+  domainScores: DomainScores | null;
+  selectedMetricValue: number | null;
+  regionAllMetrics: RegionAllMetrics | null;
 }
 
 /** Check if a section has available metrics */
@@ -42,10 +49,45 @@ const LayoutUnified: React.FC<LayoutUnifiedProps> = ({
   setResistanceLabel,
   recoveryLabel,
   setRecoveryLabel,
+  domainScores,
+  selectedMetricValue,
+  regionAllMetrics,
 }) => {
+  // Get the dynamic color for this domain based on selected polygon's scores
+  const domainColor = getDomainScoreColor(domain.id, domainScores);
   const statusAvailable = hasMetrics(domain.status);
   const resistanceAvailable = hasMetrics(domain.resilience?.resistance);
   const recoveryAvailable = hasMetrics(domain.resilience?.recovery);
+
+  // Helper to get button classes with active state
+  const getButtonClass = (buttonId: string, size: "sm" | "md" = "md") => {
+    const baseSize = size === "sm" ? "h-3.5 w-3.5 rounded-sm" : "h-4 w-4 rounded-[0.2rem]";
+    const activeClass = activeButton === buttonId
+      ? "border-black ring-2 ring-blue-400"
+      : "border-metricSelectorBoxesBorderDefault";
+    return `${baseSize} border-[1px] transition-colors duration-200 ${activeClass}`;
+  };
+
+  /**
+   * Get the color for a metric button.
+   * Uses the actual metric value from regionAllMetrics if available,
+   * otherwise falls back to domain color.
+   * @param metricId - The metric ID as it appears in the API (e.g., "road_access", not "infrastructure-road_access")
+   */
+  const getButtonColorByMetricId = (metricId: string) => {
+    // Try to get the actual metric value from regionAllMetrics
+    if (regionAllMetrics) {
+      const domainMetrics = regionAllMetrics[domain.id];
+      if (domainMetrics && metricId in domainMetrics) {
+        const metricValue = domainMetrics[metricId];
+        if (metricValue !== null && metricValue !== undefined) {
+          return getMetricColor(domain.id, metricValue);
+        }
+      }
+    }
+    // Fallback to domain color if no individual metric value
+    return domainColor;
+  };
 
   return (
     <div id={`layout-unified-${domain.id}`} className="ml-[0.95rem] mt-1 h-[9.5rem]">
@@ -77,17 +119,17 @@ const LayoutUnified: React.FC<LayoutUnifiedProps> = ({
                       colorGradient: domain.colorGradient,
                     });
                   }}
-                  className={`mr-1 h-4 w-4 rounded-[0.2rem] border-[1px] ${
-                    activeButton === `${domain.id}-${domain.status!.id}`
-                      ? "border-metricSelectorBoxesBorderDefault bg-selectedMetricBGColorDefault"
-                      : "border-metricSelectorBoxesBorderDefault bg-metricSelectorBoxesDefault"
-                  }`}
+                  className={`mr-1 ${getButtonClass(`${domain.id}-${domain.status!.id}`)}`}
+                  style={{ backgroundColor: getButtonColorByMetricId(domain.status!.id) }}
                 />
                 <span>Status</span>
               </>
             ) : (
               <>
-                <div className="mr-1 h-4 w-4 rounded-[0.2rem] border-[1px] border-gray-300 bg-gray-200" />
+                <div 
+                  className="mr-1 h-4 w-4 rounded-[0.2rem] border-[1px] border-gray-300"
+                  style={{ backgroundColor: domainColor }}
+                />
                 <span className="text-gray-400">Status</span>
               </>
             )}
@@ -112,11 +154,8 @@ const LayoutUnified: React.FC<LayoutUnifiedProps> = ({
                       });
                       setSelectedIndicator(`${domain.label} ${metric.label}`);
                     }}
-                    className={`h-3.5 w-3.5 rounded-sm border-[1px] ${
-                      activeButton === `${domain.id}-${metric.id}`
-                        ? "border-metricSelectorBoxesBorderDefault bg-selectedMetricBGColorDefault"
-                        : "border-metricSelectorBoxesBorderDefault bg-metricSelectorBoxesDefault"
-                    }`}
+                    className={getButtonClass(`${domain.id}-${metric.id}`, "sm")}
+                    style={{ backgroundColor: getButtonColorByMetricId(metric.id) }}
                   />
                 ))}
               </div>
@@ -147,11 +186,8 @@ const LayoutUnified: React.FC<LayoutUnifiedProps> = ({
                   });
                 }
               }}
-              className={`mr-1 h-4 w-4 rounded-[0.2rem] border-[1px] ${
-                activeButton === `${domain.id}-${domain.resilience?.id}`
-                  ? "border-metricSelectorBoxesBorderDefault bg-selectedMetricBGColorDefault"
-                  : "border-metricSelectorBoxesBorderDefault bg-metricSelectorBoxesDefault"
-              }`}
+              className={`mr-1 ${getButtonClass(`${domain.id}-${domain.resilience?.id}`)}`}
+              style={{ backgroundColor: getButtonColorByMetricId(domain.resilience?.id || "") }}
             />
             <span>Resilience</span>
           </div>
@@ -184,17 +220,17 @@ const LayoutUnified: React.FC<LayoutUnifiedProps> = ({
                           colorGradient: domain.colorGradient,
                         });
                       }}
-                      className={`mr-1 h-4 w-4 rounded-[0.2rem] border-[1px] ${
-                        activeButton === `${domain.id}-${domain.resilience!.resistance!.id}`
-                          ? "border-metricSelectorBoxesBorderDefault bg-selectedMetricBGColorDefault"
-                          : "border-metricSelectorBoxesBorderDefault bg-metricSelectorBoxesDefault"
-                      }`}
+                      className={`mr-1 ${getButtonClass(`${domain.id}-${domain.resilience!.resistance!.id}`)}`}
+                      style={{ backgroundColor: getButtonColorByMetricId(domain.resilience!.resistance!.id) }}
                     />
                     <span>Resistance</span>
                   </>
                 ) : (
                   <>
-                    <div className="mr-1 h-4 w-4 rounded-[0.2rem] border-[1px] border-gray-300 bg-gray-200" />
+                    <div 
+                      className="mr-1 h-4 w-4 rounded-[0.2rem] border-[1px] border-gray-300"
+                      style={{ backgroundColor: domainColor }}
+                    />
                     <span className="text-gray-400">Resistance</span>
                   </>
                 )}
@@ -219,11 +255,8 @@ const LayoutUnified: React.FC<LayoutUnifiedProps> = ({
                           });
                           setSelectedIndicator(`${domain.label} ${metric.label}`);
                         }}
-                        className={`h-3.5 w-3.5 rounded-sm border-[1px] ${
-                          activeButton === `${domain.id}-${metric.id}`
-                            ? "border-metricSelectorBoxesBorderDefault bg-selectedMetricBGColorDefault"
-                            : "border-metricSelectorBoxesBorderDefault bg-metricSelectorBoxesDefault"
-                        }`}
+                        className={getButtonClass(`${domain.id}-${metric.id}`, "sm")}
+                        style={{ backgroundColor: getButtonColorByMetricId(metric.id) }}
                       />
                     ))}
                   </div>
@@ -254,19 +287,19 @@ const LayoutUnified: React.FC<LayoutUnifiedProps> = ({
                           colorGradient: domain.colorGradient,
                         });
                       }}
-                      className={`mr-1 h-4 w-4 rounded-[0.2rem] border-[1px] ${
-                        activeButton === `${domain.id}-${domain.resilience!.recovery!.id}`
-                          ? "border-metricSelectorBoxesBorderDefault bg-selectedMetricBGColorDefault"
-                          : "border-metricSelectorBoxesBorderDefault bg-metricSelectorBoxesDefault"
-                      }`}
+                      className={`mr-1 ${getButtonClass(`${domain.id}-${domain.resilience!.recovery!.id}`)}`}
+                      style={{ backgroundColor: getButtonColorByMetricId(domain.resilience!.recovery!.id) }}
                     />
                     <span>Recovery</span>
                   </>
                 ) : (
-              <>
-                <div className="mr-1 h-4 w-4 rounded-[0.2rem] border-[1px] border-gray-300 bg-gray-200" />
-                <span className="text-gray-400">Recovery</span>
-              </>
+                  <>
+                    <div 
+                      className="mr-1 h-4 w-4 rounded-[0.2rem] border-[1px] border-gray-300"
+                      style={{ backgroundColor: domainColor }}
+                    />
+                    <span className="text-gray-400">Recovery</span>
+                  </>
                 )}
               </div>
               {recoveryAvailable ? (
@@ -289,11 +322,8 @@ const LayoutUnified: React.FC<LayoutUnifiedProps> = ({
                           });
                           setSelectedIndicator(`${domain.label} ${metric.label}`);
                         }}
-                        className={`h-3.5 w-3.5 rounded-sm border-[1px] ${
-                          activeButton === `${domain.id}-${metric.id}`
-                            ? "border-metricSelectorBoxesBorderDefault bg-selectedMetricBGColorDefault"
-                            : "border-metricSelectorBoxesBorderDefault bg-metricSelectorBoxesDefault"
-                        }`}
+                        className={getButtonClass(`${domain.id}-${metric.id}`, "sm")}
+                        style={{ backgroundColor: getButtonColorByMetricId(metric.id) }}
                       />
                     ))}
                   </div>
@@ -313,4 +343,3 @@ const LayoutUnified: React.FC<LayoutUnifiedProps> = ({
 };
 
 export default LayoutUnified;
-

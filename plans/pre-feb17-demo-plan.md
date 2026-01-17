@@ -20,12 +20,13 @@
 | 8 | Update geo-level labels (add Canada equivalents) | ⬜ Pending |
 | 9 | Style geo-level selector buttons (larger, match aesthetic) | ⬜ Pending |
 | 10 | Make left sidebar wider | ⬜ Pending |
-| 11 | Deploy frontend code to Linux server | ⬜ Pending |
-| 12 | Mid-week check-in with Tessa | ⬜ Pending |
-| 13 | Reports page (waiting on Tessa's doc) | ⬜ Blocked |
-| 14 | Additional pages (waiting on Tessa's doc) | ⬜ Blocked |
+| 11 | Add smooth transitions to domain expand/collapse | ⬜ Pending |
+| 12 | Deploy frontend code to Linux server | ⬜ Pending |
+| 13 | Mid-week check-in with Tessa | ⬜ Pending |
+| 14 | Reports page (waiting on Tessa's doc) | ⬜ Blocked |
+| 15 | Additional pages (waiting on Tessa's doc) | ⬜ Blocked |
 
-**Progress:** 2/14 complete
+**Progress:** 2/15 complete
 
 ---
 
@@ -35,6 +36,7 @@
 |------|---------|
 | Jan 16 | Created plan from meeting notes. Task 1 (domain colors) completed during meeting via AI. |
 | Jan 16 | Task 2 (dynamic metric highlighting) completed. Domain boxes now color based on selected polygon's scores. |
+| Jan 16 | Added Task 11 (domain expand/collapse transitions). Renumbered subsequent tasks. |
 
 ---
 
@@ -212,7 +214,29 @@ Census Tracts
 
 ---
 
-### Task 11: Deploy Frontend Code to Linux Server
+### Task 11: Add Smooth Transitions to Domain Expand/Collapse
+
+**Status:** Pending
+
+**Description:** Add smooth animations when expanding or collapsing domains in the Indicator Navigation (right sidebar). Currently the expansion/collapse happens instantly, which feels abrupt. Adding a transition will improve the user experience and make the interface feel more polished.
+
+**Design considerations:**
+- Transition duration: ~200-300ms (fast enough to feel responsive, slow enough to be noticeable)
+- Easing function: ease-in-out or similar (smooth acceleration/deceleration)
+- Properties to animate: height, opacity, or use CSS transitions/Tailwind transitions
+- Ensure animation doesn't cause layout jank or affect performance
+
+**Implementation options:**
+1. CSS transitions on height/max-height with overflow handling
+2. React animation libraries (framer-motion, react-spring)
+3. Tailwind transition utilities
+4. CSS animations with @keyframes
+
+**Files to modify:** `RightSidebar.tsx`, possibly `LayoutUnified.tsx` or `LayoutUnifiedCompact.tsx`
+
+---
+
+### Task 12: Deploy Frontend Code to Linux Server
 
 **Status:** Pending
 
@@ -228,7 +252,7 @@ Census Tracts
 
 ---
 
-### Task 12: Mid-Week Check-in with Tessa
+### Task 13: Mid-Week Check-in with Tessa
 
 **Status:** Pending
 
@@ -242,7 +266,7 @@ Census Tracts
 
 ---
 
-### Task 13: Reports Page
+### Task 14: Reports Page
 
 **Status:** Blocked (waiting on Tessa's document)
 
@@ -257,7 +281,7 @@ Census Tracts
 
 ---
 
-### Task 14: Additional Website Pages
+### Task 15: Additional Website Pages
 
 **Status:** Blocked (waiting on Tessa's document)
 

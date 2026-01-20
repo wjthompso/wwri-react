@@ -15,6 +15,7 @@
 | 3A | Data Verification & EDA | ✅ Done |
 | 3B | Backend Data Import (CSV → PostgreSQL) | ✅ Done |
 | 3C | Frontend Integration | ✅ Done |
+| 3D | Style indicator selector boxes with ring offset | ⬜ Pending |
 | 4 | Fix geographic context display | ⬜ Pending |
 | 5 | Redesign subheader: selected region + breadcrumb path | ⬜ Pending |
 | 6 | Add metric description text under subheader title | ⬜ Pending |
@@ -28,7 +29,7 @@
 | 14 | Reports page (waiting on Tessa's doc) | ⬜ Blocked |
 | 15 | Additional pages (waiting on Tessa's doc) | ⬜ Blocked |
 
-**Progress:** 5/15 complete (Task 3 split into 3A/3B/3C, now all done)
+**Progress:** 5/16 complete (Task 3 split into 3A/3B/3C/3D)
 
 ---
 
@@ -42,6 +43,7 @@
 | Jan 20 | EDA on new data from Carlo. Task 3 metrics found: `sense_of_place_domain_score` ✅, `overall_resilience` → `wwri_final_score` ✅. See `wwri-metrics-api/data/exploratory_data_analysis.md`. Missing data analysis added - all key metrics have 93-100% coverage. |
 | Jan 20 | Task 3B completed: Imported 1.7M rows from CSVs to PostgreSQL, deployed to major-sculpin. Both `sense_of_place_domain_score` and `wwri_final_score` verified working in production. |
 | Jan 20 | Task 3C completed: Frontend integration for Sense of Place + Overall Resilience. Updated RightSidebar to use `wwri_final_score` from `regionAllMetrics`. All 8 domains now display correctly in FlowerChart. |
+| Jan 20 | Task 3D added: Style indicator selector boxes with ring offset effect (blue ring → transparent gap → colored box). Similar to Climate Vulnerability Index pattern using Tailwind's ring-offset utilities. |
 
 ---
 
@@ -216,6 +218,62 @@
 ---
 
 **Overall Task 3 Progress:** Part A ✅ | Part B ✅ | Part C ✅
+
+---
+
+### Task 3D: Style Indicator Selector Boxes with Ring Offset
+
+**Status:** Pending
+
+**Description:** Update the styling of indicator selector boxes in the right sidebar (Indicator Navigation) to match the Climate Vulnerability Index style with a ring offset effect.
+
+**Current behavior:**
+- Unselected boxes: Gray background, 1px gray border, 18px size
+- Polygon selected + box not active: Colored background, 1px gray border, 22px size
+- Polygon selected + box active: Colored background, black border, blue ring (`ring-2 ring-blue-400`), 22px size
+
+**Desired behavior:**
+When a box is in the "active/selected" state, add a ring offset effect:
+1. Outer blue border/ring (`ring-2 ring-blue-400`)
+2. Transparent gap between ring and box (ring offset)
+3. Inner colored box with its normal border
+
+**Implementation approach:**
+Use Tailwind's `ring-offset` utilities to create the transparent gap:
+- Add `ring-offset-2` or `ring-offset-3` for the transparent gap width
+- Add `ring-offset-white` to make the offset white/transparent
+- Adjust ring color if needed (currently `ring-blue-400`)
+
+**Current CSS (from inspection):**
+```css
+/* Active state currently */
+border-color: rgb(153 153 153/var(--tw-border-opacity));
+border-width: 1px;
+--tw-ring-color: rgba(6,105,150,.5); /* blue-400 */
+```
+
+**Target CSS (desired):**
+```css
+/* Add ring offset for gap effect */
+--tw-ring-offset-width: 2px; /* or 3px */
+--tw-ring-offset-color: #fff;
+--tw-ring-color: rgba(96, 165, 250, 1); /* blue-400 */
+```
+
+**Files to modify:**
+- `src/components/RightSidebar.tsx` - Update button className for active state
+- Possibly `src/components/RightSidebar/layouts/LayoutUnified.tsx` - If inner metrics need same treatment
+- Possibly `src/components/RightSidebar/layouts/LayoutUnifiedCompact.tsx` - For subdomain boxes
+
+**Reference:**
+- Climate Vulnerability Index uses this pattern
+- Tailwind ring offset docs: https://tailwindcss.com/docs/ring-offset-width
+
+**Test cases:**
+1. Unselected state: No ring, gray box
+2. Polygon selected, box not active: No ring, colored box
+3. Polygon selected, box active: Blue ring → transparent gap → colored box
+4. Verify all box types: Overall Resilience, domain boxes, subdomain boxes, individual metrics
 
 ---
 

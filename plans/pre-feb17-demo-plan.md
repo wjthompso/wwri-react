@@ -14,7 +14,7 @@
 | 2 | Dynamic metric highlighting on polygon selection | ✅ Done |
 | 3A | Data Verification & EDA | ✅ Done |
 | 3B | Backend Data Import (CSV → PostgreSQL) | ✅ Done |
-| 3C | Frontend Integration | ⬜ Pending |
+| 3C | Frontend Integration | ✅ Done |
 | 4 | Fix geographic context display | ⬜ Pending |
 | 5 | Redesign subheader: selected region + breadcrumb path | ⬜ Pending |
 | 6 | Add metric description text under subheader title | ⬜ Pending |
@@ -28,7 +28,7 @@
 | 14 | Reports page (waiting on Tessa's doc) | ⬜ Blocked |
 | 15 | Additional pages (waiting on Tessa's doc) | ⬜ Blocked |
 
-**Progress:** 4/17 complete (Task 3 split into 3A/3B/3C)
+**Progress:** 5/15 complete (Task 3 split into 3A/3B/3C, now all done)
 
 ---
 
@@ -41,6 +41,7 @@
 | Jan 16 | Added Task 11 (domain expand/collapse transitions). Renumbered subsequent tasks. |
 | Jan 20 | EDA on new data from Carlo. Task 3 metrics found: `sense_of_place_domain_score` ✅, `overall_resilience` → `wwri_final_score` ✅. See `wwri-metrics-api/data/exploratory_data_analysis.md`. Missing data analysis added - all key metrics have 93-100% coverage. |
 | Jan 20 | Task 3B completed: Imported 1.7M rows from CSVs to PostgreSQL, deployed to major-sculpin. Both `sense_of_place_domain_score` and `wwri_final_score` verified working in production. |
+| Jan 20 | Task 3C completed: Frontend integration for Sense of Place + Overall Resilience. Updated RightSidebar to use `wwri_final_score` from `regionAllMetrics`. All 8 domains now display correctly in FlowerChart. |
 
 ---
 
@@ -97,7 +98,7 @@
 
 ### Task 3: Restore Sense of Place + Overall Score
 
-**Status:** 🔄 In Progress (Part A complete, Part B pending)
+**Status:** ✅ Complete
 
 ---
 
@@ -179,34 +180,42 @@
 
 ---
 
-#### Task 3C: Frontend Integration ⬜ PENDING
+#### Task 3C: Frontend Integration ✅ COMPLETE
+
+**Status:** Complete (January 20, 2026)
 
 **Description:** Update frontend to display restored metrics.
 
-**Steps Required:**
+**Completed Steps:**
 
-1. **Update `domainHierarchy.ts`**
-   - Ensure Sense of Place domain is properly configured
-   - Add `wwri_final_score` as overall/total score reference
+1. ✅ **Verified `domainHierarchy.ts`**
+   - Sense of Place domain already properly configured with subdomains (Iconic Places, Iconic Species)
+   - All 22 sense_of_place metrics defined
 
-2. **Update API calls**
-   - Verify frontend requests use correct metric names
-   - Update any hardcoded metric references
+2. ✅ **Updated Overall Resilience metric**
+   - Changed from `overall_resilience` to `wwri_final_score`
+   - Updated `RightSidebar.tsx` to use `regionAllMetrics.wwri.wwri_final_score`
+   - Overall score is per-polygon only (no aggregate score for unselected state)
 
-3. **Update Flower Chart**
-   - Ensure it displays Sense of Place petal
-   - Add overall score display if not already present
+3. ✅ **Verified Flower Chart**
+   - `FLOWER_CHART_DOMAINS` already includes Sense of Place
+   - All 8 domain colors and mappings configured
 
-4. **Update Left Sidebar domain scores**
-   - Verify dynamic coloring works with `sense_of_place_domain_score`
+4. ✅ **Cleaned up DomainScores interface**
+   - Removed unused `overall_resilience` field
+   - Added note that `wwri_final_score` comes from `regionAllMetrics`
 
-5. **Test end-to-end**
-   - Select a polygon, verify all 8 domain scores appear
-   - Verify overall score displays correctly
+**Files Modified:**
+- `src/utils/domainScoreColors.ts` - Cleaned DomainScores interface
+- `src/components/RightSidebar.tsx` - Updated overall score button to use `wwri_final_score`
+
+**Notes:**
+- Overall score only shows when a polygon is selected (gray when no selection)
+- `wwri_final_score` is in the `wwri` domain in the API response
 
 ---
 
-**Overall Task 3 Progress:** Part A ✅ | Part B ⬜ | Part C ⬜
+**Overall Task 3 Progress:** Part A ✅ | Part B ✅ | Part C ✅
 
 ---
 

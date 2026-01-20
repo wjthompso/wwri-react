@@ -95,8 +95,8 @@ export const DOMAIN_ID_TO_API_KEY: Record<string, string> = {
 
 // Type for domain scores from API
 // Updated to match actual API column names from /summary endpoint
+// Note: Overall score (wwri_final_score) is NOT in summary - it comes from regionAllMetrics
 export interface DomainScores {
-  overall_resilience?: number;
   air_quality?: number;
   water?: number;
   natural_habitats?: number;
@@ -105,7 +105,7 @@ export interface DomainScores {
   communities?: number;
   livelihoods?: number;
   sense_of_place?: number;
-  sensitivity_analysis?: number;
+  // sensitivity_analysis is internal-only, not displayed
 }
 
 // White color for gradient start

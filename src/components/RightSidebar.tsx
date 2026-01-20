@@ -219,17 +219,17 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
 
       {/* Domain List */}
       <div id="domain-list" className="relative mb-1 ml-[0.35rem]">
-        {/* Overall Resilience Score - top-level metric (data pending from backend) */}
+        {/* Overall Resilience Score - from wwri_final_score metric */}
         <div className="flex items-center">
           <button
             id="overall_resilience-btn"
             onClick={() => {
-              setActiveButton("overall_resilience");
-              setSelectedIndicator("Overall Score");
+              setActiveButton("wwri_final_score");
+              setSelectedIndicator("Overall Resilience");
               setSelectedMetricIdObject({
-                domainId: "overall",
-                metricId: "overall_resilience",
-                label: "Overall Score",
+                domainId: "wwri",
+                metricId: "wwri_final_score",
+                label: "Overall Resilience",
                 description: "Overall wildfire resilience score combining all domains.",
                 colorGradient: {
                   startColor: { r: 255, g: 255, b: 255 },
@@ -238,15 +238,15 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
               });
             }}
             className={`mr-2 h-[20px] w-[20px] justify-self-start rounded-[0.2rem] border-[1px] transition-colors duration-200 ${
-              activeButton === "overall_resilience"
+              activeButton === "wwri_final_score"
                 ? "border-black ring-2 ring-blue-400"
                 : "border-metricSelectorBoxesBorderDefault"
             }`}
             style={{
-              backgroundColor: getOverallScoreColor(domainScores?.overall_resilience),
+              backgroundColor: getOverallScoreColor(regionAllMetrics?.wwri?.wwri_final_score),
             }}
           />
-          <span className="font-bold">Overall Score</span>
+          <span className="font-bold">Overall Resilience</span>
         </div>
 
         {/* Domain List - indented under Overall Score */}

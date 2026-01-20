@@ -12,7 +12,9 @@
 |---|------|--------|
 | 1 | Update domain colors to brand colors | ✅ Done |
 | 2 | Dynamic metric highlighting on polygon selection | ✅ Done |
-| 3 | Restore Sense of Place + Overall Score (with Carlo) | ⬜ Pending |
+| 3A | Data Verification & EDA | ✅ Done |
+| 3B | Backend Data Import (CSV → PostgreSQL) | ⬜ Pending |
+| 3C | Frontend Integration | ⬜ Pending (after 3B) |
 | 4 | Fix geographic context display | ⬜ Pending |
 | 5 | Redesign subheader: selected region + breadcrumb path | ⬜ Pending |
 | 6 | Add metric description text under subheader title | ⬜ Pending |
@@ -26,7 +28,7 @@
 | 14 | Reports page (waiting on Tessa's doc) | ⬜ Blocked |
 | 15 | Additional pages (waiting on Tessa's doc) | ⬜ Blocked |
 
-**Progress:** 2/15 complete
+**Progress:** 3/17 complete (Task 3 split into 3A/3B/3C)
 
 ---
 
@@ -37,6 +39,7 @@
 | Jan 16 | Created plan from meeting notes. Task 1 (domain colors) completed during meeting via AI. |
 | Jan 16 | Task 2 (dynamic metric highlighting) completed. Domain boxes now color based on selected polygon's scores. |
 | Jan 16 | Added Task 11 (domain expand/collapse transitions). Renumbered subsequent tasks. |
+| Jan 20 | EDA on new data from Carlo. Task 3 metrics found: `sense_of_place_domain_score` ✅, `overall_resilience` → `wwri_final_score` ✅. See `wwri-metrics-api/data/exploratory_data_analysis.md`. Missing data analysis added - all key metrics have 93-100% coverage. |
 
 ---
 
@@ -93,14 +96,122 @@
 
 ### Task 3: Restore Sense of Place + Overall Score
 
-**Status:** Pending (coordinate with Carlo)
+**Status:** 🔄 In Progress (Part A complete, Part B pending)
 
-**Description:** 
-- `sense_of_place_domain_score` should exist but is missing from DB
-- `overall_resilience` should exist but is missing from DB
-- UI elements have been restored, but data needs to be added by Carlo
+---
 
-**Action:** Coordinate with Carlo to populate these metrics in the database.
+#### Task 3A: Data Verification & EDA ✅ COMPLETE
+
+**Description:** Verify Carlo's updated data contains required metrics.
+
+**Completed (January 20, 2026):**
+- ✅ Received updated data from Carlo (December 2024)
+- ✅ Ran comprehensive EDA on all CSV files
+- ✅ Verified `sense_of_place_domain_score` present in all geographic files
+- ✅ Found overall score as `wwri_final_score` (different name than expected)
+- ✅ Created EDA documentation: `wwri-metrics-api/data/exploratory_data_analysis.md`
+- ✅ Created coverage analysis: `wwri-metrics-api/data/missing_data_analysis.md`
+
+**Key Findings:**
+- 105 unique metrics across 10 domains
+- All 8 domain scores + `wwri_final_score` have 93-100% coverage
+- `wwri_final_score` values range 64.39-82.70 (0-100 scale)
+
+---
+
+#### Task 3B: Backend Data Import ⬜ PENDING
+
+**Description:** Import the new CSV data into PostgreSQL and restart the API server.
+
+**How It Works:**
+- Backend loads metrics from PostgreSQL tables at startup (see `CachedDataV2.ts`)
+- Import script (`scripts/import_data.py`) reads CSVs and inserts into database
+- New CSVs from Carlo are already in place at `data/csvs/`
+
+**Steps Required:**
+
+1. **Set up SSH tunnel to database** (if running locally)
+   ```bash
+   # In separate terminal, create tunnel to major-sculpin PostgreSQL
+   ssh -L 5433:localhost:5432 wthompson@major-sculpin.nceas.ucsb.edu
+   ```
+
+2. **Run dry-run first to preview**
+   ```bash
+   cd wwri-metrics-api
+   python scripts/import_data.py --dry-run
+   ```
+
+3. **Import all CSV data into PostgreSQL**
+   ```bash
+   # Import smaller files first (quick)
+   python scripts/import_data.py --skip-large
+   
+   # Then import tracts separately (large file, takes longer)
+   python scripts/import_data.py --file us_census_tracts
+   ```
+
+4. **Verify data in database**
+   ```sql
+   -- Check row counts
+   SELECT 'us_state_metrics' as table_name, COUNT(*) FROM us_state_metrics
+   UNION ALL SELECT 'us_county_metrics', COUNT(*) FROM us_county_metrics
+   UNION ALL SELECT 'us_tract_metrics', COUNT(*) FROM us_tract_metrics;
+   
+   -- Check new metrics exist
+   SELECT DISTINCT metric FROM us_county_metrics 
+   WHERE metric IN ('sense_of_place_domain_score', 'wwri_final_score');
+   ```
+
+5. **Restart the API server**
+   ```bash
+   # On major-sculpin.nceas.ucsb.edu
+   pm2 restart wwri-api  # or however the service is managed
+   ```
+
+6. **Test API endpoints**
+   ```bash
+   # Test region endpoint with new metric
+   curl "https://major-sculpin.nceas.ucsb.edu/us/county/region/06037" | jq '.metrics.sense_of_place'
+   curl "https://major-sculpin.nceas.ucsb.edu/us/county/region/06037" | jq '.metrics.wwri'
+   ```
+
+**Environment Requirements:**
+- `.env` file with `DB_SSH_TUNNEL_*` variables (for local dev)
+- Python packages: `pandas`, `psycopg2-binary`, `python-dotenv`
+
+**Estimated Time:** ~15-20 min (most time is tract import)
+
+---
+
+#### Task 3C: Frontend Integration ⬜ PENDING (after 3B)
+
+**Description:** Update frontend to display restored metrics.
+
+**Steps Required:**
+
+1. **Update `domainHierarchy.ts`**
+   - Ensure Sense of Place domain is properly configured
+   - Add `wwri_final_score` as overall/total score reference
+
+2. **Update API calls**
+   - Verify frontend requests use correct metric names
+   - Update any hardcoded metric references
+
+3. **Update Flower Chart**
+   - Ensure it displays Sense of Place petal
+   - Add overall score display if not already present
+
+4. **Update Left Sidebar domain scores**
+   - Verify dynamic coloring works with `sense_of_place_domain_score`
+
+5. **Test end-to-end**
+   - Select a polygon, verify all 8 domain scores appear
+   - Verify overall score displays correctly
+
+---
+
+**Overall Task 3 Progress:** Part A ✅ | Part B ⬜ | Part C ⬜
 
 ---
 
@@ -304,6 +415,7 @@ Census Tracts
 ## 🔗 Related Documents
 
 - [Tile Server Update Plan](../../wwri-metrics-api/plans/tile-server-update-plan.md) - Backend tile server setup
+- [Data EDA Report](../../wwri-metrics-api/data/exploratory_data_analysis.md) - Exploratory data analysis of Carlo's updated data (Jan 2026)
 - WWRI Website Update Plan (shared Google Doc from Tessa)
 - Ocean Health Index Methods (reference for methodology page)
 - Climate Vulnerability Index (reference for reports page)

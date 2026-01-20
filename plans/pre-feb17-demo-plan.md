@@ -13,8 +13,8 @@
 | 1 | Update domain colors to brand colors | ✅ Done |
 | 2 | Dynamic metric highlighting on polygon selection | ✅ Done |
 | 3A | Data Verification & EDA | ✅ Done |
-| 3B | Backend Data Import (CSV → PostgreSQL) | ⬜ Pending |
-| 3C | Frontend Integration | ⬜ Pending (after 3B) |
+| 3B | Backend Data Import (CSV → PostgreSQL) | ✅ Done |
+| 3C | Frontend Integration | ⬜ Pending |
 | 4 | Fix geographic context display | ⬜ Pending |
 | 5 | Redesign subheader: selected region + breadcrumb path | ⬜ Pending |
 | 6 | Add metric description text under subheader title | ⬜ Pending |
@@ -28,7 +28,7 @@
 | 14 | Reports page (waiting on Tessa's doc) | ⬜ Blocked |
 | 15 | Additional pages (waiting on Tessa's doc) | ⬜ Blocked |
 
-**Progress:** 3/17 complete (Task 3 split into 3A/3B/3C)
+**Progress:** 4/17 complete (Task 3 split into 3A/3B/3C)
 
 ---
 
@@ -40,6 +40,7 @@
 | Jan 16 | Task 2 (dynamic metric highlighting) completed. Domain boxes now color based on selected polygon's scores. |
 | Jan 16 | Added Task 11 (domain expand/collapse transitions). Renumbered subsequent tasks. |
 | Jan 20 | EDA on new data from Carlo. Task 3 metrics found: `sense_of_place_domain_score` ✅, `overall_resilience` → `wwri_final_score` ✅. See `wwri-metrics-api/data/exploratory_data_analysis.md`. Missing data analysis added - all key metrics have 93-100% coverage. |
+| Jan 20 | Task 3B completed: Imported 1.7M rows from CSVs to PostgreSQL, deployed to major-sculpin. Both `sense_of_place_domain_score` and `wwri_final_score` verified working in production. |
 
 ---
 
@@ -119,72 +120,66 @@
 
 ---
 
-#### Task 3B: Backend Data Import ⬜ PENDING
+#### Task 3B: Backend Data Import ✅ COMPLETE
+
+**Status:** Complete (January 20, 2026)
 
 **Description:** Import the new CSV data into PostgreSQL and restart the API server.
 
-**How It Works:**
-- Backend loads metrics from PostgreSQL tables at startup (see `CachedDataV2.ts`)
-- Import script (`scripts/import_data.py`) reads CSVs and inserts into database
-- New CSVs from Carlo are already in place at `data/csvs/`
+**Completed Steps:**
 
-**Steps Required:**
+1. ✅ **Python Environment Setup**
+   - Created `scripts/requirements.txt`
+   - Installed pandas, psycopg2-binary, python-dotenv
 
-1. **Set up SSH tunnel to database** (if running locally)
-   ```bash
-   # In separate terminal, create tunnel to major-sculpin PostgreSQL
-   ssh -L 5433:localhost:5432 wthompson@major-sculpin.nceas.ucsb.edu
-   ```
+2. ✅ **Database Configuration**
+   - Configured `.env` with SSH tunnel settings
+   - Established SSH tunnel to major-sculpin PostgreSQL
 
-2. **Run dry-run first to preview**
-   ```bash
-   cd wwri-metrics-api
-   python scripts/import_data.py --dry-run
-   ```
+3. ✅ **Data Import**
+   - Dry-run validated all 6 CSV files
+   - Imported **1,725,101 total rows** into PostgreSQL:
+     - US States: 1,260 rows
+     - US Counties: 38,659 rows
+     - US Tracts: 1,614,479 rows
+     - Canada Provinces: 204 rows
+     - Canada Divisions: 3,019 rows
+     - Canada Subdivisions: 67,480 rows
 
-3. **Import all CSV data into PostgreSQL**
-   ```bash
-   # Import smaller files first (quick)
-   python scripts/import_data.py --skip-large
-   
-   # Then import tracts separately (large file, takes longer)
-   python scripts/import_data.py --file us_census_tracts
-   ```
+4. ✅ **Data Verification**
+   - Verified `sense_of_place_domain_score` present in all 6 tables
+   - Verified `wwri_final_score` present in all 6 tables
+   - Confirmed 10 domains, 105 metrics per geographic level
+   - Coverage: 93-100% for all key metrics
 
-4. **Verify data in database**
-   ```sql
-   -- Check row counts
-   SELECT 'us_state_metrics' as table_name, COUNT(*) FROM us_state_metrics
-   UNION ALL SELECT 'us_county_metrics', COUNT(*) FROM us_county_metrics
-   UNION ALL SELECT 'us_tract_metrics', COUNT(*) FROM us_tract_metrics;
-   
-   -- Check new metrics exist
-   SELECT DISTINCT metric FROM us_county_metrics 
-   WHERE metric IN ('sense_of_place_domain_score', 'wwri_final_score');
-   ```
+5. ✅ **Production Deployment**
+   - Pulled code to major-sculpin
+   - Built TypeScript (`npm run build`)
+   - Restarted API server
+   - Created `deploy.sh` script for future deployments
 
-5. **Restart the API server**
-   ```bash
-   # On major-sculpin.nceas.ucsb.edu
-   pm2 restart wwri-api  # or however the service is managed
-   ```
+6. ✅ **Production Testing**
+   - Health check: PASS
+   - LA County test data: sense_of_place=81.53, wwri=82.70
+   - All 10 domains available (including sense_of_place + wwri)
+   - All 22 sense_of_place metrics accessible
 
-6. **Test API endpoints**
-   ```bash
-   # Test region endpoint with new metric
-   curl "https://major-sculpin.nceas.ucsb.edu/us/county/region/06037" | jq '.metrics.sense_of_place'
-   curl "https://major-sculpin.nceas.ucsb.edu/us/county/region/06037" | jq '.metrics.wwri'
-   ```
+**Files Modified/Created:**
+- `scripts/import_data.py` (import script)
+- `scripts/requirements.txt` (Python dependencies)
+- `scripts/migrations/001_create_geo_metrics_tables.sql` (schema)
+- `.gitignore` (exclude large CSV/shapefile files)
+- `deploy.sh` (deployment script)
+- `.env.example` (environment template)
 
-**Environment Requirements:**
-- `.env` file with `DB_SSH_TUNNEL_*` variables (for local dev)
-- Python packages: `pandas`, `psycopg2-binary`, `python-dotenv`
-
-**Estimated Time:** ~15-20 min (most time is tract import)
+**Notes:**
+- Git history cleaned (removed 500MB+ of large files)
+- Import takes ~10-15 minutes total
+- Server loads all data into memory at startup (~10.7s load time)
 
 ---
 
-#### Task 3C: Frontend Integration ⬜ PENDING (after 3B)
+#### Task 3C: Frontend Integration ⬜ PENDING
 
 **Description:** Update frontend to display restored metrics.
 

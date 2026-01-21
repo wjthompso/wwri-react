@@ -1,10 +1,10 @@
 import { Country } from "components/App";
-import { 
-  getUnifiedMetricUrls, 
-  getUnifiedLocationUrls, 
-  UNIFIED_GEO_LEVELS, 
+import {
   API_ID_FIELD,
-  UnifiedGeoLevel 
+  getUnifiedLocationUrls,
+  getUnifiedMetricUrls,
+  UNIFIED_GEO_LEVELS,
+  UnifiedGeoLevel
 } from "config/api";
 import { getRegionAbbreviation } from "data/StateNameToAbbrevsMap";
 import maplibregl, { StyleSpecification } from "maplibre-gl";
@@ -861,8 +861,8 @@ const MapArea: React.FC<MapAreaProps> = ({
       {/* Geographic Level Selector - positioned at top-left over the map, shifts when sidebar is open */}
       <div
         id="geo-level-selector"
-        className={`absolute top-2 z-10 flex gap-1 rounded-lg bg-white/90 p-1 shadow-md backdrop-blur-sm transition-[left] duration-300 ease-in-out ${
-          leftSidebarOpen ? "left-[245px]" : "left-2"
+        className={`absolute top-1 z-10 flex h-10 gap-1 rounded-md border border-gray-400 bg-white p-1 shadow-md transition-[left] duration-300 ease-in-out ${
+          leftSidebarOpen ? "left-[238px]" : "left-12"
         }`}
       >
         {(Object.keys(UNIFIED_GEO_LEVELS) as UnifiedGeoLevel[]).map((level) => (

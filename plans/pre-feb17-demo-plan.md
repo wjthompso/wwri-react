@@ -21,7 +21,7 @@
 | 6 | Add metric description text under subheader title | ✅ Done |
 | 7 | Fix search to support fragment matching | ⬜ Pending |
 | 8 | Update geo-level labels (add Canada equivalents) | ✅ Done |
-| 9 | Style geo-level selector buttons (larger, match aesthetic) | ⬜ Pending |
+| 9 | Style geo-level selector buttons (larger, match aesthetic) | ✅ Done |
 | 10 | Make left sidebar wider | ⬜ Pending |
 | 11 | Add smooth transitions to domain expand/collapse | ⬜ Pending |
 | 12 | Deploy frontend code to Linux server | ⬜ Pending |
@@ -33,7 +33,7 @@
 | 18 | Constrain subheader width between sidebars (optional layout) | ⬜ Pending |
 | 19 | Simplify map legend to show only metric name | ✅ Done |
 
-**Progress:** 11/20 complete (Task 3 split into 3A/3B/3C/3D, Task 5 & 6 merged)
+**Progress:** 12/20 complete (Task 3 split into 3A/3B/3C/3D, Task 5 & 6 merged)
 
 ---
 
@@ -59,6 +59,7 @@
 | Jan 21 | Task 17 marked HIGH priority: Status sections in Indicator Navigation showing inconsistent behavior - box is colored but section appears unavailable. Need to investigate if data exists and fix display accordingly. |
 | Jan 21 | Task 18 added: Add optional layout to constrain subheader width between sidebars (toggle between full-width and constrained layouts). |
 | Jan 21 | Task 19 completed: Simplified map legend to show only metric name. Removed "Score" suffix from domain labels (e.g., "Infrastructure" not "Infrastructure Score"). Widened legend from 7rem to 9rem. Increased numeric label font size from text-xs to text-sm. Modified App.tsx, RightSidebar.tsx, MapLegend.tsx, and flattenDomainHierarchyForSearch.ts. |
+| Jan 21 | Task 9 completed: Styled geo-level selector buttons to match other map widgets. Added light gray border (`border-gray-400`), removed backdrop blur, increased button text size from `text-sm` to `text-base`, increased padding from `px-3 py-1.5` to `px-4 py-2` for better readability and consistency with zoom/reset controls. |
 
 ---
 
@@ -437,16 +438,27 @@ Created `buildBreadcrumbPath.ts` utility that:
 
 ---
 
-### Task 9: Style Geo-Level Selector Buttons
+### Task 9: Style Geo-Level Selector Buttons ✅
 
-**Status:** Pending
+**Status:** Complete (Jan 21, 2026)
 
-**Description:** Current buttons are small and don't match the overall aesthetic. Need to:
-- Increase font size
-- Possibly increase button height
-- Match the aesthetic of the rest of the dashboard
+**Description:** Updated the geo-level selector buttons to match the styling of other map widgets (zoom controls, reset view, search box).
 
-**Files to modify:** `MapArea.tsx` (button styling)
+**Changes made:**
+
+1. **Container styling:**
+   - Changed from `bg-white/90` → `bg-white` (solid white background)
+   - Removed `backdrop-blur-sm` (no longer needed)
+   - Added `border border-gray-400` (light gray border matching other widgets)
+   - Changed padding from `p-1` → `p-1.5` (slightly more spacing)
+
+2. **Button styling:**
+   - Increased font size from `text-sm` → `text-base` (better readability)
+   - Increased padding from `px-3 py-1.5` → `px-4 py-2` (larger, more prominent buttons)
+
+**Result:** The geo-level selector now has the same rounded corners, light gray border, and white background as the zoom/reset controls, creating a cohesive visual language across all map widgets.
+
+**Files modified:** `src/components/MapArea/MapArea.tsx`
 
 ---
 

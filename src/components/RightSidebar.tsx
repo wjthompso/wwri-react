@@ -7,18 +7,18 @@ import DownArrow from "../assets/DownArrow.svg";
 import RightSideArrow from "../assets/RightSideArrow.svg";
 import SearchIcon from "../assets/SearchIcon.svg";
 import {
-  DomainScores,
-  getDomainScoreColor,
-  getMetricColor,
-  getOverallScoreColor,
-  OVERALL_RESILIENCE_START_COLOR,
-  OVERALL_RESILIENCE_END_COLOR,
+    DomainScores,
+    getDomainScoreColor,
+    getMetricColor,
+    getOverallScoreColor,
+    OVERALL_RESILIENCE_END_COLOR,
+    OVERALL_RESILIENCE_START_COLOR,
 } from "../utils/domainScoreColors";
 import flattenDomainHierarchy, {
-  IndicatorObject,
+    IndicatorObject,
 } from "../utils/flattenDomainHierarchyForSearch";
-import { LayoutUnified, LayoutUnifiedCompact } from "./RightSidebar/layouts";
 import { RegionAllMetrics } from "./App";
+import { LayoutUnified, LayoutUnifiedCompact } from "./RightSidebar/layouts";
 
 interface RightSidebarProps {
   selectedMetricIdObject: SelectedMetricIdObject | null;
@@ -241,7 +241,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
             }}
             className={`mr-2 h-[20px] w-[20px] justify-self-start rounded-[0.2rem] border-[1px] transition-colors duration-200 ${
               activeButton === "wwri_final_score"
-                ? "border-black ring-2 ring-blue-400 ring-offset-1 ring-offset-white"
+                ? "border-black ring-2 ring-gray-700 ring-offset-1 ring-offset-white"
                 : "border-metricSelectorBoxesBorderDefault"
             }`}
             style={{
@@ -276,7 +276,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
                   }}
                   className={`mr-2 h-[20px] w-[20px] justify-self-start rounded-[0.2rem] border-[1px] transition-colors duration-200 ${
                     activeButton === domain.id
-                      ? "border-black ring-2 ring-blue-400 ring-offset-1 ring-offset-white"
+                      ? "border-black ring-2 ring-gray-700 ring-offset-1 ring-offset-white"
                       : "border-metricSelectorBoxesBorderDefault"
                   }`}
                   style={{
@@ -335,7 +335,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
                               }}
                               className={`mr-2 h-[18px] w-[18px] rounded-[0.2rem] border-[1px] transition-colors duration-200 ${
                                 activeButton === `${domain.id}-${subdomain.id}`
-                                  ? "border-black ring-2 ring-blue-400 ring-offset-1 ring-offset-white"
+                                  ? "border-black ring-2 ring-gray-700 ring-offset-1 ring-offset-white"
                                   : "border-metricSelectorBoxesBorderDefault"
                               }`}
                               style={{

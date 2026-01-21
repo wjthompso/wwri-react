@@ -70,7 +70,7 @@ const LayoutUnifiedCompact: React.FC<LayoutUnifiedCompactProps> = ({
   const getButtonClass = (buttonId: string, size: "sm" | "md" = "md") => {
     const baseSize = size === "sm" ? "h-3.5 w-3.5 rounded-sm" : "h-4 w-4 rounded-[0.2rem]";
     const activeClass = activeButton === buttonId
-      ? "border-black ring-2 ring-blue-400"
+      ? "border-black ring-2 ring-blue-400 ring-offset-1 ring-offset-white"
       : "border-metricSelectorBoxesBorderDefault";
     return `${baseSize} border-[1px] transition-colors duration-200 ${activeClass}`;
   };

@@ -15,7 +15,7 @@
 | 3A | Data Verification & EDA | ✅ Done |
 | 3B | Backend Data Import (CSV → PostgreSQL) | ✅ Done |
 | 3C | Frontend Integration | ✅ Done |
-| 3D | Style indicator selector boxes with ring offset | ⬜ Pending |
+| 3D | Style indicator selector boxes with ring offset | ✅ Done |
 | 4 | Fix geographic context display | ⬜ Pending |
 | 5 | Redesign subheader: selected region + breadcrumb path | ⬜ Pending |
 | 6 | Add metric description text under subheader title | ⬜ Pending |
@@ -29,8 +29,9 @@
 | 14 | Reports page (waiting on Tessa's doc) | ⬜ Blocked |
 | 15 | Additional pages (waiting on Tessa's doc) | ⬜ Blocked |
 | 16 | Fix census tract GEOIDs missing leading zeros | ⬜ Pending |
+| 17 | Fix Communities Status: gray out if unavailable + tooltip | ⬜ Pending |
 
-**Progress:** 5/17 complete (Task 3 split into 3A/3B/3C/3D)
+**Progress:** 6/18 complete (Task 3 split into 3A/3B/3C/3D)
 
 ---
 
@@ -45,6 +46,8 @@
 | Jan 20 | Task 3B completed: Imported 1.7M rows from CSVs to PostgreSQL, deployed to major-sculpin. Both `sense_of_place_domain_score` and `wwri_final_score` verified working in production. |
 | Jan 20 | Task 3C completed: Frontend integration for Sense of Place + Overall Resilience. Updated RightSidebar to use `wwri_final_score` from `regionAllMetrics`. All 8 domains now display correctly in FlowerChart. |
 | Jan 20 | Task 3D added: Style indicator selector boxes with ring offset effect (blue ring → transparent gap → colored box). Similar to Climate Vulnerability Index pattern using Tailwind's ring-offset utilities. |
+| Jan 21 | Task 3D completed: Added `ring-offset-2 ring-offset-white` to all active button states in RightSidebar.tsx, LayoutUnified.tsx, LayoutUnifiedCompact.tsx. |
+| Jan 21 | Task 17 added: Communities domain Status section appears to have data but shows as unavailable. Need to investigate and either enable it or properly gray out with "Unavailable" tooltip. |
 
 ---
 
@@ -222,9 +225,9 @@
 
 ---
 
-### Task 3D: Style Indicator Selector Boxes with Ring Offset
+### Task 3D: Style Indicator Selector Boxes with Ring Offset ✅
 
-**Status:** Pending
+**Status:** Complete (Jan 21, 2026)
 
 **Description:** Update the styling of indicator selector boxes in the right sidebar (Indicator Navigation) to match the Climate Vulnerability Index style with a ring offset effect.
 
@@ -241,7 +244,7 @@ When a box is in the "active/selected" state, add a ring offset effect:
 
 **Implementation approach:**
 Use Tailwind's `ring-offset` utilities to create the transparent gap:
-- Add `ring-offset-2` or `ring-offset-3` for the transparent gap width
+- Add `ring-offset-1` or `ring-offset-3` for the transparent gap width
 - Add `ring-offset-white` to make the offset white/transparent
 - Adjust ring color if needed (currently `ring-blue-400`)
 
@@ -275,6 +278,20 @@ border-width: 1px;
 2. Polygon selected, box not active: No ring, colored box
 3. Polygon selected, box active: Blue ring → transparent gap → colored box
 4. Verify all box types: Overall Resilience, domain boxes, subdomain boxes, individual metrics
+
+**Implementation (Completed Jan 21, 2026):**
+
+Added `ring-offset-2 ring-offset-white` to all active button states:
+
+```diff
+- "border-black ring-2 ring-blue-400"
++ "border-black ring-2 ring-blue-400 ring-offset-2 ring-offset-white"
+```
+
+**Files modified:**
+- `src/components/RightSidebar.tsx` - 3 button className updates (Overall Resilience, domain headers, subdomain headers)
+- `src/components/RightSidebar/layouts/LayoutUnified.tsx` - `getButtonClass` helper function
+- `src/components/RightSidebar/layouts/LayoutUnifiedCompact.tsx` - `getButtonClass` helper function
 
 ---
 
@@ -517,6 +534,38 @@ if (country === "us" && geoLevel === "tract" && geoid.length === 10) {
 1. After fix, verify California tracts show data
 2. Check that 11-digit GEOIDs are still handled correctly
 3. Verify API returns `06001422200` instead of `6001422200`
+
+---
+
+### Task 17: Fix Communities Status - Gray Out if Unavailable + Tooltip
+
+**Status:** Pending
+
+**Description:** The Communities domain's "Status" section appears to have a metric that colors the box, but the section is shown as unavailable (grayed out text, no clickable metric boxes). This is inconsistent behavior.
+
+**Observed behavior:**
+- The Status header box for Communities is colored (suggesting data exists)
+- But the Status section shows "Status" label in gray (unavailable state)
+- No individual metric boxes are rendered below
+
+**Expected behavior - one of two options:**
+1. **If Status data IS available:** Enable the section, show metric boxes, make them clickable
+2. **If Status data is NOT available:** Gray out the Status header box AND add a tooltip that says "Unavailable" on hover
+
+**Investigation needed:**
+1. Check `domainHierarchy.ts` for Communities domain structure - does it have a `status` property with metrics?
+2. Check if the API returns status metrics for the social/communities domain
+3. Determine if this is a data issue (no status metrics exist) or a frontend configuration issue
+
+**Files to check:**
+- `src/data/domainHierarchy.ts` - Communities domain configuration
+- `src/components/RightSidebar/layouts/LayoutUnified.tsx` - Status rendering logic
+- API response for social/communities domain metrics
+
+**Implementation (if truly unavailable):**
+- Add `title="Unavailable"` attribute to the grayed-out Status div
+- Ensure the box is also grayed out (not just the text)
+- Apply consistent styling across all domains with missing sections
 
 ---
 

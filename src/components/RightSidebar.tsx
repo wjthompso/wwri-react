@@ -239,7 +239,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
             }}
             className={`mr-2 h-[20px] w-[20px] justify-self-start rounded-[0.2rem] border-[1px] transition-colors duration-200 ${
               activeButton === "wwri_final_score"
-                ? "border-black ring-2 ring-blue-400"
+                ? "border-black ring-2 ring-blue-400 ring-offset-1 ring-offset-white"
                 : "border-metricSelectorBoxesBorderDefault"
             }`}
             style={{
@@ -274,7 +274,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
                   }}
                   className={`mr-2 h-[20px] w-[20px] justify-self-start rounded-[0.2rem] border-[1px] transition-colors duration-200 ${
                     activeButton === domain.id
-                      ? "border-black ring-2 ring-blue-400"
+                      ? "border-black ring-2 ring-blue-400 ring-offset-1 ring-offset-white"
                       : "border-metricSelectorBoxesBorderDefault"
                   }`}
                   style={{
@@ -329,7 +329,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
                               }}
                               className={`mr-2 h-[18px] w-[18px] rounded-[0.2rem] border-[1px] transition-colors duration-200 ${
                                 activeButton === `${domain.id}-${subdomain.id}`
-                                  ? "border-black ring-2 ring-blue-400"
+                                  ? "border-black ring-2 ring-blue-400 ring-offset-1 ring-offset-white"
                                   : "border-metricSelectorBoxesBorderDefault"
                               }`}
                               style={{

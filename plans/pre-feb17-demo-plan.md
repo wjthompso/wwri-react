@@ -19,7 +19,7 @@
 | 4 | Fix geographic context display | ✅ Done |
 | 5 | Redesign subheader: add breadcrumb path | ✅ Done |
 | 6 | Add metric description text under subheader title | ✅ Done |
-| 7 | Fix search to support fragment matching | ⬜ Pending |
+| 7 | Fix search to support fragment matching | ✅ Done |
 | 8 | Update geo-level labels (add Canada equivalents) | ✅ Done |
 | 9 | Style geo-level selector buttons (larger, match aesthetic) | ✅ Done |
 | 10 | Make left sidebar wider | ⬜ Pending | [PAUSE THIS FOR NOW, MAY NOT DO]
@@ -37,7 +37,7 @@
 | 22 | Update Overall Resilience color scale (crimson to light yellow) | ✅ Done |
 | 23 | Change selected indicator ring from blue to dark gray | ✅ Done |
 
-**Progress:** 18/23 complete (Task 3 split into 3A/3B/3C/3D, Task 5 & 6 merged, Task 20 hidden)
+**Progress:** 19/23 complete (Task 3 split into 3A/3B/3C/3D, Task 5 & 6 merged, Task 20 hidden)
 
 ---
 
@@ -74,6 +74,7 @@
 | Jan 21 | Task 22 completed: Updated Overall Resilience color scale to use light yellow (#fffac9) for low resilience and crimson (#7b1628) for high resilience. Added `OVERALL_RESILIENCE_START_COLOR` and `OVERALL_RESILIENCE_END_COLOR` constants in `domainScoreColors.ts`. Updated `getOverallScoreColor()` function and RightSidebar Overall Resilience button colorGradient. Added special handling for wwri domain in Selected Indicator box. Color gradient now applies to selector box, map polygons, and legend. |
 | Jan 21 | Task 23 added: Change selected indicator ring color from blue (`ring-blue-400`) to dark gray for more subtle, professional appearance. Will update all active button states in RightSidebar and layout components. |
 | Jan 21 | Task 23 completed: Changed selected indicator ring from `ring-blue-400` to `ring-gray-700` across all 5 instances in RightSidebar.tsx (3), LayoutUnified.tsx (1), and LayoutUnifiedCompact.tsx (1). More subtle, professional appearance. |
+| Jan 21 | Task 7 completed: Fixed search to support flexible word matching. Search now splits input into words and matches if ALL words appear anywhere in the path (any order). No longer requires ">" separator. Updated `highlightMatches()` to highlight each word independently. Examples: "wildfire protection" matches "Community Wildfire Protection Plans", "Infrastructure Domain" matches "Infrastructure > Domain Score". |
 
 ---
 
@@ -424,16 +425,35 @@ Created `buildBreadcrumbPath.ts` utility that:
 
 ---
 
-### Task 7: Fix Search to Support Fragment Matching
+### Task 7: Fix Search to Support Fragment Matching ✅
 
-**Status:** Pending
+**Status:** Complete (Jan 21, 2026)
 
-**Description:** Current search requires typing the full path (e.g., "Communities > Resilience > Resistance > Community Wildfire Protection Plans"). Users should be able to type just "wildfire protection" and get matching results.
+**Description:** Current search required typing the full path with exact separators (e.g., "Infrastructure > Domain Score"). Users should be able to type just "Infrastructure Domain" or "wildfire protection" and get matching results.
 
-**Current behavior:** Search matches on full concatenated path text
-**Desired behavior:** Search matches on any word fragment within the path
+**Previous behavior:** Search matched only if the exact string (including ">") appeared in the path
+**New behavior:** Search splits input into words and matches if ALL words appear anywhere in the path (any order)
 
-**Files to modify:** `flattenDomainHierarchyForSearch.ts`, `RightSidebar.tsx` (search filtering logic)
+**Examples:**
+| Search Input | Matches | Notes |
+|--------------|---------|-------|
+| `wildfire` | Community Wildfire Protection Plans | Single word ✅ |
+| `wildfire protection` | Community Wildfire Protection Plans | Multiple words, any order ✅ |
+| `Infrastructure Domain` | Infrastructure > Domain Score | No ">" needed ✅ |
+| `recovery fire` | Infrastructure > Resilience > Recovery > Fire Suppression | Words from different parts ✅ |
+
+**Implementation:**
+1. Updated `highlightMatches()` function to:
+   - Split search term into words
+   - Escape regex special characters
+   - Highlight each matching word independently
+
+2. Updated search filtering `useEffect` to:
+   - Split search term into words
+   - Match indicators where ALL words appear somewhere in the path
+   - Case-insensitive matching
+
+**Files modified:** `src/components/RightSidebar.tsx` (search filtering logic and highlight function)
 
 ---
 

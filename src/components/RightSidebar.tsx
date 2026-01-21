@@ -62,10 +62,25 @@ const getColorBasedOnIndex = (index: number, colorArray: string[]) => {
   return colorArray[colorIndex];
 };
 
+/**
+ * Highlights all matching words from the search term in the text.
+ * Handles multiple words by highlighting each separately.
+ */
 const highlightMatches = (text: string, searchTerm: string) => {
-  const parts = text.split(new RegExp(`(${searchTerm})`, "gi"));
+  if (!searchTerm.trim()) return text;
+  
+  // Split search term into words and escape regex special characters
+  const words = searchTerm.trim().split(/\s+/).filter(Boolean);
+  const escapedWords = words.map(word => 
+    word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  );
+  
+  // Create a regex that matches any of the search words
+  const pattern = new RegExp(`(${escapedWords.join('|')})`, 'gi');
+  const parts = text.split(pattern);
+  
   return parts.map((part, index) =>
-    part.toLowerCase() === searchTerm.toLowerCase() ? (
+    words.some(word => part.toLowerCase() === word.toLowerCase()) ? (
       <strong key={index}>{part}</strong>
     ) : (
       part
@@ -94,13 +109,15 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
   const hierarchicalStrings = flattenDomainHierarchy(domainHierarchy);
 
   useEffect(() => {
-    if (searchTerm) {
-      const lowerCaseTerm = searchTerm.toLowerCase();
+    if (searchTerm.trim()) {
+      // Split search into words for flexible matching (all words must appear, any order)
+      const searchWords = searchTerm.toLowerCase().trim().split(/\s+/).filter(Boolean);
       const filtered = hierarchicalStrings.filter(
-        (indicatorObject: IndicatorObject) =>
-          indicatorObject.traversedPathForSearchSuggestions
-            .toLowerCase()
-            .includes(lowerCaseTerm),
+        (indicatorObject: IndicatorObject) => {
+          const path = indicatorObject.traversedPathForSearchSuggestions.toLowerCase();
+          // All search words must appear somewhere in the path
+          return searchWords.every(word => path.includes(word));
+        }
       );
       setFilteredSuggestions(filtered);
     } else {

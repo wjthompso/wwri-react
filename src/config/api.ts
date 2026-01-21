@@ -6,9 +6,8 @@
  */
 
 // For local development, set to localhost. For production, use the server URL.
-// TODO: Switch back to env var for production deployment
-const API_BASE_URL = "http://localhost:8081";
-// const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://major-sculpin.nceas.ucsb.edu/api";
+// const API_BASE_URL = "http://localhost:8081";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://major-sculpin.nceas.ucsb.edu/api";
 
 // Tile server base URL
 const TILE_SERVER_URL = "https://major-sculpin.nceas.ucsb.edu";

@@ -82,15 +82,15 @@ const fetchMetricData = async (
   
   const geoMetrics: Record<string, number> = {};
   
-  // Domain score metrics are 0-100, individual metrics are 0-1
-  // Normalize domain scores to 0-1 for consistent color mapping
-  const isDomainScore = metric.metricId.endsWith("_domain_score");
+  // Domain score metrics and wwri_final_score are 0-100, individual metrics are 0-1
+  // Normalize to 0-1 for consistent color mapping
+  const isScale0to100 = metric.metricId.endsWith("_domain_score") || metric.metricId === "wwri_final_score";
   
   // Process US data - API uses 'geoid', tiles use 'geoid' (same)
   usResults.data.forEach((item: any) => {
     if (item[API_ID_FIELD] && item[metric.metricId]) {
       let value = parseFloat(item[metric.metricId]);
-      if (isDomainScore) value = value / 100;
+      if (isScale0to100) value = value / 100;
       geoMetrics[item[API_ID_FIELD]] = value;
     }
   });
@@ -101,7 +101,7 @@ const fetchMetricData = async (
   canadaResults.data.forEach((item: any) => {
     if (item[API_ID_FIELD] && item[metric.metricId]) {
       let value = parseFloat(item[metric.metricId]);
-      if (isDomainScore) value = value / 100;
+      if (isScale0to100) value = value / 100;
       geoMetrics[item[API_ID_FIELD]] = value;
     }
   });
@@ -815,7 +815,7 @@ const MapArea: React.FC<MapAreaProps> = ({
       {/* Geographic Level Selector - positioned at top-left over the map, shifts when sidebar is open */}
       <div
         id="geo-level-selector"
-        className={`absolute top-2 z-10 flex rounded bg-white/95 shadow-md backdrop-blur-sm transition-[left] duration-300 ease-in-out ${
+        className={`absolute top-2 z-10 flex gap-1 rounded-lg bg-white/90 p-1 shadow-md backdrop-blur-sm transition-[left] duration-300 ease-in-out ${
           leftSidebarOpen ? "left-[245px]" : "left-2"
         }`}
       >
@@ -824,11 +824,11 @@ const MapArea: React.FC<MapAreaProps> = ({
             key={level}
             id={`geo-level-${level}`}
             onClick={() => setSelectedGeoLevel(level)}
-            className={`px-2 py-1 text-xs font-medium transition-colors first:rounded-l last:rounded-r ${
+            className={`rounded-md px-3 py-1.5 text-sm font-medium transition-all duration-150 ${
               selectedGeoLevel === level
-                ? "bg-purple-700 text-white"
-                : "bg-white/95 text-gray-700 hover:bg-gray-100"
-            } border-r border-gray-200 last:border-r-0`}
+                ? "bg-leftSidebarOverallResilience text-white shadow-sm"
+                : "bg-transparent text-gray-600 hover:bg-gray-100 hover:text-gray-800"
+            }`}
           >
             {UNIFIED_GEO_LEVELS[level].label}
           </button>

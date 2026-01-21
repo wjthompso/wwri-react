@@ -136,6 +136,7 @@ function App() {
             isOpen={leftSidebarOpen}
             setIsOpen={setLeftSidebarOpen}
             domainScores={selectedRegionScores}
+            regionAllMetrics={regionAllMetrics}
           />
           <MapArea
             selectedMetricIdObject={selectedMetricIdObject}

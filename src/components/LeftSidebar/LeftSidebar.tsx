@@ -1,3 +1,4 @@
+import { RegionAllMetrics } from "components/App";
 import { StateNames } from "data/StateNameToAbbrevsMap";
 import React, { useEffect, useState } from "react";
 import { DomainScores } from "utils/domainScoreColors";
@@ -14,6 +15,7 @@ interface LeftSidebarProps {
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
   domainScores: DomainScores | null;
+  regionAllMetrics: RegionAllMetrics | null;
 }
 
 const LeftSidebar: React.FC<LeftSidebarProps> = ({
@@ -24,6 +26,7 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
   isOpen,
   setIsOpen,
   domainScores,
+  regionAllMetrics,
 }) => {
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
 
@@ -39,8 +42,8 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
     }
   };
 
-  // Get the overall resilience score from domain scores
-  const overallResilienceScore = domainScores?.overall_resilience ?? null;
+  // Get the overall resilience score from regionAllMetrics.wwri.wwri_final_score
+  const overallResilienceScore = regionAllMetrics?.wwri?.wwri_final_score ?? null;
 
   return (
     <div className="">

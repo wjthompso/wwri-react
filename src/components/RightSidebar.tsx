@@ -455,33 +455,44 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
         </div>
       </div>
 
-      {/* Geographic Context */}
-      <h1 className="font-BeVietnamePro mt-1 text-lg font-medium text-geopgrahicContextLabelTextColor">
-        Geographic Context
-      </h1>
-      <h3 className="text-sm text-geopgrahicContextDescriptionTextColor">
-        Select an area to focus the map.
-      </h3>
-      <div id="state-navigation-bottom-bar" className="ml-8 mt-4 max-w-[280px]">
-        <div className="grid grid-cols-11 grid-rows-7 gap-1">
-          {stateMap.flat().map((state, index) => {
-            const bgColorClass = getColorBasedOnIndex(
-              index,
-              stateBGColorMapPossibilities,
-            );
-            const textColorClass =
-              state && isDarkColor(bgColorClass) ? "text-white" : "text-black";
-            return (
-              <button
-                key={index}
-                className={`flex h-[20px] w-[20px] items-center justify-center text-[10px] font-semibold ${textColorClass} ${state ? bgColorClass : ""}`}
-              >
-                {state}
-              </button>
-            );
-          })}
-        </div>
-      </div>
+      {/* Geographic Context - Hidden for now (Task 20)
+       * Reasons: 
+       * - Doesn't work well with tract/county geo-levels
+       * - Missing Canada coverage
+       * - Redundant with search box and direct map clicking
+       * - Many states in the grid have no WWRI data
+       * Keep code in case we want to revisit later.
+       */}
+      {false && (
+        <>
+          <h1 className="font-BeVietnamePro mt-1 text-lg font-medium text-geopgrahicContextLabelTextColor">
+            Geographic Context
+          </h1>
+          <h3 className="text-sm text-geopgrahicContextDescriptionTextColor">
+            Select an area to focus the map.
+          </h3>
+          <div id="state-navigation-bottom-bar" className="ml-8 mt-4 max-w-[280px]">
+            <div className="grid grid-cols-11 grid-rows-7 gap-1">
+              {stateMap.flat().map((state, index) => {
+                const bgColorClass = getColorBasedOnIndex(
+                  index,
+                  stateBGColorMapPossibilities,
+                );
+                const textColorClass =
+                  state && isDarkColor(bgColorClass) ? "text-white" : "text-black";
+                return (
+                  <button
+                    key={index}
+                    className={`flex h-[20px] w-[20px] items-center justify-center text-[10px] font-semibold ${textColorClass} ${state ? bgColorClass : ""}`}
+                  >
+                    {state}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };

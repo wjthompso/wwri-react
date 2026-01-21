@@ -32,9 +32,9 @@
 | 17 | Fix Communities Status: gray out if unavailable + tooltip | ✅ Done |
 | 18 | Constrain subheader width between sidebars (optional layout) | ⬜ Pending |
 | 19 | Simplify map legend to show only metric name | ✅ Done |
-| 20 | Make Geographic Context widget functional (pan map, highlight state) | ⬜ Pending ⚠️ HIGH |
+| 20 | ~~Make Geographic Context widget functional~~ Hidden (deferred) | ✅ Done |
 
-**Progress:** 14/21 complete (Task 3 split into 3A/3B/3C/3D, Task 5 & 6 merged)
+**Progress:** 15/20 complete (Task 3 split into 3A/3B/3C/3D, Task 5 & 6 merged, Task 20 hidden)
 
 ---
 
@@ -65,6 +65,7 @@
 | Jan 21 | Task 16 completed: Fixed census tract GEOIDs missing leading zeros. Added padding logic in `CachedDataV2.ts` to pad 10-digit US tract GEOIDs to 11 digits (e.g., `6001422200` → `06001422200`). Fixes display for states with FIPS <10 (CA, AZ, CO, etc.). Affects 12,497 tracts. |
 | Jan 21 | Task 20 added: Make Geographic Context widget functional. Currently displays US state abbreviations in a grid but buttons are non-functional. Need to add click handlers to pan map to selected state/province and highlight the region. Mark as HIGH priority. |
 | Jan 21 | Task 17 completed: Fixed inconsistent styling for unavailable sections. Changed background color from `domainColor` to neutral gray (`#c8c8c8`) and added "Unavailable" tooltip to both box and label. Affects Infrastructure/Communities (missing Status), Water/Air Quality (missing Recovery). |
+| Jan 21 | Task 20 decision: Hidden Geographic Context widget instead of implementing it. Reasons: geo-level mismatch (tract/county vs state navigation), missing Canada, redundant with search box/map clicking, many states have no WWRI data. Code preserved with `{false && ...}` wrapper for potential future use. |
 
 ---
 
@@ -708,87 +709,38 @@ if (country === "us" && geoLevel === "tract" && geoid.length === 10) {
 
 ---
 
-### Task 20: Make Geographic Context Widget Functional
+### Task 20: Geographic Context Widget - HIDDEN
 
-**Status:** Pending ⚠️ HIGH
+**Status:** ✅ Complete (Hidden - Jan 21, 2026)
 
-**Description:** The "Geographic Context" widget in the right sidebar displays a grid of US state abbreviations with nice colors, but the buttons are currently non-functional. Users should be able to click a state/province button to pan the map to that region and highlight it.
+**Original Description:** The "Geographic Context" widget in the right sidebar displays a grid of US state abbreviations with nice colors, but the buttons are currently non-functional. Users should be able to click a state/province button to pan the map to that region and highlight it.
 
-**Current behavior:**
-- Widget displays US state abbreviations in a grid layout
-- Buttons are styled with background colors
-- Buttons have proper text contrast (white text on dark colors, black on light)
-- No click functionality - buttons don't do anything
+**Decision:** Hidden the widget instead of implementing it.
 
-**Desired behavior:**
-1. **Click handler:** When user clicks a state button:
-   - Pan/zoom the map to focus on that state
-   - Optionally highlight the state boundary (outline or subtle fill)
-   - Keep the current metric/domain selected (don't change right sidebar)
-   
-2. **Canada support:** Widget currently only shows US states
-   - Add toggle or automatic detection to show Canadian provinces
-   - Or show both US and Canada in the same grid
-   
-3. **Active state indicator:** Show which state/province is currently focused
-   - Add visual indicator (border, different background, etc.)
-   
-4. **Keyboard accessibility:** Support keyboard navigation (tab + enter)
+**Reasons for hiding:**
+1. **Geo-level mismatch:** At tract or county level, clicking a state doesn't make sense - it would zoom to California but show thousands of tiny tracts with unclear UX.
+2. **Missing Canada:** The WWRI explicitly covers both US and Canadian regions, but the widget only shows US states.
+3. **Incomplete US coverage:** Many states in the grid have no WWRI data (only western coastal + mountain states are covered).
+4. **Redundant functionality:** The map already has:
+   - A search box for finding any location
+   - Direct click-to-select on the map
+   - Geo-level selector for switching views
+5. **Visual clutter:** Takes up sidebar space that could be used for actual data.
 
-**Technical considerations:**
+**Implementation:**
+- Wrapped the widget code in `{false && (...)}` to hide it from render
+- Preserved all code (stateMap, color utilities, etc.) for potential future use
+- Added comment explaining the decision
 
-- Map pan/zoom: Use MapLibre's `flyTo()` method with state bounding box coordinates
-- State bounding boxes: Need to define or fetch lat/lng bounds for each state/province
-- Highlight overlay: Add a temporary map layer or update existing layer styling
-- Widget state: Track currently selected geographic context (separate from `selectedGeoId`)
-- Performance: Smooth animations without lag
+**Files modified:**
+- `src/components/RightSidebar.tsx` - Hidden widget with conditional render
 
-**Files to modify:**
-- `src/components/RightSidebar.tsx` - Add click handlers to state buttons
-- `src/components/MapArea/MapArea.tsx` - Add method to pan/zoom to state
-- `src/components/App.tsx` - Add state to track focused geographic context
-- Possibly create `src/data/stateBounds.ts` - Bounding boxes for all states/provinces
-
-**Implementation approach:**
-
-Option 1 (Simple): Just pan to state center with fixed zoom level
-```typescript
-const STATE_CENTERS = {
-  CA: { lng: -119.4179, lat: 36.7783, zoom: 6 },
-  TX: { lng: -99.9018, lat: 31.9686, zoom: 6 },
-  // ... etc
-};
-
-// In click handler:
-map.flyTo({ center: [lng, lat], zoom });
-```
-
-Option 2 (Better): Use actual state bounding boxes and fit map to bounds
-```typescript
-const STATE_BOUNDS = {
-  CA: [[-124.48, 32.53], [-114.13, 42.01]], // [sw, ne]
-  // ... etc
-};
-
-// In click handler:
-map.fitBounds(bounds, { padding: 50, duration: 1000 });
-```
-
-**Data source for bounding boxes:**
-- Can extract from existing MBTiles files
-- Or use a library like `us-states` npm package
-- Or manually define (50 states + 13 provinces = 63 entries)
-
-**Reference implementations:**
-- Climate Vulnerability Index has similar state navigation
-- Many map apps use this pattern for quick navigation
-
-**Design questions to clarify:**
-1. Should clicking a state change the geo-level selector (e.g., auto-select "States" level)?
-2. Should the state selection persist when user changes metrics?
-3. Do we want a "clear selection" or "reset view" button?
-4. Should we add Canadian provinces to the same grid or have a toggle?
-5. What zoom level feels right for state-level focus?
+**Future considerations:**
+If we revisit this widget, consider:
+- Only show it when geo-level is "States / Provinces"
+- Add Canadian provinces
+- Filter to only show states/provinces with WWRI data
+- Or replace with "Recent Regions" quick links
 
 ---
 

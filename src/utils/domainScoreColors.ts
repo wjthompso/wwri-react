@@ -114,6 +114,11 @@ const WHITE: Rgb = { r: 255, g: 255, b: 255 };
 // Neutral gray for no selection state
 const NEUTRAL_GRAY: Rgb = { r: 200, g: 200, b: 200 };
 
+// Overall Resilience color scale (Manuel's color scheme)
+// Light yellow for low resilience (score = 0), Crimson for high resilience (score = 1)
+export const OVERALL_RESILIENCE_START_COLOR: Rgb = { r: 255, g: 250, b: 201 }; // #fffac9 - Light Yellow
+export const OVERALL_RESILIENCE_END_COLOR: Rgb = { r: 123, g: 22, b: 40 }; // #7b1628 - Crimson
+
 /**
  * Normalizes a score to 0-1 range.
  * Handles both 0-1 and 0-100 scale scores.
@@ -215,6 +220,7 @@ export function getDomainBrandColor(domainId: string): Rgb {
 
 /**
  * Gets the dynamic color for the overall resilience box.
+ * Uses Manuel's color scheme: light yellow (low) to crimson (high).
  */
 export function getOverallScoreColor(
   overallScore: number | null | undefined
@@ -223,10 +229,9 @@ export function getOverallScoreColor(
     return `rgb(${NEUTRAL_GRAY.r}, ${NEUTRAL_GRAY.g}, ${NEUTRAL_GRAY.b})`;
   }
 
-  // Overall score uses a dark charcoal color
-  const overallBrandColor: Rgb = { r: 64, g: 64, b: 64 };
+  // Overall score uses light yellow → crimson gradient
   const normalizedScore = normalizeScore(overallScore);
-  return getColor(WHITE, overallBrandColor, normalizedScore);
+  return getColor(OVERALL_RESILIENCE_START_COLOR, OVERALL_RESILIENCE_END_COLOR, normalizedScore);
 }
 
 /**

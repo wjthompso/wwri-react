@@ -35,8 +35,9 @@
 | 20 | ~~Make Geographic Context widget functional~~ Hidden (deferred) | ✅ Done |
 | 21 | Fix counties showing N/A values (GEOID padding + data gap) | ✅ Done (49 counties missing data - awaiting Carlo) |
 | 22 | Update Overall Resilience color scale (crimson to light yellow) | ⬜ Pending |
+| 23 | Change selected indicator ring from blue to dark gray | ⬜ Pending |
 
-**Progress:** 16/22 complete (Task 3 split into 3A/3B/3C/3D, Task 5 & 6 merged, Task 20 hidden)
+**Progress:** 16/23 complete (Task 3 split into 3A/3B/3C/3D, Task 5 & 6 merged, Task 20 hidden)
 
 ---
 
@@ -70,6 +71,7 @@
 | Jan 21 | Task 20 decision: Hidden Geographic Context widget instead of implementing it. Reasons: geo-level mismatch (tract/county vs state navigation), missing Canada, redundant with search box/map clicking, many states have no WWRI data. Code preserved with `{false && ...}` wrapper for potential future use. |
 || Jan 21 | Task 22 added: Update Overall Resilience color scale to use crimson (#7b1628) for maximum resilience and light yellow (#fffac9) for minimum resilience, per Manuel's color scheme. |
 | Jan 21 | Task 21 completed: Fixed counties showing N/A values. Root cause: same as Task 16 - GEOID padding issue. CSV had 4-digit `stco_fips` values (e.g., `8047`) but tile server expects 5-digit (e.g., `08047`). Fixed in `CachedDataV2.ts` by adding padding for 4→5 digit county GEOIDs. Deployed and verified - 395 counties (89%) now display data correctly. Follow-up analysis revealed 49 counties (11%) legitimately have no data in CSV source files. Waiting for Carlo to confirm if missing data is intentional. |
+| Jan 21 | Task 23 added: Change selected indicator ring color from blue (`ring-blue-400`) to dark gray for more subtle, professional appearance. Will update all active button states in RightSidebar and layout components. |
 
 ---
 
@@ -1039,3 +1041,51 @@ After deployment, discovered that 49 counties (11%) still show gray/no data. Fur
 **Status:** ⏳ Waiting for communication with Carlo to determine if missing counties should have data or are intentionally excluded from the study.
 
 **Related:** Task 16 (census tract GEOID padding fix)
+
+---
+
+### Task 23: Change Selected Indicator Ring from Blue to Dark Gray
+
+**Status:** Pending
+
+**Description:** Change the blue ring (`ring-blue-400`) that appears around selected indicators in the right sidebar to a dark gray color for a more subtle and professional appearance.
+
+**Current behavior:**
+- Active/selected indicators show a blue ring with transparent gap (ring offset)
+- Blue color: `ring-blue-400` → rgba(96, 165, 250, 1)
+
+**Desired behavior:**
+- Active/selected indicators show a dark gray ring with transparent gap
+- Dark gray options:
+  - `ring-gray-700` → rgb(55, 65, 81)
+  - `ring-gray-600` → rgb(75, 85, 99)
+  - `ring-gray-800` → rgb(31, 41, 55)
+
+**Affected components:**
+All selector boxes in the Indicator Navigation panel:
+1. Overall Resilience button
+2. Domain header boxes (Infrastructure, Communities, etc.)
+3. Subdomain header boxes (Iconic Places, Iconic Species)
+4. Individual metric buttons
+
+**Files to modify:**
+- `src/components/RightSidebar.tsx` - Update `ring-blue-400` → `ring-gray-700` (3 locations)
+- `src/components/RightSidebar/layouts/LayoutUnified.tsx` - Update `getButtonClass` helper
+- `src/components/RightSidebar/layouts/LayoutUnifiedCompact.tsx` - Update `getButtonClass` helper
+
+**Search pattern:**
+```bash
+grep -r "ring-blue-400" src/components/RightSidebar*
+```
+
+**Implementation approach:**
+Replace all instances of `ring-blue-400` with `ring-gray-700` (or another shade after testing).
+
+**Test cases:**
+1. Click domain box → should show dark gray ring
+2. Click subdomain box → should show dark gray ring  
+3. Click individual metric → should show dark gray ring
+4. Verify ring offset (transparent gap) still visible
+5. Check contrast with colored boxes
+
+

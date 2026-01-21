@@ -11,6 +11,8 @@ import {
   getDomainScoreColor,
   getMetricColor,
   getOverallScoreColor,
+  OVERALL_RESILIENCE_START_COLOR,
+  OVERALL_RESILIENCE_END_COLOR,
 } from "../utils/domainScoreColors";
 import flattenDomainHierarchy, {
   IndicatorObject,
@@ -232,8 +234,8 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
                 label: "Overall Resilience",
                 description: "Overall wildfire resilience score combining all domains.",
                 colorGradient: {
-                  startColor: { r: 255, g: 255, b: 255 },
-                  endColor: { r: 64, g: 64, b: 64 }, // Dark charcoal for Overall Score
+                  startColor: OVERALL_RESILIENCE_START_COLOR, // Light yellow for low resilience
+                  endColor: OVERALL_RESILIENCE_END_COLOR, // Crimson for high resilience
                 },
               });
             }}
@@ -425,6 +427,12 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
               // Use the actual metric value from regionAllMetrics if available
               backgroundColor: (() => {
                 if (!selectedMetricIdObject) return "rgb(200, 200, 200)";
+                
+                // Special handling for Overall Resilience (wwri domain)
+                if (selectedMetricIdObject.domainId === "wwri") {
+                  const wwriScore = regionAllMetrics?.wwri?.wwri_final_score;
+                  return getOverallScoreColor(wwriScore);
+                }
                 
                 // Try to get from regionAllMetrics first
                 if (regionAllMetrics) {

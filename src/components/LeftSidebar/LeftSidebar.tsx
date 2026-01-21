@@ -1,5 +1,5 @@
-import { RegionAllMetrics } from "components/App";
-import { StateNames } from "data/StateNameToAbbrevsMap";
+import { Country, RegionAllMetrics } from "components/App";
+import { UnifiedGeoLevel } from "config/api";
 import React, { useEffect, useState } from "react";
 import { DomainScores } from "utils/domainScoreColors";
 import { CloseLeftSidebarButton } from "./CloseLeftSidebarButton";
@@ -8,9 +8,11 @@ import LeftSidebarHamburgerIcon from "./LeftSidebarHamburgerIcon";
 import { LeftSidebarHeader } from "./LeftSidebarHeader";
 
 interface LeftSidebarProps {
-  selectedCountyName: string;
-  selectedStateName: StateNames;
-  selectedCensusTract: string;
+  selectedGeoId: string;
+  selectedRegionName: string; // County/Division name
+  selectedStateName: string; // State/Province name
+  selectedCountry: Country;
+  selectedGeoLevel: UnifiedGeoLevel;
   selectedMetricValue: number | null;
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
@@ -19,9 +21,11 @@ interface LeftSidebarProps {
 }
 
 const LeftSidebar: React.FC<LeftSidebarProps> = ({
-  selectedCountyName,
+  selectedGeoId,
+  selectedRegionName,
   selectedStateName,
-  selectedCensusTract,
+  selectedCountry,
+  selectedGeoLevel,
   selectedMetricValue,
   isOpen,
   setIsOpen,
@@ -56,9 +60,11 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
       >
         <CloseLeftSidebarButton setOpenLeftSidebar={setIsOpen} />
         <LeftSidebarHeader
-          selectedCountyName={selectedCountyName}
+          selectedGeoId={selectedGeoId}
+          selectedRegionName={selectedRegionName}
           selectedStateName={selectedStateName}
-          selectedCensusTract={selectedCensusTract}
+          selectedCountry={selectedCountry}
+          selectedGeoLevel={selectedGeoLevel}
         />
         <LeftSidebarBody
           overallResilienceScore={overallResilienceScore}

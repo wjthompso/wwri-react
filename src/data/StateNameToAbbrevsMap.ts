@@ -1,4 +1,4 @@
-// Define a type for the state names
+// Define a type for US state names
 export type StateNames =
   | "Alabama"
   | "Alaska"
@@ -52,13 +52,33 @@ export type StateNames =
   | "Wyoming"
   | "";
 
+// Define a type for Canadian province/territory names
+export type ProvinceNames =
+  | "Alberta"
+  | "British Columbia"
+  | "Manitoba"
+  | "New Brunswick"
+  | "Newfoundland and Labrador"
+  | "Northwest Territories"
+  | "Nova Scotia"
+  | "Nunavut"
+  | "Ontario"
+  | "Prince Edward Island"
+  | "Quebec"
+  | "Saskatchewan"
+  | "Yukon"
+  | "";
+
+// Combined type for any region name (US state or Canadian province)
+export type RegionNames = StateNames | ProvinceNames;
+
 // Define the type for the map object
 export type StateAbbreviations = {
   [key in StateNames]: string;
 };
 
-// Define the map object
-const MapOfFullStatenameToAbbreviation = {
+// US State abbreviations (postal codes)
+const MapOfFullStatenameToAbbreviation: Record<string, string> = {
   Alabama: "AL",
   Alaska: "AK",
   Arizona: "AZ",
@@ -111,5 +131,35 @@ const MapOfFullStatenameToAbbreviation = {
   Wyoming: "WY",
   "": "",
 };
+
+// Canadian province/territory abbreviations (Canada Post standard)
+export const MapOfFullProvinceToAbbreviation: Record<string, string> = {
+  Alberta: "AB",
+  "British Columbia": "BC",
+  Manitoba: "MB",
+  "New Brunswick": "NB",
+  "Newfoundland and Labrador": "NL",
+  "Northwest Territories": "NT",
+  "Nova Scotia": "NS",
+  Nunavut: "NU",
+  Ontario: "ON",
+  "Prince Edward Island": "PE",
+  Quebec: "QC",
+  Saskatchewan: "SK",
+  Yukon: "YT",
+  "": "",
+};
+
+/**
+ * Get abbreviation for any region name (US state or Canadian province).
+ * Returns the original name if no abbreviation is found.
+ */
+export function getRegionAbbreviation(regionName: string): string {
+  return (
+    MapOfFullStatenameToAbbreviation[regionName] ||
+    MapOfFullProvinceToAbbreviation[regionName] ||
+    regionName
+  );
+}
 
 export default MapOfFullStatenameToAbbreviation;

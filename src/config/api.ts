@@ -43,7 +43,7 @@ interface TileSourceConfig {
  */
 export const UNIFIED_GEO_LEVELS = {
   tract: {
-    label: "Census Tracts",
+    label: "Census Tracts / Subdivisions",
     us: {
       tileUrl: `${TILE_SERVER_URL}/data/us_tracts/{z}/{x}/{y}.pbf`,
       sourceLayer: "us_tracts",

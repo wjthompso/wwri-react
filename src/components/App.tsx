@@ -1,5 +1,4 @@
-import { getRegionMetricsUrl, getSummaryUrl, UnifiedGeoLevel } from "config/api";
-import { StateNames } from "data/StateNameToAbbrevsMap";
+import { getRegionMetricsUrl, getSummaryUrl, UnifiedGeoLevel, UNIFIED_GEO_LEVELS } from "config/api";
 import { useEffect, useState } from "react";
 import "../index.css";
 import SelectedMetricIdObject from "../types/componentStatetypes";
@@ -22,6 +21,38 @@ export interface RegionAllMetrics {
   };
 }
 
+// Country type for geographic context
+export type Country = "us" | "canada" | "";
+
+/**
+ * Parses CSV text into SummaryData format.
+ */
+function parseSummaryCSV(csvText: string): SummaryData {
+  const lines = csvText.trim().split("\n");
+  if (lines.length < 2) return {};
+  
+  const headers = lines[0].split(",");
+  
+  return lines.slice(1).reduce((acc, line) => {
+    const values = line.split(",");
+    const geoid = values[0];
+    if (!geoid) return acc;
+
+    const record = headers.reduce(
+      (obj, header, index) => {
+        if (header !== "geoid") {
+          obj[header] = parseFloat(values[index]);
+        }
+        return obj;
+      },
+      {} as Record<string, number>,
+    );
+
+    acc[geoid] = record as DomainScores;
+    return acc;
+  }, {} as SummaryData);
+}
+
 function App() {
   const [selectedMetricIdObject, setSelectedMetricIdObject] =
     useState<SelectedMetricIdObject>({
@@ -37,9 +68,11 @@ function App() {
   const [selectedMetricValue, setSelectedMetricValue] = useState<number | null>(
     null,
   );
-  const [selectedCountyName, setSelectedCountyName] = useState<string>("");
-  const [selectedStateName, setSelectedStateName] = useState<StateNames>("");
-  const [selectedCensusTract, setSelectedCensusTract] = useState<string>("");
+  // Geographic context for selected region
+  const [selectedGeoId, setSelectedGeoId] = useState<string>("");
+  const [selectedRegionName, setSelectedRegionName] = useState<string>(""); // County/Division name
+  const [selectedStateName, setSelectedStateName] = useState<string>(""); // State/Province name
+  const [selectedCountry, setSelectedCountry] = useState<Country>("");
   const [selectedGeoLevel, setSelectedGeoLevel] = useState<UnifiedGeoLevel>("tract");
   const [leftSidebarOpen, setLeftSidebarOpen] = useState<boolean>(true);
   
@@ -49,62 +82,64 @@ function App() {
   // All metrics for the selected region
   const [regionAllMetrics, setRegionAllMetrics] = useState<RegionAllMetrics | null>(null);
 
-  // Fetch summary data on mount
+  // Fetch summary data for both US and Canada when geo level changes
   useEffect(() => {
     const fetchSummaryData = async () => {
       try {
-        const url = getSummaryUrl();
-        const response = await fetch(url);
-        const csvText = await response.text();
+        const geoConfig = UNIFIED_GEO_LEVELS[selectedGeoLevel];
+        
+        // Fetch both US and Canada summaries in parallel
+        const [usResponse, canadaResponse] = await Promise.all([
+          fetch(getSummaryUrl(geoConfig.us.apiCountry, geoConfig.us.apiGeoLevel)),
+          fetch(getSummaryUrl(geoConfig.canada.apiCountry, geoConfig.canada.apiGeoLevel)),
+        ]);
 
-        const lines = csvText.trim().split("\n");
-        const headers = lines[0].split(",");
+        const [usText, canadaText] = await Promise.all([
+          usResponse.text(),
+          canadaResponse.text(),
+        ]);
 
-        const data: SummaryData = lines.slice(1).reduce((acc, line) => {
-          const values = line.split(",");
-          const geoid = values[0];
-
-          const record = headers.reduce(
-            (obj, header, index) => {
-              if (header !== "geoid") {
-                obj[header] = parseFloat(values[index]);
-              }
-              return obj;
-            },
-            {} as Record<string, number>,
-          );
-
-          acc[geoid] = record as DomainScores;
-          return acc;
-        }, {} as SummaryData);
-
-        setSummaryData(data);
+        // Parse and merge both datasets
+        const usData = parseSummaryCSV(usText);
+        const canadaData = parseSummaryCSV(canadaText);
+        
+        const mergedData: SummaryData = { ...usData, ...canadaData };
+        
+        console.log(`[${selectedGeoLevel}] Loaded summary data: US=${Object.keys(usData).length}, Canada=${Object.keys(canadaData).length}`);
+        
+        setSummaryData(mergedData);
       } catch (error) {
         console.error("Error fetching summary data:", error);
       }
     };
 
     fetchSummaryData();
-  }, []);
+  }, [selectedGeoLevel]);
 
   // Get domain scores for the currently selected region
-  const selectedRegionScores: DomainScores | null = selectedCensusTract
-    ? summaryData[selectedCensusTract] || null
+  const selectedRegionScores: DomainScores | null = selectedGeoId
+    ? summaryData[selectedGeoId] || null
     : null;
 
   // Fetch all metrics for the selected region when it changes
   useEffect(() => {
-    if (!selectedCensusTract) {
+    if (!selectedGeoId || !selectedCountry) {
       setRegionAllMetrics(null);
       return;
     }
 
     const fetchRegionMetrics = async () => {
       try {
-        const url = getRegionMetricsUrl(selectedCensusTract);
+        // Get the correct API geo level for the selected country
+        const geoConfig = UNIFIED_GEO_LEVELS[selectedGeoLevel];
+        const apiGeoLevel = selectedCountry === "canada" 
+          ? geoConfig.canada.apiGeoLevel 
+          : geoConfig.us.apiGeoLevel;
+        
+        const url = getRegionMetricsUrl(selectedGeoId, selectedCountry, apiGeoLevel);
         const response = await fetch(url);
         if (!response.ok) {
-          console.warn(`Failed to fetch region metrics for ${selectedCensusTract}`);
+          console.warn(`Failed to fetch region metrics for ${selectedGeoId}`);
           setRegionAllMetrics(null);
           return;
         }
@@ -117,7 +152,7 @@ function App() {
     };
 
     fetchRegionMetrics();
-  }, [selectedCensusTract]);
+  }, [selectedGeoId, selectedCountry, selectedGeoLevel]);
 
   return (
     <div className="h-full w-full">
@@ -129,9 +164,11 @@ function App() {
         >
           <Subheader selectedMetricObject={selectedMetricIdObject} />
           <LeftSidebar
-            selectedCountyName={selectedCountyName}
+            selectedGeoId={selectedGeoId}
+            selectedRegionName={selectedRegionName}
             selectedStateName={selectedStateName}
-            selectedCensusTract={selectedCensusTract}
+            selectedCountry={selectedCountry}
+            selectedGeoLevel={selectedGeoLevel}
             selectedMetricValue={selectedMetricValue}
             isOpen={leftSidebarOpen}
             setIsOpen={setLeftSidebarOpen}
@@ -140,10 +177,11 @@ function App() {
           />
           <MapArea
             selectedMetricIdObject={selectedMetricIdObject}
-            selectedCensusTract={selectedCensusTract}
-            setSelectedCountyName={setSelectedCountyName}
+            selectedGeoId={selectedGeoId}
+            setSelectedRegionName={setSelectedRegionName}
             setSelectedStateName={setSelectedStateName}
-            setSelectedCensusTract={setSelectedCensusTract}
+            setSelectedGeoId={setSelectedGeoId}
+            setSelectedCountry={setSelectedCountry}
             setSelectedMetricValue={setSelectedMetricValue}
             selectedGeoLevel={selectedGeoLevel}
             setSelectedGeoLevel={setSelectedGeoLevel}

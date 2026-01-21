@@ -1,3 +1,4 @@
+import { Country } from "components/App";
 import { 
   getUnifiedMetricUrls, 
   getUnifiedLocationUrls, 
@@ -5,9 +6,7 @@ import {
   API_ID_FIELD,
   UnifiedGeoLevel 
 } from "config/api";
-import MapOfFullStatenameToAbbreviation, {
-  StateNames,
-} from "data/StateNameToAbbrevsMap";
+import { getRegionAbbreviation } from "data/StateNameToAbbrevsMap";
 import maplibregl, { StyleSpecification } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import Papa from "papaparse";
@@ -113,6 +112,7 @@ const fetchMetricData = async (
 
 /**
  * Fetches location data from both US and Canada APIs, merges into single object.
+ * For tracts, uses county_name since 'name' contains the tract identifier.
  */
 const fetchLocationData = async (geoLevel: UnifiedGeoLevel): Promise<Record<string, LocationInfo>> => {
   const urls = getUnifiedLocationUrls(geoLevel);
@@ -133,11 +133,19 @@ const fetchLocationData = async (geoLevel: UnifiedGeoLevel): Promise<Record<stri
   
   const locationData: Record<string, LocationInfo> = {};
   
-  // Process US data - has 'geoid', 'name' (county), 'state_name'
+  // Process US data
+  // For tracts: 'name' is tract number, 'county_name' is the county
+  // For counties: 'name' is county name
+  // For states: 'name' is state name
   usResults.data.forEach((item: any) => {
     if (item[API_ID_FIELD]) {
+      // For tracts, prioritize county_name; for other levels, use name
+      const displayName = geoLevel === "tract" 
+        ? (item.county_name || item.name || "")
+        : (item.name || item.county_name || "");
+      
       locationData[item[API_ID_FIELD]] = {
-        name: item.name || item.county_name || "",
+        name: displayName,
         region: item.state_name || "",
         country: "us",
       };
@@ -145,6 +153,7 @@ const fetchLocationData = async (geoLevel: UnifiedGeoLevel): Promise<Record<stri
   });
   
   // Process Canada data - has 'geoid', 'name' (subdivision), 'province'
+  // For Canada subdivisions, the name is typically descriptive enough
   canadaResults.data.forEach((item: any) => {
     if (item[API_ID_FIELD]) {
       locationData[item[API_ID_FIELD]] = {
@@ -161,24 +170,26 @@ const fetchLocationData = async (geoLevel: UnifiedGeoLevel): Promise<Record<stri
 };
 
 interface MapAreaProps {
-  selectedCensusTract: string;
+  selectedGeoId: string;
   selectedMetricIdObject: SelectedMetricIdObject;
   setSelectedMetricValue?: (value: number) => void;
-  setSelectedCountyName: (countyName: string) => void;
-  setSelectedStateName: (stateName: StateNames) => void;
-  setSelectedCensusTract: (censusTract: string) => void;
+  setSelectedRegionName: (regionName: string) => void;
+  setSelectedStateName: (stateName: string) => void;
+  setSelectedGeoId: (geoId: string) => void;
+  setSelectedCountry: (country: Country) => void;
   selectedGeoLevel: UnifiedGeoLevel;
   setSelectedGeoLevel: (level: UnifiedGeoLevel) => void;
   leftSidebarOpen: boolean;
 }
 
 const MapArea: React.FC<MapAreaProps> = ({
-  selectedCensusTract,
+  selectedGeoId,
   selectedMetricIdObject,
-  setSelectedCountyName,
+  setSelectedRegionName,
   setSelectedStateName,
   setSelectedMetricValue,
-  setSelectedCensusTract,
+  setSelectedGeoId,
+  setSelectedCountry,
   selectedGeoLevel,
   setSelectedGeoLevel,
   leftSidebarOpen,
@@ -473,10 +484,11 @@ const MapArea: React.FC<MapAreaProps> = ({
           if (typeof metric === "number" && setSelectedMetricValue) {
             const location = locationDataRef.current[geoId];
             if (location) {
-              setSelectedCountyName(location.name);
-              setSelectedStateName(location.region as StateNames);
+              setSelectedRegionName(location.name);
+              setSelectedStateName(location.region);
+              setSelectedCountry(location.country);
             }
-            setSelectedCensusTract(geoId);
+            setSelectedGeoId(geoId);
             setSelectedMetricValue(metric);
           }
         }
@@ -577,6 +589,33 @@ const MapArea: React.FC<MapAreaProps> = ({
     }
   }, [geoMetrics, dataLoaded, mapLoaded, loadColors]);
 
+  /**
+   * Formats the tract/subdivision ID for tooltip display.
+   * US tracts: format as "1234.56" from the 11-digit GEOID
+   * Canada subdivisions: just use the geoId
+   * Counties/States: use the location name
+   */
+  const formatGeoIdForDisplay = (
+    geoId: string, 
+    geoLevel: UnifiedGeoLevel, 
+    isCanada: boolean,
+    locationName: string
+  ): string => {
+    if (geoLevel === "tract") {
+      if (!isCanada && geoId.length >= 11) {
+        // US tract: extract and format tract portion (last 6 digits as TTTT.TT)
+        const tractPortion = geoId.slice(-6);
+        const beforeDecimal = tractPortion.slice(0, 4).replace(/^0+/, "") || "0";
+        const afterDecimal = tractPortion.slice(4);
+        return `${beforeDecimal}.${afterDecimal}`;
+      }
+      // Canada subdivision: just use the geoId
+      return geoId;
+    }
+    // For county/state level, use the location name or geoId
+    return locationName || geoId;
+  };
+
   useEffect(() => {
     if (mapRef.current && mapLoaded) {
       const map = mapRef.current;
@@ -594,7 +633,6 @@ const MapArea: React.FC<MapAreaProps> = ({
           const geoId = feature.properties[config.idField];
           const metric = geoMetricsRef.current[geoId];
           const location = locationDataRef.current[geoId];
-          const displayName = feature.properties[config.nameField] || geoId;
 
           if (!popupRef.current) {
             popupRef.current = new maplibregl.Popup({
@@ -603,10 +641,10 @@ const MapArea: React.FC<MapAreaProps> = ({
             });
           }
 
-          // Get region abbreviation (state abbrev for US, full province name for Canada)
-          const regionDisplay: string = isCanada 
-            ? location?.region || ""
-            : MapOfFullStatenameToAbbreviation[location?.region as StateNames] || "";
+          // Get region abbreviation (state abbrev for US, province abbrev for Canada)
+          const regionDisplay: string = location?.region 
+            ? getRegionAbbreviation(location.region)
+            : "";
 
           const color: string = getColor(
             startColorRef.current,
@@ -616,13 +654,21 @@ const MapArea: React.FC<MapAreaProps> = ({
 
           // Show geographic level type in tooltip (e.g., "Census Tract" or "Census Subdivision")
           const geoLevelDisplay = config.displayName;
+          
+          // Format the geo identifier for display
+          const formattedGeoId = formatGeoIdForDisplay(
+            geoId, 
+            selectedGeoLevel, 
+            isCanada, 
+            location?.name || ""
+          );
 
           const tooltipHTML = `
             <div id="map-tooltip" class="rounded">
               <h1 class="font-bold text-[0.8rem] text-selectedIndicatorTextColor">
                 ${location?.name?.toUpperCase() || "N/A"}${regionDisplay ? `, ${regionDisplay}` : ""}
               </h1>
-              <h2 class="text-xs tracking-widest">${geoLevelDisplay}: ${displayName}</h2>
+              <h2 class="text-xs tracking-widest">${geoLevelDisplay} ${formattedGeoId}</h2>
               <div class="mt-1 flex items-center">
                 <div class="blackc mr-1 inline-block min-h-4 min-w-4 rounded-sm border-[1px] border-solid border-black" style="background-color: ${color}"></div>
                 <span class="font-bold text-black">

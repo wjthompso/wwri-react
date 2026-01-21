@@ -16,11 +16,11 @@
 | 3B | Backend Data Import (CSV → PostgreSQL) | ✅ Done |
 | 3C | Frontend Integration | ✅ Done |
 | 3D | Style indicator selector boxes with ring offset | ✅ Done |
-| 4 | Fix geographic context display | ⬜ Pending |
+| 4 | Fix geographic context display | ✅ Done |
 | 5 | Redesign subheader: selected region + breadcrumb path | ⬜ Pending |
 | 6 | Add metric description text under subheader title | ⬜ Pending |
 | 7 | Fix search to support fragment matching | ⬜ Pending |
-| 8 | Update geo-level labels (add Canada equivalents) | ⬜ Pending |
+| 8 | Update geo-level labels (add Canada equivalents) | ✅ Done |
 | 9 | Style geo-level selector buttons (larger, match aesthetic) | ⬜ Pending |
 | 10 | Make left sidebar wider | ⬜ Pending |
 | 11 | Add smooth transitions to domain expand/collapse | ⬜ Pending |
@@ -31,7 +31,7 @@
 | 16 | Fix census tract GEOIDs missing leading zeros | ⬜ Pending |
 | 17 | Fix Communities Status: gray out if unavailable + tooltip | ⬜ Pending |
 
-**Progress:** 6/18 complete (Task 3 split into 3A/3B/3C/3D)
+**Progress:** 8/18 complete (Task 3 split into 3A/3B/3C/3D)
 
 ---
 
@@ -48,6 +48,11 @@
 | Jan 20 | Task 3D added: Style indicator selector boxes with ring offset effect (blue ring → transparent gap → colored box). Similar to Climate Vulnerability Index pattern using Tailwind's ring-offset utilities. |
 | Jan 21 | Task 3D completed: Added `ring-offset-2 ring-offset-white` to all active button states in RightSidebar.tsx, LayoutUnified.tsx, LayoutUnifiedCompact.tsx. |
 | Jan 21 | Task 17 added: Communities domain Status section appears to have data but shows as unavailable. Need to investigate and either enable it or properly gray out with "Unavailable" tooltip. |
+| Jan 21 | Task 4 completed: Fixed geographic context display. Renamed `selectedCensusTract` → `selectedGeoId`, added country tracking, added Canadian province abbreviations, updated LeftSidebarHeader with geo-level-aware display (Tract: "County, State — Tract X", County: "County, State", State: "State"). |
+| Jan 21 | Task 4 follow-up: Fixed tooltip to show county name instead of tract number for US tracts. Added `formatGeoIdForDisplay()` helper. |
+| Jan 21 | Task 8 completed: Updated geo-level label from "Census Tracts" to "Census Tracts / Subdivisions". Other levels already had Canada equivalents ("Counties / Divisions", "States / Provinces"). |
+| Jan 21 | Bug fix: Right sidebar domain colors now work for Canadian selections. Fixed by fetching summary data for both US and Canada, and updating region metrics fetch to use correct country/geoLevel. |
+| Jan 21 | UX refinement: Changed census tract display from single line "County, ST — Tract XXX" to two-line format: "County, ST" on first line, "Census Tract XXX.XX" on second line. Removed colons from both left sidebar and tooltip for cleaner appearance. |
 
 ---
 
@@ -295,13 +300,46 @@ Added `ring-offset-2 ring-offset-white` to all active button states:
 
 ---
 
-### Task 4: Fix Geographic Context Display
+### Task 4: Fix Geographic Context Display ✅
 
-**Status:** Pending
+**Status:** Complete (Jan 21, 2026)
 
-**Description:** Geographic context information is not displaying/working. Need to investigate and fix.
+**Description:** Geographic context information was not displaying correctly. The header always showed "Tract {id}" regardless of which geographic level was selected.
 
-**Files to check:** `LeftSidebar.tsx`, `LeftSidebarHeader.tsx`
+**Root Cause:**
+- `selectedCensusTract` variable was confusingly named (stored any geo ID, not just tracts)
+- `selectedGeoLevel` was not passed to LeftSidebar components
+- No country context was tracked (US vs Canada)
+- Header display didn't adapt to geographic level
+
+**Implementation:**
+
+1. **Renamed `selectedCensusTract` → `selectedGeoId`** throughout codebase for clarity
+2. **Added `selectedCountry` state** to track US vs Canada selection
+3. **Added Canadian province abbreviations** to `StateNameToAbbrevsMap.ts` (Canada Post standard: BC, AB, ON, etc.)
+4. **Updated LeftSidebarHeader** with smart display logic:
+   - **Tract level:** "County, State — Tract 1234.56" (or "Subdivision" for Canada)
+   - **County level:** "County, State"
+   - **State level:** "State" (just the name)
+5. **Added `getRegionAbbreviation()` helper** that works for both US states and Canadian provinces
+
+**Files modified:**
+- `src/data/StateNameToAbbrevsMap.ts` - Added Canadian provinces + `getRegionAbbreviation()` helper
+- `src/components/App.tsx` - Renamed state, added `selectedCountry`, updated prop passing
+- `src/components/LeftSidebar/LeftSidebar.tsx` - Updated props interface
+- `src/components/LeftSidebar/LeftSidebarHeader.tsx` - Complete rewrite with geo-level-aware display
+- `src/components/MapArea/MapArea.tsx` - Updated prop names, now sets country on selection
+
+**Display examples:**
+| Geo Level | US Example | Canada Example |
+|-----------|------------|----------------|
+| Tract | Converse, WY<br>Census Tract 9566.00 | Bulkley-Nechako G, BC<br>Census Subdivision 5951053 |
+| County | Los Angeles County, CA | Metro Vancouver, BC |
+| State | California | British Columbia |
+
+**Notes:**
+- Census tract display uses two-line format for better readability
+- No colons used in geographic labels (e.g., "Census Tract 9566.00" not "Census Tract: 9566.00")
 
 ---
 
@@ -361,22 +399,18 @@ Added `ring-offset-2 ring-offset-white` to all active button states:
 
 ---
 
-### Task 8: Update Geo-Level Labels with Canada Equivalents
+### Task 8: Update Geo-Level Labels with Canada Equivalents ✅
 
-**Status:** Pending
+**Status:** Complete (Jan 21, 2026)
 
 **Description:** Update the geographic level selector button labels:
-- "Census Tracts" → "Census Tracts / Subdivisions"
-- "Counties" → "Counties / Divisions" 
-- "States" → "States / Provinces"
+- "Census Tracts" → "Census Tracts / Subdivisions" ✅
+- "Counties" → "Counties / Divisions" (already done)
+- "States" → "States / Provinces" (already done)
 
-**Option:** Could use two-line labels inside taller buttons:
-```
-Census Tracts
-/ Subdivisions
-```
+**Implementation:** Updated `UNIFIED_GEO_LEVELS.tract.label` in `src/config/api.ts`.
 
-**Files to modify:** `MapArea.tsx`
+**Files modified:** `src/config/api.ts`
 
 ---
 

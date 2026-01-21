@@ -17,8 +17,8 @@
 | 3C | Frontend Integration | ✅ Done |
 | 3D | Style indicator selector boxes with ring offset | ✅ Done |
 | 4 | Fix geographic context display | ✅ Done |
-| 5 | Redesign subheader: selected region + breadcrumb path | ⬜ Pending |
-| 6 | Add metric description text under subheader title | ⬜ Pending |
+| 5 | Redesign subheader: add breadcrumb path | ✅ Done |
+| 6 | Add metric description text under subheader title | ✅ Done |
 | 7 | Fix search to support fragment matching | ⬜ Pending |
 | 8 | Update geo-level labels (add Canada equivalents) | ✅ Done |
 | 9 | Style geo-level selector buttons (larger, match aesthetic) | ⬜ Pending |
@@ -29,9 +29,10 @@
 | 14 | Reports page (waiting on Tessa's doc) | ⬜ Blocked |
 | 15 | Additional pages (waiting on Tessa's doc) | ⬜ Blocked |
 | 16 | Fix census tract GEOIDs missing leading zeros | ⬜ Pending |
-| 17 | Fix Communities Status: gray out if unavailable + tooltip | ⬜ Pending |
+| 17 | Fix Communities Status: gray out if unavailable + tooltip | ⬜ Pending ⚠️ HIGH |
+| 18 | Constrain subheader width between sidebars (optional layout) | ⬜ Pending |
 
-**Progress:** 8/18 complete (Task 3 split into 3A/3B/3C/3D)
+**Progress:** 10/19 complete (Task 3 split into 3A/3B/3C/3D, Task 5 & 6 merged)
 
 ---
 
@@ -53,6 +54,9 @@
 | Jan 21 | Task 8 completed: Updated geo-level label from "Census Tracts" to "Census Tracts / Subdivisions". Other levels already had Canada equivalents ("Counties / Divisions", "States / Provinces"). |
 | Jan 21 | Bug fix: Right sidebar domain colors now work for Canadian selections. Fixed by fetching summary data for both US and Canada, and updating region metrics fetch to use correct country/geoLevel. |
 | Jan 21 | UX refinement: Changed census tract display from single line "County, ST — Tract XXX" to two-line format: "County, ST" on first line, "Census Tract XXX.XX" on second line. Removed colons from both left sidebar and tooltip for cleaner appearance. |
+| Jan 21 | Task 5 & 6 completed: Added breadcrumb pathway to subheader. Created `buildBreadcrumbPath.ts` utility to traverse domain hierarchy and build full path (e.g., "Infrastructure › Resilience › Recovery"). Breadcrumb floats in top-right of subheader with parents grayed out and current selection bold. Metric description already present in subheader. |
+| Jan 21 | Task 17 marked HIGH priority: Status sections in Indicator Navigation showing inconsistent behavior - box is colored but section appears unavailable. Need to investigate if data exists and fix display accordingly. |
+| Jan 21 | Task 18 added: Add optional layout to constrain subheader width between sidebars (toggle between full-width and constrained layouts). |
 
 ---
 
@@ -343,46 +347,63 @@ Added `ring-offset-2 ring-offset-white` to all active button states:
 
 ---
 
-### Task 5: Redesign Subheader - Selected Region + Breadcrumb Path
+### Task 5: Add Breadcrumb Pathway to Subheader ✅
 
-**Status:** Pending
+**Status:** Complete (Jan 21, 2026)
 
-**Description:** Create two-tier subheader:
-1. **Top tier:** Selected region name (e.g., "Monterey County, California")
-2. **Bottom tier:** Breadcrumb showing metric path with ancestors grayed out
+**Description:** Add a breadcrumb pathway to the subheader showing the full metric hierarchy path with ancestors grayed out.
 
-**Current:** Single subheader shows "Infrastructure: Wildland Urban Interface"
+**Implementation:**
 
-**Desired layout:**
+Created `buildBreadcrumbPath.ts` utility that:
+- Traverses the domain hierarchy to find any metric/category
+- Builds the full path from domain → subdomain → category → metric
+- Handles intermediate category selections (e.g., "Recovery" itself, not just metrics under it)
+- Works with nested subdomains (Sense of Place → Iconic Places/Species)
+
+**Subheader layout:**
 ```
-┌────────────────────────────────────────────────────────┐
-│ Monterey County, California                            │
-├────────────────────────────────────────────────────────┤
-│ Infrastructure > Resilience > Resistance > [Wildland Urban Interface] │
-│ (grayed out)    (grayed out)  (grayed out)  (bold/dark)               │
-└────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────┐
+│ Infrastructure: Wildland Urban Interface    Infrastructure › ... │
+│ Description text...                                              │
+└──────────────────────────────────────────────────────────────────┘
+   ↑ Left: Metric title + description      Right: Breadcrumb path ↑
 ```
 
-**Key changes:**
-- Remove "Infrastructure:" prefix from metric name
-- Show full hierarchy path with ancestors grayed out
-- Move selected region from left sidebar to new top subheader
+**Examples:**
+- Domain score: `Infrastructure`
+- Category: `Infrastructure › Resilience › Recovery` (Recovery is bold)
+- Metric: `Infrastructure › Resilience › Resistance › Building Codes` (Building Codes is bold)
+- Subdomain metric: `Sense of Place › Iconic Places › Resilience › Resistance › WUI Exposure`
 
-**Files to modify:** `Subheader.tsx`, `LeftSidebarHeader.tsx`, `App.tsx`
+**Visual styling:**
+- Breadcrumb uses chevron (`›`) separators
+- Parent items are gray (`text-gray-400`)
+- Current selection is bold/dark (`font-semibold text-gray-800`)
+- Font size: `text-base` (16px)
+- Floats on right side of subheader
+
+**Files created:**
+- `src/utils/buildBreadcrumbPath.ts` - Breadcrumb path builder utility
+
+**Files modified:**
+- `src/components/Subheader/Subheader.tsx` - Added breadcrumb pathway component
+
+**Notes:**
+- Metric descriptions already present in `domainHierarchy.ts` and displayed in subheader
+- Region location kept in left sidebar header (not moved to subheader)
 
 ---
 
-### Task 6: Add Metric Description Under Subheader Title
+### Task 6: Add Metric Description Under Subheader Title ✅
 
-**Status:** Pending
+**Status:** Complete (already implemented)
 
-**Description:** Add explanatory text under the metric name (e.g., "Wildland Urban Interface") that briefly describes what the data set represents.
+**Description:** Metric descriptions are already present in the subheader. Each metric in `domainHierarchy.ts` has a description field that displays below the metric title.
 
-**Example:** "Wildland Urban Interface: Areas where human development meets wildland vegetation, indicating fire risk exposure."
+**Example:** When viewing "Wildland Urban Interface", the description "Exposure in the wildland-urban interface zone" displays below the title.
 
-**Dependency:** Need description text from Tessa/Cat for each metric.
-
-**Files to modify:** `Subheader.tsx`, `domainHierarchy.ts` (add descriptions to metrics)
+**No additional work needed.**
 
 ---
 
@@ -600,6 +621,45 @@ if (country === "us" && geoLevel === "tract" && geoid.length === 10) {
 - Add `title="Unavailable"` attribute to the grayed-out Status div
 - Ensure the box is also grayed out (not just the text)
 - Apply consistent styling across all domains with missing sections
+
+---
+
+### Task 18: Constrain Subheader Width Between Sidebars (Optional Layout)
+
+**Status:** Pending
+
+**Description:** Add an optional layout mode where the subheader width is constrained to fit between the left and right sidebars, rather than spanning the full viewport width.
+
+**Current behavior:**
+- Subheader spans full width of the viewport
+- Left sidebar and right sidebar overlay on top of map area
+- Subheader goes "underneath" the sidebars
+
+**Proposed optional layout:**
+- Subheader width constrained to visible map area (between sidebars)
+- Creates tighter visual grouping with map content
+- May improve readability on larger screens
+
+**Implementation approach:**
+- Add a toggle or configuration option for layout mode
+- Full-width layout (current): `className="w-full"`
+- Constrained layout: Calculate width based on sidebar states
+  - If left sidebar open: subtract ~233px from left
+  - If right sidebar exists: subtract ~400px from right
+  - Use flexbox or grid to manage layout
+
+**Considerations:**
+- Test with both sidebars open/closed
+- Ensure breadcrumb doesn't wrap awkwardly on smaller screens
+- May need to truncate or hide breadcrumb items on very narrow widths
+- Decide if this should be user-controllable or always-on
+
+**Files to modify:**
+- `src/components/App.tsx` - Layout structure
+- `src/components/Subheader/Subheader.tsx` - Width constraints
+- Possibly add responsive behavior with Tailwind breakpoints
+
+**Design question:** Should this be a toggle, or should we pick one layout and stick with it?
 
 ---
 

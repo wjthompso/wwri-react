@@ -267,7 +267,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
                     setSelectedMetricIdObject({
                       domainId: domain.id,
                       metricId: `${domain.id}_domain_score`,
-                      label: `${domain.label} Score`,
+                      label: domain.label,
                       description: domain.description,
                       colorGradient: domain.colorGradient,
                     });
@@ -322,7 +322,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
                                 setSelectedMetricIdObject({
                                   domainId: domain.id,
                                   metricId: `${domain.id}_${subdomain.id}_domain_score`,
-                                  label: `${subdomain.label} Score`,
+                                  label: subdomain.label,
                                   description: subdomain.description,
                                   colorGradient: domain.colorGradient,
                                 });

@@ -11,7 +11,7 @@ const MapLegend: React.FC<{
   );
 
   return (
-    <div className="absolute bottom-10 right-1 z-20 flex w-[7rem] flex-col rounded-lg bg-white px-1 py-4 shadow-lg">
+    <div className="absolute bottom-10 right-1 z-20 flex w-[9rem] flex-col rounded-lg bg-white px-2 py-4 shadow-lg">
       <h2 className="mb-2 text-center text-base font-bold leading-5">
         {label}
       </h2>
@@ -25,9 +25,9 @@ const MapLegend: React.FC<{
             ></div>
           ))}
           <div className="absolute left-7 ml-1 flex h-full w-full flex-col justify-between">
-            <span className="mt-[-0.3rem] text-xs">100</span>
-            <span className="mb-[0rem] text-xs">50</span>
-            <span className="mb-[-0.3rem] text-xs">0</span>
+            <span className="mt-[-0.3rem] text-sm">100</span>
+            <span className="mb-[0rem] text-sm">50</span>
+            <span className="mb-[-0.3rem] text-sm">0</span>
           </div>
         </div>
       </div>

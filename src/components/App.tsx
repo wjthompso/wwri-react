@@ -1,4 +1,4 @@
-import { getRegionMetricsUrl, getSummaryUrl, UnifiedGeoLevel, UNIFIED_GEO_LEVELS } from "config/api";
+import { getRegionMetricsUrl, getSummaryUrl, UNIFIED_GEO_LEVELS, UnifiedGeoLevel } from "config/api";
 import { useEffect, useState } from "react";
 import "../index.css";
 import SelectedMetricIdObject from "../types/componentStatetypes";
@@ -58,7 +58,7 @@ function App() {
     useState<SelectedMetricIdObject>({
       domainId: "infrastructure",
       metricId: "infrastructure_domain_score",
-      label: "Infrastructure Score",
+      label: "Infrastructure",
       description: "Built infrastructure resilience to wildfire damage.",
       colorGradient: {
         startColor: { r: 255, g: 255, b: 255 },

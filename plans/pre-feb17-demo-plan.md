@@ -31,8 +31,9 @@
 | 16 | Fix census tract GEOIDs missing leading zeros | ⬜ Pending |
 | 17 | Fix Communities Status: gray out if unavailable + tooltip | ⬜ Pending ⚠️ HIGH |
 | 18 | Constrain subheader width between sidebars (optional layout) | ⬜ Pending |
+| 19 | Simplify map legend to show only metric name | ✅ Done |
 
-**Progress:** 10/19 complete (Task 3 split into 3A/3B/3C/3D, Task 5 & 6 merged)
+**Progress:** 11/20 complete (Task 3 split into 3A/3B/3C/3D, Task 5 & 6 merged)
 
 ---
 
@@ -57,6 +58,7 @@
 | Jan 21 | Task 5 & 6 completed: Added breadcrumb pathway to subheader. Created `buildBreadcrumbPath.ts` utility to traverse domain hierarchy and build full path (e.g., "Infrastructure › Resilience › Recovery"). Breadcrumb floats in top-right of subheader with parents grayed out and current selection bold. Metric description already present in subheader. |
 | Jan 21 | Task 17 marked HIGH priority: Status sections in Indicator Navigation showing inconsistent behavior - box is colored but section appears unavailable. Need to investigate if data exists and fix display accordingly. |
 | Jan 21 | Task 18 added: Add optional layout to constrain subheader width between sidebars (toggle between full-width and constrained layouts). |
+| Jan 21 | Task 19 added and completed: Verified map legend only shows metric name (e.g., "Home Ownership") not full path. Already working correctly - labels in `flattenDomainHierarchyForSearch.ts` use simple metric names from `domainHierarchy.ts`. |
 
 ---
 
@@ -660,6 +662,34 @@ if (country === "us" && geoLevel === "tract" && geoid.length === 10) {
 - Possibly add responsive behavior with Tailwind breakpoints
 
 **Design question:** Should this be a toggle, or should we pick one layout and stick with it?
+
+---
+
+### Task 19: Simplify Map Legend to Show Only Metric Name ✅
+
+**Status:** Complete (Jan 21, 2026)
+
+**Description:** Ensure the map legend only displays the metric name (e.g., "Home Ownership") rather than the full hierarchical path (e.g., "Infrastructure > Resilience > Recovery > Home Ownership" or "Infrastructure Home Ownership").
+
+**Investigation:**
+
+Checked the data flow from domain hierarchy → flattened search results → map legend:
+
+1. **Domain Hierarchy (`domainHierarchy.ts`):** Individual metrics already have simple labels like "Home Ownership"
+2. **Flattening Logic (`flattenDomainHierarchyForSearch.ts`):** 
+   - Individual metrics use `metric.label` (just the metric name)
+   - Category-level metrics do prepend domain name (e.g., "Infrastructure Score", "Infrastructure Resilience")
+   - Full path stored separately in `traversedPathForSearchSuggestions` field
+3. **Map Legend (`MapLegend.tsx`):** Receives `label` prop from `selectedMetricIdObject.label`
+
+**Conclusion:** Already working correctly! Individual metrics show only their name. Category-level aggregates (domain score, resilience, resistance, recovery) intentionally include the domain name for clarity since they represent rollup metrics.
+
+**Examples:**
+- ✅ Individual metric: "Home Ownership" (not "Communities Home Ownership")
+- ✅ Category metric: "Infrastructure Resistance" (includes domain for context)
+- ✅ Domain score: "Infrastructure Score"
+
+**No changes needed.**
 
 ---
 

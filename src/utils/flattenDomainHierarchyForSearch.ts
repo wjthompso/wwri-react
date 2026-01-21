@@ -28,7 +28,7 @@ const flattenDomainHierarchy = (domains: Domain[]): IndicatorObject[] => {
       domainId: domain.id,
       metricId: `${domain.id}_domain_score`,
       traversedPathForSearchSuggestions: `${domainLabel} > Domain Score`,
-      label: `${domainLabel} Score`,
+      label: domainLabel,
       description: domain.description,
       colorGradient: domain.colorGradient,
     });

@@ -33,7 +33,7 @@
 | 18 | Constrain subheader width between sidebars (optional layout) | ⬜ Pending |
 | 19 | Simplify map legend to show only metric name | ✅ Done |
 | 20 | ~~Make Geographic Context widget functional~~ Hidden (deferred) | ✅ Done |
-| 21 | Fix counties showing N/A values (GEOID padding) | ✅ Done |
+| 21 | Fix counties showing N/A values (GEOID padding + data gap) | ✅ Done (49 counties missing data - awaiting Carlo) |
 | 22 | Update Overall Resilience color scale (crimson to light yellow) | ⬜ Pending |
 
 **Progress:** 16/22 complete (Task 3 split into 3A/3B/3C/3D, Task 5 & 6 merged, Task 20 hidden)
@@ -69,7 +69,7 @@
 | Jan 21 | Task 17 completed: Fixed inconsistent styling for unavailable sections. Changed background color from `domainColor` to neutral gray (`#c8c8c8`) and added "Unavailable" tooltip to both box and label. Affects Infrastructure/Communities (missing Status), Water/Air Quality (missing Recovery). |
 | Jan 21 | Task 20 decision: Hidden Geographic Context widget instead of implementing it. Reasons: geo-level mismatch (tract/county vs state navigation), missing Canada, redundant with search box/map clicking, many states have no WWRI data. Code preserved with `{false && ...}` wrapper for potential future use. |
 || Jan 21 | Task 22 added: Update Overall Resilience color scale to use crimson (#7b1628) for maximum resilience and light yellow (#fffac9) for minimum resilience, per Manuel's color scheme. |
-| Jan 21 | Task 21 completed: Fixed counties showing N/A values. Root cause: same as Task 16 - GEOID padding issue. CSV had 4-digit `stco_fips` values (e.g., `8047`) but tile server expects 5-digit (e.g., `08047`). Fixed in `CachedDataV2.ts` by adding padding for 4→5 digit county GEOIDs. Affects 166 counties in states with FIPS < 10 (AK, AZ, CO, ID, MT, NM, NV, UT, WY). |
+| Jan 21 | Task 21 completed: Fixed counties showing N/A values. Root cause: same as Task 16 - GEOID padding issue. CSV had 4-digit `stco_fips` values (e.g., `8047`) but tile server expects 5-digit (e.g., `08047`). Fixed in `CachedDataV2.ts` by adding padding for 4→5 digit county GEOIDs. Deployed and verified - 395 counties (89%) now display data correctly. Follow-up analysis revealed 49 counties (11%) legitimately have no data in CSV source files. Waiting for Carlo to confirm if missing data is intentional. |
 
 ---
 
@@ -1011,14 +1011,31 @@ if (country === "us" && geoLevel === "county" && geoid.length === 4) {
 - `wwri-metrics-api/src/utils/CachedDataV2.ts` - Added county padding logic
 
 **Testing:**
-- TypeScript build: ✅ Compiles successfully
-- Needs deployment to major-sculpin and browser verification
+- ✅ TypeScript build compiles successfully
+- ✅ Deployed to major-sculpin and verified in browser
+- ✅ 395 counties now display data correctly (89% coverage)
 
-**Deployment steps:**
-1. SSH to major-sculpin
-2. `cd /path/to/wwri-metrics-api && git pull`
-3. `npm run build`
-4. Restart the API server
-5. Verify counties display data in browser
+**Follow-up Investigation:**
+
+After deployment, discovered that 49 counties (11%) still show gray/no data. Further analysis revealed these counties **legitimately have no data in the CSV source files** - this is not a GEOID issue.
+
+**Missing data breakdown by state:**
+- Montana: 11 counties (e.g., Blaine, Custer, Jefferson, Lake, Lincoln, Madison, Mineral, Phillips, Teton, Valley)
+- Washington: 9 counties (e.g., Adams, Benton, Clark, Columbia, Douglas, Franklin, Garfield, Lincoln, San Juan)
+- Wyoming: 7 counties (e.g., Big Horn, Carbon, Crook, Fremont, Lincoln, Park, Sheridan)
+- Oregon: 6 counties (e.g., Curry, Jackson, Jefferson, Lake, Lincoln, Washington)
+- New Mexico: 5 counties (e.g., Lincoln, Roosevelt, San Juan, San Miguel, Sierra)
+- Utah: 4 counties (e.g., Carbon, Grand, Morgan, Summit)
+- Nevada: 4 counties (e.g., Douglas, Humboldt, Lincoln, Mineral)
+- Idaho: 2 counties (Adams, Custer)
+- California: 1 county (Santa Cruz)
+
+**Notable missing counties include:**
+- Clark County, WA (Portland metro area)
+- Jackson County, OR (Medford)
+- Summit County, UT (Park City)
+- Santa Cruz County, CA
+
+**Status:** ⏳ Waiting for communication with Carlo to determine if missing counties should have data or are intentionally excluded from the study.
 
 **Related:** Task 16 (census tract GEOID padding fix)

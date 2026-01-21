@@ -28,8 +28,9 @@
 | 13 | Mid-week check-in with Tessa | ⬜ Pending |
 | 14 | Reports page (waiting on Tessa's doc) | ⬜ Blocked |
 | 15 | Additional pages (waiting on Tessa's doc) | ⬜ Blocked |
+| 16 | Fix census tract GEOIDs missing leading zeros | ⬜ Pending |
 
-**Progress:** 5/16 complete (Task 3 split into 3A/3B/3C/3D)
+**Progress:** 5/17 complete (Task 3 split into 3A/3B/3C/3D)
 
 ---
 
@@ -471,6 +472,51 @@ Census Tracts
 - Desired layout (description, drawing, or reference website)
 - Content (can be placeholder/draft)
 - Aesthetic preferences (background colors, images, etc.)
+
+---
+
+### Task 16: Fix Census Tract GEOIDs Missing Leading Zeros
+
+**Status:** Pending
+
+**Description:** Census tract data for states with FIPS codes <10 (California=06, Arizona=04, Colorado=08, etc.) is not displaying on the map because the GEOIDs are missing their leading zeros.
+
+**Root Cause Analysis:**
+- The API returns GEOIDs like `6001422200` (10 digits)
+- The tile server expects GEOIDs like `06001422200` (11 digits)
+- **12,497 tract GEOIDs** are affected (out of 18,300 total)
+- States affected: CA (06), AZ (04), CO (08), AK (02), and others with FIPS < 10
+
+**Evidence:**
+```bash
+# API returns 10-digit GEOIDs for California
+curl ".../api/us/tract/infrastructure/infrastructure_domain_score" | grep "^6001"
+# Returns: 6001422200,97.27... (missing leading 0)
+
+# Length analysis
+# 12,497 GEOIDs are 10 digits (wrong)
+# 5,803 GEOIDs are 11 digits (correct)
+```
+
+**Fix Approach:** Pad GEOIDs to 11 digits in the API when serving tract data.
+
+**Files to modify:**
+- `wwri-metrics-api/src/utils/CachedDataV2.ts` - Pad geoid when building CSV strings
+
+**Implementation:**
+```typescript
+// In loadGeoLevelData(), when processing tract data:
+// Pad geoid to 11 digits for US tracts
+let geoid = row[geoidCol] as string || "";
+if (country === "us" && geoLevel === "tract" && geoid.length === 10) {
+  geoid = "0" + geoid;
+}
+```
+
+**Testing:**
+1. After fix, verify California tracts show data
+2. Check that 11-digit GEOIDs are still handled correctly
+3. Verify API returns `06001422200` instead of `6001422200`
 
 ---
 

@@ -33,8 +33,10 @@
 | 18 | Constrain subheader width between sidebars (optional layout) | ⬜ Pending |
 | 19 | Simplify map legend to show only metric name | ✅ Done |
 | 20 | ~~Make Geographic Context widget functional~~ Hidden (deferred) | ✅ Done |
+| 21 | Fix counties showing N/A values (GEOID padding) | ✅ Done |
+| 22 | Update Overall Resilience color scale (crimson to light yellow) | ⬜ Pending |
 
-**Progress:** 15/20 complete (Task 3 split into 3A/3B/3C/3D, Task 5 & 6 merged, Task 20 hidden)
+**Progress:** 16/22 complete (Task 3 split into 3A/3B/3C/3D, Task 5 & 6 merged, Task 20 hidden)
 
 ---
 
@@ -66,6 +68,8 @@
 | Jan 21 | Task 20 added: Make Geographic Context widget functional. Currently displays US state abbreviations in a grid but buttons are non-functional. Need to add click handlers to pan map to selected state/province and highlight the region. Mark as HIGH priority. |
 | Jan 21 | Task 17 completed: Fixed inconsistent styling for unavailable sections. Changed background color from `domainColor` to neutral gray (`#c8c8c8`) and added "Unavailable" tooltip to both box and label. Affects Infrastructure/Communities (missing Status), Water/Air Quality (missing Recovery). |
 | Jan 21 | Task 20 decision: Hidden Geographic Context widget instead of implementing it. Reasons: geo-level mismatch (tract/county vs state navigation), missing Canada, redundant with search box/map clicking, many states have no WWRI data. Code preserved with `{false && ...}` wrapper for potential future use. |
+|| Jan 21 | Task 22 added: Update Overall Resilience color scale to use crimson (#7b1628) for maximum resilience and light yellow (#fffac9) for minimum resilience, per Manuel's color scheme. |
+| Jan 21 | Task 21 completed: Fixed counties showing N/A values. Root cause: same as Task 16 - GEOID padding issue. CSV had 4-digit `stco_fips` values (e.g., `8047`) but tile server expects 5-digit (e.g., `08047`). Fixed in `CachedDataV2.ts` by adding padding for 4→5 digit county GEOIDs. Affects 166 counties in states with FIPS < 10 (AK, AZ, CO, ID, MT, NM, NV, UT, WY). |
 
 ---
 
@@ -773,6 +777,36 @@ If we revisit this widget, consider:
 
 ---
 
+### Task 22: Update Overall Resilience Color Scale (Crimson to Light Yellow)
+
+**Status:** Pending
+
+**Description:** Update the color gradient for the "Overall Resilience" (WWRI Final Score) metric to use a new color scheme provided by Manuel.
+
+**Current color scheme:** White → Domain Color (varies by selection)
+
+**New color scheme:**
+- **Maximum resilience (high score):** Crimson `#7b1628` → rgb(123, 22, 40)
+- **Minimum resilience (low score):** Light Yellow `#fffac9` → rgb(255, 250, 201)
+
+**Implementation notes:**
+- Overall Resilience button uses `wwri_final_score` from API
+- Color gradient should interpolate between light yellow (low) and crimson (high)
+- Affects both the selector box color and the map polygon colors when Overall Resilience is selected
+
+**Files to modify:**
+- `src/utils/domainScoreColors.ts` - Add special case for Overall Resilience color mapping
+- `src/components/RightSidebar.tsx` - Update Overall Resilience button background color logic
+- Possibly `src/components/MapArea/MapArea.tsx` or map layer styling - Update map fill color for Overall Resilience
+
+**Test cases:**
+1. Select a region with high WWRI score → Box and map should be dark crimson
+2. Select a region with low WWRI score → Box and map should be light yellow
+3. Select a region with mid-range score → Box and map should be orange/amber blend
+4. No selection → Box should be neutral gray
+
+---
+
 ## 🔗 Related Documents
 
 - [Tile Server Update Plan](../../wwri-metrics-api/plans/tile-server-update-plan.md) - Backend tile server setup
@@ -928,3 +962,63 @@ The main idea here is that you want to ask the user clarifying questions to ensu
    - Verify each step updates correctly
    - Check that selections persist/update as expected
    - Test edge cases (no data, missing data, null values)
+
+---
+
+### Task 21: Fix Counties Showing N/A Values (GEOID Padding) ✅
+
+**Status:** Complete (Jan 21, 2026)
+
+**Priority:** HIGH
+
+**Description:** Many US counties were showing "N/A" values on the map instead of actual metric scores. Census tracts and states displayed correctly, but 166 counties had missing data.
+
+**Root Cause Analysis:**
+
+Same issue as Task 16 (census tract GEOID padding). The CSV source data had:
+- `stco_fips` column with 4-digit values for states with FIPS codes < 10
+- Example: `8047` for Gilpin County, Colorado (should be `08047`)
+
+The mbtiles tile server expects 5-digit county GEOIDs with leading zeros:
+- `"02013"` (Alaska), `"04001"` (Arizona), `"08047"` (Colorado), etc.
+
+**Data Analysis:**
+```bash
+# County GEOID lengths in CSV
+16,543 rows with 4-digit codes (WRONG - missing leading zero)
+22,116 rows with 5-digit codes (CORRECT)
+
+# 166 unique counties affected (AK, AZ, CO, ID, MT, NM, NV, UT, WY)
+```
+
+**Fix Applied:**
+
+Added county GEOID padding in `CachedDataV2.ts` alongside the existing tract fix:
+
+```typescript
+// Pad US GEOIDs (fixes missing leading zeros for states with FIPS < 10)
+// Counties: 4 → 5 digits (e.g., "8047" → "08047")
+// Tracts: 10 → 11 digits (e.g., "6001422200" → "06001422200")
+let geoid = row[geoidCol] as string || "";
+if (country === "us" && geoLevel === "county" && geoid.length === 4) {
+    geoid = "0" + geoid;
+} else if (country === "us" && geoLevel === "tract" && geoid.length === 10) {
+    geoid = "0" + geoid;
+}
+```
+
+**Files modified:**
+- `wwri-metrics-api/src/utils/CachedDataV2.ts` - Added county padding logic
+
+**Testing:**
+- TypeScript build: ✅ Compiles successfully
+- Needs deployment to major-sculpin and browser verification
+
+**Deployment steps:**
+1. SSH to major-sculpin
+2. `cd /path/to/wwri-metrics-api && git pull`
+3. `npm run build`
+4. Restart the API server
+5. Verify counties display data in browser
+
+**Related:** Task 16 (census tract GEOID padding fix)

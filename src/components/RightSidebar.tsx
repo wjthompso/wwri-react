@@ -303,9 +303,13 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
               </button>
             </div>
 
-            {/* Expanded Section */}
-            {expandedSections[domain.id] && (
-              <>
+            {/* Expanded Section - CSS Grid for smooth animation */}
+            <div
+              className={`grid transition-[grid-template-rows] duration-300 ease-in-out ${
+                expandedSections[domain.id] ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+              }`}
+            >
+              <div className="overflow-hidden">
                 {/* Domains with subdomains (e.g., Sense of Place) */}
                 {domain.subdomains ? (
                   <div id={`subdomains-${domain.id}`} className="ml-[1.7rem] mt-1">
@@ -350,27 +354,33 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
                           </button>
                         </div>
 
-                        {/* Subdomain Expanded Layout */}
-                        {expandedSections[`${domain.id}-${subdomain.id}`] && (
-                          <LayoutUnifiedCompact
-                            subdomain={subdomain}
-                            parentDomainId={domain.id}
-                            colorGradient={domain.colorGradient}
-                            activeButton={activeButton}
-                            setActiveButton={setActiveButton}
-                            setSelectedIndicator={setSelectedIndicator}
-                            setSelectedMetricIdObject={setSelectedMetricIdObject}
-                            statusLabel={statusLabel}
-                            setStatusLabel={setStatusLabel}
-                            resistanceLabel={resistanceLabel}
-                            setResistanceLabel={setResistanceLabel}
-                            recoveryLabel={recoveryLabel}
-                            setRecoveryLabel={setRecoveryLabel}
-                            domainScores={domainScores}
-                            selectedMetricValue={selectedMetricValue}
-                            regionAllMetrics={regionAllMetrics}
-                          />
-                        )}
+                        {/* Subdomain Expanded Layout - CSS Grid for smooth animation */}
+                        <div
+                          className={`grid transition-[grid-template-rows] duration-300 ease-in-out ${
+                            expandedSections[`${domain.id}-${subdomain.id}`] ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+                          }`}
+                        >
+                          <div className="overflow-hidden">
+                            <LayoutUnifiedCompact
+                              subdomain={subdomain}
+                              parentDomainId={domain.id}
+                              colorGradient={domain.colorGradient}
+                              activeButton={activeButton}
+                              setActiveButton={setActiveButton}
+                              setSelectedIndicator={setSelectedIndicator}
+                              setSelectedMetricIdObject={setSelectedMetricIdObject}
+                              statusLabel={statusLabel}
+                              setStatusLabel={setStatusLabel}
+                              resistanceLabel={resistanceLabel}
+                              setResistanceLabel={setResistanceLabel}
+                              recoveryLabel={recoveryLabel}
+                              setRecoveryLabel={setRecoveryLabel}
+                              domainScores={domainScores}
+                              selectedMetricValue={selectedMetricValue}
+                              regionAllMetrics={regionAllMetrics}
+                            />
+                          </div>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -393,8 +403,8 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
                     regionAllMetrics={regionAllMetrics}
                   />
                 )}
-              </>
-            )}
+              </div>
+            </div>
           </div>
         ))}
       </div>

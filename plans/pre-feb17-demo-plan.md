@@ -23,7 +23,7 @@
 | 8 | Update geo-level labels (add Canada equivalents) | ✅ Done |
 | 9 | Style geo-level selector buttons (larger, match aesthetic) | ✅ Done |
 | 10 | Make left sidebar wider | ⬜ Pending |
-| 11 | Add smooth transitions to domain expand/collapse | ⬜ Pending |
+| 11 | Add smooth transitions to domain expand/collapse | ✅ Done |
 | 12 | Deploy frontend code to Linux server | ⬜ Pending |
 | 13 | Mid-week check-in with Tessa | ⬜ Pending |
 | 14 | Reports page (waiting on Tessa's doc) | ⬜ Blocked |
@@ -60,6 +60,7 @@
 | Jan 21 | Task 18 added: Add optional layout to constrain subheader width between sidebars (toggle between full-width and constrained layouts). |
 | Jan 21 | Task 19 completed: Simplified map legend to show only metric name. Removed "Score" suffix from domain labels (e.g., "Infrastructure" not "Infrastructure Score"). Widened legend from 7rem to 9rem. Increased numeric label font size from text-xs to text-sm. Modified App.tsx, RightSidebar.tsx, MapLegend.tsx, and flattenDomainHierarchyForSearch.ts. |
 | Jan 21 | Task 9 completed: Styled geo-level selector buttons to match other map widgets. Added light gray border (`border-gray-400`), removed backdrop blur, increased button text size from `text-sm` to `text-base`, increased padding from `px-3 py-1.5` to `px-4 py-2` for better readability and consistency with zoom/reset controls. |
+| Jan 21 | Task 11 completed: Added smooth expand/collapse transitions to domain and subdomain accordions in Indicator Navigation. Used CSS Grid `grid-template-rows` technique (0fr → 1fr) with 300ms ease-in-out transition. No new dependencies added. |
 
 ---
 
@@ -474,25 +475,41 @@ Created `buildBreadcrumbPath.ts` utility that:
 
 ---
 
-### Task 11: Add Smooth Transitions to Domain Expand/Collapse
+### Task 11: Add Smooth Transitions to Domain Expand/Collapse ✅
 
-**Status:** Pending
+**Status:** Complete (Jan 21, 2026)
 
 **Description:** Add smooth animations when expanding or collapsing domains in the Indicator Navigation (right sidebar). Currently the expansion/collapse happens instantly, which feels abrupt. Adding a transition will improve the user experience and make the interface feel more polished.
 
-**Design considerations:**
-- Transition duration: ~200-300ms (fast enough to feel responsive, slow enough to be noticeable)
-- Easing function: ease-in-out or similar (smooth acceleration/deceleration)
-- Properties to animate: height, opacity, or use CSS transitions/Tailwind transitions
-- Ensure animation doesn't cause layout jank or affect performance
+**Implementation:**
 
-**Implementation options:**
-1. CSS transitions on height/max-height with overflow handling
-2. React animation libraries (framer-motion, react-spring)
-3. Tailwind transition utilities
-4. CSS animations with @keyframes
+Used the CSS Grid `grid-template-rows` technique with Tailwind utilities — no external animation library needed.
 
-**Files to modify:** `RightSidebar.tsx`, possibly `LayoutUnified.tsx` or `LayoutUnifiedCompact.tsx`
+**Pattern:**
+```jsx
+<div className={`grid transition-[grid-template-rows] duration-300 ease-in-out ${
+  isExpanded ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+}`}>
+  <div className="overflow-hidden">
+    {/* Content */}
+  </div>
+</div>
+```
+
+**Key details:**
+- Duration: 300ms (fast enough to feel responsive, slow enough to notice)
+- Easing: `ease-in-out` (smooth acceleration/deceleration)
+- Applied to both domain accordions (Infrastructure, Communities, etc.) and subdomain accordions (Iconic Places, Iconic Species)
+- Uses CSS Grid row transitions which avoids the "height: auto" problem
+
+**Files modified:** `src/components/RightSidebar.tsx`
+
+**Why CSS Grid instead of max-height or framer-motion:**
+- No arbitrary max-height values needed
+- Works with dynamic content heights
+- No new dependencies
+- Better performance than animating height directly
+- Supported in all modern browsers
 
 ---
 

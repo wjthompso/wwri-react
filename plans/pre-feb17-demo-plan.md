@@ -29,12 +29,12 @@
 | 14 | Reports page (waiting on Tessa's doc) | ⬜ Blocked |
 | 15 | Additional pages (waiting on Tessa's doc) | ⬜ Blocked |
 | 16 | Fix census tract GEOIDs missing leading zeros | ✅ Done |
-| 17 | Fix Communities Status: gray out if unavailable + tooltip | ⬜ Pending ⚠️ HIGH |
+| 17 | Fix Communities Status: gray out if unavailable + tooltip | ✅ Done |
 | 18 | Constrain subheader width between sidebars (optional layout) | ⬜ Pending |
 | 19 | Simplify map legend to show only metric name | ✅ Done |
 | 20 | Make Geographic Context widget functional (pan map, highlight state) | ⬜ Pending ⚠️ HIGH |
 
-**Progress:** 13/21 complete (Task 3 split into 3A/3B/3C/3D, Task 5 & 6 merged)
+**Progress:** 14/21 complete (Task 3 split into 3A/3B/3C/3D, Task 5 & 6 merged)
 
 ---
 
@@ -64,6 +64,7 @@
 | Jan 21 | Task 11 completed: Added smooth expand/collapse transitions to domain and subdomain accordions in Indicator Navigation. Used CSS Grid `grid-template-rows` technique (0fr → 1fr) with 300ms ease-in-out transition. No new dependencies added. |
 | Jan 21 | Task 16 completed: Fixed census tract GEOIDs missing leading zeros. Added padding logic in `CachedDataV2.ts` to pad 10-digit US tract GEOIDs to 11 digits (e.g., `6001422200` → `06001422200`). Fixes display for states with FIPS <10 (CA, AZ, CO, etc.). Affects 12,497 tracts. |
 | Jan 21 | Task 20 added: Make Geographic Context widget functional. Currently displays US state abbreviations in a grid but buttons are non-functional. Need to add click handlers to pan map to selected state/province and highlight the region. Mark as HIGH priority. |
+| Jan 21 | Task 17 completed: Fixed inconsistent styling for unavailable sections. Changed background color from `domainColor` to neutral gray (`#c8c8c8`) and added "Unavailable" tooltip to both box and label. Affects Infrastructure/Communities (missing Status), Water/Air Quality (missing Recovery). |
 
 ---
 
@@ -637,35 +638,34 @@ if (country === "us" && geoLevel === "tract" && geoid.length === 10) {
 
 ---
 
-### Task 17: Fix Communities Status - Gray Out if Unavailable + Tooltip
+### Task 17: Fix Communities Status - Gray Out if Unavailable + Tooltip ✅
 
-**Status:** Pending
+**Status:** Complete (Jan 21, 2026)
 
-**Description:** The Communities domain's "Status" section appears to have a metric that colors the box, but the section is shown as unavailable (grayed out text, no clickable metric boxes). This is inconsistent behavior.
+**Description:** The Communities domain's "Status" section appeared to have data (colored box) but was shown as unavailable (grayed text). This was inconsistent behavior.
 
-**Observed behavior:**
-- The Status header box for Communities is colored (suggesting data exists)
-- But the Status section shows "Status" label in gray (unavailable state)
-- No individual metric boxes are rendered below
+**Root Cause:**
+- When a section (Status, Resistance, Recovery) has no metrics, the UI was rendering a colored box (using `domainColor`) but gray text
+- `domainColor` is the dynamic color based on the selected polygon's score, which made unavailable sections look like they had data
 
-**Expected behavior - one of two options:**
-1. **If Status data IS available:** Enable the section, show metric boxes, make them clickable
-2. **If Status data is NOT available:** Gray out the Status header box AND add a tooltip that says "Unavailable" on hover
+**Affected domains:**
+- **Infrastructure**: `status.metrics: []` (empty) → Status unavailable
+- **Communities**: `status: undefined` → Status unavailable
+- **Water**: `resilience.recovery: undefined` → Recovery unavailable
+- **Air Quality**: `resilience.recovery: undefined` → Recovery unavailable
 
-**Investigation needed:**
-1. Check `domainHierarchy.ts` for Communities domain structure - does it have a `status` property with metrics?
-2. Check if the API returns status metrics for the social/communities domain
-3. Determine if this is a data issue (no status metrics exist) or a frontend configuration issue
+**Fix Applied:**
+1. Changed background color from `domainColor` to neutral gray (`#c8c8c8`) for unavailable sections
+2. Added `title="Unavailable"` tooltip attribute to both the box and text
 
-**Files to check:**
-- `src/data/domainHierarchy.ts` - Communities domain configuration
-- `src/components/RightSidebar/layouts/LayoutUnified.tsx` - Status rendering logic
-- API response for social/communities domain metrics
+**Files modified:**
+- `src/components/RightSidebar/layouts/LayoutUnified.tsx` - Status, Resistance, Recovery unavailable states
+- `src/components/RightSidebar/layouts/LayoutUnifiedCompact.tsx` - Same three sections for subdomain layouts
 
-**Implementation (if truly unavailable):**
-- Add `title="Unavailable"` attribute to the grayed-out Status div
-- Ensure the box is also grayed out (not just the text)
-- Apply consistent styling across all domains with missing sections
+**Visual result:**
+- Unavailable sections now show a gray box (#c8c8c8) + gray text
+- Hovering over either shows "Unavailable" tooltip
+- Consistent styling across all domains with missing sections
 
 ---
 

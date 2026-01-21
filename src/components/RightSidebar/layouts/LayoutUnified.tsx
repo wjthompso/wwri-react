@@ -128,9 +128,10 @@ const LayoutUnified: React.FC<LayoutUnifiedProps> = ({
               <>
                 <div 
                   className="mr-1 h-4 w-4 rounded-[0.2rem] border-[1px] border-gray-300"
-                  style={{ backgroundColor: domainColor }}
+                  style={{ backgroundColor: "#c8c8c8" }}
+                  title="Unavailable"
                 />
-                <span className="text-gray-400">Status</span>
+                <span className="text-gray-400" title="Unavailable">Status</span>
               </>
             )}
           </div>
@@ -229,9 +230,10 @@ const LayoutUnified: React.FC<LayoutUnifiedProps> = ({
                   <>
                     <div 
                       className="mr-1 h-4 w-4 rounded-[0.2rem] border-[1px] border-gray-300"
-                      style={{ backgroundColor: domainColor }}
+                      style={{ backgroundColor: "#c8c8c8" }}
+                      title="Unavailable"
                     />
-                    <span className="text-gray-400">Resistance</span>
+                    <span className="text-gray-400" title="Unavailable">Resistance</span>
                   </>
                 )}
               </div>
@@ -296,9 +298,10 @@ const LayoutUnified: React.FC<LayoutUnifiedProps> = ({
                   <>
                     <div 
                       className="mr-1 h-4 w-4 rounded-[0.2rem] border-[1px] border-gray-300"
-                      style={{ backgroundColor: domainColor }}
+                      style={{ backgroundColor: "#c8c8c8" }}
+                      title="Unavailable"
                     />
-                    <span className="text-gray-400">Recovery</span>
+                    <span className="text-gray-400" title="Unavailable">Recovery</span>
                   </>
                 )}
               </div>

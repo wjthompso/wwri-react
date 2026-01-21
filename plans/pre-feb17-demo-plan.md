@@ -22,18 +22,19 @@
 | 7 | Fix search to support fragment matching | ⬜ Pending |
 | 8 | Update geo-level labels (add Canada equivalents) | ✅ Done |
 | 9 | Style geo-level selector buttons (larger, match aesthetic) | ✅ Done |
-| 10 | Make left sidebar wider | ⬜ Pending |
+| 10 | Make left sidebar wider | ⬜ Pending | [PAUSE THIS FOR NOW, MAY NOT DO]
 | 11 | Add smooth transitions to domain expand/collapse | ✅ Done |
 | 12 | Deploy frontend code to Linux server | ⬜ Pending |
 | 13 | Mid-week check-in with Tessa | ⬜ Pending |
 | 14 | Reports page (waiting on Tessa's doc) | ⬜ Blocked |
 | 15 | Additional pages (waiting on Tessa's doc) | ⬜ Blocked |
-| 16 | Fix census tract GEOIDs missing leading zeros | ⬜ Pending |
+| 16 | Fix census tract GEOIDs missing leading zeros | ✅ Done |
 | 17 | Fix Communities Status: gray out if unavailable + tooltip | ⬜ Pending ⚠️ HIGH |
 | 18 | Constrain subheader width between sidebars (optional layout) | ⬜ Pending |
 | 19 | Simplify map legend to show only metric name | ✅ Done |
+| 20 | Make Geographic Context widget functional (pan map, highlight state) | ⬜ Pending ⚠️ HIGH |
 
-**Progress:** 12/20 complete (Task 3 split into 3A/3B/3C/3D, Task 5 & 6 merged)
+**Progress:** 13/21 complete (Task 3 split into 3A/3B/3C/3D, Task 5 & 6 merged)
 
 ---
 
@@ -61,6 +62,8 @@
 | Jan 21 | Task 19 completed: Simplified map legend to show only metric name. Removed "Score" suffix from domain labels (e.g., "Infrastructure" not "Infrastructure Score"). Widened legend from 7rem to 9rem. Increased numeric label font size from text-xs to text-sm. Modified App.tsx, RightSidebar.tsx, MapLegend.tsx, and flattenDomainHierarchyForSearch.ts. |
 | Jan 21 | Task 9 completed: Styled geo-level selector buttons to match other map widgets. Added light gray border (`border-gray-400`), removed backdrop blur, increased button text size from `text-sm` to `text-base`, increased padding from `px-3 py-1.5` to `px-4 py-2` for better readability and consistency with zoom/reset controls. |
 | Jan 21 | Task 11 completed: Added smooth expand/collapse transitions to domain and subdomain accordions in Indicator Navigation. Used CSS Grid `grid-template-rows` technique (0fr → 1fr) with 300ms ease-in-out transition. No new dependencies added. |
+| Jan 21 | Task 16 completed: Fixed census tract GEOIDs missing leading zeros. Added padding logic in `CachedDataV2.ts` to pad 10-digit US tract GEOIDs to 11 digits (e.g., `6001422200` → `06001422200`). Fixes display for states with FIPS <10 (CA, AZ, CO, etc.). Affects 12,497 tracts. |
+| Jan 21 | Task 20 added: Make Geographic Context widget functional. Currently displays US state abbreviations in a grid but buttons are non-functional. Need to add click handlers to pan map to selected state/province and highlight the region. Mark as HIGH priority. |
 
 ---
 
@@ -578,11 +581,11 @@ Used the CSS Grid `grid-template-rows` technique with Tailwind utilities — no 
 
 ---
 
-### Task 16: Fix Census Tract GEOIDs Missing Leading Zeros
+### Task 16: Fix Census Tract GEOIDs Missing Leading Zeros ✅
 
-**Status:** Pending
+**Status:** Complete (Jan 21, 2026)
 
-**Description:** Census tract data for states with FIPS codes <10 (California=06, Arizona=04, Colorado=08, etc.) is not displaying on the map because the GEOIDs are missing their leading zeros.
+**Description:** Census tract data for states with FIPS codes <10 (California=06, Arizona=04, Colorado=08, etc.) was not displaying on the map because the GEOIDs were missing their leading zeros.
 
 **Root Cause Analysis:**
 - The API returns GEOIDs like `6001422200` (10 digits)
@@ -603,23 +606,34 @@ curl ".../api/us/tract/infrastructure/infrastructure_domain_score" | grep "^6001
 
 **Fix Approach:** Pad GEOIDs to 11 digits in the API when serving tract data.
 
-**Files to modify:**
-- `wwri-metrics-api/src/utils/CachedDataV2.ts` - Pad geoid when building CSV strings
+**Files modified:**
+- `wwri-metrics-api/src/utils/CachedDataV2.ts` - Added padding logic in `loadGeoLevelData()`
 
-**Implementation:**
+**Implementation (Completed Jan 21, 2026):**
+
+In `CachedDataV2.ts`, changed line 158 from `const` to `let` and added padding logic:
+
 ```typescript
-// In loadGeoLevelData(), when processing tract data:
-// Pad geoid to 11 digits for US tracts
+// Before (line 158)
+const geoid = row[geoidCol] as string || "";
+
+// After (lines 158-162)
 let geoid = row[geoidCol] as string || "";
+// Pad geoid to 11 digits for US tracts (fixes missing leading zeros for states like CA=06, AZ=04)
 if (country === "us" && geoLevel === "tract" && geoid.length === 10) {
   geoid = "0" + geoid;
 }
 ```
 
-**Testing:**
-1. After fix, verify California tracts show data
-2. Check that 11-digit GEOIDs are still handled correctly
-3. Verify API returns `06001422200` instead of `6001422200`
+**Result:** 
+- API now returns 11-digit GEOIDs (e.g., `06001422200` instead of `6001422200`)
+- California, Arizona, Colorado, and other low-FIPS states now display tract data correctly
+- Fixes 12,497 affected tract GEOIDs
+
+**Testing completed:**
+- Verified California tracts show data on map
+- Checked that existing 11-digit GEOIDs still work correctly
+- No performance impact (padding happens once at server startup)
 
 ---
 
@@ -691,6 +705,90 @@ if (country === "us" && geoLevel === "tract" && geoid.length === 10) {
 - Possibly add responsive behavior with Tailwind breakpoints
 
 **Design question:** Should this be a toggle, or should we pick one layout and stick with it?
+
+---
+
+### Task 20: Make Geographic Context Widget Functional
+
+**Status:** Pending ⚠️ HIGH
+
+**Description:** The "Geographic Context" widget in the right sidebar displays a grid of US state abbreviations with nice colors, but the buttons are currently non-functional. Users should be able to click a state/province button to pan the map to that region and highlight it.
+
+**Current behavior:**
+- Widget displays US state abbreviations in a grid layout
+- Buttons are styled with background colors
+- Buttons have proper text contrast (white text on dark colors, black on light)
+- No click functionality - buttons don't do anything
+
+**Desired behavior:**
+1. **Click handler:** When user clicks a state button:
+   - Pan/zoom the map to focus on that state
+   - Optionally highlight the state boundary (outline or subtle fill)
+   - Keep the current metric/domain selected (don't change right sidebar)
+   
+2. **Canada support:** Widget currently only shows US states
+   - Add toggle or automatic detection to show Canadian provinces
+   - Or show both US and Canada in the same grid
+   
+3. **Active state indicator:** Show which state/province is currently focused
+   - Add visual indicator (border, different background, etc.)
+   
+4. **Keyboard accessibility:** Support keyboard navigation (tab + enter)
+
+**Technical considerations:**
+
+- Map pan/zoom: Use MapLibre's `flyTo()` method with state bounding box coordinates
+- State bounding boxes: Need to define or fetch lat/lng bounds for each state/province
+- Highlight overlay: Add a temporary map layer or update existing layer styling
+- Widget state: Track currently selected geographic context (separate from `selectedGeoId`)
+- Performance: Smooth animations without lag
+
+**Files to modify:**
+- `src/components/RightSidebar.tsx` - Add click handlers to state buttons
+- `src/components/MapArea/MapArea.tsx` - Add method to pan/zoom to state
+- `src/components/App.tsx` - Add state to track focused geographic context
+- Possibly create `src/data/stateBounds.ts` - Bounding boxes for all states/provinces
+
+**Implementation approach:**
+
+Option 1 (Simple): Just pan to state center with fixed zoom level
+```typescript
+const STATE_CENTERS = {
+  CA: { lng: -119.4179, lat: 36.7783, zoom: 6 },
+  TX: { lng: -99.9018, lat: 31.9686, zoom: 6 },
+  // ... etc
+};
+
+// In click handler:
+map.flyTo({ center: [lng, lat], zoom });
+```
+
+Option 2 (Better): Use actual state bounding boxes and fit map to bounds
+```typescript
+const STATE_BOUNDS = {
+  CA: [[-124.48, 32.53], [-114.13, 42.01]], // [sw, ne]
+  // ... etc
+};
+
+// In click handler:
+map.fitBounds(bounds, { padding: 50, duration: 1000 });
+```
+
+**Data source for bounding boxes:**
+- Can extract from existing MBTiles files
+- Or use a library like `us-states` npm package
+- Or manually define (50 states + 13 provinces = 63 entries)
+
+**Reference implementations:**
+- Climate Vulnerability Index has similar state navigation
+- Many map apps use this pattern for quick navigation
+
+**Design questions to clarify:**
+1. Should clicking a state change the geo-level selector (e.g., auto-select "States" level)?
+2. Should the state selection persist when user changes metrics?
+3. Do we want a "clear selection" or "reset view" button?
+4. Should we add Canadian provinces to the same grid or have a toggle?
+5. What zoom level feels right for state-level focus?
 
 ---
 

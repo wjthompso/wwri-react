@@ -34,10 +34,10 @@
 | 19 | Simplify map legend to show only metric name | ✅ Done |
 | 20 | ~~Make Geographic Context widget functional~~ Hidden (deferred) | ✅ Done |
 | 21 | Fix counties showing N/A values (GEOID padding + data gap) | ✅ Done (49 counties missing data - awaiting Carlo) |
-| 22 | Update Overall Resilience color scale (crimson to light yellow) | ⬜ Pending |
+| 22 | Update Overall Resilience color scale (crimson to light yellow) | ✅ Done |
 | 23 | Change selected indicator ring from blue to dark gray | ⬜ Pending |
 
-**Progress:** 16/23 complete (Task 3 split into 3A/3B/3C/3D, Task 5 & 6 merged, Task 20 hidden)
+**Progress:** 17/23 complete (Task 3 split into 3A/3B/3C/3D, Task 5 & 6 merged, Task 20 hidden)
 
 ---
 
@@ -69,8 +69,9 @@
 | Jan 21 | Task 20 added: Make Geographic Context widget functional. Currently displays US state abbreviations in a grid but buttons are non-functional. Need to add click handlers to pan map to selected state/province and highlight the region. Mark as HIGH priority. |
 | Jan 21 | Task 17 completed: Fixed inconsistent styling for unavailable sections. Changed background color from `domainColor` to neutral gray (`#c8c8c8`) and added "Unavailable" tooltip to both box and label. Affects Infrastructure/Communities (missing Status), Water/Air Quality (missing Recovery). |
 | Jan 21 | Task 20 decision: Hidden Geographic Context widget instead of implementing it. Reasons: geo-level mismatch (tract/county vs state navigation), missing Canada, redundant with search box/map clicking, many states have no WWRI data. Code preserved with `{false && ...}` wrapper for potential future use. |
-|| Jan 21 | Task 22 added: Update Overall Resilience color scale to use crimson (#7b1628) for maximum resilience and light yellow (#fffac9) for minimum resilience, per Manuel's color scheme. |
+| Jan 21 | Task 22 added: Update Overall Resilience color scale to use crimson (#7b1628) for maximum resilience and light yellow (#fffac9) for minimum resilience, per Manuel's color scheme. |
 | Jan 21 | Task 21 completed: Fixed counties showing N/A values. Root cause: same as Task 16 - GEOID padding issue. CSV had 4-digit `stco_fips` values (e.g., `8047`) but tile server expects 5-digit (e.g., `08047`). Fixed in `CachedDataV2.ts` by adding padding for 4→5 digit county GEOIDs. Deployed and verified - 395 counties (89%) now display data correctly. Follow-up analysis revealed 49 counties (11%) legitimately have no data in CSV source files. Waiting for Carlo to confirm if missing data is intentional. |
+| Jan 21 | Task 22 completed: Updated Overall Resilience color scale to use light yellow (#fffac9) for low resilience and crimson (#7b1628) for high resilience. Added `OVERALL_RESILIENCE_START_COLOR` and `OVERALL_RESILIENCE_END_COLOR` constants in `domainScoreColors.ts`. Updated `getOverallScoreColor()` function and RightSidebar Overall Resilience button colorGradient. Added special handling for wwri domain in Selected Indicator box. Color gradient now applies to selector box, map polygons, and legend. |
 | Jan 21 | Task 23 added: Change selected indicator ring color from blue (`ring-blue-400`) to dark gray for more subtle, professional appearance. Will update all active button states in RightSidebar and layout components. |
 
 ---
@@ -779,9 +780,9 @@ If we revisit this widget, consider:
 
 ---
 
-### Task 22: Update Overall Resilience Color Scale (Crimson to Light Yellow)
+### Task 22: Update Overall Resilience Color Scale (Crimson to Light Yellow) ✅
 
-**Status:** Pending
+**Status:** Complete (Jan 21, 2026)
 
 **Description:** Update the color gradient for the "Overall Resilience" (WWRI Final Score) metric to use a new color scheme provided by Manuel.
 
@@ -801,11 +802,27 @@ If we revisit this widget, consider:
 - `src/components/RightSidebar.tsx` - Update Overall Resilience button background color logic
 - Possibly `src/components/MapArea/MapArea.tsx` or map layer styling - Update map fill color for Overall Resilience
 
-**Test cases:**
-1. Select a region with high WWRI score → Box and map should be dark crimson
-2. Select a region with low WWRI score → Box and map should be light yellow
-3. Select a region with mid-range score → Box and map should be orange/amber blend
-4. No selection → Box should be neutral gray
+**Implementation (Completed Jan 21, 2026):**
+
+Added new color constants and updated all Overall Resilience color handling:
+
+**Files modified:**
+- `src/utils/domainScoreColors.ts` - Added `OVERALL_RESILIENCE_START_COLOR` (#fffac9) and `OVERALL_RESILIENCE_END_COLOR` (#7b1628) constants, updated `getOverallScoreColor()` to use light yellow→crimson gradient
+- `src/components/RightSidebar.tsx` - Updated Overall Resilience button colorGradient to use new constants, added special handling in Selected Indicator box for wwri domain
+
+**Color behavior:**
+| Score | Color |
+|-------|-------|
+| Low (0) | Light Yellow #fffac9 |
+| Medium (0.5) | Orange/amber blend |
+| High (1) | Crimson #7b1628 |
+| No selection | Neutral gray #c8c8c8 |
+
+**Affects:**
+- Overall Resilience selector box in Indicator Navigation
+- Map polygons when Overall Resilience is selected
+- Selected Indicator box at bottom of right sidebar
+- Map legend (automatically uses colorGradient)
 
 ---
 

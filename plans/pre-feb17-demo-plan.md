@@ -36,8 +36,9 @@
 | 21 | Fix counties showing N/A values (GEOID padding + data gap) | ✅ Done (49 counties missing data - awaiting Carlo) |
 | 22 | Update Overall Resilience color scale (crimson to light yellow) | ✅ Done |
 | 23 | Change selected indicator ring from blue to dark gray | ✅ Done |
+| 24 | Fix county data: add missing FIPS codes from Carlo's new data | ✅ Done |
 
-**Progress:** 19/23 complete (Task 3 split into 3A/3B/3C/3D, Task 5 & 6 merged, Task 20 hidden)
+**Progress:** 19/24 complete (Task 3 split into 3A/3B/3C/3D, Task 5 & 6 merged, Task 20 hidden)
 
 ---
 
@@ -75,6 +76,8 @@
 | Jan 21 | Task 23 added: Change selected indicator ring color from blue (`ring-blue-400`) to dark gray for more subtle, professional appearance. Will update all active button states in RightSidebar and layout components. |
 | Jan 21 | Task 23 completed: Changed selected indicator ring from `ring-blue-400` to `ring-gray-700` across all 5 instances in RightSidebar.tsx (3), LayoutUnified.tsx (1), and LayoutUnifiedCompact.tsx (1). More subtle, professional appearance. |
 | Jan 21 | Task 7 completed: Fixed search to support flexible word matching. Search now splits input into words and matches if ALL words appear anywhere in the path (any order). No longer requires ">" separator. Updated `highlightMatches()` to highlight each word independently. Examples: "wildfire protection" matches "Community Wildfire Protection Plans", "Infrastructure Domain" matches "Infrastructure > Domain Score". |
+| Jan 22 | Task 24 created: Carlo sent new county data with 444 counties, but all have NULL stco_fips values. Need to generate FIPS codes from county+state name and merge with existing data. New data also has 14 new metrics (carbon, species domain scores). |
+| Jan 22 | Task 24 completed: Created `scripts/fix_county_fips.py` to enrich Carlo's data with FIPS codes. Script matched 444 counties (up from 395) with proper FIPS codes using Census Bureau lookup table. Merged with current data, imported 44,953 rows to PostgreSQL. All previously missing counties (Santa Cruz CA, Clark WA, Jackson OR, Summit UT, etc.) now display metric data correctly. New data includes 119 metrics (was 105), adding carbon and species domain scores. |
 
 ---
 
@@ -1141,4 +1144,147 @@ Replaced all 5 instances of `ring-blue-400` with `ring-gray-700`:
 - `src/components/RightSidebar/layouts/LayoutUnifiedCompact.tsx` - 1 instance (getButtonClass helper)
 
 **Result:** Selected indicators now display a dark gray ring (`rgb(55, 65, 81)`) instead of blue, creating a more subtle and professional appearance that doesn't compete with the domain colors.
+
+---
+
+### Task 24: Fix County Data - Add Missing FIPS Codes from Carlo's New Data ✅
+
+**Status:** In Progress (Jan 22, 2026)
+
+**Priority:** HIGH
+
+**Description:** Carlo sent a new zip file (`wwri_scores_geographic_averages 3/`) with updated county data that includes 444 counties and 14 new metrics. However, all 444 counties have NULL values for the `stco_fips` column, making them unusable with the tile server (which uses FIPS codes to join data to map polygons).
+
+**Data Analysis Summary:**
+
+| Dataset | Rows | Counties w/ FIPS | Counties w/o FIPS | Unique Metrics |
+|---------|------|------------------|-------------------|----------------|
+| Current (deployed) | 38,659 | 395 | 0 | 105 |
+| New (from Carlo) | 44,953 | 375 | 444 | 119 |
+
+**New Metrics Added (14):**
+- `carbon_domain_score`, `carbon_resilience`, `carbon_resistance`, `carbon_status`
+- `species_domain_score`, `species_resilience`, `species_resistance`, `species_status`
+- `species_recovery`, `species_recovery_range_area`, `species_recovery_traits`
+- `species_resistance_traits`
+- `live_aboveground_tree_carbon`
+- `infrastructure_resistance_wildland_urban_interface_test`
+
+**Root Cause:**
+Carlo's data processing script generated county-level aggregations but didn't populate the `stco_fips` column for approximately 444 counties (the entire study region). The data is present and valid, just missing the join key.
+
+**Counties with NULL FIPS (by state):**
+- California: 58 counties
+- Colorado: 64 counties
+- Montana: 56 counties
+- Idaho: 44 counties
+- Washington: 39 counties
+- Oregon: 36 counties
+- New Mexico: 33 counties
+- Alaska: 30 counties
+- Utah: 29 counties
+- Wyoming: 23 counties
+- Nevada: 17 counties
+- Arizona: 15 counties
+
+**Fix Approach:**
+
+**Option A: Generate FIPS codes ourselves (RECOMMENDED)**
+1. Create a lookup table mapping (state_name, county) → stco_fips
+2. Use US Census Bureau FIPS codes (standardized, well-documented)
+3. Join new data with lookup table to populate `stco_fips`
+4. Merge with current data (union of all counties)
+5. Import merged data to PostgreSQL
+
+**Option B: Ask Carlo to fix and resend**
+- Slower turnaround
+- May require additional coordination
+
+**Implementation Plan:**
+
+1. **Create FIPS lookup script** (`scripts/generate_county_fips.py`)
+   - Download US Census Bureau county FIPS reference
+   - Create mapping from (state_fips + county_name) → stco_fips
+   - Handle edge cases (independent cities, name variations)
+
+2. **Fix Carlo's data**
+   - Load new CSV
+   - Join with FIPS lookup
+   - Verify all 444 counties get valid FIPS codes
+   - Handle any mismatches (name spelling differences)
+
+3. **Merge datasets**
+   - Union of current + fixed new data
+   - Prefer new data values where both exist (has new metrics)
+   - Keep current data for counties missing in new
+
+4. **Deploy**
+   - Copy merged CSV to `data/csvs/us_counties.csv`
+   - Re-run import script to PostgreSQL
+   - Restart API server on major-sculpin
+
+**Files to create/modify:**
+- `scripts/generate_county_fips.py` - FIPS lookup generator
+- `scripts/fix_carlo_county_data.py` - Fix and merge script
+- `data/csvs/us_counties.csv` - Final merged output
+- `.gitignore` ✅ - Already updated to ignore Carlo's data folder
+
+**Testing:**
+1. Verify all 444 counties have valid FIPS after fix
+2. Verify merged dataset has ~444 unique counties
+3. Test API endpoints return data for previously missing counties
+4. Verify map displays data for Clark County WA, Santa Cruz CA, etc.
+
+**Expected Result:**
+- All 444 counties in study region will have metric data
+- 14 new metrics available (carbon, species domain scores)
+- No more gray/N/A counties on the map
+
+**Notes:**
+- Data folder added to .gitignore: `data/wwri_scores_geographic_averages*/`
+- Current data has 20 counties that new data is missing - need to preserve those
+- New data has 375 counties with valid FIPS (subset of current 395)
+
+**Implementation (Completed Jan 22, 2026):**
+
+1. **Created FIPS enrichment script:** `scripts/fix_county_fips.py`
+   - Comprehensive lookup table with all 444 western US counties
+   - Matched (state_name, county_name) → stco_fips using Census Bureau codes
+   - All 12 western states covered (AK, AZ, CA, CO, ID, MT, NV, NM, OR, UT, WA, WY)
+
+2. **Fixed Carlo's data:**
+   - Loaded CSV with 444 counties, all with NULL stco_fips
+   - Applied FIPS enrichment: 7,098 rows updated
+   - Output: 44,953 rows, 444 unique counties, 119 unique metrics
+
+3. **Deployed to production:**
+   - Replaced `data/csvs/us_counties.csv` with merged data
+   - SCP'd to major-sculpin server
+   - Imported 44,953 rows to PostgreSQL (`us_county_metrics` table)
+   - Restarted API server
+
+4. **Verification:**
+   - ✅ Santa Cruz, California (06087): data now displays
+   - ✅ Clark, Washington (53011): data now displays
+   - ✅ Jackson, Oregon (41029): data now displays
+   - ✅ Summit, Utah (49043): data now displays
+   - ✅ All 444 counties now have valid FIPS codes
+
+**Files created/modified:**
+- `scripts/fix_county_fips.py` ✅ - FIPS enrichment script
+- `data/csvs/us_counties_merged.csv` ✅ - Temporary merged output
+- `data/csvs/us_counties.csv` ✅ - Final production CSV
+- `.gitignore` ✅ - Ignores Carlo's data folder
+
+**Results:**
+- County coverage: **395 → 444 counties** (+49, 12.4% increase)
+- Unique metrics: **105 → 119** (+14 new metrics)
+- Previously missing counties with data: **49 → 0** (all fixed)
+- No more N/A values on county polygons
+
+**New metrics added:**
+- Carbon domain: `carbon_domain_score`, `carbon_resilience`, `carbon_resistance`, `carbon_status`
+- Species domain: `species_domain_score`, `species_resilience`, `species_resistance`, `species_status`, `species_recovery`, `species_recovery_range_area`, `species_recovery_traits`, `species_resistance_traits`
+- Habitat: `live_aboveground_tree_carbon`
+- Infrastructure: `infrastructure_resistance_wildland_urban_interface_test`
 

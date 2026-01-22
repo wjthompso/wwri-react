@@ -23,9 +23,19 @@ import MapLegend from "./MapLegend";
 // Layer IDs for querying (fill layers are interactive)
 const INTERACTIVE_LAYERS = ["us-fill", "canada-fill"];
 
+// Boundary layer IDs (for state/province borders that persist across geo levels)
+const BOUNDARY_LAYERS = [
+  "us-state-boundary",
+  "canada-province-boundary",
+];
+
+// Tile server URL (matches api.ts)
+const TILE_SERVER_URL = "https://major-sculpin.nceas.ucsb.edu";
+
 /**
- * Creates the initial map style with OSM base layer only.
- * Vector tile sources/layers are added dynamically based on selected geo level.
+ * Creates the initial map style with OSM base layer and boundary tile sources.
+ * State/province boundary sources are included so they're always available.
+ * Data layers are added dynamically based on selected geo level.
  */
 const getBaseMapStyle = (): StyleSpecification => ({
   version: 8,
@@ -35,6 +45,19 @@ const getBaseMapStyle = (): StyleSpecification => ({
       tiles: ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"],
       tileSize: 256,
       attribution: "Map data © OpenStreetMap contributors",
+    },
+    // State/province boundary sources (always available for boundary lines)
+    "us-state-boundaries": {
+      type: "vector",
+      tiles: [`${TILE_SERVER_URL}/data/us_states/{z}/{x}/{y}.pbf`],
+      minzoom: 0,
+      maxzoom: 14,
+    },
+    "canada-province-boundaries": {
+      type: "vector",
+      tiles: [`${TILE_SERVER_URL}/data/ca_provinces/{z}/{x}/{y}.pbf`],
+      minzoom: 0,
+      maxzoom: 14,
     },
   },
   layers: [
@@ -339,6 +362,7 @@ const MapArea: React.FC<MapAreaProps> = ({
   
   /**
    * Removes vector tile sources and layers.
+   * Note: Boundary layers are NOT removed - they persist across geo level changes.
    */
   const removeGeoLevelLayers = useCallback((map: maplibregl.Map) => {
     // Remove layers first (must be done before removing sources)
@@ -361,6 +385,62 @@ const MapArea: React.FC<MapAreaProps> = ({
     selectedFeatureRef.current = null;
     
     console.log("Removed geo level layers");
+  }, []);
+  
+  /**
+   * Adds state/province boundary layers with simple white line styling.
+   * These layers persist across geo level changes to provide visual hierarchy.
+   */
+  const addBoundaryLayers = useCallback((map: maplibregl.Map) => {
+    // Skip if boundary layers already exist
+    if (map.getLayer("us-state-boundary")) {
+      console.log("Boundary layers already exist, skipping");
+      return;
+    }
+    
+    // US State boundaries - simple white line
+    map.addLayer({
+      id: "us-state-boundary",
+      type: "line",
+      source: "us-state-boundaries",
+      "source-layer": "us_states",
+      paint: {
+        "line-color": "#ffffff",
+        "line-width": 2.5,
+        "line-opacity": 1,
+      },
+    });
+    
+    // Canada Province boundaries - simple white line
+    map.addLayer({
+      id: "canada-province-boundary",
+      type: "line",
+      source: "canada-province-boundaries",
+      "source-layer": "ca_provinces",
+      paint: {
+        "line-color": "#ffffff",
+        "line-width": 2.5,
+        "line-opacity": 1,
+      },
+    });
+    
+    console.log("Added state/province boundary layers");
+  }, []);
+  
+  /**
+   * Repositions boundary layers above fill layers but below highlight layers.
+   * Called after geo level changes to maintain correct layer ordering.
+   */
+  const repositionBoundaryLayers = useCallback((map: maplibregl.Map) => {
+    // Move boundary layers to render above fill layers
+    // Order matters: outer first (below), then inner (above outer)
+    BOUNDARY_LAYERS.forEach(layerId => {
+      if (map.getLayer(layerId)) {
+        // Move before highlight layers (so boundaries are below selection)
+        map.moveLayer(layerId, "us-highlight");
+      }
+    });
+    console.log("Repositioned boundary layers");
   }, []);
   
   /**
@@ -444,6 +524,10 @@ const MapArea: React.FC<MapAreaProps> = ({
       map.on("load", () => {
         // Add initial geo level layers
         addGeoLevelLayers(map, currentGeoLevelRef.current);
+        // Add state/province boundary layers (persist across geo level changes)
+        addBoundaryLayers(map);
+        // Position boundaries above fill layers, below highlight layers
+        repositionBoundaryLayers(map);
         setMapLoaded(true);
       });
 
@@ -524,7 +608,7 @@ const MapArea: React.FC<MapAreaProps> = ({
         mapRef.current = null;
       };
     }
-  }, [addGeoLevelLayers]);
+  }, [addGeoLevelLayers, addBoundaryLayers, repositionBoundaryLayers]);
   
   // Handle geo level changes after map is loaded
   useEffect(() => {
@@ -538,11 +622,14 @@ const MapArea: React.FC<MapAreaProps> = ({
       
       console.log(`Switching geo level: ${currentGeoLevelRef.current} -> ${selectedGeoLevel}`);
       
-      // Remove old layers and sources
+      // Remove old layers and sources (boundary layers persist)
       removeGeoLevelLayers(map);
       
       // Add new layers and sources
       addGeoLevelLayers(map, selectedGeoLevel);
+      
+      // Reposition boundary layers above new fill layers
+      repositionBoundaryLayers(map);
       
       // Update ref
       currentGeoLevelRef.current = selectedGeoLevel;
@@ -556,7 +643,7 @@ const MapArea: React.FC<MapAreaProps> = ({
       };
       map.on("sourcedata", handleSourceData);
     }
-  }, [selectedGeoLevel, mapLoaded, addGeoLevelLayers, removeGeoLevelLayers]);
+  }, [selectedGeoLevel, mapLoaded, addGeoLevelLayers, removeGeoLevelLayers, repositionBoundaryLayers]);
 
   // Color features when data loads - need to wait for tiles to be rendered
   useEffect(() => {

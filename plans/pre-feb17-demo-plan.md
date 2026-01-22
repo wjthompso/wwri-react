@@ -37,8 +37,11 @@
 | 22 | Update Overall Resilience color scale (crimson to light yellow) | ✅ Done |
 | 23 | Change selected indicator ring from blue to dark gray | ✅ Done |
 | 24 | Fix county data: add missing FIPS codes from Carlo's new data | ✅ Done |
+| 25 | Add thick white state/province boundaries | ✅ Done |
+| 26 | Add place labels (cities, states) on zoom | ⬜ Pending |
+| 27 | Improve selected polygon border (white-black-white sandwich) | ⬜ Pending |
 
-**Progress:** 19/24 complete (Task 3 split into 3A/3B/3C/3D, Task 5 & 6 merged, Task 20 hidden)
+**Progress:** 20/27 complete (Task 3 split into 3A/3B/3C/3D, Task 5 & 6 merged, Task 20 hidden)
 
 ---
 
@@ -78,6 +81,8 @@
 | Jan 21 | Task 7 completed: Fixed search to support flexible word matching. Search now splits input into words and matches if ALL words appear anywhere in the path (any order). No longer requires ">" separator. Updated `highlightMatches()` to highlight each word independently. Examples: "wildfire protection" matches "Community Wildfire Protection Plans", "Infrastructure Domain" matches "Infrastructure > Domain Score". |
 | Jan 22 | Task 24 created: Carlo sent new county data with 444 counties, but all have NULL stco_fips values. Need to generate FIPS codes from county+state name and merge with existing data. New data also has 14 new metrics (carbon, species domain scores). |
 | Jan 22 | Task 24 completed: Created `scripts/fix_county_fips.py` to enrich Carlo's data with FIPS codes. Script matched 444 counties (up from 395) with proper FIPS codes using Census Bureau lookup table. Merged with current data, imported 44,953 rows to PostgreSQL. All previously missing counties (Santa Cruz CA, Clark WA, Jackson OR, Summit UT, etc.) now display metric data correctly. New data includes 119 metrics (was 105), adding carbon and species domain scores. |
+| Jan 22 | Tasks 25-27 added: Map visual enhancements inspired by Climate Vulnerability Index — thick white state/province boundaries (Task 25), place labels on zoom via external service (Task 26), and improved selected polygon border with white-black-white "sandwich" style (Task 27). |
+| Jan 22 | Task 25 completed: Added thick white state/province boundaries (2.5px white line) that persist across all geo levels (tract, county, state). Boundaries render above fill layers but below selection highlight. Added boundary tile sources to base map style (us_states, ca_provinces). Provides visual hierarchy to distinguish state/province boundaries from county/tract boundaries. |
 
 ---
 
@@ -1288,3 +1293,160 @@ Carlo's data processing script generated county-level aggregations but didn't po
 - Habitat: `live_aboveground_tree_carbon`
 - Infrastructure: `infrastructure_resistance_wildland_urban_interface_test`
 
+---
+
+### Task 25: Add Thick White State/Province Boundaries
+
+**Status:** Pending
+
+**Priority:** Medium
+
+**Description:** Add thicker white boundaries around US states and Canadian provinces to create visual hierarchy, similar to the Climate Vulnerability Index. This makes the state/province boundaries stand out from county/tract boundaries.
+
+**Reference:** Climate Vulnerability Index map (user-provided screenshot)
+
+**Current behavior:**
+- All geographic boundaries use similar line weights
+- State/province boundaries don't visually stand out from county boundaries
+
+**Desired behavior:**
+- State/province boundaries have a thicker, white stroke
+- Creates clear visual hierarchy between geographic levels
+- Should apply to both US states and Canadian provinces
+
+**Implementation approach:**
+
+1. **Option A: Mapbox GL line styling**
+   - Add a separate layer for state/province boundaries
+   - Style with thicker white stroke (`line-width: 2-3`, `line-color: white`)
+   - Ensure layer renders above county/tract polygons but below labels
+
+2. **Option B: Modify mbtiles/vector tiles**
+   - Add state/province boundary features to existing tileset
+   - Style appropriately in frontend
+
+**Files to modify:**
+- `src/components/MapArea/MapArea.tsx` - Add boundary layer styling
+- Possibly tile server config if boundaries need to be added to tileset
+
+**Considerations:**
+- Should boundaries be visible at all zoom levels or appear at certain zooms?
+- Do we need to add boundary data, or can we derive from existing polygon edges?
+- Performance impact of additional layer
+
+---
+
+### Task 26: Add Place Labels (Cities, States) on Zoom
+
+**Status:** Pending
+
+**Priority:** Medium
+
+**Description:** Display geographic labels (state/province names, city names) that appear at appropriate zoom levels, similar to Climate Vulnerability Index. This helps users orient themselves on the map.
+
+**Reference:** Climate Vulnerability Index map shows:
+- State names at regional zoom levels
+- City names as you zoom in closer
+
+**Desired behavior:**
+- State/province labels visible at mid zoom levels
+- City labels appear when zoomed in
+- Labels should render above the colored data polygons
+- Use an existing map label service rather than building our own
+
+**Implementation approach:**
+
+**Option A: Mapbox GL built-in labels (RECOMMENDED)**
+- Use Mapbox's built-in place label layers
+- Adjust `z-index`/layer ordering to render labels above data polygons
+- Filter to show only relevant label types (states, cities)
+
+**Option B: External label service**
+- Overlay a label-only tile layer from:
+  - Mapbox Streets labels
+  - CartoDB Positron labels
+  - Stamen Toner labels
+- Position above data layers
+
+**Option C: Custom labels**
+- More complex, not recommended
+- Would require maintaining our own label data
+
+**Files to modify:**
+- `src/components/MapArea/MapArea.tsx` - Add/configure label layers
+- Possibly `src/config/api.ts` - Add label service URLs
+
+**Key implementation details:**
+- Labels should use `text-halo-color: white` and `text-halo-width` for readability
+- Consider label collision detection to avoid overlapping text
+- Ensure labels don't obscure important data areas
+
+**Test cases:**
+1. Zoom out to regional view → State/province names visible
+2. Zoom into state level → State name visible, major cities appear
+3. Zoom into county level → City names clearly visible
+4. Labels readable regardless of underlying polygon color
+
+---
+
+### Task 27: Improve Selected Polygon Border (White-Black-White Sandwich)
+
+**Status:** Pending
+
+**Priority:** High
+
+**Description:** When a polygon is selected, improve the border styling to use a "sandwich" pattern: outer white border, middle black border, inner white border. This creates a distinctive selection highlight that's visible regardless of the underlying polygon color.
+
+**Reference:** Climate Vulnerability Index selected polygon styling
+
+**Current behavior:**
+- Selected polygon has a single black border
+- On dark-colored polygons, the black border is hard to see
+
+**Desired behavior:**
+- Selected polygon has a three-layer border effect:
+  1. Outer white stroke (outermost)
+  2. Black stroke (middle - the actual highlight)
+  3. Inner white stroke (innermost)
+- Creates a "picture frame" effect that stands out on any background
+
+**Visual representation:**
+```
+┌─────────────────────────┐
+│ ▓▓▓ White (outer)  ▓▓▓ │
+│ ▓ ┌─────────────────┐ ▓ │
+│ ▓ │ Black (middle)  │ ▓ │
+│ ▓ │ ┌─────────────┐ │ ▓ │
+│ ▓ │ │ White       │ │ ▓ │
+│ ▓ │ │ (inner)     │ │ ▓ │
+│ ▓ │ │             │ │ ▓ │
+│ ▓ │ │   POLYGON   │ │ ▓ │
+│ ▓ │ │   CONTENT   │ │ ▓ │
+```
+
+**Implementation approach:**
+
+**Option A: Multiple Mapbox layers (RECOMMENDED)**
+1. Create 3 line layers for selected polygon:
+   - Layer 1: White stroke, widest (`line-width: 6-8`)
+   - Layer 2: Black stroke, medium (`line-width: 3-4`)
+   - Layer 3: White stroke, thinnest (`line-width: 1-2`)
+2. All three filter on selected GEOID
+3. Layer ordering ensures proper stacking
+
+**Option B: Line-gap-width and line-offset**
+- Use Mapbox GL's `line-gap-width` property
+- May be more performant but less flexible
+
+**Files to modify:**
+- `src/components/MapArea/MapArea.tsx` - Update selected polygon layer styling
+
+**Current selection code to update:**
+Look for where selected polygon border is applied (likely uses `line-color: black` or similar).
+
+**Test cases:**
+1. Select light-colored polygon → Border clearly visible
+2. Select dark-colored polygon → Border clearly visible (white edges contrast)
+3. Select medium-colored polygon → Border clearly visible
+4. Deselect → Border returns to normal
+5. Change geo-level → Selection styling persists correctly

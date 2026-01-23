@@ -12,6 +12,11 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://major-sculpin
 // Tile server base URL
 const TILE_SERVER_URL = "https://major-sculpin.nceas.ucsb.edu";
 
+// OpenFreeMap vector tiles (free, no API key required)
+// Provides vector tiles with full styling control for labels
+// Source: https://openfreemap.org/
+export const OPENFREEMAP_TILES_URL = "https://tiles.openfreemap.org/planet/{z}/{x}/{y}.pbf";
+
 // Current geographic context - can be made dynamic later
 // For now, defaulting to US census tracts (original behavior)
 const DEFAULT_COUNTRY = "us";

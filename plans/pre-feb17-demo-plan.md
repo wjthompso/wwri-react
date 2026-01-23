@@ -38,7 +38,7 @@
 | 23 | Change selected indicator ring from blue to dark gray | ✅ Done |
 | 24 | Fix county data: add missing FIPS codes from Carlo's new data | ✅ Done |
 | 25 | Add thick white state/province boundaries | ✅ Done |
-| 26 | Add place labels (cities, states) on zoom | ⬜ Pending |
+| 26 | Add place labels (cities, states) on zoom | ⚠️ WIP - Blocked |
 | 27 | Improve selected polygon border (white-black-white sandwich) | ⬜ Pending |
 
 **Progress:** 20/27 complete (Task 3 split into 3A/3B/3C/3D, Task 5 & 6 merged, Task 20 hidden)
@@ -83,6 +83,7 @@
 | Jan 22 | Task 24 completed: Created `scripts/fix_county_fips.py` to enrich Carlo's data with FIPS codes. Script matched 444 counties (up from 395) with proper FIPS codes using Census Bureau lookup table. Merged with current data, imported 44,953 rows to PostgreSQL. All previously missing counties (Santa Cruz CA, Clark WA, Jackson OR, Summit UT, etc.) now display metric data correctly. New data includes 119 metrics (was 105), adding carbon and species domain scores. |
 | Jan 22 | Tasks 25-27 added: Map visual enhancements inspired by Climate Vulnerability Index — thick white state/province boundaries (Task 25), place labels on zoom via external service (Task 26), and improved selected polygon border with white-black-white "sandwich" style (Task 27). |
 | Jan 22 | Task 25 completed: Added thick white state/province boundaries (2.5px white line) that persist across all geo levels (tract, county, state). Boundaries render above fill layers but below selection highlight. Added boundary tile sources to base map style (us_states, ca_provinces). Provides visual hierarchy to distinguish state/province boundaries from county/tract boundaries. |
+| Jan 23 | Task 26 attempted: Tried CARTO raster labels (no control) then OpenFreeMap vector tiles (full control). OpenFreeMap integration added but labels don't render - likely wrong source-layer names or filters. Marked as WIP - blocked. Need to debug tile schema or consider self-hosting labels. |
 
 ---
 
@@ -1338,7 +1339,7 @@ Carlo's data processing script generated county-level aggregations but didn't po
 
 ### Task 26: Add Place Labels (Cities, States) on Zoom
 
-**Status:** Pending
+**Status:** ⚠️ WIP - Blocked
 
 **Priority:** Medium
 
@@ -1349,37 +1350,47 @@ Carlo's data processing script generated county-level aggregations but didn't po
 - City names as you zoom in closer
 
 **Desired behavior:**
-- State/province labels visible at mid zoom levels
-- City labels appear when zoomed in
+- Zoom 3-5: Show state abbreviations (small, uppercase)
+- Zoom 5-7: Show full state/province names
+- Zoom 7+: Show city names
 - Labels should render above the colored data polygons
-- Use an existing map label service rather than building our own
 
-**Implementation approach:**
+**What Was Attempted (Jan 23, 2026):**
 
-**Option A: Mapbox GL built-in labels (RECOMMENDED)**
-- Use Mapbox's built-in place label layers
-- Adjust `z-index`/layer ordering to render labels above data polygons
-- Filter to show only relevant label types (states, cities)
+1. **CARTO raster labels** - Tried `voyager_only_labels` raster tiles
+   - ✅ No API key required
+   - ❌ Zero styling control (pre-rendered images)
+   - ❌ Labels looked "lame" - couldn't customize appearance
 
-**Option B: External label service**
-- Overlay a label-only tile layer from:
-  - Mapbox Streets labels
-  - CartoDB Positron labels
-  - Stamen Toner labels
-- Position above data layers
+2. **OpenFreeMap vector tiles** - Attempted to use vector tiles for full control
+   - ✅ Free, no API key required
+   - ✅ Vector tiles allow full styling control
+   - ❌ **Failed:** Labels never rendered despite layers being added
+   - ❌ Issues encountered:
+     - Missing `glyphs` property error (fixed by adding font server URL)
+     - Labels added but not visible (likely wrong source-layer name or filter)
+     - Console shows "Repositioned label layers to top" but no labels appear
+     - Suspected issues:
+       - Wrong source-layer name (`place` vs `place_label` vs other)
+       - Wrong filter properties (`class: state` might not exist in OpenFreeMap schema)
+       - Font names might not match what OpenFreeMap provides
 
-**Option C: Custom labels**
-- More complex, not recommended
-- Would require maintaining our own label data
+**Current Status:**
+- Code added to `MapArea.tsx` with OpenFreeMap integration
+- Glyphs URL configured: `https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf`
+- Three label layers configured (states-abbrev, states-full, cities)
+- Layer repositioning logic added
+- **Labels do not render** - need to debug OpenFreeMap tile schema or find alternative
 
-**Files to modify:**
-- `src/components/MapArea/MapArea.tsx` - Add/configure label layers
-- Possibly `src/config/api.ts` - Add label service URLs
+**Next Steps (Future):**
+- **Option A:** Debug OpenFreeMap tiles - inspect actual tile data to find correct source-layer names and properties
+- **Option B:** Self-host labels - Create our own mbtiles file with place labels from Natural Earth or OpenStreetMap data
+- **Option C:** Use different free vector tile service with better documentation
+- **Option D:** Use MapLibre's built-in OSM labels if available
 
-**Key implementation details:**
-- Labels should use `text-halo-color: white` and `text-halo-width` for readability
-- Consider label collision detection to avoid overlapping text
-- Ensure labels don't obscure important data areas
+**Files Modified:**
+- `src/components/MapArea/MapArea.tsx` - Added OpenFreeMap vector tile source and label layers
+- `src/config/api.ts` - Added `OPENFREEMAP_TILES_URL` constant
 
 **Test cases:**
 1. Zoom out to regional view → State/province names visible

@@ -3,6 +3,7 @@ import {
   API_ID_FIELD,
   getUnifiedLocationUrls,
   getUnifiedMetricUrls,
+  OPENFREEMAP_TILES_URL,
   UNIFIED_GEO_LEVELS,
   UnifiedGeoLevel
 } from "config/api";
@@ -33,12 +34,15 @@ const BOUNDARY_LAYERS = [
 const TILE_SERVER_URL = "https://major-sculpin.nceas.ucsb.edu";
 
 /**
- * Creates the initial map style with OSM base layer and boundary tile sources.
+ * Creates the initial map style with OSM base layer, boundary tile sources, and label source.
  * State/province boundary sources are included so they're always available.
+ * Labels use OpenFreeMap vector tiles (free, no API key required) with zoom-dependent styling.
  * Data layers are added dynamically based on selected geo level.
  */
 const getBaseMapStyle = (): StyleSpecification => ({
   version: 8,
+  // Free font glyphs from OpenFreeMap (required for text labels)
+  glyphs: "https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf",
   sources: {
     osm: {
       type: "raster",
@@ -58,6 +62,14 @@ const getBaseMapStyle = (): StyleSpecification => ({
       tiles: [`${TILE_SERVER_URL}/data/ca_provinces/{z}/{x}/{y}.pbf`],
       minzoom: 0,
       maxzoom: 14,
+    },
+    // OpenFreeMap vector tiles for place labels (free, no API key required)
+    "openfreemap": {
+      type: "vector",
+      tiles: [OPENFREEMAP_TILES_URL],
+      minzoom: 0,
+      maxzoom: 14,
+      attribution: "© OpenFreeMap © OpenStreetMap contributors",
     },
   },
   layers: [
@@ -442,6 +454,117 @@ const MapArea: React.FC<MapAreaProps> = ({
     });
     console.log("Repositioned boundary layers");
   }, []);
+
+  /**
+   * Adds vector-based label layers with zoom-dependent visibility.
+   * Uses OpenFreeMap vector tiles (free, no API key required).
+   * 
+   * Zoom behavior:
+   * - Zoom 3-5: State/province abbreviation-style labels (small, uppercase)
+   * - Zoom 5-7: Full state/province names
+   * - Zoom 7+: City names appear
+   */
+  const addLabelsLayer = useCallback((map: maplibregl.Map) => {
+    // Skip if layers already exist
+    if (map.getLayer("labels-states-abbrev")) {
+      return;
+    }
+
+    // Common text styling for readability over colored polygons
+    const textHaloColor = "#ffffff";
+    const textHaloWidth = 2;
+    const textColor = "#333333";
+
+    // Layer 1: State/province labels at low zoom (abbreviation style - uppercase, small)
+    map.addLayer({
+      id: "labels-states-abbrev",
+      type: "symbol",
+      source: "openfreemap",
+      "source-layer": "place",
+      minzoom: 3,
+      maxzoom: 5.5,
+      filter: ["==", ["get", "class"], "state"],
+      layout: {
+        "text-field": ["upcase", ["coalesce", ["get", "name:en"], ["get", "name"]]],
+        "text-font": ["Noto Sans Medium"],
+        "text-size": 11,
+        "text-letter-spacing": 0.1,
+        "text-max-width": 8,
+      },
+      paint: {
+        "text-color": textColor,
+        "text-halo-color": textHaloColor,
+        "text-halo-width": textHaloWidth,
+        "text-opacity": 0.9,
+      },
+    });
+
+    // Layer 2: Full state/province names at mid zoom
+    map.addLayer({
+      id: "labels-states-full",
+      type: "symbol",
+      source: "openfreemap",
+      "source-layer": "place",
+      minzoom: 5.5,
+      maxzoom: 7.5,
+      filter: ["==", ["get", "class"], "state"],
+      layout: {
+        "text-field": ["coalesce", ["get", "name:en"], ["get", "name"]],
+        "text-font": ["Noto Sans Medium"],
+        "text-size": 14,
+        "text-max-width": 10,
+      },
+      paint: {
+        "text-color": textColor,
+        "text-halo-color": textHaloColor,
+        "text-halo-width": textHaloWidth,
+      },
+    });
+
+    // Layer 3: City labels (major cities first, then smaller)
+    map.addLayer({
+      id: "labels-cities",
+      type: "symbol",
+      source: "openfreemap",
+      "source-layer": "place",
+      minzoom: 7,
+      filter: ["in", ["get", "class"], ["literal", ["city", "town"]]],
+      layout: {
+        "text-field": ["coalesce", ["get", "name:en"], ["get", "name"]],
+        "text-font": ["Noto Sans Regular"],
+        "text-size": [
+          "interpolate", ["linear"], ["zoom"],
+          7, 11,
+          10, 14,
+          14, 18
+        ],
+        "text-max-width": 10,
+        "text-variable-anchor": ["top", "bottom", "left", "right"],
+        "text-radial-offset": 0.5,
+      },
+      paint: {
+        "text-color": textColor,
+        "text-halo-color": textHaloColor,
+        "text-halo-width": textHaloWidth,
+      },
+    });
+
+    console.log("Added vector label layers (OpenFreeMap)");
+  }, []);
+
+  /**
+   * Ensures all label layers are always on top of the layer stack.
+   * Called after geo level changes to maintain correct ordering.
+   */
+  const repositionLabelsLayer = useCallback((map: maplibregl.Map) => {
+    const labelLayers = ["labels-states-abbrev", "labels-states-full", "labels-cities"];
+    labelLayers.forEach(layerId => {
+      if (map.getLayer(layerId)) {
+        map.moveLayer(layerId);
+      }
+    });
+    console.log("Repositioned label layers to top");
+  }, []);
   
   /**
    * Colors map features based on metric data.
@@ -528,6 +651,10 @@ const MapArea: React.FC<MapAreaProps> = ({
         addBoundaryLayers(map);
         // Position boundaries above fill layers, below highlight layers
         repositionBoundaryLayers(map);
+        // Add place labels on top of everything
+        addLabelsLayer(map);
+        // Ensure labels stay on top
+        repositionLabelsLayer(map);
         setMapLoaded(true);
       });
 
@@ -608,7 +735,7 @@ const MapArea: React.FC<MapAreaProps> = ({
         mapRef.current = null;
       };
     }
-  }, [addGeoLevelLayers, addBoundaryLayers, repositionBoundaryLayers]);
+  }, [addGeoLevelLayers, addBoundaryLayers, repositionBoundaryLayers, addLabelsLayer, repositionLabelsLayer]);
   
   // Handle geo level changes after map is loaded
   useEffect(() => {
@@ -631,6 +758,9 @@ const MapArea: React.FC<MapAreaProps> = ({
       // Reposition boundary layers above new fill layers
       repositionBoundaryLayers(map);
       
+      // Keep labels layer on top
+      repositionLabelsLayer(map);
+      
       // Update ref
       currentGeoLevelRef.current = selectedGeoLevel;
       
@@ -643,7 +773,7 @@ const MapArea: React.FC<MapAreaProps> = ({
       };
       map.on("sourcedata", handleSourceData);
     }
-  }, [selectedGeoLevel, mapLoaded, addGeoLevelLayers, removeGeoLevelLayers, repositionBoundaryLayers]);
+  }, [selectedGeoLevel, mapLoaded, addGeoLevelLayers, removeGeoLevelLayers, repositionBoundaryLayers, repositionLabelsLayer]);
 
   // Color features when data loads - need to wait for tiles to be rendered
   useEffect(() => {
@@ -652,17 +782,23 @@ const MapArea: React.FC<MapAreaProps> = ({
       
       // Try to color immediately
       loadColors(map);
+      // Ensure labels stay on top after coloring
+      repositionLabelsLayer(map);
       
       // Also listen for idle event to catch when tiles finish rendering
       const handleIdle = () => {
         loadColors(map);
+        repositionLabelsLayer(map);
       };
       
       // Listen for sourcedata to catch when tile data arrives
       const handleSourceData = (e: maplibregl.MapSourceDataEvent) => {
         if ((e.sourceId === "us-tiles" || e.sourceId === "canada-tiles") && e.isSourceLoaded) {
           // Small delay to ensure features are rendered
-          setTimeout(() => loadColors(map), 100);
+          setTimeout(() => {
+            loadColors(map);
+            repositionLabelsLayer(map);
+          }, 100);
         }
       };
       
@@ -674,7 +810,7 @@ const MapArea: React.FC<MapAreaProps> = ({
         map.off("sourcedata", handleSourceData);
       };
     }
-  }, [geoMetrics, dataLoaded, mapLoaded, loadColors]);
+  }, [geoMetrics, dataLoaded, mapLoaded, loadColors, repositionLabelsLayer]);
 
   /**
    * Formats the tract/subdivision ID for tooltip display.

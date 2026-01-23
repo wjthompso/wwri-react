@@ -1363,17 +1363,19 @@ Carlo's data processing script generated county-level aggregations but didn't po
    - ❌ Labels looked "lame" - couldn't customize appearance
 
 2. **OpenFreeMap vector tiles** - Attempted to use vector tiles for full control
-   - ✅ Free, no API key required
-   - ✅ Vector tiles allow full styling control
+   - ✅ Free, no API key required (claimed)
+   - ✅ Vector tiles allow full styling control (in theory)
    - ❌ **Failed:** Labels never rendered despite layers being added
+   - ❌ **Documentation check:** No official documentation found for OpenFreeMap
+     - Searched for `openfreemap.org` and `tiles.openfreemap.org` documentation
+     - No GitHub repository, API docs, or usage examples found
+     - URLs used: `https://tiles.openfreemap.org/planet/{z}/{x}/{y}.pbf` and `https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf`
+     - **This suggests OpenFreeMap may not be a real/maintained service or URLs are incorrect**
    - ❌ Issues encountered:
      - Missing `glyphs` property error (fixed by adding font server URL)
      - Labels added but not visible (likely wrong source-layer name or filter)
      - Console shows "Repositioned label layers to top" but no labels appear
-     - Suspected issues:
-       - Wrong source-layer name (`place` vs `place_label` vs other)
-       - Wrong filter properties (`class: state` might not exist in OpenFreeMap schema)
-       - Font names might not match what OpenFreeMap provides
+     - **Root cause likely:** Service doesn't exist as documented, or tile schema is completely different than assumed
 
 **Current Status:**
 - Code added to `MapArea.tsx` with OpenFreeMap integration
@@ -1382,11 +1384,16 @@ Carlo's data processing script generated county-level aggregations but didn't po
 - Layer repositioning logic added
 - **Labels do not render** - need to debug OpenFreeMap tile schema or find alternative
 
+**What We Did Wrong:**
+- Assumed OpenFreeMap was a real, documented service without verifying
+- Used URLs (`tiles.openfreemap.org`) without checking if service actually exists or has documentation
+- Should have verified service exists and reviewed documentation before implementing
+
 **Next Steps (Future):**
-- **Option A:** Debug OpenFreeMap tiles - inspect actual tile data to find correct source-layer names and properties
-- **Option B:** Self-host labels - Create our own mbtiles file with place labels from Natural Earth or OpenStreetMap data
-- **Option C:** Use different free vector tile service with better documentation
-- **Option D:** Use MapLibre's built-in OSM labels if available
+- **Option A:** Self-host labels - Create our own mbtiles file with place labels from Natural Earth or OpenStreetMap data (most reliable for handoff)
+- **Option B:** Use well-documented free vector tile service (verify documentation exists first)
+- **Option C:** Use MapLibre's built-in OSM labels if available
+- **Option D:** Skip labels entirely if not critical for demo
 
 **Files Modified:**
 - `src/components/MapArea/MapArea.tsx` - Added OpenFreeMap vector tile source and label layers

@@ -1389,8 +1389,75 @@ Carlo's data processing script generated county-level aggregations but didn't po
 - Used URLs (`tiles.openfreemap.org`) without checking if service actually exists or has documentation
 - Should have verified service exists and reviewed documentation before implementing
 
+**Self-Hosting Labels - Difficulty Estimate:**
+
+**Difficulty: Medium (4-6 hours)** - You already have the infrastructure!
+
+**What You Already Know:**
+- ✅ Converting shapefiles → GeoJSON → mbtiles (tippecanoe)
+- ✅ Creating config.json for tileserver-gl-light
+- ✅ Deploying mbtiles to server
+- ✅ Frontend integration with MapLibre GL
+
+**What You'd Need to Do:**
+
+1. **Get Place Label Data (1-2 hours)**
+   - **Option A:** Natural Earth Data (recommended)
+     - Download: `ne_10m_populated_places` (cities) + `ne_10m_admin_1_states_provinces` (states)
+     - Free, public domain, well-documented
+     - Includes properties: `name`, `name_en`, `adm0name` (country), `adm1name` (state)
+     - URL: https://www.naturalearthdata.com/downloads/
+   - **Option B:** OpenStreetMap data
+     - Extract places from OSM using `osmium` or `osmconvert`
+     - More complex but more comprehensive
+     - Includes: `name`, `place` (city/town/village), `admin_level`
+
+2. **Convert to GeoJSON (30 min)**
+   - Use `ogr2ogr` (you already have this)
+   - Filter to study region (western US + western Canada)
+   - Keep properties: `name`, `name_en`, `class` (state/city), `rank` (for zoom filtering)
+
+3. **Create MBTiles (1 hour)**
+   - Use tippecanoe (you already know this)
+   - Create separate layers: `states`, `cities`
+   - Use `--layer` flag to separate by place type
+   - Add `rank` property for zoom-based filtering
+
+4. **Add Fonts/Glyphs (30 min - 1 hour)**
+   - **Option A:** Use free font server (easiest)
+     - MapLibre fonts: `https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf`
+     - Or self-host fonts from: https://github.com/openmaptiles/fonts
+   - **Option B:** Self-host fonts (more control)
+     - Download fonts from OpenMapTiles
+     - Serve via nginx or tileserver-gl
+
+5. **Update Config & Deploy (30 min)**
+   - Add `place_labels` entry to `config.json`
+   - Transfer mbtiles to server
+   - Restart tileserver container
+
+6. **Frontend Integration (1-2 hours)**
+   - Update `MapArea.tsx` to use your new tile source
+   - Style labels with zoom-based visibility (code structure already exists)
+   - Test zoom behavior
+
+**Total Time Estimate: 4-6 hours**
+
+**Pros:**
+- ✅ Full control over styling and zoom behavior
+- ✅ No external dependencies (reliable for handoff)
+- ✅ Uses existing infrastructure you already know
+- ✅ Can customize exactly what labels appear at which zoom
+
+**Cons:**
+- ⚠️ Need to maintain label data (but Natural Earth updates infrequently)
+- ⚠️ Font hosting adds complexity (but free options exist)
+- ⚠️ Initial setup time (but one-time cost)
+
+**Recommendation:** If labels are important for the demo, self-hosting is the most reliable path forward. You have all the skills already - it's just applying them to a new data source.
+
 **Next Steps (Future):**
-- **Option A:** Self-host labels - Create our own mbtiles file with place labels from Natural Earth or OpenStreetMap data (most reliable for handoff)
+- **Option A:** Self-host labels - Create our own mbtiles file with place labels from Natural Earth or OpenStreetMap data (most reliable for handoff) ⭐ RECOMMENDED
 - **Option B:** Use well-documented free vector tile service (verify documentation exists first)
 - **Option C:** Use MapLibre's built-in OSM labels if available
 - **Option D:** Skip labels entirely if not critical for demo

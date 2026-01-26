@@ -46,6 +46,8 @@
 | Jan 26 | **✅ FIXED label drift bug (ROOT CAUSE FOUND)** - The Y-flip script was the PROBLEM, not the solution! Tippecanoe already outputs correct Y-down coordinates. The "fix" script was breaking correctly-formatted tiles. Solution: Use raw tippecanoe output directly without any post-processing. Verified Santa Barbara at Y=3730 (correct) at zoom 8, consistent across all zoom levels z4-z10. Labels now stable when zooming. |
 | Jan 26 | **🔄 Labels still sliding** - User reports labels still slide during zoom despite correct tile data. Breaking into sub-tasks (1a-1d) to test hypotheses. |
 | Jan 26 | **✅ Task 1 COMPLETE!** - Hypothesis 1a confirmed! `text-variable-anchor` was causing labels to jump between anchor positions during zoom. Fix: Replaced with fixed `text-anchor: "center"`. Labels now stable! |
+| Jan 26 | **🎉 MAJOR UPGRADE: GeoNames city data!** - Replaced Natural Earth 10m dataset (~300 cities) with GeoNames cities5000 dataset (**1,773 cities** in study region!). New population-based SCALERANKs with progressive display: SR1 (500k+, 15 cities, zoom 5), SR2 (200k+, 38, zoom 5), SR3 (100k+, 98, zoom 6), SR4 (50k+, 211, zoom 7), SR5 (25k+, 274, zoom 8), SR6 (15k+, 284, zoom 9), SR7 (10k+, 285, zoom 10), SR8 (5k+, 568, zoom 11). Now includes Ventura, Goleta, Carpinteria, Montecito, Ojai, Solvang, Buellton, and many more small towns. |
+| Jan 26 | **🎨 Refined label styling** - Adjusted zoom thresholds so labels don't appear at country level (clean view at wide zoom). Reduced text halo width from 2.5-3px to 1.5px for less visual clutter while maintaining readability. |
 
 ---
 

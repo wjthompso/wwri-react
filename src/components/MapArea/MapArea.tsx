@@ -51,17 +51,18 @@ const getBaseMapStyle = (): StyleSpecification => ({
       attribution: "Map data © OpenStreetMap contributors",
     },
     // State/province boundary sources (always available for boundary lines)
+    // Note: maxzoom set to 10 because these tiles only exist up to z10 on the server
     "us-state-boundaries": {
       type: "vector",
       tiles: [`${TILE_SERVER_URL}/data/us_states/{z}/{x}/{y}.pbf`],
       minzoom: 0,
-      maxzoom: 14,
+      maxzoom: 10,
     },
     "canada-province-boundaries": {
       type: "vector",
       tiles: [`${TILE_SERVER_URL}/data/ca_provinces/{z}/{x}/{y}.pbf`],
       minzoom: 0,
-      maxzoom: 14,
+      maxzoom: 10,
     },
     // Self-hosted label tiles from Natural Earth data
     "wwri-labels": {
@@ -463,13 +464,13 @@ const MapArea: React.FC<MapAreaProps> = ({
       return;
     }
 
-    // Common text styling for readability over colored polygons
+    // Common text styling - using Open Sans Bold for visibility
+    // Available fonts from OpenMapTiles: "Open Sans Regular", "Open Sans Semibold", "Open Sans Bold"
     const textHaloColor = "#ffffff";
-    const textHaloWidth = 2;
+    const textHaloWidth = 1.5; // Reduced from 2.5 for thinner border
     const textColor = "#333333";
 
-    // Layer 1: State/province labels at low zoom (postal code style - uppercase, small)
-    // Allow overlap to ensure all states are always visible at low zoom
+    // Layer 1: State/province labels at low zoom (postal code style - uppercase)
     map.addLayer({
       id: "labels-states-abbrev",
       type: "symbol",
@@ -479,18 +480,18 @@ const MapArea: React.FC<MapAreaProps> = ({
       maxzoom: 5.5,
       layout: {
         "text-field": ["upcase", ["get", "postal"]],
-        "text-font": ["Open Sans Semibold"],
-        "text-size": 12,
+        "text-font": ["Open Sans Bold"],
+        "text-size": 14,
         "text-letter-spacing": 0.15,
         "text-max-width": 8,
-        "text-allow-overlap": true,  // Always show all state labels
+        "text-allow-overlap": true,
         "text-ignore-placement": true,
-        "symbol-sort-key": 0,  // High priority
+        "symbol-sort-key": 0,
       },
       paint: {
         "text-color": textColor,
         "text-halo-color": textHaloColor,
-        "text-halo-width": 2.5,
+        "text-halo-width": 1.5,
         "text-opacity": 1,
       },
     });
@@ -502,48 +503,129 @@ const MapArea: React.FC<MapAreaProps> = ({
       source: "wwri-labels",
       "source-layer": "state_labels",
       minzoom: 5.5,
-      maxzoom: 8,
+      maxzoom: 9,
       layout: {
         "text-field": ["get", "name"],
-        "text-font": ["Open Sans Semibold"],
-        "text-size": 14,
+        "text-font": ["Open Sans Bold"],
+        "text-size": 16,
         "text-max-width": 10,
-        "text-allow-overlap": true,  // Always show all state labels
+        "text-transform": "uppercase",
+        "text-letter-spacing": 0.1,
+        "text-allow-overlap": true,
         "text-ignore-placement": true,
-        "symbol-sort-key": 0,  // High priority
+        "symbol-sort-key": 0,
       },
       paint: {
         "text-color": textColor,
         "text-halo-color": textHaloColor,
-        "text-halo-width": 2.5,
+        "text-halo-width": 1.5,
       },
     });
 
-    // Layer 3: Major city labels (SCALERANK <= 4 = major cities)
-    // Note: Using fixed "text-anchor: center" instead of "text-variable-anchor"
-    // to prevent labels from sliding during zoom (variable anchor causes repositioning)
+    // GeoNames cities5000 data: 1,773 cities total
+    // Progressive display: start sparse at region level, show more as zooming in
+    // SR1: 15 cities (500k+ pop) - LA, SF, Seattle, Phoenix, etc.
+    // SR2: 38 cities (200k+ pop) - Oakland, Anaheim, etc.
+    // SR3: 98 cities (100k+ pop) - Pasadena, etc.
+    // SR4: 211 cities (50k+ pop) - Ventura, Santa Barbara, etc.
+    // SR5: 274 cities (25k+ pop) - Goleta, Moorpark, etc.
+    // SR6: 284 cities (15k+ pop) - Carpinteria, etc.
+    // SR7: 285 cities (10k+ pop) - Small towns
+    // SR8: 568 cities (5k+ pop) - Tiny towns (Montecito, Solvang, etc.)
+
+    // Layer 3: Major metros (SR 1-2, 53 cities) - visible from zoom 5 (multi-state view)
     map.addLayer({
       id: "labels-cities-major",
       type: "symbol",
       source: "wwri-labels",
       "source-layer": "city_labels",
+      minzoom: 5,
+      maxzoom: 14,
+      filter: ["<=", ["get", "SCALERANK"], 2],
+      layout: {
+        "text-field": ["get", "NAME"],
+        "text-font": ["Open Sans Bold"],
+        "text-size": [
+          "interpolate", ["linear"], ["zoom"],
+          3, 10,
+          5, 12,
+          7, 14,
+          9, 16,
+          11, 18,
+          14, 22
+        ],
+        "text-max-width": 10,
+        "text-anchor": "center",
+        "text-allow-overlap": false,
+        "text-ignore-placement": false,
+        "text-padding": 1,
+      },
+      paint: {
+        "text-color": textColor,
+        "text-halo-color": textHaloColor,
+        "text-halo-width": textHaloWidth,
+      },
+    });
+
+    // Layer 4: Large cities (SR 3, 98 cities - 100k+ pop) - visible from zoom 6 (state view)
+    map.addLayer({
+      id: "labels-cities-large",
+      type: "symbol",
+      source: "wwri-labels",
+      "source-layer": "city_labels",
       minzoom: 6,
       maxzoom: 14,
-      filter: ["<=", ["get", "SCALERANK"], 4],
+      filter: ["==", ["get", "SCALERANK"], 3],
+      layout: {
+        "text-field": ["get", "NAME"],
+        "text-font": ["Open Sans Bold"],
+        "text-size": [
+          "interpolate", ["linear"], ["zoom"],
+          4, 9,
+          6, 11,
+          8, 13,
+          10, 15,
+          12, 17,
+          14, 19
+        ],
+        "text-max-width": 10,
+        "text-anchor": "center",
+        "text-allow-overlap": false,
+        "text-ignore-placement": false,
+        "text-padding": 1,
+      },
+      paint: {
+        "text-color": textColor,
+        "text-halo-color": textHaloColor,
+        "text-halo-width": textHaloWidth,
+      },
+    });
+
+    // Layer 5: Medium cities (SR 4, 211 cities - 50k+ pop) - visible from zoom 7 (regional view)
+    map.addLayer({
+      id: "labels-cities-medium",
+      type: "symbol",
+      source: "wwri-labels",
+      "source-layer": "city_labels",
+      minzoom: 7,
+      maxzoom: 14,
+      filter: ["==", ["get", "SCALERANK"], 4],
       layout: {
         "text-field": ["get", "NAME"],
         "text-font": ["Open Sans Semibold"],
         "text-size": [
           "interpolate", ["linear"], ["zoom"],
-          6, 10,
-          8, 12,
-          10, 14,
+          5, 9,
+          7, 11,
+          9, 13,
+          11, 15,
           14, 18
         ],
         "text-max-width": 10,
         "text-anchor": "center",
         "text-allow-overlap": false,
         "text-ignore-placement": false,
+        "text-padding": 1,
       },
       paint: {
         "text-color": textColor,
@@ -552,65 +634,133 @@ const MapArea: React.FC<MapAreaProps> = ({
       },
     });
 
-    // Layer 4: Smaller city labels (SCALERANK 5-7 = medium cities)
+    // Layer 6: Small cities (SR 5, 274 cities - 25k+ pop) - visible from zoom 8
     map.addLayer({
-      id: "labels-cities-medium",
+      id: "labels-cities-small",
       type: "symbol",
       source: "wwri-labels",
       "source-layer": "city_labels",
       minzoom: 8,
       maxzoom: 14,
-      filter: ["all", 
-        [">", ["get", "SCALERANK"], 4],
-        ["<=", ["get", "SCALERANK"], 7]
-      ],
+      filter: ["==", ["get", "SCALERANK"], 5],
+      layout: {
+        "text-field": ["get", "NAME"],
+        "text-font": ["Open Sans Semibold"],
+        "text-size": [
+          "interpolate", ["linear"], ["zoom"],
+          6, 9,
+          8, 11,
+          10, 13,
+          12, 15,
+          14, 17
+        ],
+        "text-max-width": 8,
+        "text-anchor": "center",
+        "text-allow-overlap": false,
+        "text-ignore-placement": false,
+        "text-padding": 1,
+      },
+      paint: {
+        "text-color": textColor,
+        "text-halo-color": textHaloColor,
+        "text-halo-width": textHaloWidth,
+        "text-opacity": 0.95,
+      },
+    });
+
+    // Layer 7: Towns (SR 6, 284 cities - 15k+ pop) - visible from zoom 9
+    map.addLayer({
+      id: "labels-cities-towns",
+      type: "symbol",
+      source: "wwri-labels",
+      "source-layer": "city_labels",
+      minzoom: 9,
+      maxzoom: 14,
+      filter: ["==", ["get", "SCALERANK"], 6],
       layout: {
         "text-field": ["get", "NAME"],
         "text-font": ["Open Sans Regular"],
         "text-size": [
           "interpolate", ["linear"], ["zoom"],
-          8, 10,
-          10, 12,
-          14, 14
+          7, 9,
+          9, 11,
+          11, 13,
+          14, 16
         ],
-        "text-max-width": 10,
+        "text-max-width": 8,
         "text-anchor": "center",
         "text-allow-overlap": false,
         "text-ignore-placement": false,
+        "text-padding": 1,
       },
       paint: {
-        "text-color": textColor,
+        "text-color": "#444444",
+        "text-halo-color": textHaloColor,
+        "text-halo-width": textHaloWidth,
+        "text-opacity": 0.95,
+      },
+    });
+
+    // Layer 8: Small towns (SR 7, 285 cities - 10k+ pop) - visible from zoom 10 (local view)
+    map.addLayer({
+      id: "labels-cities-small-towns",
+      type: "symbol",
+      source: "wwri-labels",
+      "source-layer": "city_labels",
+      minzoom: 10,
+      maxzoom: 14,
+      filter: ["==", ["get", "SCALERANK"], 7],
+      layout: {
+        "text-field": ["get", "NAME"],
+        "text-font": ["Open Sans Regular"],
+        "text-size": [
+          "interpolate", ["linear"], ["zoom"],
+          8, 9,
+          10, 11,
+          12, 13,
+          14, 15
+        ],
+        "text-max-width": 8,
+        "text-anchor": "center",
+        "text-allow-overlap": false,
+        "text-ignore-placement": false,
+        "text-padding": 1,
+      },
+      paint: {
+        "text-color": "#555555",
         "text-halo-color": textHaloColor,
         "text-halo-width": textHaloWidth,
         "text-opacity": 0.9,
       },
     });
 
-    // Layer 5: Small city labels (SCALERANK > 7 = small towns)
+    // Layer 9: Tiny towns (SR 8, 568 cities - 5k+ pop) - visible from zoom 11 (neighborhood view)
     map.addLayer({
-      id: "labels-cities-small",
+      id: "labels-cities-tiny",
       type: "symbol",
       source: "wwri-labels",
       "source-layer": "city_labels",
-      minzoom: 10,
+      minzoom: 11,
       maxzoom: 14,
-      filter: [">", ["get", "SCALERANK"], 7],
+      filter: [">=", ["get", "SCALERANK"], 8],
       layout: {
         "text-field": ["get", "NAME"],
         "text-font": ["Open Sans Regular"],
         "text-size": [
           "interpolate", ["linear"], ["zoom"],
-          10, 9,
-          12, 11,
-          14, 13
+          9, 9,
+          11, 11,
+          13, 13,
+          14, 14
         ],
         "text-max-width": 8,
         "text-anchor": "center",
         "text-allow-overlap": false,
         "text-ignore-placement": false,
+        "text-padding": 1,
       },
       paint: {
-        "text-color": "#555555",
+        "text-color": "#666666",
         "text-halo-color": textHaloColor,
         "text-halo-width": textHaloWidth,
         "text-opacity": 0.85,
@@ -628,8 +778,12 @@ const MapArea: React.FC<MapAreaProps> = ({
       "labels-states-abbrev", 
       "labels-states-full", 
       "labels-cities-major",
+      "labels-cities-large",
       "labels-cities-medium",
-      "labels-cities-small"
+      "labels-cities-small",
+      "labels-cities-towns",
+      "labels-cities-small-towns",
+      "labels-cities-tiny"
     ];
     labelLayers.forEach(layerId => {
       if (map.getLayer(layerId)) {

@@ -24,8 +24,8 @@
 | 9 | Style geo-level selector buttons (larger, match aesthetic) | ✅ Done |
 | 10 | Make left sidebar wider | ⬜ Pending | [PAUSE THIS FOR NOW, MAY NOT DO]
 | 11 | Add smooth transitions to domain expand/collapse | ✅ Done |
-| 12 | Deploy frontend code to Linux server | ⬜ Pending |
-| 13 | Mid-week check-in with Tessa | ⬜ Pending |
+| 12 | Deploy frontend code to Linux server | ✅ Done |
+| 13 | Mid-week check-in with Tessa | ✅ Done |
 | 14 | Reports page (waiting on Tessa's doc) | ⬜ Blocked |
 | 15 | Additional pages (waiting on Tessa's doc) | ⬜ Blocked |
 | 16 | Fix census tract GEOIDs missing leading zeros | ✅ Done |
@@ -41,7 +41,7 @@
 | 26 | Add place labels (cities, states) on zoom | ⚠️ WIP - Blocked |
 | 27 | Improve selected polygon border (white-black-white sandwich) | ⬜ Pending |
 
-**Progress:** 20/27 complete (Task 3 split into 3A/3B/3C/3D, Task 5 & 6 merged, Task 20 hidden)
+**Progress:** 22/27 complete (Task 3 split into 3A/3B/3C/3D, Task 5 & 6 merged, Task 20 hidden)
 
 ---
 

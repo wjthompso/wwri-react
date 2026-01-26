@@ -13,7 +13,7 @@
 
 | # | Task | Status |
 |---|------|--------|
-| 1 | Add state and city map labels (self-hosted, manual review) | 🔄 WIP |
+| 1 | Add state and city map labels (self-hosted, manual review) | ✅ Complete |
 | 2 | Create gradient customization widget with save/export | ⬜ Pending |
 | 3 | Redesign left sidebar → move content to right sidebar | ⬜ Pending |
 | 4 | Redesign overall score display (smaller, use gradient colors) | ⬜ Pending |
@@ -25,9 +25,9 @@
 | 10 | Report button - defer decision (Cat to discuss with comms) | ⏸️ On Hold |
 | 11 | Update Species/Iconic Species messaging for clarity | ⬜ Pending |
 
-**Progress:** 0/11 complete, 1 in progress (7 pending, 1 blocked, 1 on hold)
+**Progress:** 1/11 complete (7 pending, 1 blocked, 1 on hold)
 
-**Note:** Task 1 (map labels) is WIP - labels display but positioning is inconsistent across zoom levels. Y-coordinate flip was applied but doesn't fully solve the issue. See Task 1 details for current state and debugging notes.
+**Note:** Task 1 (map labels) ✅ COMPLETE! Two issues fixed: (1) Y-flip script was breaking tiles - removed, (2) `text-variable-anchor` was causing labels to slide during zoom - switched to fixed `text-anchor: "center"`.
 
 ---
 
@@ -43,6 +43,9 @@
 | Jan 26 | **Fixed label drift bug (attempt 1)** - Discovered tippecanoe outputs MVT tiles with Y=0 at bottom (geographic convention), but MVT spec/MapLibre expect Y=0 at top (screen convention). Initial fix script had bugs (wrong mvt.encode format, tile-join creates VIEW not table). |
 | Jan 26 | **Fixed label drift bug (attempt 2)** - Rewrote `fix_mvt_y_coords.py` with correct mvt.encode format (list of dicts with 'name' and 'features' keys) and creates new output mbtiles instead of updating in-place. All 2565 tiles processed successfully. Y coordinates flipped from e.g. 3730 → 366 for Santa Barbara (4096 - old_y). |
 | Jan 26 | **WIP - Label positioning still inconsistent** - After fix, labels behave differently at different zoom levels: (1) Low zoom: Santa Barbara roughly correct over land, (2) High zoom: Santa Barbara even more in ocean, (3) Middle zoom: Santa Barbara way north near Kern. The simple Y-flip (4096 - y) is not the complete solution. Need further investigation - possibly tippecanoe stores coordinates differently at each zoom level, or there's a tile coordinate system issue that varies by zoom. |
+| Jan 26 | **✅ FIXED label drift bug (ROOT CAUSE FOUND)** - The Y-flip script was the PROBLEM, not the solution! Tippecanoe already outputs correct Y-down coordinates. The "fix" script was breaking correctly-formatted tiles. Solution: Use raw tippecanoe output directly without any post-processing. Verified Santa Barbara at Y=3730 (correct) at zoom 8, consistent across all zoom levels z4-z10. Labels now stable when zooming. |
+| Jan 26 | **🔄 Labels still sliding** - User reports labels still slide during zoom despite correct tile data. Breaking into sub-tasks (1a-1d) to test hypotheses. |
+| Jan 26 | **✅ Task 1 COMPLETE!** - Hypothesis 1a confirmed! `text-variable-anchor` was causing labels to jump between anchor positions during zoom. Fix: Replaced with fixed `text-anchor: "center"`. Labels now stable! |
 
 ---
 
@@ -50,21 +53,105 @@
 
 ### Task 1: Add State and City Map Labels (Self-Hosted)
 
-**Status:** 🔄 WIP - Labels display but positioning is inconsistent across zoom levels
+**Status:** 🔄 Debugging - Labels still sliding during zoom
 
 **Priority:** 🔥 HIGHEST
 
 **Description:** Add geographic labels (state/province names and city names) to the map that appear at appropriate zoom levels. Self-hosted using Natural Earth data.
 
-**Current Issue (Jan 26):** After Y-coordinate flip fix, label positioning varies by zoom level:
-- **Low zoom (z4-6):** Labels appear roughly correct (over land)
-- **Mid zoom (z7-8):** Labels appear too far NORTH (Santa Barbara near Kern County)
-- **High zoom (z9+):** Labels appear too far SOUTH (Santa Barbara over ocean)
+**Current Symptom:** Labels appear to "slide" or shift position as user zooms in/out. The tile data coordinates were verified correct, but visual rendering still shows movement.
 
-**Hypothesis for next session:** The simple Y-flip (4096 - y) doesn't account for how tippecanoe encodes coordinates at different zoom levels. Each zoom level may have different tile boundaries and coordinate calculations. Need to investigate:
-1. How tippecanoe calculates pixel coords for each zoom level
-2. Whether the Y-flip needs to be zoom-level-aware
-3. Whether the tile row (TMS vs XYZ) is affecting the coordinate interpretation
+---
+
+### Task 1a: Test Hypothesis - Variable Anchor Causing Sliding
+
+**Status:** ✅ CONFIRMED - This was the fix!
+
+**Hypothesis:** The `text-variable-anchor: ["top", "bottom", "left", "right"]` setting allows MapLibre to dynamically reposition labels to avoid collisions. As zoom changes, other labels appear/disappear, changing collision state and causing labels to shift to different anchor positions.
+
+**Test implementation:**
+- Removed `text-variable-anchor` and `text-radial-offset` from city label layers
+- Used fixed `"text-anchor": "center"` instead
+
+**Result:** ✅ SUCCESS! Labels no longer slide during zoom. The `text-variable-anchor` setting was the root cause of the sliding behavior. When collision state changed during zoom, MapLibre would reposition labels to different anchor points (top, bottom, left, right), causing visible movement.
+
+---
+
+### Task 1b: Test Hypothesis - Tile Duplication/Clipping Issues
+
+**Status:** ❌ Cancelled (1a was the fix)
+
+**Hypothesis:** Features may be duplicated across tile boundaries by tippecanoe, and the duplicates have slightly different coordinates due to clipping/buffering. When tiles load at different zoom levels, different copies of the same label render with different positions.
+
+**Evidence needed:**
+1. Check if labels appear in multiple tiles at the same zoom level
+2. Verify tippecanoe settings for duplication/buffering
+3. Add console logging to show which tile a label is rendered from
+
+**Test implementation:**
+- Regenerate tiles with `--no-duplication` flag
+- Add debugging to show tile coordinates for each rendered label
+
+**Expected result if hypothesis is correct:**
+- Debugging shows same label appearing in multiple tiles
+- After `--no-duplication`, labels render from a single tile and stay fixed
+
+**Result:** _(To be filled after testing)_
+
+---
+
+### Task 1c: Test Hypothesis - TMS vs XYZ Coordinate Scheme Mismatch
+
+**Status:** ❌ Cancelled (1a was the fix)
+
+**Hypothesis:** The local tile server uses @mapbox/mbtiles which stores tiles in TMS scheme (Y=0 at south) but serves with XYZ URLs (Y=0 at north). The library handles conversion, but there may be edge cases at certain zoom levels where conversion is incorrect.
+
+**Evidence needed:**
+1. Compare requested tile coordinates (from browser network tab) with mbtiles contents
+2. Verify tile content for the same location at different zoom levels
+3. Check if the @mapbox/mbtiles library is doing any coordinate transformations
+
+**Test implementation:**
+- Add server-side logging to show requested vs served tile coordinates
+- Compare with direct mbtiles query
+
+**Expected result if hypothesis is correct:**
+- Mismatch between requested and served tile coordinates
+- Label position error correlates with tile coordinate errors
+
+**Result:** _(To be filled after testing)_
+
+---
+
+### Task 1d: Add Debug Overlay for Label Positions
+
+**Status:** ❌ Cancelled (1a was the fix)
+
+**Description:** Add a toggleable debug overlay that shows:
+1. Current zoom level
+2. Label positions in screen coordinates
+3. Source tile for each visible label
+4. Anchor position being used
+
+This will provide concrete evidence to diagnose the sliding behavior.
+
+**Implementation:** Add debug mode triggered by keyboard shortcut (Ctrl+Shift+L)
+
+---
+
+### Previous Findings (Jan 26)
+
+**Y-Coordinate Fix (RESOLVED - but didn't fix sliding):**
+The Y-flip script (`fix_mvt_y_coords.py`) was the **PROBLEM**, not the solution!
+- Tippecanoe ALREADY outputs MVT tiles with correct Y-down coordinates
+- The "fix" script was flipping correct coordinates to incorrect ones
+- **Solution:** Use raw tippecanoe output directly, DO NOT post-process
+
+**Tile data verification:** Santa Barbara Y-coordinates correct at all zoom levels:
+- z4: Y=1513 ✓, z5: Y=3026 ✓, z6: Y=1957 ✓, z7: Y=3913 ✓
+- z8: Y=3730 ✓, z9: Y=3365 ✓, z10: Y=2633 ✓
+
+**Conclusion:** Tile data is mathematically correct. Issue is in MapLibre rendering layer.
 
 ---
 
@@ -128,41 +215,41 @@
 
 #### ✅ RESOLVED: Label Y-Coordinate Drift Bug (Jan 26, 2026)
 
-**Problem:** Labels appeared to "drift" position when zooming - at low zoom they were too far south, and moved closer to correct position at higher zoom levels. Santa Barbara appeared over the ocean instead of over the city.
+**Problem:** Labels appeared to "drift" position when zooming - Santa Barbara appeared over the ocean instead of over the city at some zoom levels.
 
-**Root Cause:** Tippecanoe outputs MVT tiles with Y=0 at the **bottom** of the tile (geographic/TMS convention), but the MVT specification and MapLibre GL JS expect Y=0 at the **top** of the tile (screen/web convention).
+**Root Cause (CORRECTED):** The Y-flip script was the **PROBLEM**, not the solution!
+- Initial hypothesis: Tippecanoe outputs Y-up coordinates, MapLibre expects Y-down
+- **ACTUAL TRUTH:** Tippecanoe ALREADY outputs correct Y-down coordinates
+- The "fix" script was flipping correct coordinates to incorrect ones!
 
 **Technical Details:**
 - MVT tiles use a 4096x4096 coordinate system within each tile
-- Tippecanoe stores Santa Barbara at Y=3730 (near bottom of tile = south)
-- MapLibre interprets Y=3730 as near bottom of tile = south
-- But the actual position should be Y=366 (near top of tile = north, over land)
-- Fix: flip all Y coordinates: `new_y = 4096 - old_y`
+- Y=0 at top (north), Y=4096 at bottom (south) - this is the MVT spec
+- Tippecanoe correctly outputs Santa Barbara at Y=3730 (near bottom = south = correct!)
+- The Y-flip script changed it to Y=366 (near top = north = WRONG!)
 
-**Solution:** Created `fix_mvt_y_coords.py` script that post-processes the mbtiles to flip Y coordinates within each tile. The script:
-1. Decodes each MVT tile using mapbox_vector_tile library
-2. Flips Y coordinates in all geometries (Point, MultiPoint, LineString, Polygon, etc.)
-3. Re-encodes the tile and writes to a new mbtiles file
+**Solution:** Use raw tippecanoe output directly. DO NOT run fix_mvt_y_coords.py!
 
-**Regeneration workflow:**
+**CORRECT Regeneration workflow:**
 ```bash
 cd wwri-metrics-api/labels
 
-# 1. Generate tiles with tippecanoe (produces tiles with wrong Y orientation)
-tippecanoe -o state_labels.mbtiles -z14 -Z0 --no-feature-limit --no-tile-size-limit -r1 -B0 -l state_labels geojson/state_labels.geojson --force
-tippecanoe -o city_labels.mbtiles -z14 -Z0 --no-feature-limit --no-tile-size-limit -r1 -B0 -l city_labels geojson/cities.geojson --force
-tile-join -o labels_raw.mbtiles state_labels.mbtiles city_labels.mbtiles --force
+# 1. Generate tiles with tippecanoe (coordinates are ALREADY CORRECT!)
+tippecanoe -o state_labels_raw.mbtiles -z14 -Z0 --no-feature-limit --no-tile-size-limit -r1 -B0 -l state_labels geojson/state_labels.geojson --force
+tippecanoe -o city_labels_raw.mbtiles -z14 -Z0 --no-feature-limit --no-tile-size-limit -r1 -B0 -l city_labels geojson/cities.geojson --force
+tile-join -o labels.mbtiles state_labels_raw.mbtiles city_labels_raw.mbtiles --force
 
-# 2. Fix Y coordinates (CRITICAL STEP!)
-python3 fix_mvt_y_coords.py labels_raw.mbtiles labels.mbtiles
-
-# 3. Copy to production
+# 2. Copy to production (NO Y-flip step needed!)
 cp labels.mbtiles ../mbtiles/labels.mbtiles
 
+# 3. Clean up temp files
+rm -f state_labels_raw.mbtiles city_labels_raw.mbtiles
+
 # 4. Restart tile server
+pkill -f "node labels/serve-tiles.js"; sleep 1
 node labels/serve-tiles.js
 
-# 5. Verify fix was applied (Santa Barbara Y should be ~366, not ~3730)
+# 5. Verify (Santa Barbara Y should be ~3730, NOT 366!)
 curl -s "http://localhost:8082/data/labels/8/42/101.pbf" | python3 -c "
 import sys, gzip, mapbox_vector_tile as mvt
 data = sys.stdin.buffer.read()
@@ -171,7 +258,7 @@ d = mvt.decode(data, default_options={'y_coord_down': True})
 for l in d.values():
     for f in l.get('features', []):
         if f.get('properties', {}).get('NAME') == 'Santa Barbara':
-            print(f'Santa Barbara Y: {f[\"geometry\"][\"coordinates\"][1]} (should be ~366)')
+            print(f'Santa Barbara Y: {f[\"geometry\"][\"coordinates\"][1]} (should be ~3730)')
 "
 ```
 

@@ -520,6 +520,8 @@ const MapArea: React.FC<MapAreaProps> = ({
     });
 
     // Layer 3: Major city labels (SCALERANK <= 4 = major cities)
+    // Note: Using fixed "text-anchor: center" instead of "text-variable-anchor"
+    // to prevent labels from sliding during zoom (variable anchor causes repositioning)
     map.addLayer({
       id: "labels-cities-major",
       type: "symbol",
@@ -539,8 +541,7 @@ const MapArea: React.FC<MapAreaProps> = ({
           14, 18
         ],
         "text-max-width": 10,
-        "text-variable-anchor": ["top", "bottom", "left", "right"],
-        "text-radial-offset": 0.5,
+        "text-anchor": "center",
         "text-allow-overlap": false,
         "text-ignore-placement": false,
       },
@@ -573,8 +574,7 @@ const MapArea: React.FC<MapAreaProps> = ({
           14, 14
         ],
         "text-max-width": 10,
-        "text-variable-anchor": ["top", "bottom", "left", "right"],
-        "text-radial-offset": 0.5,
+        "text-anchor": "center",
         "text-allow-overlap": false,
         "text-ignore-placement": false,
       },
@@ -605,8 +605,7 @@ const MapArea: React.FC<MapAreaProps> = ({
           14, 13
         ],
         "text-max-width": 8,
-        "text-variable-anchor": ["top", "bottom", "left", "right"],
-        "text-radial-offset": 0.5,
+        "text-anchor": "center",
         "text-allow-overlap": false,
         "text-ignore-placement": false,
       },
@@ -729,11 +728,8 @@ const MapArea: React.FC<MapAreaProps> = ({
         repositionLabelsLayer(map);
         setMapLoaded(true);
         
-        // Log zoom level on load and on zoom change for debugging
-        console.log(`[ZOOM] Initial zoom: ${map.getZoom().toFixed(2)}`);
-        map.on("zoom", () => {
-          console.log(`[ZOOM] Current zoom: ${map.getZoom().toFixed(2)}`);
-        });
+        // Self-hosted labels loaded successfully
+        console.log("Added self-hosted label layers (Natural Earth)");
       });
 
       // Click handler for both US and Canada layers

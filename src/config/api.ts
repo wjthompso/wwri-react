@@ -12,7 +12,20 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://major-sculpin
 // Tile server base URL
 const TILE_SERVER_URL = "https://major-sculpin.nceas.ucsb.edu";
 
-// OpenFreeMap vector tiles (free, no API key required)
+// Local tile server for development (run: node labels/serve-tiles.js in wwri-metrics-api)
+// Automatically uses local server when running on localhost
+const LOCAL_TILE_SERVER_URL = "http://localhost:8082";
+
+// Self-hosted label tiles URL
+// Uses local server when on localhost (dev), production server otherwise
+const IS_LOCALHOST = typeof window !== 'undefined' && 
+  (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+const USE_LOCAL_TILES = import.meta.env.VITE_LOCAL_TILES === "true" || IS_LOCALHOST;
+export const LABEL_TILES_URL = USE_LOCAL_TILES
+  ? `${LOCAL_TILE_SERVER_URL}/data/labels/{z}/{x}/{y}.pbf`
+  : `${TILE_SERVER_URL}/data/labels/{z}/{x}/{y}.pbf`;
+
+// OpenFreeMap vector tiles (kept as fallback, but no longer used for labels)
 // Provides vector tiles with full styling control for labels
 // Source: https://openfreemap.org/
 export const OPENFREEMAP_TILES_URL = "https://tiles.openfreemap.org/planet/{z}/{x}/{y}.pbf";

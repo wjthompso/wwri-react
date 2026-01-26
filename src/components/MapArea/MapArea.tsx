@@ -3,7 +3,7 @@ import {
   API_ID_FIELD,
   getUnifiedLocationUrls,
   getUnifiedMetricUrls,
-  OPENFREEMAP_TILES_URL,
+  LABEL_TILES_URL,
   UNIFIED_GEO_LEVELS,
   UnifiedGeoLevel
 } from "config/api";
@@ -36,13 +36,13 @@ const TILE_SERVER_URL = "https://major-sculpin.nceas.ucsb.edu";
 /**
  * Creates the initial map style with OSM base layer, boundary tile sources, and label source.
  * State/province boundary sources are included so they're always available.
- * Labels use OpenFreeMap vector tiles (free, no API key required) with zoom-dependent styling.
+ * Labels use self-hosted vector tiles from Natural Earth data.
  * Data layers are added dynamically based on selected geo level.
  */
 const getBaseMapStyle = (): StyleSpecification => ({
   version: 8,
-  // Free font glyphs from OpenFreeMap (required for text labels)
-  glyphs: "https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf",
+  // Free font glyphs from OpenMapTiles (required for text labels)
+  glyphs: "https://fonts.openmaptiles.org/{fontstack}/{range}.pbf",
   sources: {
     osm: {
       type: "raster",
@@ -63,13 +63,13 @@ const getBaseMapStyle = (): StyleSpecification => ({
       minzoom: 0,
       maxzoom: 14,
     },
-    // OpenFreeMap vector tiles for place labels (free, no API key required)
-    "openfreemap": {
+    // Self-hosted label tiles from Natural Earth data
+    "wwri-labels": {
       type: "vector",
-      tiles: [OPENFREEMAP_TILES_URL],
+      tiles: [LABEL_TILES_URL],
       minzoom: 0,
       maxzoom: 14,
-      attribution: "© OpenFreeMap © OpenStreetMap contributors",
+      attribution: "Labels: Natural Earth Data",
     },
   },
   layers: [
@@ -140,7 +140,6 @@ const fetchMetricData = async (
     }
   });
 
-  console.log(`[${geoLevel}] Loaded metrics: US=${usResults.data.length}, Canada=${canadaResults.data.length}, Total=${Object.keys(geoMetrics).length}`);
   
   return geoMetrics;
 };
@@ -199,7 +198,6 @@ const fetchLocationData = async (geoLevel: UnifiedGeoLevel): Promise<Record<stri
     }
   });
 
-  console.log(`[${geoLevel}] Loaded locations: US=${usResults.data.length}, Canada=${canadaResults.data.length}, Total=${Object.keys(locationData).length}`);
   
   return locationData;
 };
@@ -369,7 +367,6 @@ const MapArea: React.FC<MapAreaProps> = ({
       },
     });
     
-    console.log(`Added layers for geo level: ${geoLevel}`);
   }, []);
   
   /**
@@ -396,7 +393,6 @@ const MapArea: React.FC<MapAreaProps> = ({
     // Clear any selection
     selectedFeatureRef.current = null;
     
-    console.log("Removed geo level layers");
   }, []);
   
   /**
@@ -406,7 +402,6 @@ const MapArea: React.FC<MapAreaProps> = ({
   const addBoundaryLayers = useCallback((map: maplibregl.Map) => {
     // Skip if boundary layers already exist
     if (map.getLayer("us-state-boundary")) {
-      console.log("Boundary layers already exist, skipping");
       return;
     }
     
@@ -436,7 +431,6 @@ const MapArea: React.FC<MapAreaProps> = ({
       },
     });
     
-    console.log("Added state/province boundary layers");
   }, []);
   
   /**
@@ -452,17 +446,16 @@ const MapArea: React.FC<MapAreaProps> = ({
         map.moveLayer(layerId, "us-highlight");
       }
     });
-    console.log("Repositioned boundary layers");
   }, []);
 
   /**
    * Adds vector-based label layers with zoom-dependent visibility.
-   * Uses OpenFreeMap vector tiles (free, no API key required).
+   * Uses self-hosted label tiles from Natural Earth data.
    * 
    * Zoom behavior:
-   * - Zoom 3-5: State/province abbreviation-style labels (small, uppercase)
-   * - Zoom 5-7: Full state/province names
-   * - Zoom 7+: City names appear
+   * - Zoom 3-5: State/province abbreviation-style labels (postal codes, small, uppercase)
+   * - Zoom 5-8: Full state/province names
+   * - Zoom 6+: City names appear (filtered by SCALERANK for zoom-appropriate density)
    */
   const addLabelsLayer = useCallback((map: maplibregl.Map) => {
     // Skip if layers already exist
@@ -475,21 +468,115 @@ const MapArea: React.FC<MapAreaProps> = ({
     const textHaloWidth = 2;
     const textColor = "#333333";
 
-    // Layer 1: State/province labels at low zoom (abbreviation style - uppercase, small)
+    // Layer 1: State/province labels at low zoom (postal code style - uppercase, small)
+    // Allow overlap to ensure all states are always visible at low zoom
     map.addLayer({
       id: "labels-states-abbrev",
       type: "symbol",
-      source: "openfreemap",
-      "source-layer": "place",
+      source: "wwri-labels",
+      "source-layer": "state_labels",
       minzoom: 3,
       maxzoom: 5.5,
-      filter: ["==", ["get", "class"], "state"],
       layout: {
-        "text-field": ["upcase", ["coalesce", ["get", "name:en"], ["get", "name"]]],
-        "text-font": ["Noto Sans Medium"],
-        "text-size": 11,
-        "text-letter-spacing": 0.1,
+        "text-field": ["upcase", ["get", "postal"]],
+        "text-font": ["Open Sans Semibold"],
+        "text-size": 12,
+        "text-letter-spacing": 0.15,
         "text-max-width": 8,
+        "text-allow-overlap": true,  // Always show all state labels
+        "text-ignore-placement": true,
+        "symbol-sort-key": 0,  // High priority
+      },
+      paint: {
+        "text-color": textColor,
+        "text-halo-color": textHaloColor,
+        "text-halo-width": 2.5,
+        "text-opacity": 1,
+      },
+    });
+
+    // Layer 2: Full state/province names at mid zoom
+    map.addLayer({
+      id: "labels-states-full",
+      type: "symbol",
+      source: "wwri-labels",
+      "source-layer": "state_labels",
+      minzoom: 5.5,
+      maxzoom: 8,
+      layout: {
+        "text-field": ["get", "name"],
+        "text-font": ["Open Sans Semibold"],
+        "text-size": 14,
+        "text-max-width": 10,
+        "text-allow-overlap": true,  // Always show all state labels
+        "text-ignore-placement": true,
+        "symbol-sort-key": 0,  // High priority
+      },
+      paint: {
+        "text-color": textColor,
+        "text-halo-color": textHaloColor,
+        "text-halo-width": 2.5,
+      },
+    });
+
+    // Layer 3: Major city labels (SCALERANK <= 4 = major cities)
+    map.addLayer({
+      id: "labels-cities-major",
+      type: "symbol",
+      source: "wwri-labels",
+      "source-layer": "city_labels",
+      minzoom: 6,
+      maxzoom: 14,
+      filter: ["<=", ["get", "SCALERANK"], 4],
+      layout: {
+        "text-field": ["get", "NAME"],
+        "text-font": ["Open Sans Semibold"],
+        "text-size": [
+          "interpolate", ["linear"], ["zoom"],
+          6, 10,
+          8, 12,
+          10, 14,
+          14, 18
+        ],
+        "text-max-width": 10,
+        "text-variable-anchor": ["top", "bottom", "left", "right"],
+        "text-radial-offset": 0.5,
+        "text-allow-overlap": false,
+        "text-ignore-placement": false,
+      },
+      paint: {
+        "text-color": textColor,
+        "text-halo-color": textHaloColor,
+        "text-halo-width": textHaloWidth,
+      },
+    });
+
+    // Layer 4: Smaller city labels (SCALERANK 5-7 = medium cities)
+    map.addLayer({
+      id: "labels-cities-medium",
+      type: "symbol",
+      source: "wwri-labels",
+      "source-layer": "city_labels",
+      minzoom: 8,
+      maxzoom: 14,
+      filter: ["all", 
+        [">", ["get", "SCALERANK"], 4],
+        ["<=", ["get", "SCALERANK"], 7]
+      ],
+      layout: {
+        "text-field": ["get", "NAME"],
+        "text-font": ["Open Sans Regular"],
+        "text-size": [
+          "interpolate", ["linear"], ["zoom"],
+          8, 10,
+          10, 12,
+          14, 14
+        ],
+        "text-max-width": 10,
+        "text-variable-anchor": ["top", "bottom", "left", "right"],
+        "text-radial-offset": 0.5,
+        "text-allow-overlap": false,
+        "text-ignore-placement": false,
       },
       paint: {
         "text-color": textColor,
@@ -499,57 +586,38 @@ const MapArea: React.FC<MapAreaProps> = ({
       },
     });
 
-    // Layer 2: Full state/province names at mid zoom
+    // Layer 5: Small city labels (SCALERANK > 7 = small towns)
     map.addLayer({
-      id: "labels-states-full",
+      id: "labels-cities-small",
       type: "symbol",
-      source: "openfreemap",
-      "source-layer": "place",
-      minzoom: 5.5,
-      maxzoom: 7.5,
-      filter: ["==", ["get", "class"], "state"],
+      source: "wwri-labels",
+      "source-layer": "city_labels",
+      minzoom: 10,
+      maxzoom: 14,
+      filter: [">", ["get", "SCALERANK"], 7],
       layout: {
-        "text-field": ["coalesce", ["get", "name:en"], ["get", "name"]],
-        "text-font": ["Noto Sans Medium"],
-        "text-size": 14,
-        "text-max-width": 10,
-      },
-      paint: {
-        "text-color": textColor,
-        "text-halo-color": textHaloColor,
-        "text-halo-width": textHaloWidth,
-      },
-    });
-
-    // Layer 3: City labels (major cities first, then smaller)
-    map.addLayer({
-      id: "labels-cities",
-      type: "symbol",
-      source: "openfreemap",
-      "source-layer": "place",
-      minzoom: 7,
-      filter: ["in", ["get", "class"], ["literal", ["city", "town"]]],
-      layout: {
-        "text-field": ["coalesce", ["get", "name:en"], ["get", "name"]],
-        "text-font": ["Noto Sans Regular"],
+        "text-field": ["get", "NAME"],
+        "text-font": ["Open Sans Regular"],
         "text-size": [
           "interpolate", ["linear"], ["zoom"],
-          7, 11,
-          10, 14,
-          14, 18
+          10, 9,
+          12, 11,
+          14, 13
         ],
-        "text-max-width": 10,
+        "text-max-width": 8,
         "text-variable-anchor": ["top", "bottom", "left", "right"],
         "text-radial-offset": 0.5,
+        "text-allow-overlap": false,
+        "text-ignore-placement": false,
       },
       paint: {
-        "text-color": textColor,
+        "text-color": "#555555",
         "text-halo-color": textHaloColor,
         "text-halo-width": textHaloWidth,
+        "text-opacity": 0.85,
       },
     });
 
-    console.log("Added vector label layers (OpenFreeMap)");
   }, []);
 
   /**
@@ -557,13 +625,18 @@ const MapArea: React.FC<MapAreaProps> = ({
    * Called after geo level changes to maintain correct ordering.
    */
   const repositionLabelsLayer = useCallback((map: maplibregl.Map) => {
-    const labelLayers = ["labels-states-abbrev", "labels-states-full", "labels-cities"];
+    const labelLayers = [
+      "labels-states-abbrev", 
+      "labels-states-full", 
+      "labels-cities-major",
+      "labels-cities-medium",
+      "labels-cities-small"
+    ];
     labelLayers.forEach(layerId => {
       if (map.getLayer(layerId)) {
         map.moveLayer(layerId);
       }
     });
-    console.log("Repositioned label layers to top");
   }, []);
   
   /**
@@ -626,7 +699,6 @@ const MapArea: React.FC<MapAreaProps> = ({
       });
     }
     
-    console.log(`loadColors: colored=${coloredCount}, noData=${noDataCount}`);
   }, []);
   
   // Track the current geo level in a ref for the initial setup
@@ -656,6 +728,12 @@ const MapArea: React.FC<MapAreaProps> = ({
         // Ensure labels stay on top
         repositionLabelsLayer(map);
         setMapLoaded(true);
+        
+        // Log zoom level on load and on zoom change for debugging
+        console.log(`[ZOOM] Initial zoom: ${map.getZoom().toFixed(2)}`);
+        map.on("zoom", () => {
+          console.log(`[ZOOM] Current zoom: ${map.getZoom().toFixed(2)}`);
+        });
       });
 
       // Click handler for both US and Canada layers
@@ -723,7 +801,6 @@ const MapArea: React.FC<MapAreaProps> = ({
       });
 
       const handleMoveEnd = () => {
-        console.log("moveend event");
         loadColors(map);
       };
 
@@ -747,7 +824,6 @@ const MapArea: React.FC<MapAreaProps> = ({
         return;
       }
       
-      console.log(`Switching geo level: ${currentGeoLevelRef.current} -> ${selectedGeoLevel}`);
       
       // Remove old layers and sources (boundary layers persist)
       removeGeoLevelLayers(map);

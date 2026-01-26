@@ -13,7 +13,7 @@
 
 | # | Task | Status |
 |---|------|--------|
-| 1 | Add state and city map labels (self-hosted, manual review) | ⬜ Pending |
+| 1 | Add state and city map labels (self-hosted, manual review) | 🔄 WIP |
 | 2 | Create gradient customization widget with save/export | ⬜ Pending |
 | 3 | Redesign left sidebar → move content to right sidebar | ⬜ Pending |
 | 4 | Redesign overall score display (smaller, use gradient colors) | ⬜ Pending |
@@ -25,9 +25,9 @@
 | 10 | Report button - defer decision (Cat to discuss with comms) | ⏸️ On Hold |
 | 11 | Update Species/Iconic Species messaging for clarity | ⬜ Pending |
 
-**Progress:** 0/11 complete (8 actionable, 1 blocked, 1 on hold, 1 backend task)
+**Progress:** 0/11 complete, 1 in progress (7 pending, 1 blocked, 1 on hold)
 
-**Note:** Task 1 (map labels) is highest priority and should be completed TODAY.
+**Note:** Task 1 (map labels) is in progress - labels partially working, needs position refinement. See Task 1 details for debugging steps.
 
 ---
 
@@ -38,6 +38,8 @@
 | Jan 23 | Meeting with Cat and Ben - overall positive feedback ("love it so much!"), requesting refinements |
 | Jan 23 | Demo to Fire State Council - very positive reception |
 | Jan 26 | Created this development plan from meeting transcript |
+| Jan 26 | Started Task 1 (map labels) - self-hosted labels partially working, needs label position refinement |
+| Jan 26 | **Fixed label positions** - Created `create_state_labels.py` script using polylabel algorithm for visual centers. Fixed Alaska (moved from Aleutian tail to mainland center), Montana (polylabel bug), and other states. Both `state_labels` and `city_labels` layers now in merged mbtiles. |
 
 ---
 
@@ -45,74 +47,170 @@
 
 ### Task 1: Add State and City Map Labels (Self-Hosted)
 
-**Status:** Pending
+**Status:** 🔄 WIP (Work in Progress)
 
-**Priority:** 🔥 HIGHEST - DO TODAY
+**Priority:** 🔥 HIGHEST
 
-**Description:** Add geographic labels (state/province names and city names) to the map that appear at appropriate zoom levels. This is a backend task that requires creating label tiles and hosting them on the Linux server.
+**Description:** Add geographic labels (state/province names and city names) to the map that appear at appropriate zoom levels. Self-hosted using Natural Earth data.
 
-**Requirements:**
+---
 
-1. **Label data sources:**
-   - State/province names for western US + Canada
-   - Major city names
-   - Labels should appear at appropriate zoom levels
+#### ✅ WHAT'S BEEN COMPLETED
 
-2. **Manual review workflow:**
-   - Need ability to preview/review labels before deploying to server
-   - Build local preview tool or workflow for review
-   - Verify label placement, sizes, and zoom behavior
+1. **Data acquisition and filtering:**
+   - Downloaded Natural Earth 10m data (`ne_10m_populated_places`, `ne_10m_admin_1_states_provinces`)
+   - Filtered to study region: 12 US states + 2 Canadian provinces/territories
+   - Created GeoJSON files: `state_labels.geojson` (14 features), `cities.geojson` (311 features)
+   - Files location: `wwri-metrics-api/labels/geojson/`
 
-3. **Self-hosting:**
-   - Create mbtiles with label data
-   - Host on major-sculpin Linux server
-   - Integrate with existing tile infrastructure
+2. **Tile creation:**
+   - Created `labels.mbtiles` using tippecanoe with settings:
+     - `--no-feature-limit --no-tile-size-limit -r1` (preserve all features)
+     - Two layers: `state_labels`, `city_labels`
+   - File location: `wwri-metrics-api/mbtiles/labels.mbtiles` (also copied to main mbtiles folder)
+
+3. **Local tile server:**
+   - Created `wwri-metrics-api/labels/serve-tiles.js` (Express-based tile server)
+   - Serves all mbtiles including labels on port 8082
+   - **To start:** `cd wwri-metrics-api && node labels/serve-tiles.js`
 
 4. **Frontend integration:**
-   - Add label layers to MapLibre GL map
-   - Configure zoom-based visibility
-   - Ensure labels are click-through (don't block polygon selection)
+   - Updated `wwri-react/src/config/api.ts`:
+     - Added `LABEL_TILES_URL` that auto-detects localhost for dev mode
+   - Updated `wwri-react/src/components/MapArea/MapArea.tsx`:
+     - Added `wwri-labels` vector tile source
+     - Added 5 label layers with zoom-dependent visibility:
+       - `labels-states-abbrev` (zoom 3-5.5): postal codes (WA, CA, etc.)
+       - `labels-states-full` (zoom 5.5-8): full state names
+       - `labels-cities-major` (zoom 6+): major cities (SCALERANK ≤ 4)
+       - `labels-cities-medium` (zoom 8+): medium cities
+       - `labels-cities-small` (zoom 10+): small towns
+     - Using OpenMapTiles fonts: "Open Sans Semibold" / "Open Sans Regular"
+     - Glyphs URL: `https://fonts.openmaptiles.org/{fontstack}/{range}.pbf`
 
-**Implementation approach:**
+5. **Config updates:**
+   - Updated `wwri-metrics-api/mbtiles/config.json` to include labels tileset
 
-1. **Obtain label data:**
-   - Download Natural Earth Data (recommended): `ne_10m_populated_places`, `ne_10m_admin_1_states_provinces`
-   - Or extract from OpenStreetMap
-   - Filter to study region (western US + western Canada)
+---
 
-2. **Create label tiles:**
-   - Convert to GeoJSON with ogr2ogr
-   - Use tippecanoe to create mbtiles
-   - Separate layers for states and cities
-   - Include properties: name, rank/population for zoom filtering
+#### ✅ RESOLVED: State Label Positions Fixed
 
-3. **Manual review:**
-   - Use local tileserver or web-based tile viewer
-   - Check label density, placement, zoom behavior
-   - Iterate on tippecanoe settings if needed
+**Solution implemented (Jan 26, 2026):**
+1. Created `create_state_labels.py` script using **polylabel algorithm** (pole of inaccessibility) for visual centers
+2. Added manual positions for problematic states: Alaska, British Columbia, Yukon, Montana
+3. Regenerated mbtiles using tile-join to merge separate `state_labels` and `city_labels` layers
 
-4. **Deploy:**
-   - Upload mbtiles to major-sculpin
-   - Update tileserver config
-   - Test in production
+**Key position fixes:**
+| State | Before | After | Issue Fixed |
+|-------|--------|-------|-------------|
+| Alaska | -144.29, 58.68 | -152.50, 64.00 | Was under Aleutian tail, now mainland center |
+| Montana | 23.18, 43.50 | -109.50, 47.00 | Polylabel returned wrong hemisphere! |
+| British Columbia | -126.98, 52.04 | -125.50, 54.50 | More centered on province body |
+| California | -120.44, 36.14 | -121.92, 40.08 | Was too far south |
 
-5. **Frontend integration:**
-   - Add label source and layers in MapArea.tsx
-   - Configure zoom levels (e.g., states at 3-7, cities at 7+)
-   - Style with appropriate fonts/colors/halos
+**Files created:**
+- `wwri-metrics-api/labels/create_state_labels.py` - Reusable script for regenerating labels
 
-**Files to create/modify:**
-- Backend: New mbtiles files, update config.json
-- Frontend: `src/components/MapArea/MapArea.tsx`
+---
 
-**Related tasks:** Addresses Task 26 from previous plan (was blocked on service selection)
+#### 🔧 IF LABELS STILL HAVE ISSUES
 
-**Estimated time:** 4-6 hours (data prep + tile creation + deployment + frontend)
+**To adjust a specific state's position:**
+1. Edit `MANUAL_POSITIONS` dict in `create_state_labels.py`
+2. Re-run the script: `python3 create_state_labels.py`
+3. Regenerate mbtiles: 
+   ```bash
+   tippecanoe -o state_labels.mbtiles -z14 -Z0 --no-feature-limit --no-tile-size-limit -r1 -B0 -l state_labels geojson/state_labels.geojson --force
+   tippecanoe -o city_labels.mbtiles -z14 -Z0 --no-feature-limit --no-tile-size-limit -r1 -B0 -l city_labels geojson/cities.geojson --force
+   tile-join -o labels.mbtiles state_labels.mbtiles city_labels.mbtiles --force
+   cp labels.mbtiles ../mbtiles/labels.mbtiles
+   ```
+4. Restart tile server: `node labels/serve-tiles.js`
 
-**Notes:**
-- This was mentioned in meeting but not explicitly in transcript as a task
-- User prioritized this as "needs to be done TODAY"
-- Manual review is critical before deploying to avoid issues
+---
+
+#### 🧪 MANUAL TESTING INSTRUCTIONS
+
+**To test locally:**
+
+1. **Start the local tile server:**
+   ```bash
+   cd wwri-metrics-api
+   node labels/serve-tiles.js
+   ```
+   Should see: "Running on http://localhost:8082"
+
+2. **Verify tiles are being served:**
+   ```bash
+   # Check server is running
+   curl http://localhost:8082/
+   
+   # Test a specific tile (zoom 4)
+   curl -w "HTTP %{http_code}, %{size_download} bytes\n" \
+     "http://localhost:8082/data/labels/4/2/6.pbf"
+   # Should return HTTP 200 with ~5000+ bytes
+   ```
+
+3. **Decode a tile to see contents:**
+   ```bash
+   cd wwri-metrics-api
+   python3 -c "
+   import sqlite3, mapbox_vector_tile
+   conn = sqlite3.connect('mbtiles/labels.mbtiles')
+   cursor = conn.cursor()
+   cursor.execute('SELECT tile_column, tile_row, tile_data FROM tiles WHERE zoom_level = 4')
+   for col, row, data in cursor.fetchall():
+       decoded = mapbox_vector_tile.decode(data)
+       if 'state_labels' in decoded:
+           for f in decoded['state_labels']['features']:
+               print(f'Tile ({col},{row}): {f[\"properties\"][\"name\"]}')
+   "
+   ```
+
+4. **Check browser console:**
+   - Open React app (localhost:5173)
+   - Open browser DevTools → Console
+   - Look for: "Added self-hosted label layers (Natural Earth)"
+   - Check for any 404 errors on tile requests
+
+5. **Check current state label positions:**
+   ```bash
+   cd wwri-metrics-api/labels
+   cat geojson/state_labels.geojson | python3 -c "
+   import json, sys
+   d = json.load(sys.stdin)
+   for f in d['features']:
+       p = f['properties']
+       c = f['geometry']['coordinates']
+       print(f\"{p['name']:20} ({p['postal']}): {c[0]:.2f}, {c[1]:.2f}\")
+   "
+   ```
+
+---
+
+#### 📁 Files Created/Modified
+
+**Backend (wwri-metrics-api):**
+- `labels/source_data/` - Downloaded Natural Earth shapefiles
+- `labels/geojson/` - Filtered GeoJSON files
+- `labels/mbtiles/labels.mbtiles` - Generated vector tiles
+- `labels/serve-tiles.js` - Local tile server
+- `labels/config.json` - Local tileserver config
+- `mbtiles/labels.mbtiles` - Copy for production
+- `mbtiles/config.json` - Updated with labels tileset
+
+**Frontend (wwri-react):**
+- `src/config/api.ts` - Added LABEL_TILES_URL
+- `src/components/MapArea/MapArea.tsx` - Added label source and layers
+
+---
+
+#### 🚀 DEPLOYMENT (When ready)
+
+1. Copy `labels.mbtiles` to Linux server: `scp mbtiles/labels.mbtiles user@major-sculpin:/path/to/mbtiles/`
+2. Update server's `config.json` to include labels tileset
+3. Restart tileserver-gl on server
+4. Update `api.ts` to use production URL (or it will auto-detect based on hostname)
 
 ---
 

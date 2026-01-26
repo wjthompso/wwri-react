@@ -27,7 +27,7 @@
 
 **Progress:** 0/11 complete, 1 in progress (7 pending, 1 blocked, 1 on hold)
 
-**Note:** Task 1 (map labels) is in progress - labels partially working, needs position refinement. See Task 1 details for debugging steps.
+**Note:** Task 1 (map labels) is WIP - labels display but positioning is inconsistent across zoom levels. Y-coordinate flip was applied but doesn't fully solve the issue. See Task 1 details for current state and debugging notes.
 
 ---
 
@@ -40,6 +40,9 @@
 | Jan 26 | Created this development plan from meeting transcript |
 | Jan 26 | Started Task 1 (map labels) - self-hosted labels partially working, needs label position refinement |
 | Jan 26 | **Fixed label positions** - Created `create_state_labels.py` script using polylabel algorithm for visual centers. Fixed Alaska (moved from Aleutian tail to mainland center), Montana (polylabel bug), and other states. Both `state_labels` and `city_labels` layers now in merged mbtiles. |
+| Jan 26 | **Fixed label drift bug (attempt 1)** - Discovered tippecanoe outputs MVT tiles with Y=0 at bottom (geographic convention), but MVT spec/MapLibre expect Y=0 at top (screen convention). Initial fix script had bugs (wrong mvt.encode format, tile-join creates VIEW not table). |
+| Jan 26 | **Fixed label drift bug (attempt 2)** - Rewrote `fix_mvt_y_coords.py` with correct mvt.encode format (list of dicts with 'name' and 'features' keys) and creates new output mbtiles instead of updating in-place. All 2565 tiles processed successfully. Y coordinates flipped from e.g. 3730 → 366 for Santa Barbara (4096 - old_y). |
+| Jan 26 | **WIP - Label positioning still inconsistent** - After fix, labels behave differently at different zoom levels: (1) Low zoom: Santa Barbara roughly correct over land, (2) High zoom: Santa Barbara even more in ocean, (3) Middle zoom: Santa Barbara way north near Kern. The simple Y-flip (4096 - y) is not the complete solution. Need further investigation - possibly tippecanoe stores coordinates differently at each zoom level, or there's a tile coordinate system issue that varies by zoom. |
 
 ---
 
@@ -47,11 +50,21 @@
 
 ### Task 1: Add State and City Map Labels (Self-Hosted)
 
-**Status:** 🔄 WIP (Work in Progress)
+**Status:** 🔄 WIP - Labels display but positioning is inconsistent across zoom levels
 
 **Priority:** 🔥 HIGHEST
 
 **Description:** Add geographic labels (state/province names and city names) to the map that appear at appropriate zoom levels. Self-hosted using Natural Earth data.
+
+**Current Issue (Jan 26):** After Y-coordinate flip fix, label positioning varies by zoom level:
+- **Low zoom (z4-6):** Labels appear roughly correct (over land)
+- **Mid zoom (z7-8):** Labels appear too far NORTH (Santa Barbara near Kern County)
+- **High zoom (z9+):** Labels appear too far SOUTH (Santa Barbara over ocean)
+
+**Hypothesis for next session:** The simple Y-flip (4096 - y) doesn't account for how tippecanoe encodes coordinates at different zoom levels. Each zoom level may have different tile boundaries and coordinate calculations. Need to investigate:
+1. How tippecanoe calculates pixel coords for each zoom level
+2. Whether the Y-flip needs to be zoom-level-aware
+3. Whether the tile row (TMS vs XYZ) is affecting the coordinate interpretation
 
 ---
 
@@ -113,18 +126,63 @@
 
 ---
 
+#### ✅ RESOLVED: Label Y-Coordinate Drift Bug (Jan 26, 2026)
+
+**Problem:** Labels appeared to "drift" position when zooming - at low zoom they were too far south, and moved closer to correct position at higher zoom levels. Santa Barbara appeared over the ocean instead of over the city.
+
+**Root Cause:** Tippecanoe outputs MVT tiles with Y=0 at the **bottom** of the tile (geographic/TMS convention), but the MVT specification and MapLibre GL JS expect Y=0 at the **top** of the tile (screen/web convention).
+
+**Technical Details:**
+- MVT tiles use a 4096x4096 coordinate system within each tile
+- Tippecanoe stores Santa Barbara at Y=3730 (near bottom of tile = south)
+- MapLibre interprets Y=3730 as near bottom of tile = south
+- But the actual position should be Y=366 (near top of tile = north, over land)
+- Fix: flip all Y coordinates: `new_y = 4096 - old_y`
+
+**Solution:** Created `fix_mvt_y_coords.py` script that post-processes the mbtiles to flip Y coordinates within each tile. The script:
+1. Decodes each MVT tile using mapbox_vector_tile library
+2. Flips Y coordinates in all geometries (Point, MultiPoint, LineString, Polygon, etc.)
+3. Re-encodes the tile and writes to a new mbtiles file
+
+**Regeneration workflow:**
+```bash
+cd wwri-metrics-api/labels
+
+# 1. Generate tiles with tippecanoe (produces tiles with wrong Y orientation)
+tippecanoe -o state_labels.mbtiles -z14 -Z0 --no-feature-limit --no-tile-size-limit -r1 -B0 -l state_labels geojson/state_labels.geojson --force
+tippecanoe -o city_labels.mbtiles -z14 -Z0 --no-feature-limit --no-tile-size-limit -r1 -B0 -l city_labels geojson/cities.geojson --force
+tile-join -o labels_raw.mbtiles state_labels.mbtiles city_labels.mbtiles --force
+
+# 2. Fix Y coordinates (CRITICAL STEP!)
+python3 fix_mvt_y_coords.py labels_raw.mbtiles labels.mbtiles
+
+# 3. Copy to production
+cp labels.mbtiles ../mbtiles/labels.mbtiles
+
+# 4. Restart tile server
+node labels/serve-tiles.js
+
+# 5. Verify fix was applied (Santa Barbara Y should be ~366, not ~3730)
+curl -s "http://localhost:8082/data/labels/8/42/101.pbf" | python3 -c "
+import sys, gzip, mapbox_vector_tile as mvt
+data = sys.stdin.buffer.read()
+if data[:2] == b'\\x1f\\x8b': data = gzip.decompress(data)
+d = mvt.decode(data, default_options={'y_coord_down': True})
+for l in d.values():
+    for f in l.get('features', []):
+        if f.get('properties', {}).get('NAME') == 'Santa Barbara':
+            print(f'Santa Barbara Y: {f[\"geometry\"][\"coordinates\"][1]} (should be ~366)')
+"
+```
+
+---
+
 #### 🔧 IF LABELS STILL HAVE ISSUES
 
 **To adjust a specific state's position:**
 1. Edit `MANUAL_POSITIONS` dict in `create_state_labels.py`
 2. Re-run the script: `python3 create_state_labels.py`
-3. Regenerate mbtiles: 
-   ```bash
-   tippecanoe -o state_labels.mbtiles -z14 -Z0 --no-feature-limit --no-tile-size-limit -r1 -B0 -l state_labels geojson/state_labels.geojson --force
-   tippecanoe -o city_labels.mbtiles -z14 -Z0 --no-feature-limit --no-tile-size-limit -r1 -B0 -l city_labels geojson/cities.geojson --force
-   tile-join -o labels.mbtiles state_labels.mbtiles city_labels.mbtiles --force
-   cp labels.mbtiles ../mbtiles/labels.mbtiles
-   ```
+3. Follow the regeneration workflow above (including the Y-coordinate fix step)
 4. Restart tile server: `node labels/serve-tiles.js`
 
 ---

@@ -13,6 +13,7 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import Papa from "papaparse";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import SelectedMetricIdObject from "types/componentStatetypes";
+import { LabelConfig, LabelTierConfig } from "types/labelConfigTypes";
 import getColor from "utils/getColor";
 import CloseIcon from "../../assets/CloseIcon.svg";
 import ResetIcon from "../../assets/ResetIcon.svg";
@@ -214,6 +215,8 @@ interface MapAreaProps {
   selectedGeoLevel: UnifiedGeoLevel;
   setSelectedGeoLevel: (level: UnifiedGeoLevel) => void;
   leftSidebarOpen: boolean;
+  labelConfig?: LabelConfig;
+  onZoomChange?: (zoom: number) => void;
 }
 
 const MapArea: React.FC<MapAreaProps> = ({
@@ -227,6 +230,8 @@ const MapArea: React.FC<MapAreaProps> = ({
   selectedGeoLevel,
   setSelectedGeoLevel,
   leftSidebarOpen,
+  labelConfig,
+  onZoomChange,
 }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const [geoMetrics, setGeoMetrics] = useState<Record<string, number>>({});
@@ -533,7 +538,42 @@ const MapArea: React.FC<MapAreaProps> = ({
     // SR7: 285 cities (10k+ pop) - Small towns
     // SR8: 568 cities (5k+ pop) - Tiny towns (Montecito, Solvang, etc.)
 
-    // Layer 3: Major metros (SR 1-2, 53 cities) - visible from zoom 5 (multi-state view)
+    // Layer 3: Mega metros (SR 1, 15 cities) - visible from zoom 4 (country view)
+    map.addLayer({
+      id: "labels-cities-mega",
+      type: "symbol",
+      source: "wwri-labels",
+      "source-layer": "city_labels",
+      minzoom: 4,
+      maxzoom: 14,
+      filter: ["==", ["get", "SCALERANK"], 1],
+      layout: {
+        "text-field": ["get", "NAME"],
+        "text-font": ["Open Sans Bold"],
+        "text-size": [
+          "interpolate", ["linear"], ["zoom"],
+          4, 14,
+          6, 16,
+          8, 18,
+          10, 20,
+          12, 22,
+          14, 24
+        ],
+        "text-max-width": 10,
+        "text-anchor": "center",
+        "text-allow-overlap": false,
+        "text-ignore-placement": false,
+        "text-padding": 8,
+        "text-letter-spacing": 0.05,
+      },
+      paint: {
+        "text-color": "#222222",
+        "text-halo-color": textHaloColor,
+        "text-halo-width": 2,
+      },
+    });
+
+    // Layer 4: Major metros (SR 2, 38 cities) - visible from zoom 5 (multi-state view)
     map.addLayer({
       id: "labels-cities-major",
       type: "symbol",
@@ -541,13 +581,12 @@ const MapArea: React.FC<MapAreaProps> = ({
       "source-layer": "city_labels",
       minzoom: 5,
       maxzoom: 14,
-      filter: ["<=", ["get", "SCALERANK"], 2],
+      filter: ["==", ["get", "SCALERANK"], 2],
       layout: {
         "text-field": ["get", "NAME"],
         "text-font": ["Open Sans Bold"],
         "text-size": [
           "interpolate", ["linear"], ["zoom"],
-          3, 10,
           5, 12,
           7, 14,
           9, 16,
@@ -558,7 +597,7 @@ const MapArea: React.FC<MapAreaProps> = ({
         "text-anchor": "center",
         "text-allow-overlap": false,
         "text-ignore-placement": false,
-        "text-padding": 1,
+        "text-padding": 5,
       },
       paint: {
         "text-color": textColor,
@@ -567,7 +606,7 @@ const MapArea: React.FC<MapAreaProps> = ({
       },
     });
 
-    // Layer 4: Large cities (SR 3, 98 cities - 100k+ pop) - visible from zoom 6 (state view)
+    // Layer 5: Large cities (SR 3, 98 cities - 100k+ pop) - visible from zoom 6 (state view)
     map.addLayer({
       id: "labels-cities-large",
       type: "symbol",
@@ -601,7 +640,7 @@ const MapArea: React.FC<MapAreaProps> = ({
       },
     });
 
-    // Layer 5: Medium cities (SR 4, 211 cities - 50k+ pop) - visible from zoom 7 (regional view)
+    // Layer 6: Medium cities (SR 4, 211 cities - 50k+ pop) - visible from zoom 7 (regional view)
     map.addLayer({
       id: "labels-cities-medium",
       type: "symbol",
@@ -634,7 +673,7 @@ const MapArea: React.FC<MapAreaProps> = ({
       },
     });
 
-    // Layer 6: Small cities (SR 5, 274 cities - 25k+ pop) - visible from zoom 8
+    // Layer 7: Small cities (SR 5, 274 cities - 25k+ pop) - visible from zoom 8
     map.addLayer({
       id: "labels-cities-small",
       type: "symbol",
@@ -668,7 +707,7 @@ const MapArea: React.FC<MapAreaProps> = ({
       },
     });
 
-    // Layer 7: Towns (SR 6, 284 cities - 15k+ pop) - visible from zoom 9
+    // Layer 8: Towns (SR 6, 284 cities - 15k+ pop) - visible from zoom 9
     map.addLayer({
       id: "labels-cities-towns",
       type: "symbol",
@@ -701,7 +740,7 @@ const MapArea: React.FC<MapAreaProps> = ({
       },
     });
 
-    // Layer 8: Small towns (SR 7, 285 cities - 10k+ pop) - visible from zoom 10 (local view)
+    // Layer 9: Small towns (SR 7, 285 cities - 10k+ pop) - visible from zoom 10 (local view)
     map.addLayer({
       id: "labels-cities-small-towns",
       type: "symbol",
@@ -734,7 +773,7 @@ const MapArea: React.FC<MapAreaProps> = ({
       },
     });
 
-    // Layer 9: Tiny towns (SR 8, 568 cities - 5k+ pop) - visible from zoom 11 (neighborhood view)
+    // Layer 10: Tiny towns (SR 8, 568 cities - 5k+ pop) - visible from zoom 11 (neighborhood view)
     map.addLayer({
       id: "labels-cities-tiny",
       type: "symbol",
@@ -777,6 +816,7 @@ const MapArea: React.FC<MapAreaProps> = ({
     const labelLayers = [
       "labels-states-abbrev", 
       "labels-states-full", 
+      "labels-cities-mega",
       "labels-cities-major",
       "labels-cities-large",
       "labels-cities-medium",
@@ -791,6 +831,99 @@ const MapArea: React.FC<MapAreaProps> = ({
       }
     });
   }, []);
+
+  /**
+   * Applies label configuration to a single layer.
+   * Updates paint and layout properties based on the tier config.
+   */
+  const applyTierConfigToLayer = useCallback((
+    map: maplibregl.Map,
+    tier: LabelTierConfig,
+    isStateLabel: boolean
+  ) => {
+    const layerId = tier.id;
+    if (!map.getLayer(layerId)) return;
+
+    // Update visibility via minzoom/maxzoom
+    map.setLayerZoomRange(layerId, tier.minzoom, tier.maxzoom);
+
+    // Update paint properties
+    map.setPaintProperty(layerId, "text-color", tier.textColor);
+    map.setPaintProperty(layerId, "text-halo-color", tier.textHaloColor);
+    map.setPaintProperty(layerId, "text-halo-width", tier.textHaloWidth);
+    map.setPaintProperty(layerId, "text-opacity", tier.enabled ? tier.textOpacity : 0);
+
+    // Update layout properties
+    map.setLayoutProperty(layerId, "text-font", [tier.textFont]);
+    map.setLayoutProperty(layerId, "text-padding", tier.textPadding);
+    
+    // State labels have fixed size, city labels have interpolated size
+    if (isStateLabel) {
+      map.setLayoutProperty(layerId, "text-size", tier.textSizeMax);
+      map.setLayoutProperty(layerId, "text-letter-spacing", tier.textLetterSpacing);
+    } else {
+      // For city labels, create interpolation based on min/max size
+      // Build stops array with strictly ascending zoom values
+      const zoomRange = tier.maxzoom - tier.minzoom;
+      const sizeRange = tier.textSizeMax - tier.textSizeMin;
+      
+      // If zoom range is too small or sizes are the same, use a constant size
+      if (zoomRange <= 0.5 || sizeRange === 0) {
+        map.setLayoutProperty(layerId, "text-size", tier.textSizeMax);
+      } else if (zoomRange <= 2) {
+        // Simple 2-stop interpolation for small ranges
+        map.setLayoutProperty(layerId, "text-size", [
+          "interpolate", ["linear"], ["zoom"],
+          tier.minzoom, tier.textSizeMin,
+          tier.maxzoom, tier.textSizeMax
+        ]);
+      } else {
+        // Create intermediate stops, ensuring they're strictly ascending and unique
+        const numStops = Math.min(5, Math.floor(zoomRange) + 1);
+        const zoomStops: number[] = [];
+        
+        // Generate unique, strictly ascending zoom values
+        for (let i = 0; i < numStops; i++) {
+          const t = i / (numStops - 1);
+          const zoom = Number((tier.minzoom + t * zoomRange).toFixed(2));
+          
+          // Only add if it's different from the last stop
+          if (zoomStops.length === 0 || zoom > zoomStops[zoomStops.length - 1]) {
+            zoomStops.push(zoom);
+          }
+        }
+        
+        // Build the interpolation expression
+        const stops: (string | number | string[])[] = ["interpolate", ["linear"], ["zoom"]];
+        zoomStops.forEach((zoom, i) => {
+          const t = (zoom - tier.minzoom) / zoomRange;
+          const size = Math.round(tier.textSizeMin + t * sizeRange);
+          stops.push(zoom, size);
+        });
+        
+        map.setLayoutProperty(layerId, "text-size", stops);
+      }
+    }
+  }, []);
+
+  /**
+   * Applies the full label configuration to all label layers.
+   */
+  const applyLabelConfig = useCallback((map: maplibregl.Map, config: LabelConfig) => {
+    // Apply state label configs
+    applyTierConfigToLayer(map, config.states.abbrev, true);
+    applyTierConfigToLayer(map, config.states.full, true);
+
+    // Apply city label configs
+    applyTierConfigToLayer(map, config.cities.mega, false);
+    applyTierConfigToLayer(map, config.cities.major, false);
+    applyTierConfigToLayer(map, config.cities.large, false);
+    applyTierConfigToLayer(map, config.cities.medium, false);
+    applyTierConfigToLayer(map, config.cities.small, false);
+    applyTierConfigToLayer(map, config.cities.towns, false);
+    applyTierConfigToLayer(map, config.cities.smallTowns, false);
+    applyTierConfigToLayer(map, config.cities.tiny, false);
+  }, [applyTierConfigToLayer]);
   
   /**
    * Colors map features based on metric data.
@@ -882,8 +1015,16 @@ const MapArea: React.FC<MapAreaProps> = ({
         repositionLabelsLayer(map);
         setMapLoaded(true);
         
+        // Report initial zoom level
+        onZoomChange?.(map.getZoom());
+        
         // Self-hosted labels loaded successfully
         console.log("Added self-hosted label layers (Natural Earth)");
+      });
+
+      // Track zoom changes for dev tools
+      map.on("zoom", () => {
+        onZoomChange?.(map.getZoom());
       });
 
       // Click handler for both US and Canada layers
@@ -1159,6 +1300,13 @@ const MapArea: React.FC<MapAreaProps> = ({
       };
     }
   }, [geoMetrics, dataLoaded, mapLoaded, selectedMetricIdObject, selectedGeoLevel]);
+
+  // Apply label config when it changes (from dev widget)
+  useEffect(() => {
+    if (mapRef.current && mapLoaded && labelConfig) {
+      applyLabelConfig(mapRef.current, labelConfig);
+    }
+  }, [labelConfig, mapLoaded, applyLabelConfig]);
 
   const handleSearchInputChange = (
     event: React.ChangeEvent<HTMLInputElement>,

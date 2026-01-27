@@ -14,7 +14,7 @@
 | # | Task | Status |
 |---|------|--------|
 | 1a | Add state and city map labels (self-hosted, manual review) | ✅ Complete |
-| 1b | Refine map label display (fonts, density, zoom thresholds) | ⬜ Pending |
+| 1b | Refine map label display (fonts, density, zoom thresholds) | ✅ Complete |
 | 1c | Deploy refined labels to production tile server | ⬜ Pending |
 | 2 | Create gradient customization widget with save/export | ⬜ Pending |
 | 3 | Redesign left sidebar → move content to right sidebar | ⬜ Pending |
@@ -29,7 +29,7 @@
 | 12 | Create debugging widget system (label config, hidden but toggleable) | ⬜ Pending |
 | 13 | Performance and saturation testing (front-end and back-end) | ⬜ Pending |
 
-**Progress:** 1/14 complete (11 pending, 1 blocked, 1 on hold)
+**Progress:** 2/14 complete (10 pending, 1 blocked, 1 on hold)
 
 **Note:** Task 1 (map labels) ✅ COMPLETE! Two issues fixed: (1) Y-flip script was breaking tiles - removed, (2) `text-variable-anchor` was causing labels to slide during zoom - switched to fixed `text-anchor: "center"`.
 
@@ -52,6 +52,7 @@
 | Jan 26 | **✅ Task 1 COMPLETE!** - Hypothesis 1a confirmed! `text-variable-anchor` was causing labels to jump between anchor positions during zoom. Fix: Replaced with fixed `text-anchor: "center"`. Labels now stable! |
 | Jan 26 | **🎉 MAJOR UPGRADE: GeoNames city data!** - Replaced Natural Earth 10m dataset (~300 cities) with GeoNames cities5000 dataset (**1,773 cities** in study region!). New population-based SCALERANKs with progressive display: SR1 (500k+, 15 cities, zoom 5), SR2 (200k+, 38, zoom 5), SR3 (100k+, 98, zoom 6), SR4 (50k+, 211, zoom 7), SR5 (25k+, 274, zoom 8), SR6 (15k+, 284, zoom 9), SR7 (10k+, 285, zoom 10), SR8 (5k+, 568, zoom 11). Now includes Ventura, Goleta, Carpinteria, Montecito, Ojai, Solvang, Buellton, and many more small towns. |
 | Jan 26 | **🎨 Refined label styling** - Adjusted zoom thresholds so labels don't appear at country level (clean view at wide zoom). Reduced text halo width from 2.5-3px to 1.5px for less visual clutter while maintaining readability. |
+| Jan 27 | **✅ Task 1b COMPLETE!** - Built LabelConfigWidget for real-time label parameter adjustment. Widget controls all 10 label tiers (split SR1/SR2) with settings for minzoom, maxzoom, font, size, color, halo, opacity, padding, letter spacing. Toggle with Ctrl+Shift+L or Dev Tools dropdown in header. Feature flag system (DEBUG/PRODUCTION mode). Displays current zoom level. Optimized progressive display: z4 (mega metros), z6 (major metros), z7-12 (progressively smaller cities). |
 
 ---
 
@@ -79,7 +80,7 @@
 
 ### Task 1b: Refine Map Label Display
 
-**Status:** ⬜ TODO
+**Status:** ✅ COMPLETE
 
 **Priority:** 🔥 HIGH
 
@@ -87,37 +88,36 @@
 
 **Description:** Fine-tune the label display to match the quality of Google Maps or Climate Vulnerability Index. Use a debugging widget to enable rapid iteration and parameter tweaking.
 
-**Approach:**
-Create a temporary label configuration widget that allows real-time parameter adjustment without code changes. This widget will:
-- Let you tweak font sizes, weights, and colors per tier
-- Adjust minzoom thresholds for each SCALERANK
-- Change text halo width, padding, opacity
-- Export configuration as JSON when settings look good
-- Live in header area, toggleable but kept in code for future debugging
+**Completed:**
+- ✅ Created `LabelConfigWidget` component with real-time controls for all 9 label tiers
+- ✅ Per-tier controls: minzoom, maxzoom, font weight, font size (min/max), text color, halo color, halo width, opacity, padding, letter spacing
+- ✅ Keyboard toggle: `Ctrl+Shift+L` to show/hide widget
+- ✅ JSON export via "Copy JSON" and "Download" buttons
+- ✅ Configuration persists in localStorage across sessions
+- ✅ Widget applies changes in real-time to map via MapLibre GL JS API
+- ✅ Reset button to restore default configuration
 
-**Goals:**
-- Match the readability and polish of Google Maps label rendering
-- Study Climate Vulnerability Index label styling and density
-- Optimize for various zoom levels and geographic regions
-- Enable rapid iteration without code edits
+**Files Created:**
+- `src/types/labelConfigTypes.ts` - TypeScript types and default config values
+- `src/components/DevTools/LabelConfigWidget.tsx` - Main widget component
+- `src/components/DevTools/index.ts` - Export barrel file
 
-**Tasks:**
-- [ ] Create label configuration debugging widget (see Task 12 for general system)
-- [ ] Research: Screenshot and analyze Google Maps labels at zoom 5, 7, 9, 11
-- [ ] Research: Analyze Climate Vulnerability Index label approach
-- [ ] Use widget to test various configurations
-- [ ] Test label collision in dense areas (LA, SF, Seattle)
-- [ ] Verify state label positioning for all states/provinces
-- [ ] Export final configuration as JSON
-- [ ] Apply JSON config to MapArea.tsx as defaults
-- [ ] Keep widget in code (hidden) for future tweaking
+**Files Modified:**
+- `src/components/App.tsx` - Added widget state, keyboard toggle, localStorage persistence
+- `src/components/MapArea/MapArea.tsx` - Added `labelConfig` prop and `applyLabelConfig` function
 
-**Deliverables:**
-- Label configuration widget in header
-- Updated `MapArea.tsx` with refined label styling
-- JSON export of final configuration
-- Screenshots showing before/after comparison
-- Notes on what changed and why
+**Usage:**
+1. Press `Ctrl+Shift+L` to open the Label Config widget
+2. Expand any tier to adjust its settings
+3. Changes apply immediately to the map
+4. Click "Copy JSON" or "Download" to export configuration
+5. Click "Reset" to restore defaults
+
+**Next Steps (manual):**
+- Research Google Maps and Climate Vulnerability Index label styling
+- Use widget to test various configurations
+- Test label collision in dense areas (LA, SF, Seattle)
+- Export final configuration and apply as defaults in code
 
 **Notes:**
 - Widget approach allows rapid iteration

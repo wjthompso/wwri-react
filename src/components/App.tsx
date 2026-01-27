@@ -1,8 +1,11 @@
 import { getRegionMetricsUrl, getSummaryUrl, UNIFIED_GEO_LEVELS, UnifiedGeoLevel } from "config/api";
-import { useEffect, useState } from "react";
+import { isDebugMode } from "config/featureFlags";
+import { useCallback, useEffect, useState } from "react";
 import "../index.css";
 import SelectedMetricIdObject from "../types/componentStatetypes";
+import { LabelConfig, DEFAULT_LABEL_CONFIG } from "../types/labelConfigTypes";
 import { DomainScores } from "../utils/domainScoreColors";
+import LabelConfigWidget from "./DevTools/LabelConfigWidget";
 import Header from "./Header/Header";
 import LeftSidebar from "./LeftSidebar/LeftSidebar";
 import MapArea from "./MapArea/MapArea";
@@ -82,6 +85,52 @@ function App() {
   // All metrics for the selected region
   const [regionAllMetrics, setRegionAllMetrics] = useState<RegionAllMetrics | null>(null);
 
+  // Dev tools: Label configuration widget (defaults to open in DEBUG mode)
+  const [labelConfigOpen, setLabelConfigOpen] = useState(isDebugMode());
+  const [currentZoom, setCurrentZoom] = useState<number>(3.3); // Initial zoom level
+  const [labelConfig, setLabelConfig] = useState<LabelConfig>(() => {
+    // Try to load from localStorage on mount
+    const saved = localStorage.getItem("wwri-label-config");
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        // Validate that the config has all required tiers
+        if (!parsed.cities?.mega) {
+          console.log("Label config outdated, resetting to defaults");
+          localStorage.removeItem("wwri-label-config");
+          return JSON.parse(JSON.stringify(DEFAULT_LABEL_CONFIG));
+        }
+        return parsed;
+      } catch {
+        return JSON.parse(JSON.stringify(DEFAULT_LABEL_CONFIG));
+      }
+    }
+    return JSON.parse(JSON.stringify(DEFAULT_LABEL_CONFIG));
+  });
+
+  // Save label config to localStorage when it changes
+  useEffect(() => {
+    localStorage.setItem("wwri-label-config", JSON.stringify(labelConfig));
+  }, [labelConfig]);
+
+  // Keyboard shortcut: Ctrl+Shift+L to toggle label config widget (DEBUG mode only)
+  useEffect(() => {
+    if (!isDebugMode()) return;
+    
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.shiftKey && e.key === "L") {
+        e.preventDefault();
+        setLabelConfigOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  const handleLabelConfigChange = useCallback((newConfig: LabelConfig) => {
+    setLabelConfig(newConfig);
+  }, []);
+
   // Fetch summary data for both US and Canada when geo level changes
   useEffect(() => {
     const fetchSummaryData = async () => {
@@ -156,7 +205,22 @@ function App() {
 
   return (
     <div className="h-full w-full">
-      <Header />
+      <Header 
+        labelConfigOpen={labelConfigOpen}
+        onToggleLabelConfig={() => setLabelConfigOpen((prev) => !prev)}
+      />
+      
+      {/* Dev Tools: Label Configuration Widget (only in DEBUG mode) */}
+      {isDebugMode() && (
+        <LabelConfigWidget
+          isOpen={labelConfigOpen}
+          onClose={() => setLabelConfigOpen(false)}
+          config={labelConfig}
+          onConfigChange={handleLabelConfigChange}
+          currentZoom={currentZoom}
+        />
+      )}
+
       <div id="body" className="flex flex-1">
         <div
           id="body-minus-right-sidebar"
@@ -186,6 +250,8 @@ function App() {
             selectedGeoLevel={selectedGeoLevel}
             setSelectedGeoLevel={setSelectedGeoLevel}
             leftSidebarOpen={leftSidebarOpen}
+            labelConfig={labelConfig}
+            onZoomChange={setCurrentZoom}
           />
         </div>
         <RightSidebar

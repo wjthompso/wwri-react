@@ -13,19 +13,23 @@
 
 | # | Task | Status |
 |---|------|--------|
-| 1 | Add state and city map labels (self-hosted, manual review) | ✅ Complete |
+| 1a | Add state and city map labels (self-hosted, manual review) | ✅ Complete |
+| 1b | Refine map label display (fonts, density, zoom thresholds) | ⬜ Pending |
+| 1c | Deploy refined labels to production tile server | ⬜ Pending |
 | 2 | Create gradient customization widget with save/export | ⬜ Pending |
 | 3 | Redesign left sidebar → move content to right sidebar | ⬜ Pending |
 | 4 | Redesign overall score display (smaller, use gradient colors) | ⬜ Pending |
 | 5 | Remove search function (API cost concerns) | ⬜ Pending |
 | 6 | Update domain description text (Cat to provide copy) | ⬜ Blocked |
-| 7 | Remove distracting map lines (EEZ boundaries) | ⬜ Pending |
-| 8 | Explore alternative map projections (NAD84 vs WGS84/Mercator) | ⬜ Pending |
+| 7 | Create basemap selector widget (remove EEZ boundaries) | ⬜ Pending |
+| 8 | Create map projection selector widget (test multiple projections) | ⬜ Pending |
 | 9 | Set initial map orientation to center on west coast | ⬜ Pending |
 | 10 | Report button - defer decision (Cat to discuss with comms) | ⏸️ On Hold |
 | 11 | Update Species/Iconic Species messaging for clarity | ⬜ Pending |
+| 12 | Create debugging widget system (label config, hidden but toggleable) | ⬜ Pending |
+| 13 | Performance and saturation testing (front-end and back-end) | ⬜ Pending |
 
-**Progress:** 1/11 complete (7 pending, 1 blocked, 1 on hold)
+**Progress:** 1/14 complete (11 pending, 1 blocked, 1 on hold)
 
 **Note:** Task 1 (map labels) ✅ COMPLETE! Two issues fixed: (1) Y-flip script was breaking tiles - removed, (2) `text-variable-anchor` was causing labels to slide during zoom - switched to fixed `text-anchor: "center"`.
 
@@ -53,15 +57,108 @@
 
 ## 📝 Task Details
 
-### Task 1: Add State and City Map Labels (Self-Hosted)
+### Task 1a: Add State and City Map Labels (Self-Hosted)
 
-**Status:** 🔄 Debugging - Labels still sliding during zoom
+**Status:** ✅ COMPLETE
 
 **Priority:** 🔥 HIGHEST
 
-**Description:** Add geographic labels (state/province names and city names) to the map that appear at appropriate zoom levels. Self-hosted using Natural Earth data.
+**Description:** Add geographic labels (state/province names and city names) to the map that appear at appropriate zoom levels. Self-hosted using GeoNames data.
 
-**Current Symptom:** Labels appear to "slide" or shift position as user zooms in/out. The tile data coordinates were verified correct, but visual rendering still shows movement.
+**Completed:**
+- ✅ Fixed label sliding issue (removed `text-variable-anchor`)
+- ✅ Upgraded from Natural Earth 10m (~300 cities) to GeoNames cities5000 (1,773 cities)
+- ✅ Implemented 8-tier progressive display system (SR1-SR8: 500k+ down to 5k+ population)
+- ✅ Set zoom-based visibility thresholds (major metros at z5, tiny towns at z11)
+- ✅ Reduced text halo width from 2.5-3px to 1.5px
+- ✅ Comprehensive coverage includes: Ventura, Goleta, Carpinteria, Montecito, Ojai, Solvang, Buellton, etc.
+
+**See Task 1b and 1c below for next steps.**
+
+---
+
+### Task 1b: Refine Map Label Display
+
+**Status:** ⬜ TODO
+
+**Priority:** 🔥 HIGH
+
+**Scope:** Single chat window - local refinement only
+
+**Description:** Fine-tune the label display to match the quality of Google Maps or Climate Vulnerability Index. Use a debugging widget to enable rapid iteration and parameter tweaking.
+
+**Approach:**
+Create a temporary label configuration widget that allows real-time parameter adjustment without code changes. This widget will:
+- Let you tweak font sizes, weights, and colors per tier
+- Adjust minzoom thresholds for each SCALERANK
+- Change text halo width, padding, opacity
+- Export configuration as JSON when settings look good
+- Live in header area, toggleable but kept in code for future debugging
+
+**Goals:**
+- Match the readability and polish of Google Maps label rendering
+- Study Climate Vulnerability Index label styling and density
+- Optimize for various zoom levels and geographic regions
+- Enable rapid iteration without code edits
+
+**Tasks:**
+- [ ] Create label configuration debugging widget (see Task 12 for general system)
+- [ ] Research: Screenshot and analyze Google Maps labels at zoom 5, 7, 9, 11
+- [ ] Research: Analyze Climate Vulnerability Index label approach
+- [ ] Use widget to test various configurations
+- [ ] Test label collision in dense areas (LA, SF, Seattle)
+- [ ] Verify state label positioning for all states/provinces
+- [ ] Export final configuration as JSON
+- [ ] Apply JSON config to MapArea.tsx as defaults
+- [ ] Keep widget in code (hidden) for future tweaking
+
+**Deliverables:**
+- Label configuration widget in header
+- Updated `MapArea.tsx` with refined label styling
+- JSON export of final configuration
+- Screenshots showing before/after comparison
+- Notes on what changed and why
+
+**Notes:**
+- Widget approach allows rapid iteration
+- No need to edit code for each test
+- Widget stays in codebase for future debugging (Task 12)
+- GeoNames cities5000 provides 1,773 cities in study region
+
+---
+
+### Task 1c: Deploy Labels to Production Tile Server
+
+**Status:** ⬜ TODO (blocked by Task 1b)
+
+**Priority:** 🔴 MEDIUM
+
+**Scope:** Single chat window - deployment only
+
+**Description:** Deploy the refined `labels.mbtiles` and configuration to the production Linux tile server. This is separate from refinement work and involves server configuration.
+
+**Prerequisites:**
+- Task 1b must be complete (labels refined locally)
+- Production tile server must be accessible
+
+**Tasks:**
+- [ ] Document current production tile server setup
+- [ ] Copy `labels.mbtiles` to production server
+- [ ] Update production tile server configuration
+- [ ] Update production `api.ts` to point to production label tiles
+- [ ] Test labels in production environment
+- [ ] Verify tile server performance under load
+- [ ] Document deployment process for future updates
+
+**Deliverables:**
+- Labels working in production
+- Deployment documentation/script
+- Production tile server configuration updated
+
+**Notes:**
+- This is infrastructure work, separate from visual refinement
+- May require server access credentials
+- Should be done after 1b is complete and tested locally
 
 ---
 
@@ -663,73 +760,107 @@ for l in d.values():
 
 ---
 
-### Task 7: Remove Distracting Map Lines from Base Map
+### Task 7: Create Basemap Selector Widget
 
-**Status:** Pending
+**Status:** ⬜ Pending
 
-**Priority:** LOW
+**Priority:** 🔴 MEDIUM
 
-**Description:** Remove confusing lines that appear on the base map. These are NOT the state/province borders (which should stay), but other lines that are distracting and not relevant to the WWRI data.
+**Scope:** Single chat window - widget implementation
 
-**What to keep:**
-- State/province borders (white lines added in Task 25 of previous plan)
-- County/census tract boundaries
+**Description:** Create a basemap selector widget that lets users choose between multiple basemap options. This addresses the EEZ boundary lines issue by giving alternatives without removing functionality.
 
-**What to remove:**
-- Distracting lines from the base map tiles
-- Likely maritime boundaries, EEZ lines, or other base map features
-- Cat described these as confusing/distracting
+**Goals:**
+- Remove distracting EEZ/maritime boundary lines (current issue)
+- Provide multiple basemap options for team to choose from
+- Find clean, minimal basemaps suitable for data visualization
+- Keep everything free/self-hosted (no API costs)
 
-**Notes from meeting:**
-- Cat: "These lines... do you know what these are?"
-- Cat: "Like, [they're] distracting"
-- Cat: "I think it's the US exclusive economic zone and the state level... who controls the water. I also think that doesn't matter for us"
+**Constraints:**
+- ✅ Must be free (no API costs)
+- ✅ Must respect licensing agreements
+- ✅ Prefer self-hosted or truly free tile servers
+- ✅ Clean appearance suitable for data overlay
+- ✅ Minimal distracting features (like EEZ lines)
 
-**Implementation:**
-- These lines are part of the base map tiles
-- May need to switch to a different basemap style that doesn't include maritime boundaries
-- Or add custom MapLibre GL styling to hide specific base map layers
-- Investigate which base map source is being used and what layers it includes
+**Basemap candidates to research:**
+- [ ] Current: Stamen Toner Lite (via Stadia Maps)
+- [ ] OpenStreetMap Standard
+- [ ] OpenStreetMap Carto Light
+- [ ] CartoDB Positron (light, minimal)
+- [ ] CartoDB Voyager
+- [ ] Natural Earth II (self-host via raster tiles)
+- [ ] Research Climate Vulnerability Index basemap
+- [ ] ArcGIS free tier basemaps (if licensing allows)
 
-**Files to modify:**
-- `src/components/MapArea/MapArea.tsx` - Base map configuration
-- May need to explore MapLibre GL style options or switch base map providers
+**Tasks:**
+- [ ] Research Climate Vulnerability Index basemap source
+- [ ] Test 4-5 candidate basemaps in MapArea.tsx
+- [ ] Create dropdown/button widget for basemap selection
+- [ ] Verify licensing for each basemap option
+- [ ] Add attribution for each basemap
+- [ ] Save user's basemap preference to localStorage
+- [ ] Document each basemap's pros/cons
 
-**Effort:** LOW-MEDIUM (depends on basemap configurability)
+**Deliverables:**
+- Basemap selector widget in UI
+- 3-5 basemap options available
+- Documentation of basemap sources and licenses
 
-**Important:** Do not remove the thick white state/province boundaries that were added in the previous plan (Task 25). Those should remain.
+**Notes:**
+- Current basemap has distracting EEZ/maritime lines
+- Cat mentioned these lines are confusing and not relevant to WWRI
+- Better to give options than pick one "correct" basemap
 
 ---
 
-### Task 8: Explore Alternative Map Projections
+### Task 8: Create Map Projection Selector Widget
 
-**Status:** Pending
+**Status:** ⬜ Pending
 
-**Priority:** LOW
+**Priority:** 🔴 MEDIUM
 
-**Description:** Investigate if alternative map projections are available to reduce the distortion caused by Mercator projection (which makes Alaska/Arctic regions appear disproportionately large).
+**Scope:** Single chat window - widget implementation
 
-**Current:** WGS84 (likely with Web Mercator projection)
+**Description:** Create a projection selector widget that lets the NCEAS team test and choose between multiple map projections. This allows them to see options immediately rather than waiting for iterative changes.
 
-**Possible alternatives:**
-- NAD83 / NAD84 (Cat mentioned: "NAD 84, I think, is a little bit better")
-- Albers Equal Area Conic (common for North America)
-- Check MapLibre GL JS projection options
+**Goals:**
+- Let team compare different projections side-by-side (or toggle between them)
+- Reduce Mercator distortion (makes Alaska/Arctic appear huge)
+- Show NAD83/NAD84, Albers Equal Area, and other options
+- Fast iteration - no waiting days/weeks for projection changes
 
-**Notes from meeting:**
-- Cat: "The Mercator makes Arctic look huge, right? The size of Greenland is like the size of Texas, right? It doesn't scale"
-- Cat: "There are other projection systems that have less bias"
-- Speaker 2: "I can check. I have to think about that"
+**Current Issue:**
+- Web Mercator makes Alaska/Greenland appear disproportionately large
+- Cat mentioned NAD84 might be better
+- Don't want to iterate slowly (4 days per change)
 
-**Research needed:**
-1. What projections does MapLibre GL JS support?
-2. What projection are the vector tiles in?
-3. Can we reproject on the fly or do we need to regenerate tiles?
+**Projection candidates:**
+- [ ] Web Mercator (current, EPSG:3857)
+- [ ] NAD83 / NAD84 (EPSG:4269 / EPSG:4326)
+- [ ] Albers Equal Area Conic (common for North America)
+- [ ] Lambert Conformal Conic
+- [ ] Check MapLibre GL JS globe/projection options (v3+)
 
-**Files to modify:**
-- `src/components/MapArea/MapArea.tsx` - Map initialization config
+**Tasks:**
+- [ ] Research MapLibre GL JS projection support (v2 vs v3)
+- [ ] Determine if tiles need reprojection or if client-side is possible
+- [ ] Implement 3-4 projection options in MapArea.tsx
+- [ ] Create dropdown/button widget for projection selection
+- [ ] Test each projection with current data layers
+- [ ] Document tradeoffs for each projection
+- [ ] Save user's projection preference to localStorage
 
-**Effort:** MEDIUM-HIGH (may require tile regeneration)
+**Deliverables:**
+- Projection selector widget in UI
+- 3-4 projection options available
+- Documentation of projection tradeoffs
+- Notes on any limitations or tile regeneration needs
+
+**Notes:**
+- MapLibre GL JS v3+ has better projection support
+- May require tile reprojection (affects both data and basemaps)
+- Better to show options than guess which projection team prefers
 
 ---
 
@@ -811,6 +942,102 @@ for l in d.values():
 - Possibly add tooltip or help text
 
 **Related:** Task 6 (waiting for Cat's text)
+
+---
+
+### Task 12: Create Debugging Widget System
+
+**Status:** ⬜ Pending
+
+**Priority:** 🔴 MEDIUM
+
+**Scope:** Single chat window - widget framework
+
+**Description:** Create a reusable debugging widget system that lives in the header area, allowing rapid parameter tweaking for various features without code changes. Widgets export JSON configurations that can be applied as defaults in code.
+
+**Use Cases:**
+- **Labels** (Task 1b): Tweak font sizes, weights, colors, minzoom thresholds, halo width, padding, opacity
+- **Gradients** (Task 2): Adjust color stops, interpolation, ranges
+- **Basemaps** (Task 7): Test and compare different basemaps
+- **Projections** (Task 8): Test and compare different map projections
+- **Future debugging**: Any feature that needs rapid iteration
+
+**Requirements:**
+- Lives in header area or floating panel
+- Hidden by default, toggleable (e.g., keyboard shortcut or dev mode)
+- Exports configuration as JSON
+- Easy to add new widget types
+- Stays in codebase for future debugging (not removed after Task 1b)
+
+**Tasks:**
+- [ ] Design widget container/panel component
+- [ ] Implement show/hide toggle (keyboard shortcut + dev mode flag)
+- [ ] Create widget registry system for adding new widgets
+- [ ] Build label configuration widget (for Task 1b)
+- [ ] Add JSON export/copy functionality
+- [ ] Style to be non-intrusive but functional
+- [ ] Document how to add new widget types
+- [ ] Add localStorage persistence for widget state
+
+**Deliverables:**
+- Debugging widget framework component
+- Label configuration widget (first implementation)
+- Documentation for adding new widgets
+- JSON export functionality
+
+**Notes:**
+- This is infrastructure for multiple tasks
+- Should be built early to help with Task 1b
+- Expect to add more widgets over time (gradients, basemaps, etc.)
+- Keep in production code but hidden from end users
+
+---
+
+### Task 13: Performance and Saturation Testing
+
+**Status:** ⬜ Pending (end of development cycle)
+
+**Priority:** 🟡 LOW (defer until near completion)
+
+**Scope:** Single chat window - testing and documentation
+
+**Description:** Comprehensive performance and load testing for both front-end and back-end to ensure production readiness. Measure latency, throughput, and identify bottlenecks.
+
+**Goals:**
+- Measure request latency (tile loads, API calls, etc.)
+- Test front-end performance (rendering, interactions, memory)
+- Test back-end server load capacity
+- Identify bottlenecks and optimization opportunities
+- Document acceptable thresholds and scaling needs
+
+**Front-End Testing:**
+- [ ] Measure map rendering performance across zoom levels
+- [ ] Test label rendering with 1,773 cities
+- [ ] Memory profiling (check for leaks)
+- [ ] Interaction latency (clicks, pans, zooms)
+- [ ] Bundle size analysis
+- [ ] Lighthouse/PageSpeed scores
+
+**Back-End Testing:**
+- [ ] Tile server latency under various zoom levels
+- [ ] Concurrent user simulation (10, 50, 100 users)
+- [ ] API endpoint response times
+- [ ] Database query performance
+- [ ] Tile caching effectiveness
+- [ ] Server resource usage (CPU, memory, network)
+
+**Deliverables:**
+- Performance testing report
+- Latency measurements for key operations
+- Load capacity estimates (users, requests/sec)
+- Bottleneck identification and recommendations
+- Optimization suggestions for future work
+
+**Notes:**
+- Defer until end of development (after Tasks 1-11)
+- Performance work can always continue post-launch
+- Document baseline metrics for future optimization
+- Consider tools: Lighthouse, Chrome DevTools, Apache Bench, k6
 
 ---
 

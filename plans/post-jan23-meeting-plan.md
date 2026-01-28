@@ -15,7 +15,7 @@
 |---|------|--------|
 | 1a | Add state and city map labels (self-hosted, manual review) | ✅ Complete |
 | 1b | Refine map label display (fonts, density, zoom thresholds) | ✅ Complete |
-| 1c | Deploy refined labels to production tile server | ⬜ Pending |
+| 1c | Deploy refined labels to production tile server | ✅ Complete |
 | 2 | Create gradient customization widget with save/export | ⬜ Pending |
 | 3 | Redesign left sidebar → move content to right sidebar | ⬜ Pending |
 | 4 | Redesign overall score display (smaller, use gradient colors) | ⬜ Pending |
@@ -29,7 +29,7 @@
 | 12 | Create debugging widget system (label config, hidden but toggleable) | ⬜ Pending |
 | 13 | Performance and saturation testing (front-end and back-end) | ⬜ Pending |
 
-**Progress:** 2/14 complete (10 pending, 1 blocked, 1 on hold)
+**Progress:** 3/14 complete (9 pending, 1 blocked, 1 on hold)
 
 **Note:** Task 1 (map labels) ✅ COMPLETE! Two issues fixed: (1) Y-flip script was breaking tiles - removed, (2) `text-variable-anchor` was causing labels to slide during zoom - switched to fixed `text-anchor: "center"`.
 
@@ -53,6 +53,48 @@
 | Jan 26 | **🎉 MAJOR UPGRADE: GeoNames city data!** - Replaced Natural Earth 10m dataset (~300 cities) with GeoNames cities5000 dataset (**1,773 cities** in study region!). New population-based SCALERANKs with progressive display: SR1 (500k+, 15 cities, zoom 5), SR2 (200k+, 38, zoom 5), SR3 (100k+, 98, zoom 6), SR4 (50k+, 211, zoom 7), SR5 (25k+, 274, zoom 8), SR6 (15k+, 284, zoom 9), SR7 (10k+, 285, zoom 10), SR8 (5k+, 568, zoom 11). Now includes Ventura, Goleta, Carpinteria, Montecito, Ojai, Solvang, Buellton, and many more small towns. |
 | Jan 26 | **🎨 Refined label styling** - Adjusted zoom thresholds so labels don't appear at country level (clean view at wide zoom). Reduced text halo width from 2.5-3px to 1.5px for less visual clutter while maintaining readability. |
 | Jan 27 | **✅ Task 1b COMPLETE!** - Built LabelConfigWidget for real-time label parameter adjustment. Widget controls all 10 label tiers (split SR1/SR2) with settings for minzoom, maxzoom, font, size, color, halo, opacity, padding, letter spacing. Toggle with Ctrl+Shift+L or Dev Tools dropdown in header. Feature flag system (DEBUG/PRODUCTION mode). Displays current zoom level. Optimized progressive display: z4 (mega metros), z6 (major metros), z7-12 (progressively smaller cities). |
+| Jan 28 | **✅ Task 1c COMPLETE!** - Deployed labels to production tile server. Copied labels.mbtiles (2.3M) and config.json to major-sculpin server, restarted Docker container. Verified labels endpoint live at `https://major-sculpin.nceas.ucsb.edu/data/labels/{z}/{x}/{y}.pbf`. Added `VITE_FORCE_PRODUCTION_TILES` env var for testing production tiles locally. Labels now live in production! |
+
+---
+
+## 🔍 Review Items for Cat
+
+**Tasks completed and ready for feedback:**
+
+### ✅ Task 1a, 1b, 1c: Map Labels (Self-Hosted, Refined, Deployed)
+
+**What was delivered:**
+1. **1,773 cities** from GeoNames cities5000 dataset (upgraded from ~300)
+   - Progressive display by population: Major metros at z5, small towns at z11
+   - Includes: Ventura, Goleta, Carpinteria, Montecito, Ojai, Solvang, Buellton, etc.
+
+2. **State/Province labels** positioned at visual centers using polylabel algorithm
+   - Fixed problematic positions (Alaska, Montana, British Columbia)
+
+3. **Refined styling:**
+   - Text halo reduced from 2.5-3px to 1.5px (less clutter, still readable)
+   - Zoom thresholds adjusted for clean wide-zoom view
+   - Fixed label sliding issue (switched to fixed anchor points)
+
+4. **Development tools:**
+   - Built LabelConfigWidget for future refinement (Ctrl+Shift+L to toggle)
+   - Can adjust fonts, sizes, colors, zoom thresholds in real-time
+   - Export configurations as JSON
+
+5. **Production deployment:**
+   - Labels live at `https://major-sculpin.nceas.ucsb.edu/data/labels/{z}/{x}/{y}.pbf`
+   - No additional API costs (self-hosted)
+
+**Questions for Cat:**
+- [ ] Do the label fonts/sizes match your vision? (Can adjust with widget)
+- [ ] Is the label density appropriate at different zoom levels?
+- [ ] Are there any specific cities/towns missing that should be added?
+- [ ] Do state/province label positions look correct?
+- [ ] Any styling tweaks needed (colors, halos, spacing)?
+
+**How to test:**
+- Visit production site: [URL here when available]
+- Or test locally: Set `VITE_FORCE_PRODUCTION_TILES=true` in `.env.local` and run `npm run dev`
 
 ---
 
@@ -129,7 +171,7 @@
 
 ### Task 1c: Deploy Labels to Production Tile Server
 
-**Status:** ⬜ TODO (blocked by Task 1b)
+**Status:** ✅ COMPLETE (Jan 28, 2026)
 
 **Priority:** 🔴 MEDIUM
 
@@ -137,28 +179,40 @@
 
 **Description:** Deploy the refined `labels.mbtiles` and configuration to the production Linux tile server. This is separate from refinement work and involves server configuration.
 
-**Prerequisites:**
-- Task 1b must be complete (labels refined locally)
-- Production tile server must be accessible
+**Completed:**
+- ✅ Copied `labels.mbtiles` (2.3M) to production server `~/tiles/`
+- ✅ Copied updated `config.json` with labels entry to production server
+- ✅ Restarted Docker tile server container (`wwri-tiles`)
+- ✅ Verified labels endpoint: `https://major-sculpin.nceas.ucsb.edu/data/labels/{z}/{x}/{y}.pbf` returns HTTP 200
+- ✅ Added `VITE_FORCE_PRODUCTION_TILES` env var to `api.ts` for local testing of production tiles
+- ✅ Tested production labels from localhost using `.env.local` file
 
-**Tasks:**
-- [ ] Document current production tile server setup
-- [ ] Copy `labels.mbtiles` to production server
-- [ ] Update production tile server configuration
-- [ ] Update production `api.ts` to point to production label tiles
-- [ ] Test labels in production environment
-- [ ] Verify tile server performance under load
-- [ ] Document deployment process for future updates
+**Deployment Steps Used:**
+```bash
+# 1. Copy files to server
+scp mbtiles/labels.mbtiles config.json woverbyethompson@major-sculpin.nceas.ucsb.edu:~/tiles/
 
-**Deliverables:**
-- Labels working in production
-- Deployment documentation/script
-- Production tile server configuration updated
+# 2. Restart Docker container
+ssh woverbyethompson@major-sculpin.nceas.ucsb.edu
+cd ~/tiles
+docker stop wwri-tiles
+docker run --rm -d --name wwri-tiles -v $(pwd):/data -p 8080:8080 \
+  maptiler/tileserver-gl-light --config /data/config.json
+
+# 3. Verify
+curl -I "https://major-sculpin.nceas.ucsb.edu/data/labels/4/2/6.pbf"
+# Returns: HTTP/2 200 with 16,175 bytes
+```
+
+**Frontend Configuration:**
+- Production URL auto-detected when hostname is not localhost
+- For local testing: Set `VITE_FORCE_PRODUCTION_TILES=true` in `.env.local`
+- No NGINX changes needed - existing `/data/` location block already proxies to tile server
 
 **Notes:**
-- This is infrastructure work, separate from visual refinement
-- May require server access credentials
-- Should be done after 1b is complete and tested locally
+- No NGINX configuration changes required (already configured from previous tile deployment)
+- Labels served via existing `maptiler/tileserver-gl-light` Docker container
+- CORS headers correctly set by tile server
 
 ---
 

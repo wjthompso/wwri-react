@@ -18,9 +18,11 @@ const LOCAL_TILE_SERVER_URL = "http://localhost:8082";
 
 // Self-hosted label tiles URL
 // Uses local server when on localhost (dev), production server otherwise
+// Set VITE_FORCE_PRODUCTION_TILES=true to test production tiles on localhost
 const IS_LOCALHOST = typeof window !== 'undefined' && 
   (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
-const USE_LOCAL_TILES = import.meta.env.VITE_LOCAL_TILES === "true" || IS_LOCALHOST;
+const FORCE_PRODUCTION_TILES = import.meta.env.VITE_FORCE_PRODUCTION_TILES === "true";
+const USE_LOCAL_TILES = !FORCE_PRODUCTION_TILES && (import.meta.env.VITE_LOCAL_TILES === "true" || IS_LOCALHOST);
 export const LABEL_TILES_URL = USE_LOCAL_TILES
   ? `${LOCAL_TILE_SERVER_URL}/data/labels/{z}/{x}/{y}.pbf`
   : `${TILE_SERVER_URL}/data/labels/{z}/{x}/{y}.pbf`;

@@ -3,8 +3,11 @@
  * 
  * Maps API domain keys to brand colors and provides functions for
  * dynamically coloring domain boxes based on score values.
+ * 
+ * Supports custom gradient configurations from the GradientCustomizer widget.
  */
 
+import { DomainKey, GradientConfig } from "types/gradientConfigTypes";
 import { Rgb } from "types/rgb";
 import getColor from "./getColor";
 
@@ -135,12 +138,42 @@ export function normalizeScore(score: number | undefined | null): number {
 }
 
 /**
+ * Normalizes a score using custom min/max values from gradient config.
+ * Maps score from [minValue, maxValue] to [0, 1] range.
+ * Scores below minValue map to 0, scores above maxValue map to 1.
+ */
+export function normalizeScoreWithRange(
+  score: number | undefined | null,
+  minValue: number,
+  maxValue: number
+): number {
+  if (score === undefined || score === null || isNaN(score)) {
+    return 0;
+  }
+  
+  // Convert score to 0-100 scale if it's in 0-1 range
+  const score100 = score > 1 ? score : score * 100;
+  
+  // Map from [minValue, maxValue] to [0, 1]
+  const range = maxValue - minValue;
+  if (range <= 0) return 0;
+  
+  const normalized = (score100 - minValue) / range;
+  return Math.min(Math.max(normalized, 0), 1);
+}
+
+/**
  * Gets the dynamic color for a domain box based on its score.
  * Returns neutral gray if no score is available.
+ * 
+ * @param domainId - The domain ID (e.g., "infrastructure", "communities")
+ * @param domainScores - Object containing scores for all domains
+ * @param gradientConfig - Optional custom gradient configuration
  */
 export function getDomainScoreColor(
   domainId: string,
-  domainScores: DomainScores | null | undefined
+  domainScores: DomainScores | null | undefined,
+  gradientConfig?: GradientConfig | null
 ): string {
   // If no scores available, return neutral gray
   if (!domainScores) {
@@ -161,7 +194,18 @@ export function getDomainScoreColor(
     return `rgb(${NEUTRAL_GRAY.r}, ${NEUTRAL_GRAY.g}, ${NEUTRAL_GRAY.b})`;
   }
 
-  // Get the brand color for this domain
+  // Use custom gradient config if provided
+  if (gradientConfig && gradientConfig.domains[apiKey as DomainKey]) {
+    const customConfig = gradientConfig.domains[apiKey as DomainKey];
+    const normalizedScore = normalizeScoreWithRange(
+      score,
+      customConfig.minValue,
+      customConfig.maxValue
+    );
+    return getColor(customConfig.minColor, customConfig.maxColor, normalizedScore);
+  }
+
+  // Fall back to default behavior
   const config = DOMAIN_COLOR_MAP[apiKey];
   if (!config) {
     console.warn(`getDomainScoreColor: No color config for apiKey "${apiKey}"`);
@@ -177,10 +221,15 @@ export function getDomainScoreColor(
  * Gets the color for any metric/sub-metric within a domain.
  * Uses the parent domain's brand color and the provided score.
  * This is for coloring inner boxes (Status, Resilience, Resistance, Recovery, individual metrics).
+ * 
+ * @param domainId - The parent domain ID
+ * @param score - The metric score value
+ * @param gradientConfig - Optional custom gradient configuration
  */
 export function getMetricColor(
   domainId: string,
-  score: number | null | undefined
+  score: number | null | undefined,
+  gradientConfig?: GradientConfig | null
 ): string {
   // If no score, return neutral gray
   if (score === undefined || score === null) {
@@ -191,6 +240,17 @@ export function getMetricColor(
   const apiKey = DOMAIN_ID_TO_API_KEY[domainId];
   if (!apiKey) {
     return `rgb(${NEUTRAL_GRAY.r}, ${NEUTRAL_GRAY.g}, ${NEUTRAL_GRAY.b})`;
+  }
+
+  // Use custom gradient config if provided
+  if (gradientConfig && gradientConfig.domains[apiKey as DomainKey]) {
+    const customConfig = gradientConfig.domains[apiKey as DomainKey];
+    const normalizedScore = normalizeScoreWithRange(
+      score,
+      customConfig.minValue,
+      customConfig.maxValue
+    );
+    return getColor(customConfig.minColor, customConfig.maxColor, normalizedScore);
   }
 
   // Get the brand color for this domain

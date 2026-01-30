@@ -16,7 +16,7 @@
 | 1a | Add state and city map labels (self-hosted, manual review) | ✅ Complete |
 | 1b | Refine map label display (fonts, density, zoom thresholds) | ✅ Complete |
 | 1c | Deploy refined labels to production tile server | ✅ Complete |
-| 2 | Create gradient customization widget with save/export | ⬜ Pending |
+| 2 | Create gradient customization widget with save/export | ✅ Complete |
 | 3 | Redesign left sidebar → move content to right sidebar | ⬜ Pending |
 | 4 | Redesign overall score display (smaller, use gradient colors) | ⬜ Pending |
 | 5 | Remove search function (API cost concerns) | ⬜ Pending |
@@ -29,7 +29,7 @@
 | 12 | Create debugging widget system (label config, hidden but toggleable) | ⬜ Pending |
 | 13 | Performance and saturation testing (front-end and back-end) | ⬜ Pending |
 
-**Progress:** 3/14 complete (9 pending, 1 blocked, 1 on hold)
+**Progress:** 4/14 complete (8 pending, 1 blocked, 1 on hold)
 
 **Note:** Task 1 (map labels) ✅ COMPLETE! Two issues fixed: (1) Y-flip script was breaking tiles - removed, (2) `text-variable-anchor` was causing labels to slide during zoom - switched to fixed `text-anchor: "center"`.
 
@@ -54,6 +54,7 @@
 | Jan 26 | **🎨 Refined label styling** - Adjusted zoom thresholds so labels don't appear at country level (clean view at wide zoom). Reduced text halo width from 2.5-3px to 1.5px for less visual clutter while maintaining readability. |
 | Jan 27 | **✅ Task 1b COMPLETE!** - Built LabelConfigWidget for real-time label parameter adjustment. Widget controls all 10 label tiers (split SR1/SR2) with settings for minzoom, maxzoom, font, size, color, halo, opacity, padding, letter spacing. Toggle with Ctrl+Shift+L or Dev Tools dropdown in header. Feature flag system (DEBUG/PRODUCTION mode). Displays current zoom level. Optimized progressive display: z4 (mega metros), z6 (major metros), z7-12 (progressively smaller cities). |
 | Jan 28 | **✅ Task 1c COMPLETE!** - Deployed labels to production tile server. Copied labels.mbtiles (2.3M) and config.json to major-sculpin server, restarted Docker container. Verified labels endpoint live at `https://major-sculpin.nceas.ucsb.edu/data/labels/{z}/{x}/{y}.pbf`. Added `VITE_FORCE_PRODUCTION_TILES` env var for testing production tiles locally. Labels now live in production! |
+| Jan 29 | **✅ Task 2 COMPLETE!** - Created GradientCustomizer widget with live preview. Features: per-domain gradient controls (min/max values, min/max colors), global presets (55-90 ★, 0-100, 50-85, 60-95), JSON export/download, localStorage persistence. Toggle via Ctrl+Shift+G or Dev Tools dropdown. Widget updates domain score boxes and flower chart colors in real-time. Files created: `gradientConfigTypes.ts`, `GradientCustomizer.tsx`. Updated: `domainScoreColors.ts`, `MapLegend.tsx`, `App.tsx`, `Header.tsx`, `RightSidebar.tsx`, `LeftSidebar.tsx`, `FlowerChart.tsx`, Layout components. |
 
 ---
 
@@ -514,7 +515,7 @@ for l in d.values():
 
 ### Task 2: Create Gradient Customization Widget
 
-**Status:** Pending
+**Status:** ✅ COMPLETE (Jan 29, 2026)
 
 **Priority:** HIGH
 
@@ -613,6 +614,34 @@ for l in d.values():
 - Speaker 2: "What I could do is build kind of like a customize widget... let you set the minimum and maximum values for the gradients... and change the gradient start to end ingredient yourself"
 
 **Important:** This widget is temporary and should be removed before production release. Once NCEAS team settles on final colors, hard-code the values.
+
+**Completed:**
+- ✅ Created `src/types/gradientConfigTypes.ts` - TypeScript types and default config (55-90 range)
+- ✅ Created `src/components/DevTools/GradientCustomizer.tsx` - Full-featured widget
+- ✅ Updated `src/utils/domainScoreColors.ts` - Added `normalizeScoreWithRange()` and optional gradientConfig to all color functions
+- ✅ Updated `src/components/MapArea/MapLegend.tsx` - Added minValue/maxValue props
+- ✅ Integrated into App.tsx with state management, localStorage persistence, keyboard shortcut (Ctrl+Shift+G)
+- ✅ Added toggle to Header.tsx Dev Tools dropdown
+- ✅ Passed gradientConfig to RightSidebar, LeftSidebar, FlowerChart, and Layout components
+- ✅ Live preview: changes apply immediately to domain score boxes and flower chart
+
+**Widget Features:**
+- Per-domain controls: minValue, maxValue, minColor, maxColor
+- Gradient preview bar for each domain
+- Global presets: 0-100, 55-90 (default ★), 50-85, 60-95
+- Quick presets per domain
+- Configuration name input for exports
+- Copy JSON to clipboard
+- Download as JSON file
+- Reset to defaults
+- Overall Resilience section highlighted at top
+
+**Usage:**
+1. Press `Ctrl+Shift+G` or use Dev Tools dropdown → "Gradient Customization"
+2. Expand any domain to adjust settings
+3. Click presets or enter custom values
+4. Watch sidebar boxes and flower chart update in real-time
+5. Export final config via "Copy JSON" or "Save & Export"
 
 ---
 

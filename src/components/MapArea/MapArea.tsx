@@ -13,7 +13,9 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import Papa from "papaparse";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import SelectedMetricIdObject from "types/componentStatetypes";
+import { GradientConfig, DomainKey } from "types/gradientConfigTypes";
 import { LabelConfig, LabelTierConfig } from "types/labelConfigTypes";
+import { normalizeScoreWithRange } from "utils/domainScoreColors";
 import getColor from "utils/getColor";
 import CloseIcon from "../../assets/CloseIcon.svg";
 import ResetIcon from "../../assets/ResetIcon.svg";
@@ -217,6 +219,7 @@ interface MapAreaProps {
   leftSidebarOpen: boolean;
   labelConfig?: LabelConfig;
   onZoomChange?: (zoom: number) => void;
+  gradientConfig?: GradientConfig | null;
 }
 
 const MapArea: React.FC<MapAreaProps> = ({
@@ -232,6 +235,7 @@ const MapArea: React.FC<MapAreaProps> = ({
   leftSidebarOpen,
   labelConfig,
   onZoomChange,
+  gradientConfig,
 }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const [geoMetrics, setGeoMetrics] = useState<Record<string, number>>({});
@@ -268,11 +272,23 @@ const MapArea: React.FC<MapAreaProps> = ({
 
   const startColorRef = useRef(selectedMetricIdObject.colorGradient.startColor);
   const endColorRef = useRef(selectedMetricIdObject.colorGradient.endColor);
+  const gradientConfigRef = useRef(gradientConfig);
 
+  // Track custom gradient settings for the current domain
   useEffect(() => {
-    startColorRef.current = selectedMetricIdObject.colorGradient.startColor;
-    endColorRef.current = selectedMetricIdObject.colorGradient.endColor;
-  }, [selectedMetricIdObject]);
+    gradientConfigRef.current = gradientConfig;
+    
+    // Check if we have a custom gradient for the current domain
+    const domainKey = selectedMetricIdObject.domainId as DomainKey;
+    if (gradientConfig?.domains[domainKey]) {
+      const customConfig = gradientConfig.domains[domainKey];
+      startColorRef.current = customConfig.minColor;
+      endColorRef.current = customConfig.maxColor;
+    } else {
+      startColorRef.current = selectedMetricIdObject.colorGradient.startColor;
+      endColorRef.current = selectedMetricIdObject.colorGradient.endColor;
+    }
+  }, [selectedMetricIdObject, gradientConfig]);
 
   // Fetch data when metric or geo level changes
   useEffect(() => {
@@ -928,10 +944,32 @@ const MapArea: React.FC<MapAreaProps> = ({
   /**
    * Colors map features based on metric data.
    * Must be defined before useEffects that reference it.
+   * Uses custom gradient config min/max values when available.
    */
   const loadColors = useCallback((map: maplibregl.Map) => {
     let coloredCount = 0;
     let noDataCount = 0;
+    
+    // Helper to compute color with optional custom gradient normalization
+    const computeColor = (metric: number): string => {
+      // Check if we have a custom gradient config for normalization
+      const config = gradientConfigRef.current;
+      const domainKey = selectedMetricIdObject.domainId as DomainKey;
+      
+      if (config?.domains[domainKey]) {
+        const customConfig = config.domains[domainKey];
+        // Normalize using custom min/max (metric is already 0-1, convert to 0-100 scale)
+        const normalizedMetric = normalizeScoreWithRange(
+          metric,
+          customConfig.minValue,
+          customConfig.maxValue
+        );
+        return getColor(customConfig.minColor, customConfig.maxColor, normalizedMetric);
+      }
+      
+      // Default: use metric directly (already 0-1)
+      return getColor(startColorRef.current, endColorRef.current, metric);
+    };
     
     // Color US features
     if (map.getLayer("us-fill")) {
@@ -949,7 +987,7 @@ const MapArea: React.FC<MapAreaProps> = ({
         };
 
         if (metric !== undefined) {
-          const color = getColor(startColorRef.current, endColorRef.current, metric);
+          const color = computeColor(metric);
           map.setFeatureState(featureRef, { color });
           coloredCount++;
         } else {
@@ -975,7 +1013,7 @@ const MapArea: React.FC<MapAreaProps> = ({
         };
 
         if (metric !== undefined) {
-          const color = getColor(startColorRef.current, endColorRef.current, metric);
+          const color = computeColor(metric);
           map.setFeatureState(featureRef, { color });
           coloredCount++;
         } else {
@@ -985,7 +1023,7 @@ const MapArea: React.FC<MapAreaProps> = ({
       });
     }
     
-  }, []);
+  }, [selectedMetricIdObject.domainId]);
   
   // Track the current geo level in a ref for the initial setup
   const currentGeoLevelRef = useRef(selectedGeoLevel);
@@ -1143,6 +1181,7 @@ const MapArea: React.FC<MapAreaProps> = ({
   }, [selectedGeoLevel, mapLoaded, addGeoLevelLayers, removeGeoLevelLayers, repositionBoundaryLayers, repositionLabelsLayer]);
 
   // Color features when data loads - need to wait for tiles to be rendered
+  // Also recolor when gradient config changes
   useEffect(() => {
     if (dataLoaded && mapLoaded && mapRef.current) {
       const map = mapRef.current;
@@ -1177,7 +1216,7 @@ const MapArea: React.FC<MapAreaProps> = ({
         map.off("sourcedata", handleSourceData);
       };
     }
-  }, [geoMetrics, dataLoaded, mapLoaded, loadColors, repositionLabelsLayer]);
+  }, [geoMetrics, dataLoaded, mapLoaded, loadColors, repositionLabelsLayer, gradientConfig]);
 
   /**
    * Formats the tract/subdivision ID for tooltip display.
@@ -1524,7 +1563,9 @@ const MapArea: React.FC<MapAreaProps> = ({
         startColor={startColorRef.current}
         endColor={endColorRef.current}
         label={selectedMetricIdObject.label}
-      ></MapLegend>
+        minValue={gradientConfig?.domains[selectedMetricIdObject.domainId as DomainKey]?.minValue}
+        maxValue={gradientConfig?.domains[selectedMetricIdObject.domainId as DomainKey]?.maxValue}
+      />
 
       <div
         ref={mapContainerRef}

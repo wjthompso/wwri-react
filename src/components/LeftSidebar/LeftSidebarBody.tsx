@@ -1,3 +1,4 @@
+import { GradientConfig } from "types/gradientConfigTypes";
 import { DomainScores } from "utils/domainScoreColors";
 import GraphReport from "../../assets/GraphReport.svg";
 import CircularProgressBar from "./CircularProgressBar";
@@ -6,11 +7,13 @@ import FlowerChart from "./FlowerChart";
 interface LeftSidebarBodyProps {
   overallResilienceScore: number | null;
   domainScores: DomainScores | null;
+  gradientConfig?: GradientConfig | null;
 }
 
 export function LeftSidebarBody({
   overallResilienceScore,
   domainScores,
+  gradientConfig,
 }: LeftSidebarBodyProps) {
   let overallResilienceScoreFormatted: number;
   if (overallResilienceScore && overallResilienceScore < 1) {
@@ -37,7 +40,7 @@ export function LeftSidebarBody({
         INDIVIDUAL DOMAIN SCORES
       </h1>
       <div className="mb-1 w-[200px]">
-        <FlowerChart domainScores={domainScores} />
+        <FlowerChart domainScores={domainScores} gradientConfig={gradientConfig} />
       </div>
       <button className="mt-2 flex w-full flex-row items-center rounded-md border-[1px] border-black p-1">
         <img

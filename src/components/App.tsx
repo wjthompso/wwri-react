@@ -3,9 +3,10 @@ import { isDebugMode } from "config/featureFlags";
 import { useCallback, useEffect, useState } from "react";
 import "../index.css";
 import SelectedMetricIdObject from "../types/componentStatetypes";
+import { GradientConfig, DEFAULT_GRADIENT_CONFIG } from "../types/gradientConfigTypes";
 import { LabelConfig, DEFAULT_LABEL_CONFIG } from "../types/labelConfigTypes";
 import { DomainScores } from "../utils/domainScoreColors";
-import LabelConfigWidget from "./DevTools/LabelConfigWidget";
+import { GradientCustomizer, LabelConfigWidget } from "./DevTools";
 import Header from "./Header/Header";
 import LeftSidebar from "./LeftSidebar/LeftSidebar";
 import MapArea from "./MapArea/MapArea";
@@ -108,19 +109,52 @@ function App() {
     return JSON.parse(JSON.stringify(DEFAULT_LABEL_CONFIG));
   });
 
+  // Dev tools: Gradient customization widget
+  const [gradientConfigOpen, setGradientConfigOpen] = useState(false);
+  const [gradientConfig, setGradientConfig] = useState<GradientConfig>(() => {
+    // Try to load from localStorage on mount
+    const saved = localStorage.getItem("wwri-gradient-config");
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        // Validate that the config has all required domains
+        if (!parsed.domains?.overall_resilience) {
+          console.log("Gradient config outdated, resetting to defaults");
+          localStorage.removeItem("wwri-gradient-config");
+          return JSON.parse(JSON.stringify(DEFAULT_GRADIENT_CONFIG));
+        }
+        return parsed;
+      } catch {
+        return JSON.parse(JSON.stringify(DEFAULT_GRADIENT_CONFIG));
+      }
+    }
+    return JSON.parse(JSON.stringify(DEFAULT_GRADIENT_CONFIG));
+  });
+
   // Save label config to localStorage when it changes
   useEffect(() => {
     localStorage.setItem("wwri-label-config", JSON.stringify(labelConfig));
   }, [labelConfig]);
 
-  // Keyboard shortcut: Ctrl+Shift+L to toggle label config widget (DEBUG mode only)
+  // Save gradient config to localStorage when it changes
+  useEffect(() => {
+    localStorage.setItem("wwri-gradient-config", JSON.stringify(gradientConfig));
+  }, [gradientConfig]);
+
+  // Keyboard shortcuts for dev tools (DEBUG mode only)
   useEffect(() => {
     if (!isDebugMode()) return;
     
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Ctrl+Shift+L for label config
       if (e.ctrlKey && e.shiftKey && e.key === "L") {
         e.preventDefault();
         setLabelConfigOpen((prev) => !prev);
+      }
+      // Ctrl+Shift+G for gradient config
+      if (e.ctrlKey && e.shiftKey && e.key === "G") {
+        e.preventDefault();
+        setGradientConfigOpen((prev) => !prev);
       }
     };
     window.addEventListener("keydown", handleKeyDown);
@@ -129,6 +163,10 @@ function App() {
 
   const handleLabelConfigChange = useCallback((newConfig: LabelConfig) => {
     setLabelConfig(newConfig);
+  }, []);
+
+  const handleGradientConfigChange = useCallback((newConfig: GradientConfig) => {
+    setGradientConfig(newConfig);
   }, []);
 
   // Fetch summary data for both US and Canada when geo level changes
@@ -208,6 +246,8 @@ function App() {
       <Header 
         labelConfigOpen={labelConfigOpen}
         onToggleLabelConfig={() => setLabelConfigOpen((prev) => !prev)}
+        gradientConfigOpen={gradientConfigOpen}
+        onToggleGradientConfig={() => setGradientConfigOpen((prev) => !prev)}
       />
       
       {/* Dev Tools: Label Configuration Widget (only in DEBUG mode) */}
@@ -218,6 +258,16 @@ function App() {
           config={labelConfig}
           onConfigChange={handleLabelConfigChange}
           currentZoom={currentZoom}
+        />
+      )}
+      
+      {/* Dev Tools: Gradient Customization Widget (only in DEBUG mode) */}
+      {isDebugMode() && (
+        <GradientCustomizer
+          isOpen={gradientConfigOpen}
+          onClose={() => setGradientConfigOpen(false)}
+          config={gradientConfig}
+          onConfigChange={handleGradientConfigChange}
         />
       )}
 
@@ -238,6 +288,7 @@ function App() {
             setIsOpen={setLeftSidebarOpen}
             domainScores={selectedRegionScores}
             regionAllMetrics={regionAllMetrics}
+            gradientConfig={gradientConfig}
           />
           <MapArea
             selectedMetricIdObject={selectedMetricIdObject}
@@ -252,6 +303,7 @@ function App() {
             leftSidebarOpen={leftSidebarOpen}
             labelConfig={labelConfig}
             onZoomChange={setCurrentZoom}
+            gradientConfig={gradientConfig}
           />
         </div>
         <RightSidebar
@@ -260,6 +312,7 @@ function App() {
           domainScores={selectedRegionScores}
           selectedMetricValue={selectedMetricValue}
           regionAllMetrics={regionAllMetrics}
+          gradientConfig={gradientConfig}
         />
       </div>
     </div>

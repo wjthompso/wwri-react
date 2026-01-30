@@ -3,6 +3,7 @@ import domainHierarchy from "data/domainHierarchy";
 import { useEffect, useState } from "react";
 import SelectedMetricIdObject from "types/componentStatetypes";
 import { Domain } from "types/domainTypes";
+import { GradientConfig } from "types/gradientConfigTypes";
 import DownArrow from "../assets/DownArrow.svg";
 import RightSideArrow from "../assets/RightSideArrow.svg";
 import SearchIcon from "../assets/SearchIcon.svg";
@@ -26,6 +27,7 @@ interface RightSidebarProps {
   domainScores: DomainScores | null;
   selectedMetricValue: number | null;
   regionAllMetrics: RegionAllMetrics | null;
+  gradientConfig?: GradientConfig | null;
 }
 
 const stateMap = [
@@ -94,6 +96,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
   domainScores,
   selectedMetricValue,
   regionAllMetrics,
+  gradientConfig,
 }) => {
   const [showIndicatorSuggestions, setShowIndicatorSuggestions] = useState(false);
   // Initialize activeButton to match default metric in App.tsx
@@ -262,8 +265,8 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
                 : "border-metricSelectorBoxesBorderDefault"
             }`}
             style={{
-              backgroundColor: getOverallScoreColor(regionAllMetrics?.wwri?.wwri_final_score),
-            }}
+                      backgroundColor: getOverallScoreColor(regionAllMetrics?.wwri?.wwri_final_score, gradientConfig),
+                    }}
           />
           <span className="font-bold">Overall Resilience</span>
         </div>
@@ -297,7 +300,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
                       : "border-metricSelectorBoxesBorderDefault"
                   }`}
                   style={{
-                    backgroundColor: getDomainScoreColor(domain.id, domainScores),
+                    backgroundColor: getDomainScoreColor(domain.id, domainScores, gradientConfig),
                   }}
                 />
                 <span className="font-bold">{domain.label}</span>
@@ -356,7 +359,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
                                   : "border-metricSelectorBoxesBorderDefault"
                               }`}
                               style={{
-                                backgroundColor: getDomainScoreColor(domain.id, domainScores),
+                                backgroundColor: getDomainScoreColor(domain.id, domainScores, gradientConfig),
                               }}
                             />
                             <span className="font-semibold">{subdomain.label}</span>
@@ -397,6 +400,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
                               domainScores={domainScores}
                               selectedMetricValue={selectedMetricValue}
                               regionAllMetrics={regionAllMetrics}
+                              gradientConfig={gradientConfig}
                             />
                           </div>
                         </div>
@@ -420,6 +424,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
                     domainScores={domainScores}
                     selectedMetricValue={selectedMetricValue}
                     regionAllMetrics={regionAllMetrics}
+                    gradientConfig={gradientConfig}
                   />
                 )}
               </div>
@@ -448,7 +453,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
                 // Special handling for Overall Resilience (wwri domain)
                 if (selectedMetricIdObject.domainId === "wwri") {
                   const wwriScore = regionAllMetrics?.wwri?.wwri_final_score;
-                  return getOverallScoreColor(wwriScore);
+                  return getOverallScoreColor(wwriScore, gradientConfig);
                 }
                 
                 // Try to get from regionAllMetrics first
@@ -457,18 +462,18 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
                   if (domainMetrics && selectedMetricIdObject.metricId in domainMetrics) {
                     const metricValue = domainMetrics[selectedMetricIdObject.metricId];
                     if (metricValue !== null && metricValue !== undefined) {
-                      return getMetricColor(selectedMetricIdObject.domainId, metricValue);
+                      return getMetricColor(selectedMetricIdObject.domainId, metricValue, gradientConfig);
                     }
                   }
                 }
                 
                 // Fallback to selectedMetricValue from map click
                 if (selectedMetricValue !== null) {
-                  return getMetricColor(selectedMetricIdObject.domainId, selectedMetricValue);
+                  return getMetricColor(selectedMetricIdObject.domainId, selectedMetricValue, gradientConfig);
                 }
                 
                 // Final fallback to domain color
-                return getDomainScoreColor(selectedMetricIdObject.domainId, domainScores);
+                return getDomainScoreColor(selectedMetricIdObject.domainId, domainScores, gradientConfig);
               })(),
             }}
           />

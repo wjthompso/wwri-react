@@ -1,6 +1,7 @@
 import { Country, RegionAllMetrics } from "components/App";
 import { UnifiedGeoLevel } from "config/api";
 import React, { useEffect, useState } from "react";
+import { GradientConfig } from "types/gradientConfigTypes";
 import { DomainScores } from "utils/domainScoreColors";
 import { CloseLeftSidebarButton } from "./CloseLeftSidebarButton";
 import { LeftSidebarBody } from "./LeftSidebarBody";
@@ -18,6 +19,7 @@ interface LeftSidebarProps {
   setIsOpen: (open: boolean) => void;
   domainScores: DomainScores | null;
   regionAllMetrics: RegionAllMetrics | null;
+  gradientConfig?: GradientConfig | null;
 }
 
 const LeftSidebar: React.FC<LeftSidebarProps> = ({
@@ -31,6 +33,7 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
   setIsOpen,
   domainScores,
   regionAllMetrics,
+  gradientConfig,
 }) => {
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
 
@@ -69,6 +72,7 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
         <LeftSidebarBody
           overallResilienceScore={overallResilienceScore}
           domainScores={domainScores}
+          gradientConfig={gradientConfig}
         />
       </aside>
       {!isOpen && !isAnimating && (

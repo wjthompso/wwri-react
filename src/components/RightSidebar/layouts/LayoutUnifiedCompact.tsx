@@ -11,6 +11,7 @@
  */
 
 import { ResilienceSubdomain, Status, Subdomain } from "types/domainTypes";
+import { GradientConfig } from "types/gradientConfigTypes";
 import { DomainScores, getDomainScoreColor, getMetricColor } from "utils/domainScoreColors";
 import HierarchyArrows from "../../../assets/HierarchyArrows.svg";
 import SubHierarchyArrows from "../../../assets/SubHierarchyArrows.svg";
@@ -33,6 +34,7 @@ interface LayoutUnifiedCompactProps {
   domainScores: DomainScores | null;
   selectedMetricValue: number | null;
   regionAllMetrics: RegionAllMetrics | null;
+  gradientConfig?: GradientConfig | null;
 }
 
 const hasMetrics = (section?: Status | ResilienceSubdomain) =>
@@ -55,9 +57,10 @@ const LayoutUnifiedCompact: React.FC<LayoutUnifiedCompactProps> = ({
   domainScores,
   selectedMetricValue,
   regionAllMetrics,
+  gradientConfig,
 }) => {
   // Get the dynamic color for this domain based on selected polygon's scores
-  const domainColor = getDomainScoreColor(parentDomainId, domainScores);
+  const domainColor = getDomainScoreColor(parentDomainId, domainScores, gradientConfig);
   
   const statusAvailable = hasMetrics(subdomain.status);
   const resistanceAvailable = hasMetrics(subdomain.resilience?.resistance);
@@ -87,7 +90,7 @@ const LayoutUnifiedCompact: React.FC<LayoutUnifiedCompactProps> = ({
       if (domainMetrics && metricId in domainMetrics) {
         const metricValue = domainMetrics[metricId];
         if (metricValue !== null && metricValue !== undefined) {
-          return getMetricColor(parentDomainId, metricValue);
+          return getMetricColor(parentDomainId, metricValue, gradientConfig);
         }
       }
     }

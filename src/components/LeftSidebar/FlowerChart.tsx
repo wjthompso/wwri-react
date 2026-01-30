@@ -1,13 +1,19 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
+  GradientConfig,
+  DomainKey,
+} from "types/gradientConfigTypes";
+import {
   DomainScores,
   FLOWER_CHART_DOMAINS,
   normalizeScore,
+  normalizeScoreWithRange,
 } from "utils/domainScoreColors";
 import getColor from "../../utils/getColor";
 
 interface FlowerChartProps {
   domainScores: DomainScores | null;
+  gradientConfig?: GradientConfig | null;
 }
 
 // White color for gradient interpolation
@@ -34,20 +40,36 @@ function hexToRgb(hex: string): { r: number; g: number; b: number } {
  * Gets the color for a domain based on its score.
  * - No score/null: neutral gray
  * - Score 0-1: interpolate from white to brand color
+ * - With gradientConfig: use custom min/max values and colors
  */
 function getDomainColor(
   score: number | undefined | null,
-  brandColorHex: string
+  brandColorHex: string,
+  domainKey?: string,
+  gradientConfig?: GradientConfig | null
 ): string {
   if (score === undefined || score === null || isNaN(score)) {
     return NEUTRAL_GRAY;
   }
+  
+  // Use custom gradient config if available
+  if (gradientConfig && domainKey && gradientConfig.domains[domainKey as DomainKey]) {
+    const customConfig = gradientConfig.domains[domainKey as DomainKey];
+    const normalizedScore = normalizeScoreWithRange(
+      score,
+      customConfig.minValue,
+      customConfig.maxValue
+    );
+    return getColor(customConfig.minColor, customConfig.maxColor, normalizedScore);
+  }
+  
+  // Default: interpolate from white to brand color
   const normalizedScore = normalizeScore(score);
   const brandColorRgb = hexToRgb(brandColorHex);
   return getColor(WHITE, brandColorRgb, normalizedScore);
 }
 
-const FlowerChart: React.FC<FlowerChartProps> = ({ domainScores }) => {
+const FlowerChart: React.FC<FlowerChartProps> = ({ domainScores, gradientConfig }) => {
   const chartRef = useRef<SVGGElement | null>(null);
   const [centerText, setCenterText] = useState("--");
   const [textColor, setTextColor] = useState("currentColor");
@@ -56,8 +78,20 @@ const FlowerChart: React.FC<FlowerChartProps> = ({ domainScores }) => {
   // Build data array from domain scores using new brand colors
   const data = FLOWER_CHART_DOMAINS.map((domain) => {
     const score = domainScores?.[domain.apiKey] ?? null;
-    const normalizedValue = score !== null ? normalizeScore(score) : 0;
-    const color = getDomainColor(score, domain.brandColor);
+    
+    // Calculate normalized value for arc size
+    // Use custom range if gradientConfig is provided
+    let normalizedValue: number;
+    if (gradientConfig?.domains[domain.apiKey as DomainKey]) {
+      const customConfig = gradientConfig.domains[domain.apiKey as DomainKey];
+      normalizedValue = score !== null 
+        ? normalizeScoreWithRange(score, customConfig.minValue, customConfig.maxValue) 
+        : 0;
+    } else {
+      normalizedValue = score !== null ? normalizeScore(score) : 0;
+    }
+    
+    const color = getDomainColor(score, domain.brandColor, domain.apiKey, gradientConfig);
 
     return {
       id: domain.apiKey,
@@ -173,7 +207,7 @@ const FlowerChart: React.FC<FlowerChartProps> = ({ domainScores }) => {
       // Cleanup on unmount or data change
       chart.querySelectorAll("path").forEach((path) => path.remove());
     };
-  }, [domainScores]);
+  }, [domainScores, gradientConfig]);
 
   return (
     <div id="flower-chart-container">

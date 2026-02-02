@@ -273,10 +273,12 @@ const MapArea: React.FC<MapAreaProps> = ({
   const startColorRef = useRef(selectedMetricIdObject.colorGradient.startColor);
   const endColorRef = useRef(selectedMetricIdObject.colorGradient.endColor);
   const gradientConfigRef = useRef(gradientConfig);
+  const selectedMetricIdObjectRef = useRef(selectedMetricIdObject);
 
   // Track custom gradient settings for the current domain
   useEffect(() => {
     gradientConfigRef.current = gradientConfig;
+    selectedMetricIdObjectRef.current = selectedMetricIdObject;
     
     // Check if we have a custom gradient for the current domain
     const domainKey = selectedMetricIdObject.domainId as DomainKey;
@@ -945,16 +947,20 @@ const MapArea: React.FC<MapAreaProps> = ({
    * Colors map features based on metric data.
    * Must be defined before useEffects that reference it.
    * Uses custom gradient config min/max values when available.
+   * 
+   * NOTE: Uses refs (gradientConfigRef, selectedMetricIdObjectRef, startColorRef, endColorRef)
+   * to avoid stale closures in event handlers (moveend, idle, sourcedata).
    */
   const loadColors = useCallback((map: maplibregl.Map) => {
     let coloredCount = 0;
     let noDataCount = 0;
     
     // Helper to compute color with optional custom gradient normalization
+    // Uses refs to avoid stale closures when called from event handlers
     const computeColor = (metric: number): string => {
       // Check if we have a custom gradient config for normalization
       const config = gradientConfigRef.current;
-      const domainKey = selectedMetricIdObject.domainId as DomainKey;
+      const domainKey = selectedMetricIdObjectRef.current.domainId as DomainKey;
       
       if (config?.domains[domainKey]) {
         const customConfig = config.domains[domainKey];
@@ -1023,7 +1029,7 @@ const MapArea: React.FC<MapAreaProps> = ({
       });
     }
     
-  }, [selectedMetricIdObject.domainId]);
+  }, []); // No dependencies - uses refs for all changing values to avoid stale closures
   
   // Track the current geo level in a ref for the initial setup
   const currentGeoLevelRef = useRef(selectedGeoLevel);

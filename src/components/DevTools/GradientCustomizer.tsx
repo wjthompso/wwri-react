@@ -187,6 +187,10 @@ const GradientCustomizer: React.FC<GradientCustomizerProps> = ({
   );
   const [copyFeedback, setCopyFeedback] = useState(false);
   const [configNameInput, setConfigNameInput] = useState(config.configName);
+  
+  // Custom global min/max inputs
+  const [globalMin, setGlobalMin] = useState(55);
+  const [globalMax, setGlobalMax] = useState(90);
 
   const toggleExpand = useCallback((key: DomainKey) => {
     setExpandedDomains((prev) => {
@@ -304,10 +308,11 @@ const GradientCustomizer: React.FC<GradientCustomizerProps> = ({
 
       {/* Global range controls */}
       <div className="border-b border-gray-300 bg-gray-50 px-3 py-2">
-        <div className="mb-1 text-[10px] font-medium text-gray-600">
+        <div className="mb-1.5 text-[10px] font-medium text-gray-600">
           Apply to all domains:
         </div>
-        <div className="flex flex-wrap gap-1">
+        {/* Preset buttons */}
+        <div className="mb-2 flex flex-wrap gap-1">
           <button
             onClick={() => handleApplyAllRange(0, 100)}
             className="rounded bg-white px-2 py-0.5 text-[10px] text-gray-700 shadow-sm hover:bg-gray-100"
@@ -331,6 +336,35 @@ const GradientCustomizer: React.FC<GradientCustomizerProps> = ({
             className="rounded bg-white px-2 py-0.5 text-[10px] text-gray-700 shadow-sm hover:bg-gray-100"
           >
             60-95
+          </button>
+        </div>
+        {/* Custom global min/max inputs */}
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] text-gray-500">Custom:</span>
+          <input
+            type="number"
+            min={0}
+            max={100}
+            value={globalMin}
+            onChange={(e) => setGlobalMin(parseInt(e.target.value) || 0)}
+            className="w-12 rounded border border-gray-300 px-1.5 py-0.5 text-center text-[11px]"
+            title="Global minimum value"
+          />
+          <span className="text-[10px] text-gray-400">to</span>
+          <input
+            type="number"
+            min={0}
+            max={100}
+            value={globalMax}
+            onChange={(e) => setGlobalMax(parseInt(e.target.value) || 100)}
+            className="w-12 rounded border border-gray-300 px-1.5 py-0.5 text-center text-[11px]"
+            title="Global maximum value"
+          />
+          <button
+            onClick={() => handleApplyAllRange(globalMin, globalMax)}
+            className="rounded bg-indigo-100 px-2 py-0.5 text-[10px] font-medium text-indigo-700 shadow-sm hover:bg-indigo-200"
+          >
+            Apply
           </button>
         </div>
       </div>

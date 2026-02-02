@@ -17,6 +17,7 @@
 | 1b | Refine map label display (fonts, density, zoom thresholds) | ✅ Complete |
 | 1c | Deploy refined labels to production tile server | ✅ Complete |
 | 2 | Create gradient customization widget with save/export | ✅ Complete |
+| 2b | Fix polygon color flickering when switching domains | ✅ Fixed |
 | 3 | Redesign left sidebar → move content to right sidebar | ⬜ Pending |
 | 4 | Redesign overall score display (smaller, use gradient colors) | ⬜ Pending |
 | 5 | Remove search function (API cost concerns) | ⬜ Pending |
@@ -29,7 +30,7 @@
 | 12 | Create debugging widget system (label config, hidden but toggleable) | ⬜ Pending |
 | 13 | Performance and saturation testing (front-end and back-end) | ⬜ Pending |
 
-**Progress:** 4/14 complete (8 pending, 1 blocked, 1 on hold)
+**Progress:** 5/15 complete (8 pending, 1 blocked, 1 on hold)
 
 **Note:** Task 1 (map labels) ✅ COMPLETE! Two issues fixed: (1) Y-flip script was breaking tiles - removed, (2) `text-variable-anchor` was causing labels to slide during zoom - switched to fixed `text-anchor: "center"`.
 
@@ -55,6 +56,7 @@
 | Jan 27 | **✅ Task 1b COMPLETE!** - Built LabelConfigWidget for real-time label parameter adjustment. Widget controls all 10 label tiers (split SR1/SR2) with settings for minzoom, maxzoom, font, size, color, halo, opacity, padding, letter spacing. Toggle with Ctrl+Shift+L or Dev Tools dropdown in header. Feature flag system (DEBUG/PRODUCTION mode). Displays current zoom level. Optimized progressive display: z4 (mega metros), z6 (major metros), z7-12 (progressively smaller cities). |
 | Jan 28 | **✅ Task 1c COMPLETE!** - Deployed labels to production tile server. Copied labels.mbtiles (2.3M) and config.json to major-sculpin server, restarted Docker container. Verified labels endpoint live at `https://major-sculpin.nceas.ucsb.edu/data/labels/{z}/{x}/{y}.pbf`. Added `VITE_FORCE_PRODUCTION_TILES` env var for testing production tiles locally. Labels now live in production! |
 | Jan 29 | **✅ Task 2 COMPLETE!** - Created GradientCustomizer widget with live preview. Features: per-domain gradient controls (min/max values, min/max colors), global presets (55-90 ★, 0-100, 50-85, 60-95), JSON export/download, localStorage persistence. Toggle via Ctrl+Shift+G or Dev Tools dropdown. Widget updates domain score boxes and flower chart colors in real-time. Files created: `gradientConfigTypes.ts`, `GradientCustomizer.tsx`. Updated: `domainScoreColors.ts`, `MapLegend.tsx`, `App.tsx`, `Header.tsx`, `RightSidebar.tsx`, `LeftSidebar.tsx`, `FlowerChart.tsx`, Layout components. |
+| Feb 2 | **✅ Task 2b FIXED!** - Polygon color flickering bug caused by stale closure in `moveend` event handler. The `loadColors` function was capturing `selectedMetricIdObject.domainId` directly, but `moveend` handler (registered once on map init) held reference to old `loadColors`. Fix: Created `selectedMetricIdObjectRef` and read from that ref inside `loadColors`. Removed dependency array so function is stable. Now all event handlers (moveend, idle, sourcedata) use refs for current values. |
 
 ---
 
@@ -642,6 +644,68 @@ for l in d.values():
 3. Click presets or enter custom values
 4. Watch sidebar boxes and flower chart update in real-time
 5. Export final config via "Copy JSON" or "Save & Export"
+
+---
+
+### Task 2b: Fix Polygon Color Flickering When Switching Domains
+
+**Status:** ✅ Fixed (Feb 2, 2026)
+
+**Priority:** 🔥 HIGH
+
+**Reported:** Feb 2, 2026
+
+**Description:** After adding the gradient customization widget (Task 2), a visual bug was introduced where polygon colors briefly flash/flicker to the previous domain's colors when panning or zooming after switching domains.
+
+**Steps to Reproduce:**
+1. Click on a domain (e.g., Infrastructure) - polygons color correctly (e.g., purple gradient)
+2. Click on a different domain (e.g., Livelihoods) - polygons immediately recolor to orange (correct)
+3. Pan around or zoom in/out on the map
+4. **BUG:** For a split second, polygons flash back to the old domain's colors (purple) before returning to the correct colors (orange)
+
+**Root Cause: Stale Closure in Event Handler**
+
+The `moveend` event handler was registered **once** during initial map load (line ~1132-1136):
+```javascript
+const handleMoveEnd = () => {
+  loadColors(map);
+};
+map.on("moveend", handleMoveEnd);
+```
+
+The `loadColors` function captured `selectedMetricIdObject.domainId` directly in its closure:
+```javascript
+const domainKey = selectedMetricIdObject.domainId as DomainKey;
+```
+
+When the user switches domains, `loadColors` gets recreated with a new function reference (due to `useCallback` dependency), but the `moveend` handler still holds a reference to the **old** `loadColors` with the **old** domain captured.
+
+Timeline:
+1. User switches from Infrastructure → Livelihoods
+2. `selectedMetricIdObject` changes, triggering new `loadColors` with Livelihoods
+3. `idle`/`sourcedata` handlers correctly use new `loadColors` → orange colors applied ✅
+4. User pans/zooms → `moveend` fires
+5. `moveend` calls **old** `loadColors` (has Infrastructure in closure) → purple flash! ❌
+6. `idle` fires after pan → new `loadColors` corrects to orange ✅
+
+**The Fix:**
+
+1. Created `selectedMetricIdObjectRef` to track the current selected metric
+2. Updated `loadColors` to read from the ref instead of capturing the value:
+   ```javascript
+   const domainKey = selectedMetricIdObjectRef.current.domainId as DomainKey;
+   ```
+3. Removed the dependency array from `loadColors` (now uses refs for all changing values)
+
+**Files Modified:**
+- `src/components/MapArea/MapArea.tsx`:
+  - Added `selectedMetricIdObjectRef` (line ~277)
+  - Updated useEffect to keep ref in sync (line ~281)
+  - Updated `loadColors` to read from ref (line ~969)
+  - Removed dependency array from `loadColors` useCallback (line ~1030)
+
+**Technical Note:**
+This is a classic React "stale closure" bug. When using `useCallback` with event handlers that are registered once, any values from the component scope that the callback references will be "frozen" at the time of registration. Using refs ensures the latest values are always read.
 
 ---
 

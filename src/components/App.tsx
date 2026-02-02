@@ -86,8 +86,8 @@ function App() {
   // All metrics for the selected region
   const [regionAllMetrics, setRegionAllMetrics] = useState<RegionAllMetrics | null>(null);
 
-  // Dev tools: Label configuration widget (defaults to open in DEBUG mode)
-  const [labelConfigOpen, setLabelConfigOpen] = useState(isDebugMode());
+  // Dev tools: Label configuration widget (defaults to closed)
+  const [labelConfigOpen, setLabelConfigOpen] = useState(false);
   const [currentZoom, setCurrentZoom] = useState<number>(3.3); // Initial zoom level
   const [labelConfig, setLabelConfig] = useState<LabelConfig>(() => {
     // Try to load from localStorage on mount

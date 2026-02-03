@@ -20,6 +20,7 @@
 | 2b | Fix polygon color flickering when switching domains | ✅ Fixed |
 | 3 | Redesign left sidebar → move content to right sidebar | ✅ Complete |
 | 4 | Redesign overall score display (smaller, use gradient colors) | ✅ Complete |
+| 4b | Fix visual balance of right sidebar layout | ⬜ Pending |
 | 5 | Remove search function (API cost concerns) | ⬜ Pending |
 | 6 | Update domain description text (Cat to provide copy) | ⬜ Blocked |
 | 7 | Create basemap selector widget (remove EEZ boundaries) | ⬜ Pending |
@@ -30,7 +31,7 @@
 | 12 | Create debugging widget system (label config, hidden but toggleable) | ⬜ Pending |
 | 13 | Performance and saturation testing (front-end and back-end) | ⬜ Pending |
 
-**Progress:** 7/15 complete (6 pending, 1 blocked, 1 on hold)
+**Progress:** 7/16 complete (7 pending, 1 blocked, 1 on hold)
 
 **Note:** Task 1 (map labels) ✅ COMPLETE! Two issues fixed: (1) Y-flip script was breaking tiles - removed, (2) `text-variable-anchor` was causing labels to slide during zoom - switched to fixed `text-anchor: "center"`.
 
@@ -876,6 +877,53 @@ This is a classic React "stale closure" bug. When using `useCallback` with event
 **Files Modified:**
 - `src/components/LeftSidebar/CircularProgressBar.tsx` - Complete rewrite with gradient colors and size variants
 - `src/utils/domainScoreColors.ts` - Added gradientConfig support to `getOverallScoreColor()`
+
+---
+
+### Task 4b: Fix Visual Balance of Right Sidebar Layout
+
+**Status:** ⬜ Pending
+
+**Priority:** MEDIUM
+
+**Description:** After consolidating the left sidebar into the right sidebar, the layout feels visually unbalanced. The sections need better proportions and spacing.
+
+**Current Issues:**
+1. **Indicator Navigation** takes up too much vertical space (375px fixed height) relative to other sections
+2. **Selected Region + Overall Score panel** feels squeezed between navigation and flower chart
+3. **Individual Domain Scores (flower chart)** feels pushed to the bottom and less prominent
+4. **Overall visual hierarchy** doesn't reflect importance - region/score info should be more prominent
+
+**Proposed Solutions:**
+
+**Option A: Reduce Indicator Navigation height**
+- Change from 375px to 300-325px
+- Gives more breathing room to other sections
+- Quick win for better balance
+
+**Option B: Make Selected Region panel more prominent**
+- Increase panel height/padding
+- Increase Overall Score circle from "small" to "medium"
+- Better visual weight for important information
+
+**Option C: Reorder sections** (if needed)
+- Consider moving Selected Region + Overall Score back to top
+- Would emphasize current selection over navigation
+- Test user flow implications
+
+**Option D: Adjust spacing throughout**
+- Increase padding between sections
+- Better visual separation
+- More breathing room
+
+**Files to modify:**
+- `src/components/RightSidebar.tsx` - Adjust heights, spacing, padding
+- `src/components/LeftSidebar/CircularProgressBar.tsx` - Possibly change size prop
+
+**Notes:**
+- Task added Feb 2, 2026 after completing Task 3 & 4
+- User feedback: "The right sidebar feels... Sort of unbalanced"
+- Should test multiple options before committing to one solution
 
 ---
 

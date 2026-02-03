@@ -8,7 +8,6 @@ import { LabelConfig, DEFAULT_LABEL_CONFIG } from "../types/labelConfigTypes";
 import { DomainScores } from "../utils/domainScoreColors";
 import { GradientCustomizer, LabelConfigWidget } from "./DevTools";
 import Header from "./Header/Header";
-import LeftSidebar from "./LeftSidebar/LeftSidebar";
 import MapArea from "./MapArea/MapArea";
 import RightSidebar from "./RightSidebar";
 import Subheader from "./Subheader/Subheader";
@@ -78,7 +77,6 @@ function App() {
   const [selectedStateName, setSelectedStateName] = useState<string>(""); // State/Province name
   const [selectedCountry, setSelectedCountry] = useState<Country>("");
   const [selectedGeoLevel, setSelectedGeoLevel] = useState<UnifiedGeoLevel>("tract");
-  const [leftSidebarOpen, setLeftSidebarOpen] = useState<boolean>(true);
   
   // Summary data for all regions (domain scores by geoid)
   const [summaryData, setSummaryData] = useState<SummaryData>({});
@@ -277,19 +275,6 @@ function App() {
           className="flex min-w-[580px] flex-1 flex-col"
         >
           <Subheader selectedMetricObject={selectedMetricIdObject} />
-          <LeftSidebar
-            selectedGeoId={selectedGeoId}
-            selectedRegionName={selectedRegionName}
-            selectedStateName={selectedStateName}
-            selectedCountry={selectedCountry}
-            selectedGeoLevel={selectedGeoLevel}
-            selectedMetricValue={selectedMetricValue}
-            isOpen={leftSidebarOpen}
-            setIsOpen={setLeftSidebarOpen}
-            domainScores={selectedRegionScores}
-            regionAllMetrics={regionAllMetrics}
-            gradientConfig={gradientConfig}
-          />
           <MapArea
             selectedMetricIdObject={selectedMetricIdObject}
             selectedGeoId={selectedGeoId}
@@ -300,7 +285,6 @@ function App() {
             setSelectedMetricValue={setSelectedMetricValue}
             selectedGeoLevel={selectedGeoLevel}
             setSelectedGeoLevel={setSelectedGeoLevel}
-            leftSidebarOpen={leftSidebarOpen}
             labelConfig={labelConfig}
             onZoomChange={setCurrentZoom}
             gradientConfig={gradientConfig}
@@ -313,6 +297,11 @@ function App() {
           selectedMetricValue={selectedMetricValue}
           regionAllMetrics={regionAllMetrics}
           gradientConfig={gradientConfig}
+          selectedGeoId={selectedGeoId}
+          selectedRegionName={selectedRegionName}
+          selectedStateName={selectedStateName}
+          selectedCountry={selectedCountry}
+          selectedGeoLevel={selectedGeoLevel}
         />
       </div>
     </div>

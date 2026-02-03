@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
-  GradientConfig,
   DomainKey,
+  GradientConfig,
 } from "types/gradientConfigTypes";
 import {
   DomainScores,
@@ -211,11 +211,11 @@ const FlowerChart: React.FC<FlowerChartProps> = ({ domainScores, gradientConfig 
 
   return (
     <div id="flower-chart-container">
-      <div className="h-[11rem] w-full">
+      <div className="h-[14rem] w-full">
         <svg
           id="flower-chart-svg"
-          className="aster__plot flex flex-shrink flex-row justify-start"
-          preserveAspectRatio="xMidYMid"
+          className="aster__plot"
+          preserveAspectRatio="xMinYMid"
           viewBox="0 0 400 400"
         >
           <g id="flower-chart-arcs" transform="translate(165,170)" ref={chartRef}>
@@ -230,11 +230,11 @@ const FlowerChart: React.FC<FlowerChartProps> = ({ domainScores, gradientConfig 
           </g>
         </svg>
       </div>
-      <div id="flower-chart-legend" className="mb-2 ml-1">
+      <div id="flower-chart-legend" className="mb-2 mt-4">
         <h1 className="pb-2 font-BeVietnamPro text-sm font-bold text-leftSidebarOverallResilience">
           Legend
         </h1>
-        <div className="flex max-w-[194px] flex-wrap items-center justify-between">
+        <div className="flex max-w-[280px] flex-wrap items-start justify-start">
           {data.map((domain, index) => (
             <div
               key={index}

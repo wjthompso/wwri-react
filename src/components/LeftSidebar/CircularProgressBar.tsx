@@ -1,60 +1,86 @@
 import React from "react";
+import { GradientConfig } from "types/gradientConfigTypes";
+import { getOverallScoreColor, normalizeScoreWithRange, normalizeScore } from "utils/domainScoreColors";
 
 interface CircularProgressBarProps {
   percentage: number;
+  gradientConfig?: GradientConfig | null;
+  size?: "small" | "medium" | "large";
 }
 
+/**
+ * CircularProgressBar - displays overall score with gradient colors.
+ * Uses the Overall Resilience gradient (light yellow to crimson) instead of red-yellow-green.
+ * Supports custom gradient configuration from GradientCustomizer widget.
+ */
 const CircularProgressBar: React.FC<CircularProgressBarProps> = ({
   percentage,
+  gradientConfig,
+  size = "medium",
 }) => {
-  const radius = 60;
-  const circumference = 2 * Math.PI * radius;
+  // Size configurations
+  const sizeConfig = {
+    small: { containerClass: "h-20 w-20", radius: 30, strokeWidth: 12, textClass: "text-lg" },
+    medium: { containerClass: "h-28 w-28", radius: 42, strokeWidth: 16, textClass: "text-xl" },
+    large: { containerClass: "h-40 w-40", radius: 60, strokeWidth: 25, textClass: "text-2xl" },
+  };
+
+  const config = sizeConfig[size];
+  const circumference = 2 * Math.PI * config.radius;
   const dashOffset = circumference - (circumference * percentage) / 100;
 
-  let colorClass = "text-red-500"; // Default color for <25%
+  // Get the score color using the overall resilience gradient
+  // Convert percentage back to 0-1 or 0-100 scale for the color function
+  const scoreValue = percentage > 0 ? percentage : null;
+  const scoreColor = getOverallScoreColor(scoreValue, gradientConfig);
 
-  if (percentage == 0) {
-    colorClass = "text-gray-300";
-  } else if (percentage >= 75) {
-    colorClass = "text-[#32AC03]";
-  } else if (percentage >= 25) {
-    colorClass = "text-[#FAE107]";
-  } else if (percentage < 25) {
-    colorClass = "text-[#F00101]";
+  // Calculate normalized value for background transparency
+  let normalizedValue = 0;
+  if (percentage > 0) {
+    if (gradientConfig?.domains.overall_resilience) {
+      const customConfig = gradientConfig.domains.overall_resilience;
+      normalizedValue = normalizeScoreWithRange(percentage, customConfig.minValue, customConfig.maxValue);
+    } else {
+      normalizedValue = normalizeScore(percentage);
+    }
   }
 
+  // For the background, use a lighter version of the score color
+  const backgroundColor = percentage > 0 ? `${scoreColor}20` : "rgb(209, 213, 219)"; // gray-300 equivalent
+
   return (
-    <div className="relative mb-4 h-40 w-40">
+    <div id="circular-progress-bar" className={`relative ${config.containerClass}`}>
       <svg className="absolute inset-0 h-full w-full -rotate-90 transform">
+        {/* Background circle */}
         <circle
-          className="text-gray-300"
-          strokeWidth="25"
-          stroke="currentColor"
+          strokeWidth={config.strokeWidth}
+          stroke={backgroundColor}
           fill="transparent"
-          r={radius}
+          r={config.radius}
           cx="50%"
           cy="50%"
         />
+        {/* Progress circle */}
         <circle
-          className={`duration-1 transition-colors ${colorClass}`}
-          strokeWidth="25"
+          strokeWidth={config.strokeWidth}
           strokeLinecap="butt"
-          stroke="currentColor"
+          stroke={scoreColor}
           fill="transparent"
-          r={radius}
+          r={config.radius}
           cx="50%"
           cy="50%"
           style={{
             strokeDasharray: circumference,
             strokeDashoffset: dashOffset,
-            transition: "stroke-dashoffset 1s ease-in-out",
+            transition: "stroke-dashoffset 0.8s ease-in-out, stroke 0.3s ease-in-out",
           }}
         />
       </svg>
       <div
-        className={`flex h-full w-full items-center justify-center text-2xl font-semibold transition-colors duration-500 ${colorClass}`}
+        className={`flex h-full w-full items-center justify-center font-semibold transition-colors duration-300 ${config.textClass}`}
+        style={{ color: percentage > 0 ? scoreColor : "rgb(156, 163, 175)" }} // gray-400 for empty
       >
-        {percentage !== 0 ? `${percentage.toFixed(0)}%` : "--"}
+        {percentage !== 0 ? `${percentage.toFixed(0)}` : "--"}
       </div>
     </div>
   );

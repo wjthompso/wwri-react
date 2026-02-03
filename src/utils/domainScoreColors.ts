@@ -281,15 +281,28 @@ export function getDomainBrandColor(domainId: string): Rgb {
 /**
  * Gets the dynamic color for the overall resilience box.
  * Uses Manuel's color scheme: light yellow (low) to crimson (high).
+ * Supports custom gradient configuration from GradientCustomizer widget.
  */
 export function getOverallScoreColor(
-  overallScore: number | null | undefined
+  overallScore: number | null | undefined,
+  gradientConfig?: GradientConfig | null
 ): string {
   if (overallScore === undefined || overallScore === null) {
     return `rgb(${NEUTRAL_GRAY.r}, ${NEUTRAL_GRAY.g}, ${NEUTRAL_GRAY.b})`;
   }
 
-  // Overall score uses light yellow → crimson gradient
+  // Use custom gradient config if available
+  if (gradientConfig?.domains.overall_resilience) {
+    const customConfig = gradientConfig.domains.overall_resilience;
+    const normalizedScore = normalizeScoreWithRange(
+      overallScore,
+      customConfig.minValue,
+      customConfig.maxValue
+    );
+    return getColor(customConfig.minColor, customConfig.maxColor, normalizedScore);
+  }
+
+  // Default: Overall score uses light yellow → crimson gradient
   const normalizedScore = normalizeScore(overallScore);
   return getColor(OVERALL_RESILIENCE_START_COLOR, OVERALL_RESILIENCE_END_COLOR, normalizedScore);
 }

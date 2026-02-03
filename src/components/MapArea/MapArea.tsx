@@ -216,7 +216,6 @@ interface MapAreaProps {
   setSelectedCountry: (country: Country) => void;
   selectedGeoLevel: UnifiedGeoLevel;
   setSelectedGeoLevel: (level: UnifiedGeoLevel) => void;
-  leftSidebarOpen: boolean;
   labelConfig?: LabelConfig;
   onZoomChange?: (zoom: number) => void;
   gradientConfig?: GradientConfig | null;
@@ -232,7 +231,6 @@ const MapArea: React.FC<MapAreaProps> = ({
   setSelectedCountry,
   selectedGeoLevel,
   setSelectedGeoLevel,
-  leftSidebarOpen,
   labelConfig,
   onZoomChange,
   gradientConfig,
@@ -1503,9 +1501,7 @@ const MapArea: React.FC<MapAreaProps> = ({
       {/* Geographic Level Selector - positioned at top-left over the map, shifts when sidebar is open */}
       <div
         id="geo-level-selector"
-        className={`absolute top-1 z-10 flex h-10 gap-1 rounded-md border border-gray-400 bg-white p-1 shadow-md transition-[left] duration-300 ease-in-out ${
-          leftSidebarOpen ? "left-[238px]" : "left-12"
-        }`}
+        className="absolute left-3 top-1 z-10 flex h-10 gap-1 rounded-md border border-gray-400 bg-white p-1 shadow-md"
       >
         {(Object.keys(UNIFIED_GEO_LEVELS) as UnifiedGeoLevel[]).map((level) => (
           <button

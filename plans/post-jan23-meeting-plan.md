@@ -18,8 +18,8 @@
 | 1c | Deploy refined labels to production tile server | ✅ Complete |
 | 2 | Create gradient customization widget with save/export | ✅ Complete |
 | 2b | Fix polygon color flickering when switching domains | ✅ Fixed |
-| 3 | Redesign left sidebar → move content to right sidebar | ⬜ Pending |
-| 4 | Redesign overall score display (smaller, use gradient colors) | ⬜ Pending |
+| 3 | Redesign left sidebar → move content to right sidebar | ✅ Complete |
+| 4 | Redesign overall score display (smaller, use gradient colors) | ✅ Complete |
 | 5 | Remove search function (API cost concerns) | ⬜ Pending |
 | 6 | Update domain description text (Cat to provide copy) | ⬜ Blocked |
 | 7 | Create basemap selector widget (remove EEZ boundaries) | ⬜ Pending |
@@ -30,7 +30,7 @@
 | 12 | Create debugging widget system (label config, hidden but toggleable) | ⬜ Pending |
 | 13 | Performance and saturation testing (front-end and back-end) | ⬜ Pending |
 
-**Progress:** 5/15 complete (8 pending, 1 blocked, 1 on hold)
+**Progress:** 7/15 complete (6 pending, 1 blocked, 1 on hold)
 
 **Note:** Task 1 (map labels) ✅ COMPLETE! Two issues fixed: (1) Y-flip script was breaking tiles - removed, (2) `text-variable-anchor` was causing labels to slide during zoom - switched to fixed `text-anchor: "center"`.
 
@@ -57,6 +57,7 @@
 | Jan 28 | **✅ Task 1c COMPLETE!** - Deployed labels to production tile server. Copied labels.mbtiles (2.3M) and config.json to major-sculpin server, restarted Docker container. Verified labels endpoint live at `https://major-sculpin.nceas.ucsb.edu/data/labels/{z}/{x}/{y}.pbf`. Added `VITE_FORCE_PRODUCTION_TILES` env var for testing production tiles locally. Labels now live in production! |
 | Jan 29 | **✅ Task 2 COMPLETE!** - Created GradientCustomizer widget with live preview. Features: per-domain gradient controls (min/max values, min/max colors), global presets (55-90 ★, 0-100, 50-85, 60-95), JSON export/download, localStorage persistence. Toggle via Ctrl+Shift+G or Dev Tools dropdown. Widget updates domain score boxes and flower chart colors in real-time. Files created: `gradientConfigTypes.ts`, `GradientCustomizer.tsx`. Updated: `domainScoreColors.ts`, `MapLegend.tsx`, `App.tsx`, `Header.tsx`, `RightSidebar.tsx`, `LeftSidebar.tsx`, `FlowerChart.tsx`, Layout components. |
 | Feb 2 | **✅ Task 2b FIXED!** - Polygon color flickering bug caused by stale closure in `moveend` event handler. The `loadColors` function was capturing `selectedMetricIdObject.domainId` directly, but `moveend` handler (registered once on map init) held reference to old `loadColors`. Fix: Created `selectedMetricIdObjectRef` and read from that ref inside `loadColors`. Removed dependency array so function is stable. Now all event handlers (moveend, idle, sourcedata) use refs for current values. |
+| Feb 2 | **✅ Task 3 & 4 COMPLETE!** - Major sidebar redesign. Removed left sidebar entirely and consolidated content into right sidebar. New layout: (1) Top panel with Selected Region (left) and Overall Score Widget (right), (2) Individual Domain Scores section with larger FlowerChart, (3) Indicator Navigation (unchanged). Overall Score Widget now uses gradient colors (light yellow → crimson) instead of red-yellow-green, respects GradientCustomizer settings. CircularProgressBar updated with size variants (small/medium/large) and gradient-based coloring. Map now expands to full width. Files modified: `App.tsx`, `RightSidebar.tsx`, `MapArea.tsx`, `CircularProgressBar.tsx`, `domainScoreColors.ts`. |
 
 ---
 
@@ -711,7 +712,7 @@ This is a classic React "stale closure" bug. When using `useCallback` with event
 
 ### Task 3: Redesign Left Sidebar → Move Content to Right Sidebar
 
-**Status:** Pending
+**Status:** ✅ COMPLETE (Feb 2, 2026)
 
 **Priority:** HIGH
 
@@ -788,11 +789,29 @@ This is a classic React "stale closure" bug. When using `useCallback` with event
 
 **Related:** Task 4 (overall score redesign - defines Overall Score Widget)
 
+**Completed:**
+- ✅ Removed entire `LeftSidebar` component from `App.tsx`
+- ✅ Removed `leftSidebarOpen` state and related hamburger toggle
+- ✅ Updated `MapArea.tsx` to remove `leftSidebarOpen` prop (geo-level selector now at fixed position)
+- ✅ Created new RightSidebar layout with three sections:
+  1. **Top Panel (Gray Background)**: Selected Region (left) | Overall Score Widget (right)
+  2. **Individual Domain Scores**: Larger FlowerChart with legend
+  3. **Indicator Navigation**: Existing hierarchy browser (unchanged)
+- ✅ Removed "Selected Indicator" section from RightSidebar (redundant with subheader)
+- ✅ Map now expands to full width (no left sidebar offset)
+- ✅ Added new props to RightSidebar for region display (selectedGeoId, selectedRegionName, etc.)
+- ✅ Moved `buildRegionDisplayText` logic from LeftSidebarHeader to RightSidebar
+
+**Files Modified:**
+- `src/components/App.tsx` - Removed LeftSidebar import/usage, updated RightSidebar props
+- `src/components/RightSidebar.tsx` - Complete rewrite with new layout
+- `src/components/MapArea/MapArea.tsx` - Removed leftSidebarOpen prop, fixed geo-level selector position
+
 ---
 
 ### Task 4: Redesign Overall Score Display
 
-**Status:** Pending
+**Status:** ✅ COMPLETE (Feb 2, 2026)
 
 **Priority:** HIGH
 
@@ -844,6 +863,19 @@ This is a classic React "stale closure" bug. When using `useCallback` with event
 **Important:** The Overall Score Widget MUST get its background color from the gradient defined in the right sidebar. When Overall Resilience gradient is customized (Task 2), the widget should reflect that color.
 
 **Related:** Task 3 (left sidebar redesign - defines where this widget goes)
+
+**Completed:**
+- ✅ Updated `CircularProgressBar.tsx` to use gradient colors instead of red-yellow-green
+- ✅ Added `gradientConfig` prop to CircularProgressBar for custom gradient support
+- ✅ Added `size` prop with three variants: `small` (h-20/w-20), `medium` (h-28/w-28), `large` (h-40/w-40)
+- ✅ Now uses Overall Resilience gradient (light yellow → crimson) from `getOverallScoreColor()`
+- ✅ Updated `getOverallScoreColor()` in `domainScoreColors.ts` to accept optional `gradientConfig`
+- ✅ Widget respects GradientCustomizer settings when configured
+- ✅ Smaller widget now fits nicely in the top panel of redesigned RightSidebar
+
+**Files Modified:**
+- `src/components/LeftSidebar/CircularProgressBar.tsx` - Complete rewrite with gradient colors and size variants
+- `src/utils/domainScoreColors.ts` - Added gradientConfig support to `getOverallScoreColor()`
 
 ---
 

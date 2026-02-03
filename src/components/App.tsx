@@ -8,9 +8,13 @@ import { LabelConfig, DEFAULT_LABEL_CONFIG } from "../types/labelConfigTypes";
 import { DomainScores } from "../utils/domainScoreColors";
 import { GradientCustomizer, LabelConfigWidget } from "./DevTools";
 import Header from "./Header/Header";
-import MapArea from "./MapArea/MapArea";
+import MapArea, { BasemapId, BASEMAP_OPTIONS } from "./MapArea/MapArea";
 import RightSidebar from "./RightSidebar";
 import Subheader from "./Subheader/Subheader";
+
+// Basemap localStorage key
+const BASEMAP_STORAGE_KEY = "wwri-basemap";
+const DEFAULT_BASEMAP: BasemapId = "carto-positron";
 
 // Summary data structure: geoid -> domain scores
 interface SummaryData {
@@ -129,6 +133,17 @@ function App() {
     return JSON.parse(JSON.stringify(DEFAULT_GRADIENT_CONFIG));
   });
 
+  // Dev tools: Basemap selection
+  const [selectedBasemap, setSelectedBasemap] = useState<BasemapId>(() => {
+    const stored = localStorage.getItem(BASEMAP_STORAGE_KEY);
+    return (stored && stored in BASEMAP_OPTIONS) ? stored as BasemapId : DEFAULT_BASEMAP;
+  });
+
+  // Save basemap to localStorage when it changes
+  useEffect(() => {
+    localStorage.setItem(BASEMAP_STORAGE_KEY, selectedBasemap);
+  }, [selectedBasemap]);
+
   // Save label config to localStorage when it changes
   useEffect(() => {
     localStorage.setItem("wwri-label-config", JSON.stringify(labelConfig));
@@ -246,6 +261,8 @@ function App() {
         onToggleLabelConfig={() => setLabelConfigOpen((prev) => !prev)}
         gradientConfigOpen={gradientConfigOpen}
         onToggleGradientConfig={() => setGradientConfigOpen((prev) => !prev)}
+        selectedBasemap={selectedBasemap}
+        onBasemapChange={setSelectedBasemap}
       />
       
       {/* Dev Tools: Label Configuration Widget (only in DEBUG mode) */}
@@ -288,6 +305,7 @@ function App() {
             labelConfig={labelConfig}
             onZoomChange={setCurrentZoom}
             gradientConfig={gradientConfig}
+            selectedBasemap={selectedBasemap}
           />
         </div>
         <RightSidebar

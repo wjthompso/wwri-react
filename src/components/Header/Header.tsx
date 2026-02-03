@@ -1,12 +1,15 @@
 import React, { useState, useRef, useEffect } from "react";
 import Vector from "../../assets/Vector.svg";
 import { isDebugMode } from "../../config/featureFlags";
+import { BasemapId, BASEMAP_OPTIONS } from "../MapArea/MapArea";
 
 interface HeaderProps {
   labelConfigOpen?: boolean;
   onToggleLabelConfig?: () => void;
   gradientConfigOpen?: boolean;
   onToggleGradientConfig?: () => void;
+  selectedBasemap?: BasemapId;
+  onBasemapChange?: (basemap: BasemapId) => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ 
@@ -14,6 +17,8 @@ const Header: React.FC<HeaderProps> = ({
   onToggleLabelConfig,
   gradientConfigOpen = false,
   onToggleGradientConfig,
+  selectedBasemap = "carto-positron",
+  onBasemapChange,
 }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -130,6 +135,30 @@ const Header: React.FC<HeaderProps> = ({
                   {gradientConfigOpen ? "ON" : "OFF"}
                 </span>
               </button>
+
+              {/* Basemap Selector */}
+              <div className="border-t border-gray-100 px-3 py-2">
+                <div className="mb-1.5 flex items-center gap-2">
+                  <span>🗺️</span>
+                  <span className="text-sm">Basemap</span>
+                </div>
+                <div className="flex flex-wrap gap-1">
+                  {(Object.keys(BASEMAP_OPTIONS) as BasemapId[]).map((basemapId) => (
+                    <button
+                      key={basemapId}
+                      id={`basemap-option-${basemapId}`}
+                      onClick={() => onBasemapChange?.(basemapId)}
+                      className={`rounded px-2 py-1 text-xs font-medium transition-colors ${
+                        selectedBasemap === basemapId
+                          ? "bg-leftSidebarOverallResilience text-white"
+                          : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                      }`}
+                    >
+                      {BASEMAP_OPTIONS[basemapId].name}
+                    </button>
+                  ))}
+                </div>
+              </div>
 
               {/* Keyboard shortcuts */}
               <div className="border-t border-gray-100 px-3 py-2">

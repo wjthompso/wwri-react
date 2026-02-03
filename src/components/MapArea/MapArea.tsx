@@ -25,6 +25,52 @@ import MapLegend from "./MapLegend";
 // Layer IDs for querying (fill layers are interactive)
 const INTERACTIVE_LAYERS = ["us-fill", "canada-fill"];
 
+// ============================================================================
+// BASEMAP CONFIGURATION
+// ============================================================================
+
+/** Available basemap options with their tile URLs and metadata */
+export interface BasemapOption {
+  id: string;
+  name: string;
+  tiles: string[];
+  attribution: string;
+  tileSize?: number;
+}
+
+/** 
+ * Available basemaps - all free for non-commercial/educational use.
+ * CartoDB/CARTO basemaps are clean and don't show EEZ boundary lines.
+ * Using "_nolabels" variants since we handle our own labels from Natural Earth data.
+ */
+export const BASEMAP_OPTIONS: Record<string, BasemapOption> = {
+  "carto-positron": {
+    id: "carto-positron",
+    name: "Light",
+    tiles: ["https://basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png"],
+    attribution: '&copy; <a href="https://carto.com/">CARTO</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    tileSize: 256,
+  },
+  "carto-voyager": {
+    id: "carto-voyager",
+    name: "Voyager",
+    tiles: ["https://basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png"],
+    attribution: '&copy; <a href="https://carto.com/">CARTO</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    tileSize: 256,
+  },
+  "carto-dark": {
+    id: "carto-dark",
+    name: "Dark",
+    tiles: ["https://basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png"],
+    attribution: '&copy; <a href="https://carto.com/">CARTO</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    tileSize: 256,
+  },
+};
+
+export type BasemapId = keyof typeof BASEMAP_OPTIONS;
+
+const DEFAULT_BASEMAP: BasemapId = "carto-positron";
+
 // Boundary layer IDs (for state/province borders that persist across geo levels)
 const BOUNDARY_LAYERS = [
   "us-state-boundary",
@@ -35,22 +81,24 @@ const BOUNDARY_LAYERS = [
 const TILE_SERVER_URL = "https://major-sculpin.nceas.ucsb.edu";
 
 /**
- * Creates the initial map style with OSM base layer, boundary tile sources, and label source.
+ * Creates the initial map style with configurable basemap, boundary tile sources, and label source.
  * State/province boundary sources are included so they're always available.
  * Labels use self-hosted vector tiles from Natural Earth data.
  * Data layers are added dynamically based on selected geo level.
  */
-const getBaseMapStyle = (): StyleSpecification => ({
-  version: 8,
-  // Free font glyphs from OpenMapTiles (required for text labels)
-  glyphs: "https://fonts.openmaptiles.org/{fontstack}/{range}.pbf",
-  sources: {
-    osm: {
-      type: "raster",
-      tiles: ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"],
-      tileSize: 256,
-      attribution: "Map data © OpenStreetMap contributors",
-    },
+const getBaseMapStyle = (basemapId: BasemapId = DEFAULT_BASEMAP): StyleSpecification => {
+  const basemap = BASEMAP_OPTIONS[basemapId];
+  return {
+    version: 8,
+    // Free font glyphs from OpenMapTiles (required for text labels)
+    glyphs: "https://fonts.openmaptiles.org/{fontstack}/{range}.pbf",
+    sources: {
+      basemap: {
+        type: "raster",
+        tiles: basemap.tiles,
+        tileSize: basemap.tileSize || 256,
+        attribution: basemap.attribution,
+      },
     // State/province boundary sources (always available for boundary lines)
     // Note: maxzoom set to 10 because these tiles only exist up to z10 on the server
     "us-state-boundaries": {
@@ -74,14 +122,15 @@ const getBaseMapStyle = (): StyleSpecification => ({
       attribution: "Labels: Natural Earth Data",
     },
   },
-  layers: [
-    {
-      id: "simple-tiles",
-      type: "raster",
-      source: "osm",
-    },
-  ],
-});
+    layers: [
+      {
+        id: "basemap-layer",
+        type: "raster",
+        source: "basemap",
+      },
+    ],
+  };
+};
 
 /**
  * Location data structure - supports both US and Canada fields
@@ -217,6 +266,7 @@ interface MapAreaProps {
   labelConfig?: LabelConfig;
   onZoomChange?: (zoom: number) => void;
   gradientConfig?: GradientConfig | null;
+  selectedBasemap?: BasemapId;
 }
 
 const MapArea: React.FC<MapAreaProps> = ({
@@ -232,6 +282,7 @@ const MapArea: React.FC<MapAreaProps> = ({
   labelConfig,
   onZoomChange,
   gradientConfig,
+  selectedBasemap = DEFAULT_BASEMAP,
 }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const [geoMetrics, setGeoMetrics] = useState<Record<string, number>>({});
@@ -241,6 +292,9 @@ const MapArea: React.FC<MapAreaProps> = ({
   const [dataLoaded, setDataLoaded] = useState(false);
   const [mapLoaded, setMapLoaded] = useState(false);
   const mapRef = useRef<maplibregl.Map | null>(null);
+
+  // Track basemap in ref for use in callbacks
+  const selectedBasemapRef = useRef(selectedBasemap);
   const popupRef = useRef<maplibregl.Popup | null>(null);
   
   // Track selected feature for highlight
@@ -284,6 +338,36 @@ const MapArea: React.FC<MapAreaProps> = ({
       endColorRef.current = selectedMetricIdObject.colorGradient.endColor;
     }
   }, [selectedMetricIdObject, gradientConfig]);
+
+  // Handle basemap changes from props - update map source
+  useEffect(() => {
+    selectedBasemapRef.current = selectedBasemap;
+    
+    // Update the map basemap source if map is loaded
+    if (mapRef.current && mapLoaded) {
+      const map = mapRef.current;
+      const basemap = BASEMAP_OPTIONS[selectedBasemap];
+      
+      // Get the current basemap source and update its tiles
+      const source = map.getSource("basemap") as maplibregl.RasterTileSource;
+      if (source) {
+        // MapLibre doesn't support updating tiles directly, so we need to 
+        // remove and re-add the source with the new tiles
+        const style = map.getStyle();
+        if (style) {
+          // Update the source configuration
+          style.sources.basemap = {
+            type: "raster",
+            tiles: basemap.tiles,
+            tileSize: basemap.tileSize || 256,
+            attribution: basemap.attribution,
+          };
+          // Re-set the style (preserves layers but updates source)
+          map.setStyle(style);
+        }
+      }
+    }
+  }, [selectedBasemap, mapLoaded]);
 
   // Fetch data when metric or geo level changes
   useEffect(() => {
@@ -1031,7 +1115,7 @@ const MapArea: React.FC<MapAreaProps> = ({
     if (mapContainerRef.current && !mapRef.current) {
       const map = new maplibregl.Map({
         container: mapContainerRef.current,
-        style: getBaseMapStyle(),
+        style: getBaseMapStyle(selectedBasemapRef.current),
         center: [-103.9375, 38.7888894],
         zoom: 3.3,
       });
@@ -1371,7 +1455,7 @@ const MapArea: React.FC<MapAreaProps> = ({
 
   return (
     <div id="map-area" className="relative h-full w-full">
-      {/* Geographic Level Selector - positioned at top-left over the map, shifts when sidebar is open */}
+      {/* Geographic Level Selector - positioned at top-left over the map */}
       <div
         id="geo-level-selector"
         className="absolute left-3 top-1 z-10 flex h-10 gap-1 rounded-md border border-gray-400 bg-white p-1 shadow-md"

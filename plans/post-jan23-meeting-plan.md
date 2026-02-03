@@ -25,7 +25,8 @@
 | 4d | Ensure county labels include "County" suffix | ✅ Complete |
 | 5 | Remove search function (API cost concerns) | ✅ Complete |
 | 6 | Update domain description text (Cat to provide copy) | ⬜ Blocked |
-| 7 | Create basemap selector widget (remove EEZ boundaries) | ⬜ Pending |
+| 7 | Create basemap selector widget (remove EEZ boundaries) | ✅ Complete |
+| 7b | Create label source switcher widget (custom vs CARTO labels) | ⬜ Pending |
 | 8 | Create map projection selector widget (test multiple projections) | ⬜ Pending |
 | 9 | Set initial map orientation to center on west coast | ⬜ Pending |
 | 10 | Report button - defer decision (Cat to discuss with comms) | ⏸️ On Hold |
@@ -33,7 +34,7 @@
 | 12 | Create debugging widget system (label config, hidden but toggleable) | ⬜ Pending |
 | 13 | Performance and saturation testing (front-end and back-end) | ⬜ Pending |
 
-**Progress:** 11/18 complete (6 pending, 1 blocked, 1 on hold)
+**Progress:** 12/19 complete (6 pending, 1 blocked, 1 on hold)
 
 **Note:** Task 1 (map labels) ✅ COMPLETE! Two issues fixed: (1) Y-flip script was breaking tiles - removed, (2) `text-variable-anchor` was causing labels to slide during zoom - switched to fixed `text-anchor: "center"`.
 
@@ -65,6 +66,8 @@
 | Feb 2 | **✅ Task 4d COMPLETE!** - Updated county label display to ensure "County" suffix is always included. Added case-insensitive check to append " County" before state abbreviation if not already present in region name. Examples: "Washoe, NV" → "Washoe County, NV", "King County, WA" → "King County, WA" (no change). Files modified: `RightSidebar.tsx`. |
 | Feb 2 | **✅ Task 4c COMPLETE!** - Confirmed with user feedback that removing the "Overall Score" label from the top panel does not create clarity issues. The circular progress bar with gradient colors and prominent score number is self-explanatory. Label removal decision validated. |
 | Feb 2 | **✅ Task 5 COMPLETE!** - Removed map location search functionality to eliminate API costs. Removed OpenCage geocoding API integration, search input box, autocomplete suggestions, and all related state management. SearchIcon and CloseIcon imports removed from MapArea.tsx. Indicator search in RightSidebar remains (local filtering, no API costs). |
+| Feb 3 | **✅ Task 7 COMPLETE!** - Created basemap selector widget. Added 3 CARTO basemap options (Light, Voyager, Dark) using `_nolabels` variants so only our custom Natural Earth/GeoNames labels appear. Selector moved to Dev Tools dropdown in header. Persists selection to localStorage. Removed OpenStreetMap (no no-labels variant). |
+| Feb 3 | **📋 Task 7b ADDED** - Follow-up task to create label source switcher widget. Will allow switching between custom Natural Earth/GeoNames labels and CARTO `*_only_labels` tiles for comparison. |
 
 ---
 
@@ -1020,7 +1023,7 @@ This is a classic React "stale closure" bug. When using `useCallback` with event
 
 ### Task 7: Create Basemap Selector Widget
 
-**Status:** ⬜ Pending
+**Status:** ✅ COMPLETE (Feb 3, 2026)
 
 **Priority:** 🔴 MEDIUM
 
@@ -1028,47 +1031,95 @@ This is a classic React "stale closure" bug. When using `useCallback` with event
 
 **Description:** Create a basemap selector widget that lets users choose between multiple basemap options. This addresses the EEZ boundary lines issue by giving alternatives without removing functionality.
 
-**Goals:**
-- Remove distracting EEZ/maritime boundary lines (current issue)
-- Provide multiple basemap options for team to choose from
-- Find clean, minimal basemaps suitable for data visualization
-- Keep everything free/self-hosted (no API costs)
+**Completed:**
+- ✅ Created basemap selector widget with 3 CARTO options
+- ✅ CARTO Positron (light, minimal) - **DEFAULT** - no EEZ lines!
+- ✅ CARTO Voyager (more detail, colored)
+- ✅ CARTO Dark (dark theme option)
+- ✅ All basemaps use `_nolabels` variants - only our custom Natural Earth/GeoNames labels appear
+- ✅ Widget moved to Dev Tools dropdown in header (matches other debug widgets)
+- ✅ Selection persists to localStorage
+- ✅ Attributions included for all basemaps
+- ✅ All basemaps are free for non-commercial/educational use
 
-**Constraints:**
-- ✅ Must be free (no API costs)
-- ✅ Must respect licensing agreements
-- ✅ Prefer self-hosted or truly free tile servers
-- ✅ Clean appearance suitable for data overlay
-- ✅ Minimal distracting features (like EEZ lines)
+**Files Modified:**
+- `src/components/App.tsx`:
+  - Added `selectedBasemap` state with localStorage persistence
+  - Passes basemap to MapArea and Header components
+- `src/components/Header/Header.tsx`:
+  - Added basemap selector inline in Dev Tools dropdown
+  - Shows 3 basemap buttons (Light, Voyager, Dark)
+- `src/components/MapArea/MapArea.tsx`:
+  - Added `BASEMAP_OPTIONS` configuration object with 3 basemaps (all `_nolabels`)
+  - Added `BasemapId` type and `BasemapOption` interface (exported)
+  - Updated `getBaseMapStyle()` to accept basemap parameter
+  - Removed inline basemap selector UI
+  - Accepts `selectedBasemap` prop from App.tsx
 
-**Basemap candidates to research:**
-- [ ] Current: Stamen Toner Lite (via Stadia Maps)
-- [ ] OpenStreetMap Standard
-- [ ] OpenStreetMap Carto Light
-- [ ] CartoDB Positron (light, minimal)
-- [ ] CartoDB Voyager
-- [ ] Natural Earth II (self-host via raster tiles)
-- [ ] Research Climate Vulnerability Index basemap
-- [ ] ArcGIS free tier basemaps (if licensing allows)
+**Basemap Options:**
 
-**Tasks:**
-- [ ] Research Climate Vulnerability Index basemap source
-- [ ] Test 4-5 candidate basemaps in MapArea.tsx
-- [ ] Create dropdown/button widget for basemap selection
-- [ ] Verify licensing for each basemap option
-- [ ] Add attribution for each basemap
-- [ ] Save user's basemap preference to localStorage
-- [ ] Document each basemap's pros/cons
+| ID | Name | Provider | URL Pattern | Notes |
+|----|------|----------|-------------|-------|
+| `carto-positron` | Light | CARTO | `light_nolabels` | Clean, minimal, **no EEZ lines** ★ Default |
+| `carto-voyager` | Voyager | CARTO | `voyager_nolabels` | More colorful, good detail |
+| `carto-dark` | Dark | CARTO | `dark_nolabels` | Dark theme option |
 
-**Deliverables:**
-- Basemap selector widget in UI
-- 3-5 basemap options available
-- Documentation of basemap sources and licenses
+**Licensing:**
+- CARTO basemaps: Free for most use cases, attribution required
 
 **Notes:**
-- Current basemap has distracting EEZ/maritime lines
-- Cat mentioned these lines are confusing and not relevant to WWRI
-- Better to give options than pick one "correct" basemap
+- CARTO Positron set as default because it's clean and doesn't show EEZ boundaries
+- Using `_nolabels` variants ensures only our custom Natural Earth/GeoNames labels appear (no duplicate labels)
+- Removed OpenStreetMap option (doesn't offer no-labels variant)
+- Dark mode option available for presentations or preference
+- Selection persists across sessions via localStorage
+
+---
+
+### Task 7b: Create Label Source Switcher Widget
+
+**Status:** ⬜ Pending
+
+**Priority:** 🔴 MEDIUM
+
+**Scope:** Single chat window - widget implementation
+
+**Description:** Create a debug widget that allows switching between our custom Natural Earth/GeoNames labels and CARTO's label tiles. This enables comparison and gives flexibility to use CARTO labels if preferred.
+
+**Goals:**
+- Toggle between two label sources:
+  1. **Custom labels** (current): Natural Earth/GeoNames vector tiles (self-hosted)
+  2. **CARTO labels**: CARTO `*_only_labels` raster tiles (transparent background, layered on top)
+- Allow real-time switching without page reload
+- Show/hide label layers dynamically
+- Persist preference to localStorage
+
+**Technical Approach:**
+- CARTO provides `*_only_labels` tiles (e.g., `light_only_labels`, `voyager_only_labels`, `dark_only_labels`)
+- These are raster tiles with transparent backgrounds - perfect for layering on top of polygons
+- Add as a second raster source/layer that sits above data polygons but below any UI elements
+- Toggle visibility of both label sources based on selection
+
+**Tasks:**
+- [ ] Research CARTO `*_only_labels` tile URLs and formats
+- [ ] Add CARTO label source to map style (raster layer)
+- [ ] Create label source switcher widget in Dev Tools dropdown
+- [ ] Implement toggle logic to show/hide appropriate label layers
+- [ ] Match CARTO label basemap to selected basemap (e.g., if Voyager basemap selected, use Voyager labels)
+- [ ] Add localStorage persistence for label source preference
+- [ ] Test label rendering and z-ordering (labels should be above polygons)
+
+**Deliverables:**
+- Label source switcher widget in Dev Tools dropdown
+- Ability to switch between custom and CARTO labels
+- CARTO labels match selected basemap style
+- Documentation of label source options
+
+**Notes:**
+- CARTO labels are unlimited/free (same as basemaps)
+- Useful for comparing label quality/density between sources
+- May prefer CARTO labels if they have better city coverage or styling
+- Custom labels give full control over what appears and when
 
 ---
 

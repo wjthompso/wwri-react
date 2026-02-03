@@ -8,13 +8,17 @@ import { LabelConfig, DEFAULT_LABEL_CONFIG } from "../types/labelConfigTypes";
 import { DomainScores } from "../utils/domainScoreColors";
 import { GradientCustomizer, LabelConfigWidget } from "./DevTools";
 import Header from "./Header/Header";
-import MapArea, { BasemapId, BASEMAP_OPTIONS } from "./MapArea/MapArea";
+import MapArea, { BasemapId, BASEMAP_OPTIONS, LabelSource } from "./MapArea/MapArea";
 import RightSidebar from "./RightSidebar";
 import Subheader from "./Subheader/Subheader";
 
 // Basemap localStorage key
 const BASEMAP_STORAGE_KEY = "wwri-basemap";
 const DEFAULT_BASEMAP: BasemapId = "carto-positron";
+
+// Label source localStorage key
+const LABEL_SOURCE_STORAGE_KEY = "wwri-label-source";
+const DEFAULT_LABEL_SOURCE: LabelSource = "custom";
 
 // Summary data structure: geoid -> domain scores
 interface SummaryData {
@@ -144,6 +148,17 @@ function App() {
     localStorage.setItem(BASEMAP_STORAGE_KEY, selectedBasemap);
   }, [selectedBasemap]);
 
+  // Dev tools: Label source selection (custom vs CARTO)
+  const [labelSource, setLabelSource] = useState<LabelSource>(() => {
+    const stored = localStorage.getItem(LABEL_SOURCE_STORAGE_KEY);
+    return (stored === "custom" || stored === "carto") ? stored : DEFAULT_LABEL_SOURCE;
+  });
+
+  // Save label source to localStorage when it changes
+  useEffect(() => {
+    localStorage.setItem(LABEL_SOURCE_STORAGE_KEY, labelSource);
+  }, [labelSource]);
+
   // Save label config to localStorage when it changes
   useEffect(() => {
     localStorage.setItem("wwri-label-config", JSON.stringify(labelConfig));
@@ -263,6 +278,8 @@ function App() {
         onToggleGradientConfig={() => setGradientConfigOpen((prev) => !prev)}
         selectedBasemap={selectedBasemap}
         onBasemapChange={setSelectedBasemap}
+        labelSource={labelSource}
+        onLabelSourceChange={setLabelSource}
       />
       
       {/* Dev Tools: Label Configuration Widget (only in DEBUG mode) */}
@@ -306,6 +323,7 @@ function App() {
             onZoomChange={setCurrentZoom}
             gradientConfig={gradientConfig}
             selectedBasemap={selectedBasemap}
+            labelSource={labelSource}
           />
         </div>
         <RightSidebar

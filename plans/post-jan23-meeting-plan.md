@@ -26,7 +26,8 @@
 | 5 | Remove search function (API cost concerns) | ✅ Complete |
 | 6 | Update domain description text (Cat to provide copy) | ⬜ Blocked |
 | 7 | Create basemap selector widget (remove EEZ boundaries) | ✅ Complete |
-| 7b | Create label source switcher widget (custom vs CARTO labels) | ⬜ Pending |
+| 7b | Create label source switcher widget (custom vs CARTO labels) | ✅ Complete |
+| 7c | Research other free label-only vector tile sources (alternatives to CARTO) | ⬜ Pending |
 | 8 | Create map projection selector widget (test multiple projections) | ⬜ Pending |
 | 9 | Set initial map orientation to center on west coast | ⬜ Pending |
 | 10 | Report button - defer decision (Cat to discuss with comms) | ⏸️ On Hold |
@@ -34,7 +35,7 @@
 | 12 | Create debugging widget system (label config, hidden but toggleable) | ⬜ Pending |
 | 13 | Performance and saturation testing (front-end and back-end) | ⬜ Pending |
 
-**Progress:** 12/19 complete (6 pending, 1 blocked, 1 on hold)
+**Progress:** 13/20 complete (6 pending, 1 blocked, 1 on hold)
 
 **Note:** Task 1 (map labels) ✅ COMPLETE! Two issues fixed: (1) Y-flip script was breaking tiles - removed, (2) `text-variable-anchor` was causing labels to slide during zoom - switched to fixed `text-anchor: "center"`.
 
@@ -68,6 +69,7 @@
 | Feb 2 | **✅ Task 5 COMPLETE!** - Removed map location search functionality to eliminate API costs. Removed OpenCage geocoding API integration, search input box, autocomplete suggestions, and all related state management. SearchIcon and CloseIcon imports removed from MapArea.tsx. Indicator search in RightSidebar remains (local filtering, no API costs). |
 | Feb 3 | **✅ Task 7 COMPLETE!** - Created basemap selector widget. Added 3 CARTO basemap options (Light, Voyager, Dark) using `_nolabels` variants so only our custom Natural Earth/GeoNames labels appear. Selector moved to Dev Tools dropdown in header. Persists selection to localStorage. Removed OpenStreetMap (no no-labels variant). |
 | Feb 3 | **📋 Task 7b ADDED** - Follow-up task to create label source switcher widget. Will allow switching between custom Natural Earth/GeoNames labels and CARTO `*_only_labels` tiles for comparison. |
+| Feb 3 | **✅ Task 7b COMPLETE!** - Created label source switcher widget. Allows toggling between Custom (GeoNames/Natural Earth) labels and CARTO labels. CARTO labels use `*_only_labels` raster tiles with transparent backgrounds, overlaid on top of polygons. Widget in Dev Tools dropdown matches basemap style (Light → light_only_labels, etc.). Selection persists to localStorage. |
 
 ---
 
@@ -1078,7 +1080,7 @@ This is a classic React "stale closure" bug. When using `useCallback` with event
 
 ### Task 7b: Create Label Source Switcher Widget
 
-**Status:** ⬜ Pending
+**Status:** ✅ COMPLETE (Feb 3, 2026)
 
 **Priority:** 🔴 MEDIUM
 
@@ -1086,40 +1088,95 @@ This is a classic React "stale closure" bug. When using `useCallback` with event
 
 **Description:** Create a debug widget that allows switching between our custom Natural Earth/GeoNames labels and CARTO's label tiles. This enables comparison and gives flexibility to use CARTO labels if preferred.
 
-**Goals:**
-- Toggle between two label sources:
-  1. **Custom labels** (current): Natural Earth/GeoNames vector tiles (self-hosted)
+**Completed:**
+- ✅ Added CARTO `*_only_labels` raster tile sources to map style
+- ✅ Created label source switcher widget in Dev Tools dropdown
+- ✅ Toggle between two label sources:
+  1. **Custom labels**: Natural Earth/GeoNames vector tiles (self-hosted)
   2. **CARTO labels**: CARTO `*_only_labels` raster tiles (transparent background, layered on top)
-- Allow real-time switching without page reload
-- Show/hide label layers dynamically
-- Persist preference to localStorage
+- ✅ Real-time switching without page reload
+- ✅ CARTO labels automatically match selected basemap style (Light → `light_only_labels`, Voyager → `voyager_only_labels`, Dark → `dark_only_labels`)
+- ✅ Selection persists to localStorage
 
-**Technical Approach:**
-- CARTO provides `*_only_labels` tiles (e.g., `light_only_labels`, `voyager_only_labels`, `dark_only_labels`)
-- These are raster tiles with transparent backgrounds - perfect for layering on top of polygons
-- Add as a second raster source/layer that sits above data polygons but below any UI elements
-- Toggle visibility of both label sources based on selection
+**Files Modified:**
+- `src/components/MapArea/MapArea.tsx`:
+  - Added `LabelSource` type (`"custom" | "carto"`)
+  - Added `CARTO_LABEL_TILES` configuration with URLs for each basemap variant
+  - Added `carto-labels` raster source to initial map style
+  - Added `addCartoLabelsLayer()` and `repositionCartoLabelsLayer()` functions
+  - Added `updateLabelSourceVisibility()` function to toggle between sources
+  - Added `labelSource` prop to MapAreaProps interface
+  - Added useEffects to respond to label source and basemap changes
+- `src/components/Header/Header.tsx`:
+  - Added `labelSource` and `onLabelSourceChange` props
+  - Added label source selector UI in Dev Tools dropdown (Custom/CARTO buttons)
+- `src/components/App.tsx`:
+  - Added `LabelSource` import
+  - Added `labelSource` state with localStorage persistence
+  - Passed `labelSource` and `onLabelSourceChange` to Header and MapArea
 
-**Tasks:**
-- [ ] Research CARTO `*_only_labels` tile URLs and formats
-- [ ] Add CARTO label source to map style (raster layer)
-- [ ] Create label source switcher widget in Dev Tools dropdown
-- [ ] Implement toggle logic to show/hide appropriate label layers
-- [ ] Match CARTO label basemap to selected basemap (e.g., if Voyager basemap selected, use Voyager labels)
-- [ ] Add localStorage persistence for label source preference
-- [ ] Test label rendering and z-ordering (labels should be above polygons)
+**CARTO Label Tile URLs:**
+| Basemap | Label Tiles URL |
+|---------|-----------------|
+| Light (Positron) | `https://basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png` |
+| Voyager | `https://basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}{r}.png` |
+| Dark | `https://basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png` |
 
-**Deliverables:**
-- Label source switcher widget in Dev Tools dropdown
-- Ability to switch between custom and CARTO labels
-- CARTO labels match selected basemap style
-- Documentation of label source options
+**Usage:**
+1. Open Dev Tools dropdown in header
+2. Find "Label Source" section
+3. Click "Custom (GeoNames)" or "CARTO" to switch label sources
+4. Changes apply immediately and persist across sessions
 
 **Notes:**
 - CARTO labels are unlimited/free (same as basemaps)
 - Useful for comparing label quality/density between sources
-- May prefer CARTO labels if they have better city coverage or styling
 - Custom labels give full control over what appears and when
+- CARTO labels have good coverage and professional styling
+
+---
+
+### Task 7c: Research Other Free Label-Only Vector Tile Sources
+
+**Status:** ⬜ Pending
+
+**Priority:** 🔴 LOW
+
+**Scope:** Research task - identify alternatives to CARTO labels
+
+**Description:** Research other free label-only vector tile sources that could be used as alternatives to CARTO labels. CARTO labels are raster tiles (not vector), so they can't be styled. Vector tile sources would allow full styling control while potentially offering better coverage or different city selection.
+
+**Goals:**
+- Find free/open-source label-only vector tile providers
+- Identify providers that don't require API keys
+- Compare coverage, quality, and licensing terms
+- Document findings for potential future integration
+
+**Research Areas:**
+- [ ] OpenMapTiles - Do they offer label-only tiles?
+- [ ] MapTiler - Free tier options for labels
+- [ ] Stadia Maps - Open source vector tiles
+- [ ] Protomaps - Open source vector tiles
+- [ ] Other open-source tile providers
+- [ ] Self-hosted options (Natural Earth, GeoNames as vector tiles)
+
+**Criteria:**
+- Must be free (no API costs)
+- Must be vector tiles (not raster) for styling control
+- Must cover North America (US + Canada)
+- Must include city names and state/province labels
+- Must not require API keys or authentication
+- Prefer open-source or permissive licensing
+
+**Deliverables:**
+- Research document listing potential providers
+- Comparison table (coverage, licensing, format, etc.)
+- Recommendations for integration if promising options found
+
+**Notes:**
+- Current custom labels use GeoNames data (vector tiles, full control)
+- CARTO labels are raster (no styling control) but free and unlimited
+- Vector tile labels would combine best of both worlds: free + stylable
 
 ---
 

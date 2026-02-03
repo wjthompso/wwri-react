@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import Vector from "../../assets/Vector.svg";
 import { isDebugMode } from "../../config/featureFlags";
-import { BasemapId, BASEMAP_OPTIONS } from "../MapArea/MapArea";
+import { BasemapId, BASEMAP_OPTIONS, LabelSource } from "../MapArea/MapArea";
 
 interface HeaderProps {
   labelConfigOpen?: boolean;
@@ -10,6 +10,8 @@ interface HeaderProps {
   onToggleGradientConfig?: () => void;
   selectedBasemap?: BasemapId;
   onBasemapChange?: (basemap: BasemapId) => void;
+  labelSource?: LabelSource;
+  onLabelSourceChange?: (source: LabelSource) => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ 
@@ -19,6 +21,8 @@ const Header: React.FC<HeaderProps> = ({
   onToggleGradientConfig,
   selectedBasemap = "carto-positron",
   onBasemapChange,
+  labelSource = "custom",
+  onLabelSourceChange,
 }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -157,6 +161,38 @@ const Header: React.FC<HeaderProps> = ({
                       {BASEMAP_OPTIONS[basemapId].name}
                     </button>
                   ))}
+                </div>
+              </div>
+
+              {/* Label Source Selector */}
+              <div className="border-t border-gray-100 px-3 py-2">
+                <div className="mb-1.5 flex items-center gap-2">
+                  <span>🏷️</span>
+                  <span className="text-sm">Label Source</span>
+                </div>
+                <div className="flex flex-wrap gap-1">
+                  <button
+                    id="label-source-custom"
+                    onClick={() => onLabelSourceChange?.("custom")}
+                    className={`rounded px-2 py-1 text-xs font-medium transition-colors ${
+                      labelSource === "custom"
+                        ? "bg-leftSidebarOverallResilience text-white"
+                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                    }`}
+                  >
+                    Custom (GeoNames)
+                  </button>
+                  <button
+                    id="label-source-carto"
+                    onClick={() => onLabelSourceChange?.("carto")}
+                    className={`rounded px-2 py-1 text-xs font-medium transition-colors ${
+                      labelSource === "carto"
+                        ? "bg-leftSidebarOverallResilience text-white"
+                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                    }`}
+                  >
+                    CARTO
+                  </button>
                 </div>
               </div>
 

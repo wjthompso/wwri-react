@@ -71,6 +71,26 @@ export type BasemapId = keyof typeof BASEMAP_OPTIONS;
 
 const DEFAULT_BASEMAP: BasemapId = "carto-positron";
 
+// ============================================================================
+// LABEL SOURCE CONFIGURATION
+// ============================================================================
+
+/** Available label sources */
+export type LabelSource = "custom" | "carto";
+
+/** 
+ * CARTO label-only tile URLs for each basemap.
+ * These are PNG tiles with transparent backgrounds containing only labels.
+ * Can be overlaid on top of data polygons for clean labeling.
+ */
+export const CARTO_LABEL_TILES: Record<BasemapId, string> = {
+  "carto-positron": "https://basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png",
+  "carto-voyager": "https://basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}{r}.png",
+  "carto-dark": "https://basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png",
+};
+
+const DEFAULT_LABEL_SOURCE: LabelSource = "custom";
+
 // Boundary layer IDs (for state/province borders that persist across geo levels)
 const BOUNDARY_LAYERS = [
   "us-state-boundary",
@@ -81,9 +101,9 @@ const BOUNDARY_LAYERS = [
 const TILE_SERVER_URL = "https://major-sculpin.nceas.ucsb.edu";
 
 /**
- * Creates the initial map style with configurable basemap, boundary tile sources, and label source.
+ * Creates the initial map style with configurable basemap, boundary tile sources, and label sources.
  * State/province boundary sources are included so they're always available.
- * Labels use self-hosted vector tiles from Natural Earth data.
+ * Labels can use either self-hosted vector tiles (Natural Earth) or CARTO raster tiles.
  * Data layers are added dynamically based on selected geo level.
  */
 const getBaseMapStyle = (basemapId: BasemapId = DEFAULT_BASEMAP): StyleSpecification => {
@@ -113,13 +133,20 @@ const getBaseMapStyle = (basemapId: BasemapId = DEFAULT_BASEMAP): StyleSpecifica
       minzoom: 0,
       maxzoom: 10,
     },
-    // Self-hosted label tiles from Natural Earth data
+    // Self-hosted label tiles from Natural Earth/GeoNames data (custom labels)
     "wwri-labels": {
       type: "vector",
       tiles: [LABEL_TILES_URL],
       minzoom: 0,
       maxzoom: 14,
       attribution: "Labels: Natural Earth Data",
+    },
+    // CARTO label-only tiles (raster with transparent background)
+    "carto-labels": {
+      type: "raster",
+      tiles: [CARTO_LABEL_TILES[basemapId]],
+      tileSize: 256,
+      attribution: '&copy; <a href="https://carto.com/">CARTO</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     },
   },
     layers: [
@@ -267,6 +294,7 @@ interface MapAreaProps {
   onZoomChange?: (zoom: number) => void;
   gradientConfig?: GradientConfig | null;
   selectedBasemap?: BasemapId;
+  labelSource?: LabelSource;
 }
 
 const MapArea: React.FC<MapAreaProps> = ({
@@ -283,6 +311,7 @@ const MapArea: React.FC<MapAreaProps> = ({
   onZoomChange,
   gradientConfig,
   selectedBasemap = DEFAULT_BASEMAP,
+  labelSource = DEFAULT_LABEL_SOURCE,
 }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const [geoMetrics, setGeoMetrics] = useState<Record<string, number>>({});
@@ -927,6 +956,71 @@ const MapArea: React.FC<MapAreaProps> = ({
     });
   }, []);
 
+  /** Custom label layer IDs (for toggling visibility) */
+  const CUSTOM_LABEL_LAYERS = [
+    "labels-states-abbrev", 
+    "labels-states-full", 
+    "labels-cities-mega",
+    "labels-cities-major",
+    "labels-cities-large",
+    "labels-cities-medium",
+    "labels-cities-small",
+    "labels-cities-towns",
+    "labels-cities-small-towns",
+    "labels-cities-tiny"
+  ];
+
+  /**
+   * Adds the CARTO labels raster layer on top of all other layers.
+   * The layer renders CARTO's pre-rendered label tiles with transparent backgrounds.
+   */
+  const addCartoLabelsLayer = useCallback((map: maplibregl.Map) => {
+    if (map.getLayer("carto-labels-layer")) {
+      return;
+    }
+
+    map.addLayer({
+      id: "carto-labels-layer",
+      type: "raster",
+      source: "carto-labels",
+      paint: {
+        "raster-opacity": 1,
+      },
+    });
+    console.log("Added CARTO labels layer");
+  }, []);
+
+  /**
+   * Ensures the CARTO labels layer is always on top of the layer stack.
+   */
+  const repositionCartoLabelsLayer = useCallback((map: maplibregl.Map) => {
+    if (map.getLayer("carto-labels-layer")) {
+      map.moveLayer("carto-labels-layer");
+    }
+  }, []);
+
+  /**
+   * Updates label source visibility based on the selected source.
+   * Shows custom labels and hides CARTO labels, or vice versa.
+   */
+  const updateLabelSourceVisibility = useCallback((map: maplibregl.Map, source: LabelSource) => {
+    const showCustom = source === "custom";
+    
+    // Toggle custom label layers
+    CUSTOM_LABEL_LAYERS.forEach(layerId => {
+      if (map.getLayer(layerId)) {
+        map.setLayoutProperty(layerId, "visibility", showCustom ? "visible" : "none");
+      }
+    });
+
+    // Toggle CARTO labels layer
+    if (map.getLayer("carto-labels-layer")) {
+      map.setLayoutProperty("carto-labels-layer", "visibility", showCustom ? "none" : "visible");
+    }
+    
+    console.log(`Label source switched to: ${source}`);
+  }, []);
+
   /**
    * Applies label configuration to a single layer.
    * Updates paint and layout properties based on the tier config.
@@ -1130,10 +1224,16 @@ const MapArea: React.FC<MapAreaProps> = ({
         addBoundaryLayers(map);
         // Position boundaries above fill layers, below highlight layers
         repositionBoundaryLayers(map);
-        // Add place labels on top of everything
+        // Add custom labels on top of everything
         addLabelsLayer(map);
-        // Ensure labels stay on top
+        // Ensure custom labels stay on top
         repositionLabelsLayer(map);
+        // Add CARTO labels layer (will be hidden if custom labels are active)
+        addCartoLabelsLayer(map);
+        // Ensure CARTO labels stay on top
+        repositionCartoLabelsLayer(map);
+        // Set initial label source visibility
+        updateLabelSourceVisibility(map, labelSource);
         setMapLoaded(true);
         
         // Report initial zoom level
@@ -1224,7 +1324,7 @@ const MapArea: React.FC<MapAreaProps> = ({
         mapRef.current = null;
       };
     }
-  }, [addGeoLevelLayers, addBoundaryLayers, repositionBoundaryLayers, addLabelsLayer, repositionLabelsLayer]);
+  }, [addGeoLevelLayers, addBoundaryLayers, repositionBoundaryLayers, addLabelsLayer, repositionLabelsLayer, addCartoLabelsLayer, repositionCartoLabelsLayer, updateLabelSourceVisibility, labelSource]);
   
   // Handle geo level changes after map is loaded
   useEffect(() => {
@@ -1262,6 +1362,42 @@ const MapArea: React.FC<MapAreaProps> = ({
       map.on("sourcedata", handleSourceData);
     }
   }, [selectedGeoLevel, mapLoaded, addGeoLevelLayers, removeGeoLevelLayers, repositionBoundaryLayers, repositionLabelsLayer]);
+
+  // Handle label source changes from props
+  useEffect(() => {
+    if (mapRef.current && mapLoaded) {
+      const map = mapRef.current;
+      updateLabelSourceVisibility(map, labelSource);
+      
+      // Ensure the correct label layer is on top
+      if (labelSource === "custom") {
+        repositionLabelsLayer(map);
+      } else {
+        repositionCartoLabelsLayer(map);
+      }
+    }
+  }, [labelSource, mapLoaded, updateLabelSourceVisibility, repositionLabelsLayer, repositionCartoLabelsLayer]);
+
+  // Update CARTO label tiles when basemap changes (to match basemap style)
+  useEffect(() => {
+    if (mapRef.current && mapLoaded) {
+      const map = mapRef.current;
+      const source = map.getSource("carto-labels") as maplibregl.RasterTileSource;
+      if (source) {
+        const style = map.getStyle();
+        if (style && style.sources["carto-labels"]) {
+          // Update CARTO labels source to match the selected basemap's label style
+          style.sources["carto-labels"] = {
+            type: "raster",
+            tiles: [CARTO_LABEL_TILES[selectedBasemap]],
+            tileSize: 256,
+            attribution: '&copy; <a href="https://carto.com/">CARTO</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+          };
+          map.setStyle(style);
+        }
+      }
+    }
+  }, [selectedBasemap, mapLoaded]);
 
   // Color features when data loads - need to wait for tiles to be rendered
   // Also recolor when gradient config changes

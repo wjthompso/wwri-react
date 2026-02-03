@@ -20,7 +20,8 @@
 | 2b | Fix polygon color flickering when switching domains | ✅ Fixed |
 | 3 | Redesign left sidebar → move content to right sidebar | ✅ Complete |
 | 4 | Redesign overall score display (smaller, use gradient colors) | ✅ Complete |
-| 4b | Fix visual balance of right sidebar layout | ⬜ Pending |
+| 4b | Fix visual balance of right sidebar layout | ✅ Complete |
+| 4c | Get feedback on Overall Score label removal | ⬜ Pending |
 | 5 | Remove search function (API cost concerns) | ⬜ Pending |
 | 6 | Update domain description text (Cat to provide copy) | ⬜ Blocked |
 | 7 | Create basemap selector widget (remove EEZ boundaries) | ⬜ Pending |
@@ -31,7 +32,7 @@
 | 12 | Create debugging widget system (label config, hidden but toggleable) | ⬜ Pending |
 | 13 | Performance and saturation testing (front-end and back-end) | ⬜ Pending |
 
-**Progress:** 7/16 complete (7 pending, 1 blocked, 1 on hold)
+**Progress:** 8/17 complete (8 pending, 1 blocked, 1 on hold)
 
 **Note:** Task 1 (map labels) ✅ COMPLETE! Two issues fixed: (1) Y-flip script was breaking tiles - removed, (2) `text-variable-anchor` was causing labels to slide during zoom - switched to fixed `text-anchor: "center"`.
 
@@ -59,6 +60,7 @@
 | Jan 29 | **✅ Task 2 COMPLETE!** - Created GradientCustomizer widget with live preview. Features: per-domain gradient controls (min/max values, min/max colors), global presets (55-90 ★, 0-100, 50-85, 60-95), JSON export/download, localStorage persistence. Toggle via Ctrl+Shift+G or Dev Tools dropdown. Widget updates domain score boxes and flower chart colors in real-time. Files created: `gradientConfigTypes.ts`, `GradientCustomizer.tsx`. Updated: `domainScoreColors.ts`, `MapLegend.tsx`, `App.tsx`, `Header.tsx`, `RightSidebar.tsx`, `LeftSidebar.tsx`, `FlowerChart.tsx`, Layout components. |
 | Feb 2 | **✅ Task 2b FIXED!** - Polygon color flickering bug caused by stale closure in `moveend` event handler. The `loadColors` function was capturing `selectedMetricIdObject.domainId` directly, but `moveend` handler (registered once on map init) held reference to old `loadColors`. Fix: Created `selectedMetricIdObjectRef` and read from that ref inside `loadColors`. Removed dependency array so function is stable. Now all event handlers (moveend, idle, sourcedata) use refs for current values. |
 | Feb 2 | **✅ Task 3 & 4 COMPLETE!** - Major sidebar redesign. Removed left sidebar entirely and consolidated content into right sidebar. New layout: (1) Top panel with Selected Region (left) and Overall Score Widget (right), (2) Individual Domain Scores section with larger FlowerChart, (3) Indicator Navigation (unchanged). Overall Score Widget now uses gradient colors (light yellow → crimson) instead of red-yellow-green, respects GradientCustomizer settings. CircularProgressBar updated with size variants (small/medium/large) and gradient-based coloring. Map now expands to full width. Files modified: `App.tsx`, `RightSidebar.tsx`, `MapArea.tsx`, `CircularProgressBar.tsx`, `domainScoreColors.ts`. |
+| Feb 2 | **✅ Task 4b COMPLETE!** - Improved visual balance of right sidebar layout. Moved flower chart legend to the right side (horizontal layout) for better space utilization. Adjusted font sizes: Legend title reduced to text-xs with uppercase styling, legend items increased to text-sm for readability. Removed redundant "Overall Score" label from top panel - circular progress bar is self-explanatory. Created Task 4c to get feedback on label removal decision. Files modified: `RightSidebar.tsx`, `FlowerChart.tsx`. |
 
 ---
 
@@ -882,48 +884,51 @@ This is a classic React "stale closure" bug. When using `useCallback` with event
 
 ### Task 4b: Fix Visual Balance of Right Sidebar Layout
 
-**Status:** ⬜ Pending
+**Status:** ✅ COMPLETE
 
 **Priority:** MEDIUM
 
 **Description:** After consolidating the left sidebar into the right sidebar, the layout feels visually unbalanced. The sections need better proportions and spacing.
 
-**Current Issues:**
-1. **Indicator Navigation** takes up too much vertical space (375px fixed height) relative to other sections
-2. **Selected Region + Overall Score panel** feels squeezed between navigation and flower chart
-3. **Individual Domain Scores (flower chart)** feels pushed to the bottom and less prominent
-4. **Overall visual hierarchy** doesn't reflect importance - region/score info should be more prominent
+**Completed:**
+- ✅ Moved flower chart legend to the right side of the chart (horizontal layout)
+- ✅ Adjusted font sizes for better visual hierarchy:
+  - "Legend" title: reduced to text-xs with uppercase/tracking-wide styling
+  - Legend items: increased to text-sm for better readability
+- ✅ Removed redundant "Overall Score" label from top panel (circular progress bar is self-explanatory)
+- ✅ Improved visual balance and reduced clutter
 
-**Proposed Solutions:**
-
-**Option A: Reduce Indicator Navigation height**
-- Change from 375px to 300-325px
-- Gives more breathing room to other sections
-- Quick win for better balance
-
-**Option B: Make Selected Region panel more prominent**
-- Increase panel height/padding
-- Increase Overall Score circle from "small" to "medium"
-- Better visual weight for important information
-
-**Option C: Reorder sections** (if needed)
-- Consider moving Selected Region + Overall Score back to top
-- Would emphasize current selection over navigation
-- Test user flow implications
-
-**Option D: Adjust spacing throughout**
-- Increase padding between sections
-- Better visual separation
-- More breathing room
-
-**Files to modify:**
-- `src/components/RightSidebar.tsx` - Adjust heights, spacing, padding
-- `src/components/LeftSidebar/CircularProgressBar.tsx` - Possibly change size prop
+**Files Modified:**
+- `src/components/RightSidebar.tsx` - Removed "Overall Score" label, updated layout
+- `src/components/LeftSidebar/FlowerChart.tsx` - Moved legend to right, adjusted font sizes
 
 **Notes:**
 - Task added Feb 2, 2026 after completing Task 3 & 4
 - User feedback: "The right sidebar feels... Sort of unbalanced"
-- Should test multiple options before committing to one solution
+- Legend now displays vertically on the right side of chart for better space utilization
+- See Task 4c for feedback on Overall Score label removal
+
+---
+
+### Task 4c: Get Feedback on Overall Score Label Removal
+
+**Status:** ⬜ Pending
+
+**Priority:** MEDIUM
+
+**Description:** Get user feedback on whether removing the "Overall Score" label from the top panel creates clarity issues. The circular progress bar with the score number is now displayed without a label.
+
+**Concern:**
+- Without the "Overall Score" label, it might be unclear what the circular progress bar represents
+- However, the color coding (gradient from light yellow to crimson) and context (next to "Selected Region") may provide sufficient visual cues
+- The large number in the center is prominent and self-explanatory
+
+**Questions for Cat/Ben:**
+- Is it clear what the circular progress bar represents without the label?
+- Does the color coding and context make it obvious it's the overall resilience score?
+- Should we add a subtle tooltip or keep it label-free for cleaner design?
+
+**Related:** Task 4b (completed - removed the label as part of visual balance improvements)
 
 ---
 

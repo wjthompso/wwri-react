@@ -520,9 +520,6 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
           id="overall-score-panel"
           className="flex w-[140px] flex-col items-center justify-center px-3 py-3"
         >
-          <h1 className="mb-1 font-BeVietnamPro text-xs font-bold uppercase tracking-wide text-gray-500">
-            Overall Score
-          </h1>
           <CircularProgressBar
             percentage={overallScoreFormatted}
             gradientConfig={gradientConfig}
@@ -542,9 +539,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
           Individual Domain Scores
         </h1>
         <div className="flex justify-start overflow-hidden">
-          <div className="w-full max-w-[280px]">
-            <FlowerChart domainScores={domainScores} gradientConfig={gradientConfig} />
-          </div>
+          <FlowerChart domainScores={domainScores} gradientConfig={gradientConfig} />
         </div>
       </div>
     </div>

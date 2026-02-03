@@ -210,8 +210,9 @@ const FlowerChart: React.FC<FlowerChartProps> = ({ domainScores, gradientConfig 
   }, [domainScores, gradientConfig]);
 
   return (
-    <div id="flower-chart-container">
-      <div className="h-[14rem] w-full">
+    <div id="flower-chart-container" className="flex items-start gap-4">
+      {/* Chart on the left */}
+      <div className="h-[15rem] w-[280px] flex-shrink-0">
         <svg
           id="flower-chart-svg"
           className="aster__plot"
@@ -230,23 +231,24 @@ const FlowerChart: React.FC<FlowerChartProps> = ({ domainScores, gradientConfig 
           </g>
         </svg>
       </div>
-      <div id="flower-chart-legend" className="mb-2 mt-4">
-        <h1 className="pb-2 font-BeVietnamPro text-sm font-bold text-leftSidebarOverallResilience">
+      {/* Legend on the right */}
+      <div id="flower-chart-legend" className="flex-1">
+        <h1 className="pb-2 font-BeVietnamPro text-xs font-semibold uppercase tracking-wide text-leftSidebarOverallResilience">
           Legend
         </h1>
-        <div className="flex max-w-[280px] flex-wrap items-start justify-start">
+        <div className="flex flex-col gap-1">
           {data.map((domain, index) => (
             <div
               key={index}
               id={`legend-item-${domain.id}`}
-              className={`mb-1 inline-flex min-w-[50%] items-center transition-opacity duration-100 ${
+              className={`flex items-center transition-opacity duration-100 ${
                 hoveredDomain && hoveredDomain !== domain.name
                   ? "opacity-50"
                   : "opacity-100"
               }`}
             >
               <div
-                className="mr-1 h-[14px] w-[14px] rounded-sm transition-colors duration-100 ease-out"
+                className="mr-2 h-[14px] w-[14px] flex-shrink-0 rounded-sm transition-colors duration-100 ease-out"
                 style={{
                   backgroundColor:
                     hoveredDomain && hoveredDomain !== domain.name
@@ -254,7 +256,7 @@ const FlowerChart: React.FC<FlowerChartProps> = ({ domainScores, gradientConfig 
                       : domain.color,
                 }}
               />
-              <p className="font-BeVietnamPro text-xs">{domain.name}</p>
+              <p className="font-BeVietnamPro text-sm">{domain.name}</p>
             </div>
           ))}
         </div>

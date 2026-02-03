@@ -22,6 +22,7 @@
 | 4 | Redesign overall score display (smaller, use gradient colors) | ✅ Complete |
 | 4b | Fix visual balance of right sidebar layout | ✅ Complete |
 | 4c | Get feedback on Overall Score label removal | ⬜ Pending |
+| 4d | Ensure county labels include "County" suffix | ✅ Complete |
 | 5 | Remove search function (API cost concerns) | ⬜ Pending |
 | 6 | Update domain description text (Cat to provide copy) | ⬜ Blocked |
 | 7 | Create basemap selector widget (remove EEZ boundaries) | ⬜ Pending |
@@ -32,7 +33,7 @@
 | 12 | Create debugging widget system (label config, hidden but toggleable) | ⬜ Pending |
 | 13 | Performance and saturation testing (front-end and back-end) | ⬜ Pending |
 
-**Progress:** 8/17 complete (8 pending, 1 blocked, 1 on hold)
+**Progress:** 9/18 complete (8 pending, 1 blocked, 1 on hold)
 
 **Note:** Task 1 (map labels) ✅ COMPLETE! Two issues fixed: (1) Y-flip script was breaking tiles - removed, (2) `text-variable-anchor` was causing labels to slide during zoom - switched to fixed `text-anchor: "center"`.
 
@@ -61,6 +62,7 @@
 | Feb 2 | **✅ Task 2b FIXED!** - Polygon color flickering bug caused by stale closure in `moveend` event handler. The `loadColors` function was capturing `selectedMetricIdObject.domainId` directly, but `moveend` handler (registered once on map init) held reference to old `loadColors`. Fix: Created `selectedMetricIdObjectRef` and read from that ref inside `loadColors`. Removed dependency array so function is stable. Now all event handlers (moveend, idle, sourcedata) use refs for current values. |
 | Feb 2 | **✅ Task 3 & 4 COMPLETE!** - Major sidebar redesign. Removed left sidebar entirely and consolidated content into right sidebar. New layout: (1) Top panel with Selected Region (left) and Overall Score Widget (right), (2) Individual Domain Scores section with larger FlowerChart, (3) Indicator Navigation (unchanged). Overall Score Widget now uses gradient colors (light yellow → crimson) instead of red-yellow-green, respects GradientCustomizer settings. CircularProgressBar updated with size variants (small/medium/large) and gradient-based coloring. Map now expands to full width. Files modified: `App.tsx`, `RightSidebar.tsx`, `MapArea.tsx`, `CircularProgressBar.tsx`, `domainScoreColors.ts`. |
 | Feb 2 | **✅ Task 4b COMPLETE!** - Improved visual balance of right sidebar layout. Moved flower chart legend to the right side (horizontal layout) for better space utilization. Adjusted font sizes: Legend title reduced to text-xs with uppercase styling, legend items increased to text-sm for readability. Removed redundant "Overall Score" label from top panel - circular progress bar is self-explanatory. Created Task 4c to get feedback on label removal decision. Files modified: `RightSidebar.tsx`, `FlowerChart.tsx`. |
+| Feb 2 | **✅ Task 4d COMPLETE!** - Updated county label display to ensure "County" suffix is always included. Added case-insensitive check to append " County" before state abbreviation if not already present in region name. Examples: "Washoe, NV" → "Washoe County, NV", "King County, WA" → "King County, WA" (no change). Files modified: `RightSidebar.tsx`. |
 
 ---
 
@@ -929,6 +931,24 @@ This is a classic React "stale closure" bug. When using `useCallback` with event
 - Should we add a subtle tooltip or keep it label-free for cleaner design?
 
 **Related:** Task 4b (completed - removed the label as part of visual balance improvements)
+
+---
+
+### Task 4d: Ensure County Labels Include "County" Suffix
+
+**Status:** ✅ COMPLETE
+
+**Priority:** MEDIUM
+
+**Description:** Update the `buildRegionDisplayText` function in RightSidebar to ensure that county names always include the word "County" if it's not already present in the name.
+
+**Completed:**
+- ✅ Added logic to check if regionName contains "County" (case-insensitive)
+- ✅ Append " County" before state abbreviation if not already present
+- ✅ Examples: "Washoe, NV" → "Washoe County, NV", "King County, WA" → "King County, WA" (no change)
+
+**Files Modified:**
+- `src/components/RightSidebar.tsx` - Updated `buildRegionDisplayText` function for county case
 
 ---
 

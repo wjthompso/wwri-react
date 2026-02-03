@@ -23,7 +23,7 @@
 | 4b | Fix visual balance of right sidebar layout | ✅ Complete |
 | 4c | Get feedback on Overall Score label removal | ✅ Complete |
 | 4d | Ensure county labels include "County" suffix | ✅ Complete |
-| 5 | Remove search function (API cost concerns) | ⬜ Pending |
+| 5 | Remove search function (API cost concerns) | ✅ Complete |
 | 6 | Update domain description text (Cat to provide copy) | ⬜ Blocked |
 | 7 | Create basemap selector widget (remove EEZ boundaries) | ⬜ Pending |
 | 8 | Create map projection selector widget (test multiple projections) | ⬜ Pending |
@@ -33,7 +33,7 @@
 | 12 | Create debugging widget system (label config, hidden but toggleable) | ⬜ Pending |
 | 13 | Performance and saturation testing (front-end and back-end) | ⬜ Pending |
 
-**Progress:** 10/18 complete (7 pending, 1 blocked, 1 on hold)
+**Progress:** 11/18 complete (6 pending, 1 blocked, 1 on hold)
 
 **Note:** Task 1 (map labels) ✅ COMPLETE! Two issues fixed: (1) Y-flip script was breaking tiles - removed, (2) `text-variable-anchor` was causing labels to slide during zoom - switched to fixed `text-anchor: "center"`.
 
@@ -64,6 +64,7 @@
 | Feb 2 | **✅ Task 4b COMPLETE!** - Improved visual balance of right sidebar layout. Moved flower chart legend to the right side (horizontal layout) for better space utilization. Adjusted font sizes: Legend title reduced to text-xs with uppercase styling, legend items increased to text-sm for readability. Removed redundant "Overall Score" label from top panel - circular progress bar is self-explanatory. Created Task 4c to get feedback on label removal decision. Files modified: `RightSidebar.tsx`, `FlowerChart.tsx`. |
 | Feb 2 | **✅ Task 4d COMPLETE!** - Updated county label display to ensure "County" suffix is always included. Added case-insensitive check to append " County" before state abbreviation if not already present in region name. Examples: "Washoe, NV" → "Washoe County, NV", "King County, WA" → "King County, WA" (no change). Files modified: `RightSidebar.tsx`. |
 | Feb 2 | **✅ Task 4c COMPLETE!** - Confirmed with user feedback that removing the "Overall Score" label from the top panel does not create clarity issues. The circular progress bar with gradient colors and prominent score number is self-explanatory. Label removal decision validated. |
+| Feb 2 | **✅ Task 5 COMPLETE!** - Removed map location search functionality to eliminate API costs. Removed OpenCage geocoding API integration, search input box, autocomplete suggestions, and all related state management. SearchIcon and CloseIcon imports removed from MapArea.tsx. Indicator search in RightSidebar remains (local filtering, no API costs). |
 
 ---
 
@@ -955,7 +956,7 @@ This is a classic React "stale closure" bug. When using `useCallback` with event
 
 ### Task 5: Remove Search Function
 
-**Status:** Pending
+**Status:** ✅ COMPLETE (Feb 2, 2026)
 
 **Priority:** MEDIUM
 
@@ -967,18 +968,22 @@ This is a classic React "stale closure" bug. When using `useCallback` with event
 - Cat: "If you get if you accrue fees per pings, your success in broadcasting your website comes at the cost of you having these unexpected accruals"
 - Cat: "I could not even project if we're talking a hundred dollars or you know, hundred thousand dollars"
 
-**Alternative:** Map labels (Task 26 from previous plan) will help with navigation
+**Alternative:** Map labels (Task 1a-1c) help with navigation
 
 **Notes from meeting:**
 - Cat: "Just remove it, don't worry about it"
 - Speaker 2: "Labels will probably help with finding stuff anyway, because people kind of tend to know where their homes are"
 
-**Files to modify:**
-- `src/components/MapArea/MapArea.tsx` - Remove search box component
-- Remove any geocoding API integration code
-- Update any relevant state management
+**Completed:**
+- ✅ Removed OpenCage geocoding API integration (`api.opencagedata.com`)
+- ✅ Removed search input box and autocomplete suggestions UI
+- ✅ Removed search-related state variables (`searchQuery`, `searchExpanded`, `suggestions`)
+- ✅ Removed search-related functions (`handleSearchInputChange`, `handleSuggestionClick`, `getSuggestions`, `handleClearSearch`)
+- ✅ Removed unused imports (`SearchIcon`, `CloseIcon`)
+- ✅ Indicator search in RightSidebar remains (local filtering, no API costs)
 
-**Effort:** LOW (removal task)
+**Files Modified:**
+- `src/components/MapArea/MapArea.tsx` - Removed all search functionality
 
 ---
 

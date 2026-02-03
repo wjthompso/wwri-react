@@ -13,13 +13,11 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import Papa from "papaparse";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import SelectedMetricIdObject from "types/componentStatetypes";
-import { GradientConfig, DomainKey } from "types/gradientConfigTypes";
+import { DomainKey, GradientConfig } from "types/gradientConfigTypes";
 import { LabelConfig, LabelTierConfig } from "types/labelConfigTypes";
 import { normalizeScoreWithRange } from "utils/domainScoreColors";
 import getColor from "utils/getColor";
-import CloseIcon from "../../assets/CloseIcon.svg";
 import ResetIcon from "../../assets/ResetIcon.svg";
-import SearchIcon from "../../assets/SearchIcon.svg";
 import ZoomInIcon from "../../assets/ZoomInIcon.svg";
 import ZoomOutIcon from "../../assets/ZoomOutIcon.svg";
 import MapLegend from "./MapLegend";
@@ -244,9 +242,6 @@ const MapArea: React.FC<MapAreaProps> = ({
   const [mapLoaded, setMapLoaded] = useState(false);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const popupRef = useRef<maplibregl.Popup | null>(null);
-  const [suggestions, setSuggestions] = useState<any[]>([]);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [searchExpanded, setSearchExpanded] = useState(false);
   
   // Track selected feature for highlight
   const selectedFeatureRef = useRef<{
@@ -1351,50 +1346,6 @@ const MapArea: React.FC<MapAreaProps> = ({
     }
   }, [labelConfig, mapLoaded, applyLabelConfig]);
 
-  const handleSearchInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    const query = event.target.value;
-    setSearchQuery(query);
-    if (query.length > 2) {
-      getSuggestions(query);
-    } else {
-      setSuggestions([]);
-    }
-  };
-
-  const handleSuggestionClick = (
-    lat: number,
-    lng: number,
-    formatted: string,
-  ) => {
-    if (mapRef.current) {
-      mapRef.current.flyTo({
-        center: [lng, lat],
-        zoom: 8.5,
-        essential: true, // this animation is considered essential with respect to prefers-reduced-motion
-      });
-    }
-    setSearchQuery(formatted);
-    setSuggestions([]);
-  };
-
-  const getSuggestions = async (query: string) => {
-    const apiKey = "7daab0c61bc84b5d80eb72315d130135"; // Replace with your OpenCage API key
-    const response = await fetch(
-      `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(
-        query,
-      )}&key=${apiKey}&countrycode=us,ca&limit=5`,
-    );
-    const data = await response.json();
-    setSuggestions(data.results);
-  };
-
-  const handleClearSearch = () => {
-    setSearchQuery("");
-    setSuggestions([]);
-    setSearchExpanded(false);
-  };
 
   const handleZoomIn = () => {
     if (mapRef.current) {
@@ -1420,84 +1371,6 @@ const MapArea: React.FC<MapAreaProps> = ({
 
   return (
     <div id="map-area" className="relative h-full w-full">
-      <div
-        id="search-icon-searchbox-container"
-        className={`transition-width absolute right-1 top-1 z-10 rounded-md bg-white shadow-sm duration-200 ${
-          searchExpanded ? "w-80" : "w-10"
-        }`}
-      >
-        {!searchExpanded && (
-          <button
-            className="flex h-10 w-10 items-center justify-center rounded-md border border-gray-400"
-            onClick={() => setSearchExpanded(true)}
-          >
-            <img
-              src={SearchIcon}
-              alt="search icon"
-              className="h-6 w-6"
-              style={{ filter: "grayscale(100%) invert(70%)" }}
-            />
-          </button>
-        )}
-        {searchExpanded && (
-          <>
-            <div id="location-search-box" className="relative w-full">
-              <input
-                type="text"
-                className="search-input h-10 w-full rounded border border-gray-400 py-1 pl-2 pr-8 text-sm focus:border-gray-400 focus:outline-none"
-                placeholder="Search for a location"
-                value={searchQuery}
-                onChange={handleSearchInputChange}
-                onBlur={() => {
-                  setTimeout(() => {
-                    setSuggestions([]);
-                  }, 100);
-                }}
-              />
-              <button
-                className="absolute right-0 top-0 flex h-10 w-10 items-center justify-center text-gray-400"
-                onClick={handleClearSearch}
-              >
-                <img
-                  src={CloseIcon}
-                  alt="close search"
-                  className="h-4 w-4"
-                  style={{ filter: "grayscale(80%) invert(70%)" }}
-                />
-              </button>
-            </div>
-            {suggestions.length > 0 && (
-              <div
-                id="location-autocomplete-suggestions"
-                className="autocomplete-suggestions absolute z-30 w-[calc(100%-2.8rem)] rounded bg-white shadow-md"
-              >
-                {suggestions.map((suggestion, index) => (
-                  <div
-                    key={index}
-                    className="autocomplete-suggestion cursor-pointer p-2 hover:bg-gray-200"
-                    onClick={() =>
-                      handleSuggestionClick(
-                        suggestion.geometry.lat,
-                        suggestion.geometry.lng,
-                        suggestion.formatted,
-                      )
-                    }
-                  >
-                    <strong className="text-sm">
-                      {suggestion.formatted.split(",")[0]}
-                    </strong>
-                    <span className="text-sm text-gray-500">{`,${suggestion.formatted
-                      .split(",")
-                      .slice(1)
-                      .join(",")}`}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </>
-        )}
-      </div>
-
       {/* Geographic Level Selector - positioned at top-left over the map, shifts when sidebar is open */}
       <div
         id="geo-level-selector"
@@ -1521,7 +1394,7 @@ const MapArea: React.FC<MapAreaProps> = ({
 
       <div
         id="map-area-controls"
-        className="absolute right-1 top-12 z-10 flex flex-col space-y-1"
+        className="absolute right-1 top-1 z-10 flex flex-col space-y-1"
       >
         <button
           id="zoom-in-button"

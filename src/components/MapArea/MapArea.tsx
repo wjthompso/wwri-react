@@ -334,6 +334,7 @@ interface MapAreaProps {
   setSelectedGeoLevel: (level: UnifiedGeoLevel) => void;
   labelConfig?: LabelConfig;
   onZoomChange?: (zoom: number) => void;
+  onCenterChange?: (center: [number, number]) => void;
   gradientConfig?: GradientConfig | null;
   selectedBasemap?: BasemapId;
   labelSource?: LabelSource;
@@ -352,6 +353,7 @@ const MapArea: React.FC<MapAreaProps> = ({
   setSelectedGeoLevel,
   labelConfig,
   onZoomChange,
+  onCenterChange,
   gradientConfig,
   selectedBasemap = DEFAULT_BASEMAP,
   labelSource = DEFAULT_LABEL_SOURCE,
@@ -1285,8 +1287,12 @@ const MapArea: React.FC<MapAreaProps> = ({
       const map = new maplibregl.Map({
         container: mapContainerRef.current,
         style: getBaseMapStyle(selectedBasemapRef.current),
-        center: [-103.9375, 38.7888894],
-        zoom: 3.3,
+        // Center on west coast study region (12 US states + BC + Yukon)
+        // Longitude: -143.47°W
+        // Latitude: 52.53°N
+        // Zoom: 2.9 (frames entire study region from Alaska to Arizona)
+        center: [-143.47, 52.53],
+        zoom: 2.9,
       });
       mapRef.current = map;
 
@@ -1322,8 +1328,10 @@ const MapArea: React.FC<MapAreaProps> = ({
         
         setMapLoaded(true);
         
-        // Report initial zoom level
+        // Report initial zoom level and center
         onZoomChange?.(map.getZoom());
+        const center = map.getCenter();
+        onCenterChange?.([center.lng, center.lat]);
         
         // Self-hosted labels loaded successfully
         console.log("Added self-hosted label layers (Natural Earth)");
@@ -1332,6 +1340,12 @@ const MapArea: React.FC<MapAreaProps> = ({
       // Track zoom changes for dev tools
       map.on("zoom", () => {
         onZoomChange?.(map.getZoom());
+      });
+
+      // Track center changes for dev tools
+      map.on("moveend", () => {
+        const center = map.getCenter();
+        onCenterChange?.([center.lng, center.lat]);
       });
 
       // Re-apply projection after any style changes (e.g., basemap switch)
@@ -1681,8 +1695,9 @@ const MapArea: React.FC<MapAreaProps> = ({
   const handleResetView = () => {
     if (mapRef.current) {
       mapRef.current.flyTo({
-        center: [-103.9375, 38.7888894],
-        zoom: 3.3,
+        // Reset to west coast study region view
+        center: [-143.47, 52.53],
+        zoom: 2.9,
         essential: true,
       });
     }

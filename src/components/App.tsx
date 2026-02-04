@@ -98,7 +98,8 @@ function App() {
 
   // Dev tools: Label configuration widget (defaults to closed)
   const [labelConfigOpen, setLabelConfigOpen] = useState(false);
-  const [currentZoom, setCurrentZoom] = useState<number>(3.3); // Initial zoom level
+  const [currentZoom, setCurrentZoom] = useState<number>(2.9); // Initial zoom level
+  const [currentCenter, setCurrentCenter] = useState<[number, number]>([-143.47, 52.53]); // Initial center [lng, lat]
   const [labelConfig, setLabelConfig] = useState<LabelConfig>(() => {
     // Try to load from localStorage on mount
     const saved = localStorage.getItem("wwri-label-config");
@@ -312,6 +313,7 @@ function App() {
           config={labelConfig}
           onConfigChange={handleLabelConfigChange}
           currentZoom={currentZoom}
+          currentCenter={currentCenter}
         />
       )}
       
@@ -343,6 +345,7 @@ function App() {
             setSelectedGeoLevel={setSelectedGeoLevel}
             labelConfig={labelConfig}
             onZoomChange={setCurrentZoom}
+            onCenterChange={setCurrentCenter}
             gradientConfig={gradientConfig}
             selectedBasemap={selectedBasemap}
             labelSource={labelSource}

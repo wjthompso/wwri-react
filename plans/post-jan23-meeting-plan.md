@@ -29,13 +29,14 @@
 | 7b | Create label source switcher widget (custom vs CARTO labels) | ✅ Complete |
 | 7c | Research other free label-only vector tile sources (alternatives to CARTO) | ✅ Complete |
 | 8 | Create map projection selector widget (test multiple projections) | ✅ Complete (Mercator + Globe only; Albers not supported by MapLibre) |
-| 9 | Set initial map orientation to center on west coast | ⬜ Pending |
+| 9 | Set initial map orientation to center on west coast | ✅ Complete |
 | 10 | Report button - defer decision (Cat to discuss with comms) | ⏸️ On Hold |
 | 11 | Update Species/Iconic Species messaging for clarity | ⬜ Pending |
 | 12 | Create debugging widget system (label config, hidden but toggleable) | ✅ Complete |
 | 13 | Performance and saturation testing (front-end and back-end) | ⬜ Pending |
+| 14 | Expand one domain by default in right sidebar (Cat meeting Feb 3) | ⬜ Pending |
 
-**Progress:** 16/20 complete (3 pending, 1 blocked, 1 on hold)
+**Progress:** 17/21 complete (3 pending, 1 blocked, 1 on hold)
 
 **Note:** Task 1 (map labels) ✅ COMPLETE! Two issues fixed: (1) Y-flip script was breaking tiles - removed, (2) `text-variable-anchor` was causing labels to slide during zoom - switched to fixed `text-anchor: "center"`.
 
@@ -73,6 +74,8 @@
 | Feb 3 | **✅ Task 7c COMPLETE!** - Researched free label-only vector tile sources. Analyzed OpenMapTiles (schema only, not a service), MapTiler (requires API key), Protomaps (viable but overkill), Stadia Maps (requires API key), and current GeoNames solution. **Conclusion:** Current self-hosted GeoNames/Natural Earth labels remain optimal - free, no API key, vector tiles, full styling control, label-only (2.3MB), already production-ready. No changes needed. |
 | Feb 4 | **✅ Task 8 COMPLETE (with limitations)** - Created map projection selector widget. Upgraded maplibre-gl from v4.3.2 → v5.17.0 to enable projection support. Added 2 projection options: Mercator (flat, default) and Globe (3D sphere). Widget in Dev Tools dropdown. Selection persists to localStorage. **⚠️ Albers/NAD83/EPSG:5070 NOT POSSIBLE** - MapLibre GL JS only supports mercator and globe. Albers falls back to mercator silently. For Albers support, would need to switch to Mapbox GL JS (commercial) or pre-project all tiles server-side. |
 | Feb 4 | **✅ Task 12 COMPLETE!** - Debugging widget system was already implemented as part of Tasks 1b (LabelConfigWidget) and 2 (GradientCustomizer). Both widgets are feature-flagged, hidden by default, toggleable via keyboard shortcuts (Ctrl+Shift+L and Ctrl+Shift+G), and accessible via Dev Tools dropdown in header. System provides real-time configuration controls for labels and gradients with export capabilities. |
+| Feb 4 | **✅ Task 9 COMPLETE!** - Set initial map orientation to center on west coast study region. Updated map initialization center to [-143.47, 52.53] (longitude: -143.47°W, latitude: 52.53°N) with zoom level 2.9 to properly frame the entire study region (12 US states: AK, AZ, CA, CO, ID, MT, NV, NM, OR, UT, WA, WY + 2 Canadian provinces: BC, Yukon). Also updated reset view button to use same coordinates. Added center coordinate display to Label Config widget for easier fine-tuning. Files modified: `MapArea.tsx`, `App.tsx`, `LabelConfigWidget.tsx`. |
+| Feb 4 | **📋 Task 14 ADDED** - From Cat Fong meeting (Feb 3). Make one domain (e.g., Infrastructure) expanded by default in right sidebar indicator navigation. Users need to see an expanded state on load to discover the expand/collapse interaction pattern. High priority UX improvement, ~1 hour effort. |
 
 ---
 
@@ -1279,7 +1282,7 @@ NCEAS requested Albers Equal Area (NAD83 / EPSG:5070) for west coast visualizati
 
 ### Task 9: Set Initial Map Orientation to Center on West Coast
 
-**Status:** Pending
+**Status:** ✅ COMPLETE (Feb 4, 2026)
 
 **Priority:** MEDIUM
 
@@ -1288,15 +1291,17 @@ NCEAS requested Albers Equal Area (NAD83 / EPSG:5070) for west coast visualizati
 **Notes from meeting:**
 - Speaker 2: "I need to set the initial orientation of the map so that everything in the west coast is like properly centered, so that's on my to-do list"
 
-**Implementation:**
-- Set initial center coordinates (lat/lon)
-- Set initial zoom level
-- Potentially calculate bounding box from data extent
+**Completed:**
+- ✅ Updated initial map center to [-143.47, 52.53] (longitude: -143.47°W, latitude: 52.53°N)
+- ✅ Set initial zoom level to 2.9 (frames entire study region from Alaska to Arizona)
+- ✅ Updated reset view button to use same coordinates for consistency
+- ✅ Added center coordinate display to Label Config widget (shows current map center for fine-tuning)
+- ✅ Study region includes: 12 US states (AK, AZ, CA, CO, ID, MT, NV, NM, OR, UT, WA, WY) + 2 Canadian provinces (BC, Yukon)
 
-**Files to modify:**
-- `src/components/MapArea/MapArea.tsx` - Map initialization config
-
-**Effort:** LOW (simple configuration change)
+**Files Modified:**
+- `src/components/MapArea/MapArea.tsx` - Updated map initialization center/zoom and reset view function, added center tracking for dev tools
+- `src/components/App.tsx` - Added currentCenter state and onCenterChange callback
+- `src/components/DevTools/LabelConfigWidget.tsx` - Added center coordinate display in widget header
 
 ---
 
@@ -1451,6 +1456,59 @@ NCEAS requested Albers Equal Area (NAD83 / EPSG:5070) for west coast visualizati
 - Performance work can always continue post-launch
 - Document baseline metrics for future optimization
 - Consider tools: Lighthouse, Chrome DevTools, Apache Bench, k6
+
+---
+
+### Task 14: Expand One Domain by Default in Right Sidebar
+
+**Status:** ⬜ Pending
+
+**Priority:** 🔴 HIGH (from Cat meeting Feb 3, 2026)
+
+**Scope:** Single small fix - ~1 hour
+
+**Description:** Make one domain (e.g., "Infrastructure") expanded by default in the right sidebar indicator navigation so users immediately understand that domains can be expanded and collapsed.
+
+**Problem:** Users don't realize the domains in the indicator navigation can be expanded/collapsed because all domains are collapsed by default on initial load.
+
+**User Impact:** Without seeing an expanded state, users may never discover they can drill down into individual indicators within each domain.
+
+**Implementation:**
+- [ ] Identify where domain expansion state is initialized (likely in `RightSidebar.tsx`)
+- [ ] Set one domain (suggest "Infrastructure") to expanded state by default
+- [ ] Ensure this only happens on initial load
+- [ ] Preserve user's ability to collapse/expand all domains
+- [ ] Test that default expansion doesn't break existing functionality
+
+**Files to Modify:**
+- `src/components/RightSidebar.tsx` (or related indicator navigation component)
+- Possibly `src/components/RightSidebar/layouts/` components if they manage expansion state
+
+**Acceptance Criteria:**
+- ✅ On first load, one domain is expanded (showing its indicators)
+- ✅ User can collapse the default-expanded domain
+- ✅ User can expand/collapse other domains normally
+- ✅ Selection persists if we have localStorage for domain expansion state
+- ✅ No visual glitches or layout issues
+
+**Example Implementation Pattern:**
+```typescript
+// In component state initialization
+const [expandedDomains, setExpandedDomains] = useState<string[]>(() => {
+  // On initial load, expand Infrastructure domain
+  return ['Infrastructure']; // or whatever the domain key is
+});
+```
+
+**Why "Infrastructure":**
+- Mid-complexity domain (not too many, not too few indicators)
+- Provides clear example of the expand/collapse pattern
+- Alternative suggestions welcome (could be any domain)
+
+**Notes from Cat Fong meeting (Feb 3, 2026):**
+- This was specifically mentioned as a high-priority UX improvement
+- Goal is user education: make the interaction pattern obvious
+- Quick win: small effort, high UX impact
 
 ---
 

@@ -11,6 +11,7 @@ interface LabelConfigWidgetProps {
   config: LabelConfig;
   onConfigChange: (config: LabelConfig) => void;
   currentZoom?: number;
+  currentCenter?: [number, number]; // [lng, lat]
 }
 
 /** Individual tier control row */
@@ -228,6 +229,7 @@ const LabelConfigWidget: React.FC<LabelConfigWidgetProps> = ({
   config,
   onConfigChange,
   currentZoom,
+  currentCenter,
 }) => {
   const [expandedTiers, setExpandedTiers] = useState<Set<string>>(new Set());
   const [copyFeedback, setCopyFeedback] = useState(false);
@@ -311,6 +313,11 @@ const LabelConfigWidget: React.FC<LabelConfigWidgetProps> = ({
           {currentZoom !== undefined && (
             <span className="rounded bg-blue-100 px-2 py-0.5 font-mono text-xs font-medium text-blue-700">
               z{currentZoom.toFixed(1)}
+            </span>
+          )}
+          {currentCenter && (
+            <span className="rounded bg-purple-100 px-2 py-0.5 font-mono text-xs font-medium text-purple-700">
+              {currentCenter[0].toFixed(2)}, {currentCenter[1].toFixed(2)}
             </span>
           )}
         </div>

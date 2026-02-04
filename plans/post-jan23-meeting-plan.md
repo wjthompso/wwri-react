@@ -35,8 +35,14 @@
 | 12 | Create debugging widget system (label config, hidden but toggleable) | ✅ Complete |
 | 13 | Performance and saturation testing (front-end and back-end) | ⬜ Pending |
 | 14 | Expand one domain by default in right sidebar (Cat meeting Feb 3) | ✅ Complete |
+| 15 | Add white-black-white border styling to map polygons | ⬜ Pending |
+| 16 | Redesign map legend (fix margins, layout, add selected metric progress bar) | ⬜ Pending |
+| 17 | Fix metric naming bug (remove duplicate domain name prefix) | ⬜ Pending |
+| 18 | Add "Overall Score" label above circular progress bar | ⬜ Pending |
 
-**Progress:** 18/21 complete (2 pending, 1 blocked, 1 on hold)
+**Progress:** 18/24 complete (5 pending, 1 blocked, 1 on hold)
+
+**Note:** Completed task details archived in [post-jan23-completed-tasks.md](./archive/post-jan23-completed-tasks.md)
 
 **Note:** Task 1 (map labels) ✅ COMPLETE! Two issues fixed: (1) Y-flip script was breaking tiles - removed, (2) `text-variable-anchor` was causing labels to slide during zoom - switched to fixed `text-anchor: "center"`.
 
@@ -77,927 +83,31 @@
 | Feb 4 | **✅ Task 9 COMPLETE!** - Set initial map orientation to center on west coast study region. Updated map initialization center to [-143.47, 52.53] (longitude: -143.47°W, latitude: 52.53°N) with zoom level 2.9 to properly frame the entire study region (12 US states: AK, AZ, CA, CO, ID, MT, NV, NM, OR, UT, WA, WY + 2 Canadian provinces: BC, Yukon). Also updated reset view button to use same coordinates. Added center coordinate display to Label Config widget for easier fine-tuning. Files modified: `MapArea.tsx`, `App.tsx`, `LabelConfigWidget.tsx`. |
 | Feb 4 | **📋 Task 14 ADDED** - From Cat Fong meeting (Feb 3). Make one domain (e.g., Infrastructure) expanded by default in right sidebar indicator navigation. Users need to see an expanded state on load to discover the expand/collapse interaction pattern. High priority UX improvement, ~1 hour effort. |
 | Feb 4 | **✅ Task 14 COMPLETE!** - Infrastructure domain now expanded by default in right sidebar indicator navigation. Updated `expandedSections` state initialization to use function initializer `() => ({ infrastructure: true })` so default expansion only occurs on initial load. Users can still collapse/expand all domains normally. This makes the expand/collapse interaction pattern immediately discoverable. Files modified: `RightSidebar.tsx`. |
+| Feb 4 | **📦 ARCHIVED COMPLETED TASKS** - Moved detailed descriptions of Tasks 1-14 to `archive/post-jan23-completed-tasks.md` to keep main plan concise. |
+| Feb 4 | **📋 ADDED TASKS 15-18** - New tasks for polygon borders (white-black-white sandwich), legend redesign, metric naming bug fix, and Overall Score label restoration. |
 
 ---
 
-## 🔍 Review Items for Cat
+## 📝 Completed Tasks (Archive)
 
-**Tasks completed and ready for feedback:**
+**Detailed descriptions for Tasks 1-14 have been moved to:**
+[archive/post-jan23-completed-tasks.md](./archive/post-jan23-completed-tasks.md)
 
-### ✅ Task 1a, 1b, 1c: Map Labels (Self-Hosted, Refined, Deployed)
-
-**What was delivered:**
-1. **1,773 cities** from GeoNames cities5000 dataset (upgraded from ~300)
-   - Progressive display by population: Major metros at z5, small towns at z11
-   - Includes: Ventura, Goleta, Carpinteria, Montecito, Ojai, Solvang, Buellton, etc.
-
-2. **State/Province labels** positioned at visual centers using polylabel algorithm
-   - Fixed problematic positions (Alaska, Montana, British Columbia)
-
-3. **Refined styling:**
-   - Text halo reduced from 2.5-3px to 1.5px (less clutter, still readable)
-   - Zoom thresholds adjusted for clean wide-zoom view
-   - Fixed label sliding issue (switched to fixed anchor points)
-
-4. **Development tools:**
-   - Built LabelConfigWidget for future refinement (Ctrl+Shift+L to toggle)
-   - Can adjust fonts, sizes, colors, zoom thresholds in real-time
-   - Export configurations as JSON
-
-5. **Production deployment:**
-   - Labels live at `https://major-sculpin.nceas.ucsb.edu/data/labels/{z}/{x}/{y}.pbf`
-   - No additional API costs (self-hosted)
-
-**Questions for Cat:**
-- [ ] Do the label fonts/sizes match your vision? (Can adjust with widget)
-- [ ] Is the label density appropriate at different zoom levels?
-- [ ] Are there any specific cities/towns missing that should be added?
-- [ ] Do state/province label positions look correct?
-- [ ] Any styling tweaks needed (colors, halos, spacing)?
-
-**How to test:**
-- Visit production site: [URL here when available]
-- Or test locally: Set `VITE_FORCE_PRODUCTION_TILES=true` in `.env.local` and run `npm run dev`
+This includes implementation details, file changes, and technical notes for:
+- Task 1a/1b/1c: Map labels (self-hosted, refined, deployed)
+- Task 2/2b: Gradient customization widget + polygon flickering fix
+- Task 3: Left sidebar removal
+- Task 4/4b/4c/4d: Overall score redesign + visual balance improvements
+- Task 5: Search function removal
+- Task 7/7b/7c: Basemap selector + label source switcher
+- Task 8: Map projection selector
+- Task 9: Initial map orientation
+- Task 12: Debugging widget system
+- Task 14: Default domain expansion
 
 ---
 
-## 📝 Task Details
-
-### Task 1a: Add State and City Map Labels (Self-Hosted)
-
-**Status:** ✅ COMPLETE
-
-**Priority:** 🔥 HIGHEST
-
-**Description:** Add geographic labels (state/province names and city names) to the map that appear at appropriate zoom levels. Self-hosted using GeoNames data.
-
-**Completed:**
-- ✅ Fixed label sliding issue (removed `text-variable-anchor`)
-- ✅ Upgraded from Natural Earth 10m (~300 cities) to GeoNames cities5000 (1,773 cities)
-- ✅ Implemented 8-tier progressive display system (SR1-SR8: 500k+ down to 5k+ population)
-- ✅ Set zoom-based visibility thresholds (major metros at z5, tiny towns at z11)
-- ✅ Reduced text halo width from 2.5-3px to 1.5px
-- ✅ Comprehensive coverage includes: Ventura, Goleta, Carpinteria, Montecito, Ojai, Solvang, Buellton, etc.
-
-**See Task 1b and 1c below for next steps.**
-
----
-
-### Task 1b: Refine Map Label Display
-
-**Status:** ✅ COMPLETE
-
-**Priority:** 🔥 HIGH
-
-**Scope:** Single chat window - local refinement only
-
-**Description:** Fine-tune the label display to match the quality of Google Maps or Climate Vulnerability Index. Use a debugging widget to enable rapid iteration and parameter tweaking.
-
-**Completed:**
-- ✅ Created `LabelConfigWidget` component with real-time controls for all 9 label tiers
-- ✅ Per-tier controls: minzoom, maxzoom, font weight, font size (min/max), text color, halo color, halo width, opacity, padding, letter spacing
-- ✅ Keyboard toggle: `Ctrl+Shift+L` to show/hide widget
-- ✅ JSON export via "Copy JSON" and "Download" buttons
-- ✅ Configuration persists in localStorage across sessions
-- ✅ Widget applies changes in real-time to map via MapLibre GL JS API
-- ✅ Reset button to restore default configuration
-
-**Files Created:**
-- `src/types/labelConfigTypes.ts` - TypeScript types and default config values
-- `src/components/DevTools/LabelConfigWidget.tsx` - Main widget component
-- `src/components/DevTools/index.ts` - Export barrel file
-
-**Files Modified:**
-- `src/components/App.tsx` - Added widget state, keyboard toggle, localStorage persistence
-- `src/components/MapArea/MapArea.tsx` - Added `labelConfig` prop and `applyLabelConfig` function
-
-**Usage:**
-1. Press `Ctrl+Shift+L` to open the Label Config widget
-2. Expand any tier to adjust its settings
-3. Changes apply immediately to the map
-4. Click "Copy JSON" or "Download" to export configuration
-5. Click "Reset" to restore defaults
-
-**Next Steps (manual):**
-- Research Google Maps and Climate Vulnerability Index label styling
-- Use widget to test various configurations
-- Test label collision in dense areas (LA, SF, Seattle)
-- Export final configuration and apply as defaults in code
-
-**Notes:**
-- Widget approach allows rapid iteration
-- No need to edit code for each test
-- Widget stays in codebase for future debugging (Task 12)
-- GeoNames cities5000 provides 1,773 cities in study region
-
----
-
-### Task 1c: Deploy Labels to Production Tile Server
-
-**Status:** ✅ COMPLETE (Jan 28, 2026)
-
-**Priority:** 🔴 MEDIUM
-
-**Scope:** Single chat window - deployment only
-
-**Description:** Deploy the refined `labels.mbtiles` and configuration to the production Linux tile server. This is separate from refinement work and involves server configuration.
-
-**Completed:**
-- ✅ Copied `labels.mbtiles` (2.3M) to production server `~/tiles/`
-- ✅ Copied updated `config.json` with labels entry to production server
-- ✅ Restarted Docker tile server container (`wwri-tiles`)
-- ✅ Verified labels endpoint: `https://major-sculpin.nceas.ucsb.edu/data/labels/{z}/{x}/{y}.pbf` returns HTTP 200
-- ✅ Added `VITE_FORCE_PRODUCTION_TILES` env var to `api.ts` for local testing of production tiles
-- ✅ Tested production labels from localhost using `.env.local` file
-
-**Deployment Steps Used:**
-```bash
-# 1. Copy files to server
-scp mbtiles/labels.mbtiles config.json woverbyethompson@major-sculpin.nceas.ucsb.edu:~/tiles/
-
-# 2. Restart Docker container
-ssh woverbyethompson@major-sculpin.nceas.ucsb.edu
-cd ~/tiles
-docker stop wwri-tiles
-docker run --rm -d --name wwri-tiles -v $(pwd):/data -p 8080:8080 \
-  maptiler/tileserver-gl-light --config /data/config.json
-
-# 3. Verify
-curl -I "https://major-sculpin.nceas.ucsb.edu/data/labels/4/2/6.pbf"
-# Returns: HTTP/2 200 with 16,175 bytes
-```
-
-**Frontend Configuration:**
-- Production URL auto-detected when hostname is not localhost
-- For local testing: Set `VITE_FORCE_PRODUCTION_TILES=true` in `.env.local`
-- No NGINX changes needed - existing `/data/` location block already proxies to tile server
-
-**Notes:**
-- No NGINX configuration changes required (already configured from previous tile deployment)
-- Labels served via existing `maptiler/tileserver-gl-light` Docker container
-- CORS headers correctly set by tile server
-
----
-
-### Task 1a: Test Hypothesis - Variable Anchor Causing Sliding
-
-**Status:** ✅ CONFIRMED - This was the fix!
-
-**Hypothesis:** The `text-variable-anchor: ["top", "bottom", "left", "right"]` setting allows MapLibre to dynamically reposition labels to avoid collisions. As zoom changes, other labels appear/disappear, changing collision state and causing labels to shift to different anchor positions.
-
-**Test implementation:**
-- Removed `text-variable-anchor` and `text-radial-offset` from city label layers
-- Used fixed `"text-anchor": "center"` instead
-
-**Result:** ✅ SUCCESS! Labels no longer slide during zoom. The `text-variable-anchor` setting was the root cause of the sliding behavior. When collision state changed during zoom, MapLibre would reposition labels to different anchor points (top, bottom, left, right), causing visible movement.
-
----
-
-### Task 1b: Test Hypothesis - Tile Duplication/Clipping Issues
-
-**Status:** ❌ Cancelled (1a was the fix)
-
-**Hypothesis:** Features may be duplicated across tile boundaries by tippecanoe, and the duplicates have slightly different coordinates due to clipping/buffering. When tiles load at different zoom levels, different copies of the same label render with different positions.
-
-**Evidence needed:**
-1. Check if labels appear in multiple tiles at the same zoom level
-2. Verify tippecanoe settings for duplication/buffering
-3. Add console logging to show which tile a label is rendered from
-
-**Test implementation:**
-- Regenerate tiles with `--no-duplication` flag
-- Add debugging to show tile coordinates for each rendered label
-
-**Expected result if hypothesis is correct:**
-- Debugging shows same label appearing in multiple tiles
-- After `--no-duplication`, labels render from a single tile and stay fixed
-
-**Result:** _(To be filled after testing)_
-
----
-
-### Task 1c: Test Hypothesis - TMS vs XYZ Coordinate Scheme Mismatch
-
-**Status:** ❌ Cancelled (1a was the fix)
-
-**Hypothesis:** The local tile server uses @mapbox/mbtiles which stores tiles in TMS scheme (Y=0 at south) but serves with XYZ URLs (Y=0 at north). The library handles conversion, but there may be edge cases at certain zoom levels where conversion is incorrect.
-
-**Evidence needed:**
-1. Compare requested tile coordinates (from browser network tab) with mbtiles contents
-2. Verify tile content for the same location at different zoom levels
-3. Check if the @mapbox/mbtiles library is doing any coordinate transformations
-
-**Test implementation:**
-- Add server-side logging to show requested vs served tile coordinates
-- Compare with direct mbtiles query
-
-**Expected result if hypothesis is correct:**
-- Mismatch between requested and served tile coordinates
-- Label position error correlates with tile coordinate errors
-
-**Result:** _(To be filled after testing)_
-
----
-
-### Task 1d: Add Debug Overlay for Label Positions
-
-**Status:** ❌ Cancelled (1a was the fix)
-
-**Description:** Add a toggleable debug overlay that shows:
-1. Current zoom level
-2. Label positions in screen coordinates
-3. Source tile for each visible label
-4. Anchor position being used
-
-This will provide concrete evidence to diagnose the sliding behavior.
-
-**Implementation:** Add debug mode triggered by keyboard shortcut (Ctrl+Shift+L)
-
----
-
-### Previous Findings (Jan 26)
-
-**Y-Coordinate Fix (RESOLVED - but didn't fix sliding):**
-The Y-flip script (`fix_mvt_y_coords.py`) was the **PROBLEM**, not the solution!
-- Tippecanoe ALREADY outputs MVT tiles with correct Y-down coordinates
-- The "fix" script was flipping correct coordinates to incorrect ones
-- **Solution:** Use raw tippecanoe output directly, DO NOT post-process
-
-**Tile data verification:** Santa Barbara Y-coordinates correct at all zoom levels:
-- z4: Y=1513 ✓, z5: Y=3026 ✓, z6: Y=1957 ✓, z7: Y=3913 ✓
-- z8: Y=3730 ✓, z9: Y=3365 ✓, z10: Y=2633 ✓
-
-**Conclusion:** Tile data is mathematically correct. Issue is in MapLibre rendering layer.
-
----
-
-#### ✅ WHAT'S BEEN COMPLETED
-
-1. **Data acquisition and filtering:**
-   - Downloaded Natural Earth 10m data (`ne_10m_populated_places`, `ne_10m_admin_1_states_provinces`)
-   - Filtered to study region: 12 US states + 2 Canadian provinces/territories
-   - Created GeoJSON files: `state_labels.geojson` (14 features), `cities.geojson` (311 features)
-   - Files location: `wwri-metrics-api/labels/geojson/`
-
-2. **Tile creation:**
-   - Created `labels.mbtiles` using tippecanoe with settings:
-     - `--no-feature-limit --no-tile-size-limit -r1` (preserve all features)
-     - Two layers: `state_labels`, `city_labels`
-   - File location: `wwri-metrics-api/mbtiles/labels.mbtiles` (also copied to main mbtiles folder)
-
-3. **Local tile server:**
-   - Created `wwri-metrics-api/labels/serve-tiles.js` (Express-based tile server)
-   - Serves all mbtiles including labels on port 8082
-   - **To start:** `cd wwri-metrics-api && node labels/serve-tiles.js`
-
-4. **Frontend integration:**
-   - Updated `wwri-react/src/config/api.ts`:
-     - Added `LABEL_TILES_URL` that auto-detects localhost for dev mode
-   - Updated `wwri-react/src/components/MapArea/MapArea.tsx`:
-     - Added `wwri-labels` vector tile source
-     - Added 5 label layers with zoom-dependent visibility:
-       - `labels-states-abbrev` (zoom 3-5.5): postal codes (WA, CA, etc.)
-       - `labels-states-full` (zoom 5.5-8): full state names
-       - `labels-cities-major` (zoom 6+): major cities (SCALERANK ≤ 4)
-       - `labels-cities-medium` (zoom 8+): medium cities
-       - `labels-cities-small` (zoom 10+): small towns
-     - Using OpenMapTiles fonts: "Open Sans Semibold" / "Open Sans Regular"
-     - Glyphs URL: `https://fonts.openmaptiles.org/{fontstack}/{range}.pbf`
-
-5. **Config updates:**
-   - Updated `wwri-metrics-api/mbtiles/config.json` to include labels tileset
-
----
-
-#### ✅ RESOLVED: State Label Positions Fixed
-
-**Solution implemented (Jan 26, 2026):**
-1. Created `create_state_labels.py` script using **polylabel algorithm** (pole of inaccessibility) for visual centers
-2. Added manual positions for problematic states: Alaska, British Columbia, Yukon, Montana
-3. Regenerated mbtiles using tile-join to merge separate `state_labels` and `city_labels` layers
-
-**Key position fixes:**
-| State | Before | After | Issue Fixed |
-|-------|--------|-------|-------------|
-| Alaska | -144.29, 58.68 | -152.50, 64.00 | Was under Aleutian tail, now mainland center |
-| Montana | 23.18, 43.50 | -109.50, 47.00 | Polylabel returned wrong hemisphere! |
-| British Columbia | -126.98, 52.04 | -125.50, 54.50 | More centered on province body |
-| California | -120.44, 36.14 | -121.92, 40.08 | Was too far south |
-
-**Files created:**
-- `wwri-metrics-api/labels/create_state_labels.py` - Reusable script for regenerating labels
-
----
-
-#### ✅ RESOLVED: Label Y-Coordinate Drift Bug (Jan 26, 2026)
-
-**Problem:** Labels appeared to "drift" position when zooming - Santa Barbara appeared over the ocean instead of over the city at some zoom levels.
-
-**Root Cause (CORRECTED):** The Y-flip script was the **PROBLEM**, not the solution!
-- Initial hypothesis: Tippecanoe outputs Y-up coordinates, MapLibre expects Y-down
-- **ACTUAL TRUTH:** Tippecanoe ALREADY outputs correct Y-down coordinates
-- The "fix" script was flipping correct coordinates to incorrect ones!
-
-**Technical Details:**
-- MVT tiles use a 4096x4096 coordinate system within each tile
-- Y=0 at top (north), Y=4096 at bottom (south) - this is the MVT spec
-- Tippecanoe correctly outputs Santa Barbara at Y=3730 (near bottom = south = correct!)
-- The Y-flip script changed it to Y=366 (near top = north = WRONG!)
-
-**Solution:** Use raw tippecanoe output directly. DO NOT run fix_mvt_y_coords.py!
-
-**CORRECT Regeneration workflow:**
-```bash
-cd wwri-metrics-api/labels
-
-# 1. Generate tiles with tippecanoe (coordinates are ALREADY CORRECT!)
-tippecanoe -o state_labels_raw.mbtiles -z14 -Z0 --no-feature-limit --no-tile-size-limit -r1 -B0 -l state_labels geojson/state_labels.geojson --force
-tippecanoe -o city_labels_raw.mbtiles -z14 -Z0 --no-feature-limit --no-tile-size-limit -r1 -B0 -l city_labels geojson/cities.geojson --force
-tile-join -o labels.mbtiles state_labels_raw.mbtiles city_labels_raw.mbtiles --force
-
-# 2. Copy to production (NO Y-flip step needed!)
-cp labels.mbtiles ../mbtiles/labels.mbtiles
-
-# 3. Clean up temp files
-rm -f state_labels_raw.mbtiles city_labels_raw.mbtiles
-
-# 4. Restart tile server
-pkill -f "node labels/serve-tiles.js"; sleep 1
-node labels/serve-tiles.js
-
-# 5. Verify (Santa Barbara Y should be ~3730, NOT 366!)
-curl -s "http://localhost:8082/data/labels/8/42/101.pbf" | python3 -c "
-import sys, gzip, mapbox_vector_tile as mvt
-data = sys.stdin.buffer.read()
-if data[:2] == b'\\x1f\\x8b': data = gzip.decompress(data)
-d = mvt.decode(data, default_options={'y_coord_down': True})
-for l in d.values():
-    for f in l.get('features', []):
-        if f.get('properties', {}).get('NAME') == 'Santa Barbara':
-            print(f'Santa Barbara Y: {f[\"geometry\"][\"coordinates\"][1]} (should be ~3730)')
-"
-```
-
----
-
-#### 🔧 IF LABELS STILL HAVE ISSUES
-
-**To adjust a specific state's position:**
-1. Edit `MANUAL_POSITIONS` dict in `create_state_labels.py`
-2. Re-run the script: `python3 create_state_labels.py`
-3. Follow the regeneration workflow above (including the Y-coordinate fix step)
-4. Restart tile server: `node labels/serve-tiles.js`
-
----
-
-#### 🧪 MANUAL TESTING INSTRUCTIONS
-
-**To test locally:**
-
-1. **Start the local tile server:**
-   ```bash
-   cd wwri-metrics-api
-   node labels/serve-tiles.js
-   ```
-   Should see: "Running on http://localhost:8082"
-
-2. **Verify tiles are being served:**
-   ```bash
-   # Check server is running
-   curl http://localhost:8082/
-   
-   # Test a specific tile (zoom 4)
-   curl -w "HTTP %{http_code}, %{size_download} bytes\n" \
-     "http://localhost:8082/data/labels/4/2/6.pbf"
-   # Should return HTTP 200 with ~5000+ bytes
-   ```
-
-3. **Decode a tile to see contents:**
-   ```bash
-   cd wwri-metrics-api
-   python3 -c "
-   import sqlite3, mapbox_vector_tile
-   conn = sqlite3.connect('mbtiles/labels.mbtiles')
-   cursor = conn.cursor()
-   cursor.execute('SELECT tile_column, tile_row, tile_data FROM tiles WHERE zoom_level = 4')
-   for col, row, data in cursor.fetchall():
-       decoded = mapbox_vector_tile.decode(data)
-       if 'state_labels' in decoded:
-           for f in decoded['state_labels']['features']:
-               print(f'Tile ({col},{row}): {f[\"properties\"][\"name\"]}')
-   "
-   ```
-
-4. **Check browser console:**
-   - Open React app (localhost:5173)
-   - Open browser DevTools → Console
-   - Look for: "Added self-hosted label layers (Natural Earth)"
-   - Check for any 404 errors on tile requests
-
-5. **Check current state label positions:**
-   ```bash
-   cd wwri-metrics-api/labels
-   cat geojson/state_labels.geojson | python3 -c "
-   import json, sys
-   d = json.load(sys.stdin)
-   for f in d['features']:
-       p = f['properties']
-       c = f['geometry']['coordinates']
-       print(f\"{p['name']:20} ({p['postal']}): {c[0]:.2f}, {c[1]:.2f}\")
-   "
-   ```
-
----
-
-#### 📁 Files Created/Modified
-
-**Backend (wwri-metrics-api):**
-- `labels/source_data/` - Downloaded Natural Earth shapefiles
-- `labels/geojson/` - Filtered GeoJSON files
-- `labels/mbtiles/labels.mbtiles` - Generated vector tiles
-- `labels/serve-tiles.js` - Local tile server
-- `labels/config.json` - Local tileserver config
-- `mbtiles/labels.mbtiles` - Copy for production
-- `mbtiles/config.json` - Updated with labels tileset
-
-**Frontend (wwri-react):**
-- `src/config/api.ts` - Added LABEL_TILES_URL
-- `src/components/MapArea/MapArea.tsx` - Added label source and layers
-
----
-
-#### 🚀 DEPLOYMENT (When ready)
-
-1. Copy `labels.mbtiles` to Linux server: `scp mbtiles/labels.mbtiles user@major-sculpin:/path/to/mbtiles/`
-2. Update server's `config.json` to include labels tileset
-3. Restart tileserver-gl on server
-4. Update `api.ts` to use production URL (or it will auto-detect based on hostname)
-
----
-
-### Task 2: Create Gradient Customization Widget
-
-**Status:** ✅ COMPLETE (Jan 29, 2026)
-
-**Priority:** HIGH
-
-**Description:** Create a temporary developer widget that allows NCEAS team (Cat/Ben) to customize color gradients for each domain in real-time. This will help iterate quickly on color scaling without requiring code changes.
-
-**Widget Features:**
-
-**A) Per-Domain Gradient Controls:**
-- For each domain (Infrastructure, Communities, Livelihoods, Sense of Place, Species, Habitats, Water, Air Quality, Overall Resilience):
-  - **Min Value** input (number)
-  - **Min Value Color** picker (hex color)
-  - **Max Value** input (number)
-  - **Max Value Color** picker (hex color)
-  
-**B) Save/Export Functionality:**
-- "Save Configuration" button
-- Prompt user to name the configuration
-- Export all settings as JSON file
-- Download JSON file for sharing with team
-
-**C) Default Settings:**
-- Set all domains to use **55-90 range** by default (not 0-100)
-- Use existing brand colors as default gradient endpoints
-- Overall Resilience: light yellow (#fffac9) to crimson (#7b1628)
-
-**D) Live Preview:**
-- Changes apply immediately to map
-- Update legend to reflect new gradient
-- Update Selected Indicator boxes with new colors
-
-**Implementation details:**
-
-1. **Widget UI:**
-```
-┌─────────────────────────────────────────┐
-│ Gradient Customization (Dev Tool)      │
-│                                         │
-│ Infrastructure:                         │
-│   Min: [55] Color: [#FFFFFF]           │
-│   Max: [90] Color: [#ab104e]           │
-│                                         │
-│ Communities:                            │
-│   Min: [55] Color: [#FFFFFF]           │
-│   Max: [90] Color: [#e16b5d]           │
-│                                         │
-│ ... (repeat for all domains)            │
-│                                         │
-│ Configuration Name: [_____________]     │
-│ [Save & Export JSON]                    │
-└─────────────────────────────────────────┘
-```
-
-2. **JSON Export Format:**
-```json
-{
-  "configName": "cat-approved-v2",
-  "timestamp": "2026-01-26T10:30:00Z",
-  "gradients": {
-    "infrastructure": {
-      "minValue": 55,
-      "minColor": "#FFFFFF",
-      "maxValue": 90,
-      "maxColor": "#ab104e"
-    },
-    "communities": {
-      "minValue": 55,
-      "minColor": "#FFFFFF",
-      "maxValue": 90,
-      "maxColor": "#e16b5d"
-    }
-    // ... etc
-  }
-}
-```
-
-3. **Integration:**
-- Widget appears as floating panel (dev mode only)
-- Keyboard shortcut to show/hide (e.g., Ctrl+Shift+G)
-- Settings stored in localStorage during dev
-- Update `getColor()` function to use custom ranges
-- Update legend to show custom ranges
-
-**Files to create:**
-- `src/components/DevTools/GradientCustomizer.tsx` - Main widget
-- `src/components/DevTools/DomainGradientControl.tsx` - Per-domain control
-- `src/utils/gradientConfig.ts` - Config management
-
-**Files to modify:**
-- `src/utils/domainScoreColors.ts` - Use custom gradient settings
-- `src/components/MapArea/MapLegend.tsx` - Display custom ranges
-- `src/components/App.tsx` - Add widget with toggle
-
-**Notes from meeting:**
-- Cat: "We just need to try some other options to see if we can get the color spread to look different"
-- Cat: "The manual manipulation would be for overall resilience and for species. Because everything else looks really good"
-- Speaker 2: "What I could do is build kind of like a customize widget... let you set the minimum and maximum values for the gradients... and change the gradient start to end ingredient yourself"
-
-**Important:** This widget is temporary and should be removed before production release. Once NCEAS team settles on final colors, hard-code the values.
-
-**Completed:**
-- ✅ Created `src/types/gradientConfigTypes.ts` - TypeScript types and default config (55-90 range)
-- ✅ Created `src/components/DevTools/GradientCustomizer.tsx` - Full-featured widget
-- ✅ Updated `src/utils/domainScoreColors.ts` - Added `normalizeScoreWithRange()` and optional gradientConfig to all color functions
-- ✅ Updated `src/components/MapArea/MapLegend.tsx` - Added minValue/maxValue props
-- ✅ Integrated into App.tsx with state management, localStorage persistence, keyboard shortcut (Ctrl+Shift+G)
-- ✅ Added toggle to Header.tsx Dev Tools dropdown
-- ✅ Passed gradientConfig to RightSidebar, LeftSidebar, FlowerChart, and Layout components
-- ✅ Live preview: changes apply immediately to domain score boxes and flower chart
-
-**Widget Features:**
-- Per-domain controls: minValue, maxValue, minColor, maxColor
-- Gradient preview bar for each domain
-- Global presets: 0-100, 55-90 (default ★), 50-85, 60-95
-- Quick presets per domain
-- Configuration name input for exports
-- Copy JSON to clipboard
-- Download as JSON file
-- Reset to defaults
-- Overall Resilience section highlighted at top
-
-**Usage:**
-1. Press `Ctrl+Shift+G` or use Dev Tools dropdown → "Gradient Customization"
-2. Expand any domain to adjust settings
-3. Click presets or enter custom values
-4. Watch sidebar boxes and flower chart update in real-time
-5. Export final config via "Copy JSON" or "Save & Export"
-
----
-
-### Task 2b: Fix Polygon Color Flickering When Switching Domains
-
-**Status:** ✅ Fixed (Feb 2, 2026)
-
-**Priority:** 🔥 HIGH
-
-**Reported:** Feb 2, 2026
-
-**Description:** After adding the gradient customization widget (Task 2), a visual bug was introduced where polygon colors briefly flash/flicker to the previous domain's colors when panning or zooming after switching domains.
-
-**Steps to Reproduce:**
-1. Click on a domain (e.g., Infrastructure) - polygons color correctly (e.g., purple gradient)
-2. Click on a different domain (e.g., Livelihoods) - polygons immediately recolor to orange (correct)
-3. Pan around or zoom in/out on the map
-4. **BUG:** For a split second, polygons flash back to the old domain's colors (purple) before returning to the correct colors (orange)
-
-**Root Cause: Stale Closure in Event Handler**
-
-The `moveend` event handler was registered **once** during initial map load (line ~1132-1136):
-```javascript
-const handleMoveEnd = () => {
-  loadColors(map);
-};
-map.on("moveend", handleMoveEnd);
-```
-
-The `loadColors` function captured `selectedMetricIdObject.domainId` directly in its closure:
-```javascript
-const domainKey = selectedMetricIdObject.domainId as DomainKey;
-```
-
-When the user switches domains, `loadColors` gets recreated with a new function reference (due to `useCallback` dependency), but the `moveend` handler still holds a reference to the **old** `loadColors` with the **old** domain captured.
-
-Timeline:
-1. User switches from Infrastructure → Livelihoods
-2. `selectedMetricIdObject` changes, triggering new `loadColors` with Livelihoods
-3. `idle`/`sourcedata` handlers correctly use new `loadColors` → orange colors applied ✅
-4. User pans/zooms → `moveend` fires
-5. `moveend` calls **old** `loadColors` (has Infrastructure in closure) → purple flash! ❌
-6. `idle` fires after pan → new `loadColors` corrects to orange ✅
-
-**The Fix:**
-
-1. Created `selectedMetricIdObjectRef` to track the current selected metric
-2. Updated `loadColors` to read from the ref instead of capturing the value:
-   ```javascript
-   const domainKey = selectedMetricIdObjectRef.current.domainId as DomainKey;
-   ```
-3. Removed the dependency array from `loadColors` (now uses refs for all changing values)
-
-**Files Modified:**
-- `src/components/MapArea/MapArea.tsx`:
-  - Added `selectedMetricIdObjectRef` (line ~277)
-  - Updated useEffect to keep ref in sync (line ~281)
-  - Updated `loadColors` to read from ref (line ~969)
-  - Removed dependency array from `loadColors` useCallback (line ~1030)
-
-**Technical Note:**
-This is a classic React "stale closure" bug. When using `useCallback` with event handlers that are registered once, any values from the component scope that the callback references will be "frozen" at the time of registration. Using refs ensures the latest values are always read.
-
----
-
-### Task 3: Redesign Left Sidebar → Move Content to Right Sidebar
-
-**Status:** ✅ COMPLETE (Feb 2, 2026)
-
-**Priority:** HIGH
-
-**Description:** Remove the left sidebar entirely and move its content to the right sidebar. Goal: maximize map space and consolidate information display.
-
-**What's being removed:**
-- Entire left sidebar component
-- "Selected Indicator" section from right sidebar (redundant with subheader)
-
-**New right sidebar layout (EXACT specification):**
-
-```
-┌─────────────────────────────────────────────────────┐
-│ [Top Panel - Gray Background]                       │
-│ ┌────────────────────┬──────────────────────────┐   │
-│ │ Selected Region    │ Overall Score Widget     │   │
-│ │ Region name here   │ 78 (with gradient color) │   │
-│ └────────────────────┴──────────────────────────┘   │
-├─────────────────────────────────────────────────────┤
-│ [Individual Domain Scores Widget]                   │
-│  (Larger flower chart + domain boxes)               │
-│  Infrastructure    Communities                      │
-│  Livelihoods      Sense of Place                    │
-│  Species          Habitats                          │
-│  Water            Air Quality                       │
-├─────────────────────────────────────────────────────┤
-│ [Select A Report]                                   │
-│  (Report selection widget)                          │
-├─────────────────────────────────────────────────────┤
-│ [Indicator Navigation]                              │
-│  (Existing hierarchy browser - unchanged)           │
-└─────────────────────────────────────────────────────┘
-```
-
-**Layout specifications:**
-
-1. **Top Panel (Gray Background):**
-   - Split into two columns: Selected Region (left) | Overall Score Widget (right)
-   - Gray background (matching existing gray boxes)
-   - Selected Region shows: region name + geographic context
-   - Overall Score Widget: displays score with color from gradient (see Task 4)
-
-2. **Individual Domain Scores:**
-   - Move flower chart from left sidebar
-   - Make it LARGER now that there's more space
-   - Individual domain score boxes below/around chart
-   - More prominent display
-
-3. **Select A Report:**
-   - New section for report selection
-   - Location: between Domain Scores and Indicator Navigation
-
-4. **Indicator Navigation:**
-   - Keep existing hierarchy browser
-   - No changes to this section
-
-**Implementation notes:**
-
-- Overall Score Widget gets its color value from the right sidebar's color gradient settings (Task 2)
-- Removed components: LeftSidebar.tsx, LeftSidebarHeader.tsx, LeftSidebarBody.tsx, CloseLeftSidebarButton.tsx, LeftSidebarHamburgerIcon.tsx
-- Selected Indicator widget removed from right sidebar (redundant with subheader)
-
-**Design notes from meeting:**
-- Cat: "We just want more map, right?"
-- Cat drew a sketch showing selected region on left, overall score on right, in a top panel
-- Speaker 2: "So basically this left sidebar just kind of goes away"
-- Cat: "Correct"
-
-**Files to modify:**
-- `src/components/App.tsx` - Remove LeftSidebar import and component
-- `src/components/RightSidebar.tsx` - Add top panel, move domain scores, add report section
-- `src/components/LeftSidebar/*` - Delete or refactor components
-- CSS/layout adjustments for wider map area
-
-**Related:** Task 4 (overall score redesign - defines Overall Score Widget)
-
-**Completed:**
-- ✅ Removed entire `LeftSidebar` component from `App.tsx`
-- ✅ Removed `leftSidebarOpen` state and related hamburger toggle
-- ✅ Updated `MapArea.tsx` to remove `leftSidebarOpen` prop (geo-level selector now at fixed position)
-- ✅ Created new RightSidebar layout with three sections:
-  1. **Top Panel (Gray Background)**: Selected Region (left) | Overall Score Widget (right)
-  2. **Individual Domain Scores**: Larger FlowerChart with legend
-  3. **Indicator Navigation**: Existing hierarchy browser (unchanged)
-- ✅ Removed "Selected Indicator" section from RightSidebar (redundant with subheader)
-- ✅ Map now expands to full width (no left sidebar offset)
-- ✅ Added new props to RightSidebar for region display (selectedGeoId, selectedRegionName, etc.)
-- ✅ Moved `buildRegionDisplayText` logic from LeftSidebarHeader to RightSidebar
-
-**Files Modified:**
-- `src/components/App.tsx` - Removed LeftSidebar import/usage, updated RightSidebar props
-- `src/components/RightSidebar.tsx` - Complete rewrite with new layout
-- `src/components/MapArea/MapArea.tsx` - Removed leftSidebarOpen prop, fixed geo-level selector position
-
----
-
-### Task 4: Redesign Overall Score Display
-
-**Status:** ✅ COMPLETE (Feb 2, 2026)
-
-**Priority:** HIGH
-
-**Description:** Keep the circular progress bar but make it smaller and fix the color scheme to use the gradient colors instead of red-yellow-green.
-
-**Current design issues (per Cat):**
-1. **Color messaging problems:** The red-yellow-green gradient implies thresholds (red=bad, green=good) that Cat isn't comfortable endorsing
-2. **Too large:** Takes up too much screen real estate
-
-**Required changes:**
-
-1. **Make circle smaller**
-   - Reduce diameter (currently quite large in left sidebar)
-   - Will fit better in the new right sidebar top panel layout
-
-2. **Use gradient colors instead of red-yellow-green**
-   - Replace red-yellow-green with the Overall Resilience gradient
-   - Use crimson (#7b1628) to light yellow (#fffac9) color scale
-   - Should match the same gradient used for Overall Resilience in map/legend
-
-**Design specification:**
-```
-┌──────────┐
-│ Overall  │
-│  Score   │
-│    ┌─┐   │
-│  ┌─┤7├─┐ │  ← Smaller circular progress
-│  │ │8│ │ │     Colors: light yellow → crimson
-│  └─┴─┴─┘ │
-└──────────┘
-```
-
-**Implementation:**
-- Keep existing circular progress bar component
-- Reduce size (specific dimensions TBD based on new sidebar layout)
-- Replace color logic to use Overall Resilience gradient
-- Background color should interpolate based on score value (55-90 range from Task 2)
-
-**Notes from meeting:**
-- Speaker 2: "What if we made the circle a little smaller and then we used the background color of the gradient?"
-- Cat: "That sounds great"
-- Speaker 2: "I could also make that circle smaller. I only made it that big to kind of make it proportional to the size of the individual domain scores"
-
-**Files to modify:**
-- Existing circular progress component (move from LeftSidebar to RightSidebar)
-- Update size and color scheme
-- `src/utils/domainScoreColors.ts` - Use Overall Resilience gradient function
-
-**Important:** The Overall Score Widget MUST get its background color from the gradient defined in the right sidebar. When Overall Resilience gradient is customized (Task 2), the widget should reflect that color.
-
-**Related:** Task 3 (left sidebar redesign - defines where this widget goes)
-
-**Completed:**
-- ✅ Updated `CircularProgressBar.tsx` to use gradient colors instead of red-yellow-green
-- ✅ Added `gradientConfig` prop to CircularProgressBar for custom gradient support
-- ✅ Added `size` prop with three variants: `small` (h-20/w-20), `medium` (h-28/w-28), `large` (h-40/w-40)
-- ✅ Now uses Overall Resilience gradient (light yellow → crimson) from `getOverallScoreColor()`
-- ✅ Updated `getOverallScoreColor()` in `domainScoreColors.ts` to accept optional `gradientConfig`
-- ✅ Widget respects GradientCustomizer settings when configured
-- ✅ Smaller widget now fits nicely in the top panel of redesigned RightSidebar
-
-**Files Modified:**
-- `src/components/LeftSidebar/CircularProgressBar.tsx` - Complete rewrite with gradient colors and size variants
-- `src/utils/domainScoreColors.ts` - Added gradientConfig support to `getOverallScoreColor()`
-
----
-
-### Task 4b: Fix Visual Balance of Right Sidebar Layout
-
-**Status:** ✅ COMPLETE
-
-**Priority:** MEDIUM
-
-**Description:** After consolidating the left sidebar into the right sidebar, the layout feels visually unbalanced. The sections need better proportions and spacing.
-
-**Completed:**
-- ✅ Moved flower chart legend to the right side of the chart (horizontal layout)
-- ✅ Adjusted font sizes for better visual hierarchy:
-  - "Legend" title: reduced to text-xs with uppercase/tracking-wide styling
-  - Legend items: increased to text-sm for better readability
-- ✅ Removed redundant "Overall Score" label from top panel (circular progress bar is self-explanatory)
-- ✅ Improved visual balance and reduced clutter
-
-**Files Modified:**
-- `src/components/RightSidebar.tsx` - Removed "Overall Score" label, updated layout
-- `src/components/LeftSidebar/FlowerChart.tsx` - Moved legend to right, adjusted font sizes
-
-**Notes:**
-- Task added Feb 2, 2026 after completing Task 3 & 4
-- User feedback: "The right sidebar feels... Sort of unbalanced"
-- Legend now displays vertically on the right side of chart for better space utilization
-- See Task 4c for feedback on Overall Score label removal
-
----
-
-### Task 4c: Get Feedback on Overall Score Label Removal
-
-**Status:** ✅ COMPLETE
-
-**Priority:** MEDIUM
-
-**Description:** Get user feedback on whether removing the "Overall Score" label from the top panel creates clarity issues. The circular progress bar with the score number is now displayed without a label.
-
-**Concern:**
-- Without the "Overall Score" label, it might be unclear what the circular progress bar represents
-- However, the color coding (gradient from light yellow to crimson) and context (next to "Selected Region") may provide sufficient visual cues
-- The large number in the center is prominent and self-explanatory
-
-**Questions for Cat/Ben:**
-- Is it clear what the circular progress bar represents without the label?
-- Does the color coding and context make it obvious it's the overall resilience score?
-- Should we add a subtle tooltip or keep it label-free for cleaner design?
-
-**Related:** Task 4b (completed - removed the label as part of visual balance improvements)
-
----
-
-### Task 4d: Ensure County Labels Include "County" Suffix
-
-**Status:** ✅ COMPLETE
-
-**Priority:** MEDIUM
-
-**Description:** Update the `buildRegionDisplayText` function in RightSidebar to ensure that county names always include the word "County" if it's not already present in the name.
-
-**Completed:**
-- ✅ Added logic to check if regionName contains "County" (case-insensitive)
-- ✅ Append " County" before state abbreviation if not already present
-- ✅ Examples: "Washoe, NV" → "Washoe County, NV", "King County, WA" → "King County, WA" (no change)
-
-**Files Modified:**
-- `src/components/RightSidebar.tsx` - Updated `buildRegionDisplayText` function for county case
-
----
-
-### Task 5: Remove Search Function
-
-**Status:** ✅ COMPLETE (Feb 2, 2026)
-
-**Priority:** MEDIUM
-
-**Description:** Remove the map location search functionality to avoid recurring API costs.
-
-**Rationale:**
-- Most geocoding/search APIs charge per request
-- Costs are unpredictable and scale with traffic
-- Cat: "If you get if you accrue fees per pings, your success in broadcasting your website comes at the cost of you having these unexpected accruals"
-- Cat: "I could not even project if we're talking a hundred dollars or you know, hundred thousand dollars"
-
-**Alternative:** Map labels (Task 1a-1c) help with navigation
-
-**Notes from meeting:**
-- Cat: "Just remove it, don't worry about it"
-- Speaker 2: "Labels will probably help with finding stuff anyway, because people kind of tend to know where their homes are"
-
-**Completed:**
-- ✅ Removed OpenCage geocoding API integration (`api.opencagedata.com`)
-- ✅ Removed search input box and autocomplete suggestions UI
-- ✅ Removed search-related state variables (`searchQuery`, `searchExpanded`, `suggestions`)
-- ✅ Removed search-related functions (`handleSearchInputChange`, `handleSuggestionClick`, `getSuggestions`, `handleClearSearch`)
-- ✅ Removed unused imports (`SearchIcon`, `CloseIcon`)
-- ✅ Indicator search in RightSidebar remains (local filtering, no API costs)
-
-**Files Modified:**
-- `src/components/MapArea/MapArea.tsx` - Removed all search functionality
-
----
+## 📝 Pending & New Tasks
 
 ### Task 6: Update Domain Description Text
 
@@ -1007,302 +117,10 @@ This is a classic React "stale closure" bug. When using `useCallback` with event
 
 **Description:** Cat has specific text she wants to use for domain/metric descriptions. Current text may be AI-generated or from Carlo.
 
-**Notes from meeting:**
-- Cat: "I have feelings that I haven't shared with anyone else. I have very specific text that I want to put under here"
-- Cat: "I will simply provide that to you"
-- Speaker 2: "It will be in there"
-
-**Domains that need description updates:**
-- Infrastructure
-- Communities
-- Livelihoods
-- Sense of Place
-- Species
-- Habitats
-- Water
-- Air Quality
-- Plus all subdomains and individual metrics
+**Dependency:** Waiting for Cat to send updated copy
 
 **Files to modify:**
 - `src/data/domainHierarchy.ts` - Update description fields once Cat provides text
-
-**Dependency:** Waiting for Cat to send updated copy
-
----
-
-### Task 7: Create Basemap Selector Widget
-
-**Status:** ✅ COMPLETE (Feb 3, 2026)
-
-**Priority:** 🔴 MEDIUM
-
-**Scope:** Single chat window - widget implementation
-
-**Description:** Create a basemap selector widget that lets users choose between multiple basemap options. This addresses the EEZ boundary lines issue by giving alternatives without removing functionality.
-
-**Completed:**
-- ✅ Created basemap selector widget with 3 CARTO options
-- ✅ CARTO Positron (light, minimal) - **DEFAULT** - no EEZ lines!
-- ✅ CARTO Voyager (more detail, colored)
-- ✅ CARTO Dark (dark theme option)
-- ✅ All basemaps use `_nolabels` variants - only our custom Natural Earth/GeoNames labels appear
-- ✅ Widget moved to Dev Tools dropdown in header (matches other debug widgets)
-- ✅ Selection persists to localStorage
-- ✅ Attributions included for all basemaps
-- ✅ All basemaps are free for non-commercial/educational use
-
-**Files Modified:**
-- `src/components/App.tsx`:
-  - Added `selectedBasemap` state with localStorage persistence
-  - Passes basemap to MapArea and Header components
-- `src/components/Header/Header.tsx`:
-  - Added basemap selector inline in Dev Tools dropdown
-  - Shows 3 basemap buttons (Light, Voyager, Dark)
-- `src/components/MapArea/MapArea.tsx`:
-  - Added `BASEMAP_OPTIONS` configuration object with 3 basemaps (all `_nolabels`)
-  - Added `BasemapId` type and `BasemapOption` interface (exported)
-  - Updated `getBaseMapStyle()` to accept basemap parameter
-  - Removed inline basemap selector UI
-  - Accepts `selectedBasemap` prop from App.tsx
-
-**Basemap Options:**
-
-| ID | Name | Provider | URL Pattern | Notes |
-|----|------|----------|-------------|-------|
-| `carto-positron` | Light | CARTO | `light_nolabels` | Clean, minimal, **no EEZ lines** ★ Default |
-| `carto-voyager` | Voyager | CARTO | `voyager_nolabels` | More colorful, good detail |
-| `carto-dark` | Dark | CARTO | `dark_nolabels` | Dark theme option |
-
-**Licensing:**
-- CARTO basemaps: Free for most use cases, attribution required
-
-**Notes:**
-- CARTO Positron set as default because it's clean and doesn't show EEZ boundaries
-- Using `_nolabels` variants ensures only our custom Natural Earth/GeoNames labels appear (no duplicate labels)
-- Removed OpenStreetMap option (doesn't offer no-labels variant)
-- Dark mode option available for presentations or preference
-- Selection persists across sessions via localStorage
-
----
-
-### Task 7b: Create Label Source Switcher Widget
-
-**Status:** ✅ COMPLETE (Feb 3, 2026)
-
-**Priority:** 🔴 MEDIUM
-
-**Scope:** Single chat window - widget implementation
-
-**Description:** Create a debug widget that allows switching between our custom Natural Earth/GeoNames labels and CARTO's label tiles. This enables comparison and gives flexibility to use CARTO labels if preferred.
-
-**Completed:**
-- ✅ Added CARTO `*_only_labels` raster tile sources to map style
-- ✅ Created label source switcher widget in Dev Tools dropdown
-- ✅ Toggle between two label sources:
-  1. **Custom labels**: Natural Earth/GeoNames vector tiles (self-hosted)
-  2. **CARTO labels**: CARTO `*_only_labels` raster tiles (transparent background, layered on top)
-- ✅ Real-time switching without page reload
-- ✅ CARTO labels automatically match selected basemap style (Light → `light_only_labels`, Voyager → `voyager_only_labels`, Dark → `dark_only_labels`)
-- ✅ Selection persists to localStorage
-
-**Files Modified:**
-- `src/components/MapArea/MapArea.tsx`:
-  - Added `LabelSource` type (`"custom" | "carto"`)
-  - Added `CARTO_LABEL_TILES` configuration with URLs for each basemap variant
-  - Added `carto-labels` raster source to initial map style
-  - Added `addCartoLabelsLayer()` and `repositionCartoLabelsLayer()` functions
-  - Added `updateLabelSourceVisibility()` function to toggle between sources
-  - Added `labelSource` prop to MapAreaProps interface
-  - Added useEffects to respond to label source and basemap changes
-- `src/components/Header/Header.tsx`:
-  - Added `labelSource` and `onLabelSourceChange` props
-  - Added label source selector UI in Dev Tools dropdown (Custom/CARTO buttons)
-- `src/components/App.tsx`:
-  - Added `LabelSource` import
-  - Added `labelSource` state with localStorage persistence
-  - Passed `labelSource` and `onLabelSourceChange` to Header and MapArea
-
-**CARTO Label Tile URLs:**
-| Basemap | Label Tiles URL |
-|---------|-----------------|
-| Light (Positron) | `https://basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png` |
-| Voyager | `https://basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}{r}.png` |
-| Dark | `https://basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png` |
-
-**Usage:**
-1. Open Dev Tools dropdown in header
-2. Find "Label Source" section
-3. Click "Custom (GeoNames)" or "CARTO" to switch label sources
-4. Changes apply immediately and persist across sessions
-
-**Notes:**
-- CARTO labels are unlimited/free (same as basemaps)
-- Useful for comparing label quality/density between sources
-- Custom labels give full control over what appears and when
-- CARTO labels have good coverage and professional styling
-
----
-
-### Task 7c: Research Other Free Label-Only Vector Tile Sources
-
-**Status:** ✅ COMPLETE (Feb 3, 2026)
-
-**Priority:** 🔴 LOW
-
-**Scope:** Research task - identify alternatives to CARTO labels
-
-**Description:** Research other free label-only vector tile sources that could be used as alternatives to CARTO labels. CARTO labels are raster tiles (not vector), so they can't be styled. Vector tile sources would allow full styling control while potentially offering better coverage or different city selection.
-
-**Completed:**
-- ✅ Researched 5 major providers: OpenMapTiles, MapTiler, Protomaps, Stadia Maps, and current GeoNames solution
-- ✅ Created comparison table evaluating each against criteria (free, vector tiles, no API key, label-only, North America coverage)
-- ✅ Documented findings and recommendations
-
-**Research Findings:**
-
-**1. OpenMapTiles** ⚠️
-- **What it is:** Open-source vector tile *schema* (specification), not a hosting service
-- **Verdict:** Not applicable - schema only, not a tile provider
-- **Note:** Current GeoNames solution already follows similar patterns
-
-**2. MapTiler** ❌
-- **What it is:** Commercial provider (company behind OpenMapTiles schema)
-- **Free tier:** 100,000 map loads/month
-- **Issues:** Requires API key registration, no label-only tiles (full basemap only)
-- **Verdict:** Does not meet criteria (API key required, no label-only option)
-
-**3. Protomaps** ⭐⭐
-- **What it is:** Open-source vector tile system using PMTiles format (single-file archives)
-- **Pros:** Free basemap downloads, PMTiles format, full styling control, can filter to label layers
-- **Cons:** Large file size (North America ~5-10GB vs current 2.3MB), more complex setup, labels embedded in full basemap
-- **Verdict:** Viable alternative but **overkill** for labels-only use case
-
-**4. Stadia Maps** ❌
-- **What it is:** Commercial map tile provider
-- **Issues:** Free tier requires API key, usage limits apply, no label-only option
-- **Verdict:** Does not meet criteria (API key required)
-
-**5. Natural Earth + GeoNames (Current Solution)** ✅ ⭐⭐⭐
-- **What we're using:** Natural Earth state/province boundaries + GeoNames cities5000
-- **Pros:** Completely free, no API key, full styling control, label-only (no wasted bandwidth), tiny file size (2.3MB), already production-ready, 1,773 cities in study region
-- **Verdict:** **Best option** - already implemented and meets all requirements
-
-**Conclusion:**
-Current self-hosted GeoNames/Natural Earth labels remain **optimal** for WWRI's requirements:
-- ✅ Free (no API costs)
-- ✅ Vector tiles (full styling control)
-- ✅ No API key required
-- ✅ Covers North America (US + Canada)
-- ✅ Label-only (efficient, 2.3MB)
-- ✅ Already production-deployed
-
-**Recommendation:** No changes needed. Current solution is superior to all alternatives researched.
-
-**Future Consideration:**
-If richer label data is needed in the future, Protomaps PMTiles could be explored as an enhancement, but would require:
-- Downloading larger files (5-10GB for North America)
-- Setting up PMTiles protocol support
-- Styling to show only label layers
-- More complex hosting requirements
-
-**Notes:**
-- CARTO labels (Task 7b) remain useful for A/B testing/comparison, but are raster (no styling control)
-- Current GeoNames solution provides best balance of features, simplicity, and cost
-
----
-
-### Task 8: Create Map Projection Selector Widget
-
-**Status:** ✅ COMPLETE (Feb 4, 2026) - with limitations
-
-**Priority:** 🔴 MEDIUM
-
-**Scope:** Single chat window - widget implementation
-
-**Description:** Create a projection selector widget that lets the NCEAS team test and choose between multiple map projections. This allows them to see options immediately rather than waiting for iterative changes.
-
-**Completed:**
-- ✅ Upgraded maplibre-gl from v4.3.2 → v5.17.0 (v4 didn't have setProjection)
-- ✅ Widget in Dev Tools dropdown in header
-- ✅ Selection persists to localStorage
-- ✅ Projections apply client-side (no tile reprojection needed)
-- ✅ Each projection has description and tooltip
-
-**Projection Options (Final):**
-
-| ID | Name | Description | Use Case |
-|----|------|-------------|----------|
-| `mercator` | Mercator (Flat) | Standard 2D web map | Default, familiar to users |
-| `globe` | Globe (3D) ★ | 3D sphere view | Natural appearance, can rotate |
-
-**⚠️ LIMITATION: Albers/NAD83/EPSG:5070 NOT SUPPORTED**
-
-MapLibre GL JS v5 only supports `mercator` and `globe`. Other projections (equalEarth, naturalEarth, winkelTripel, **albers/NAD83/EPSG:5070**) are **NOT** supported and fall back to mercator silently.
-
-NCEAS requested Albers Equal Area (NAD83 / EPSG:5070) for west coast visualization. This is **not possible** with MapLibre GL JS. Options if Albers is truly required:
-1. **Switch to Mapbox GL JS** (commercial, requires API key, usage costs) - supports albers and other conic projections
-2. **Pre-project all tiles server-side** - Reproject all vector tiles to Albers before serving (complex, expensive, would break other projections)
-3. **Use a different mapping library** (e.g., OpenLayers with proj4js) - would require significant rewrite
-
-**Recommendation:** Accept Mercator (standard) or Globe (visually dramatic). Albers is not feasible without major infrastructure changes.
-
-**Files Modified:**
-- `src/components/MapArea/MapArea.tsx`:
-  - Added `MapProjection` type and `PROJECTION_OPTIONS` configuration
-  - Added `selectedProjection` prop and ref
-  - Added useEffect to apply projection changes via `map.setProjection()`
-  - Initial projection set on map load if not mercator
-- `src/components/App.tsx`:
-  - Added `selectedProjection` state with localStorage persistence (`wwri-projection`)
-  - Passed projection state to Header and MapArea
-- `src/components/Header/Header.tsx`:
-  - Added projection selector UI in Dev Tools dropdown
-  - Each option shows name and checkmark when selected
-  - Description shown below buttons for current selection
-
-**Technical Notes:**
-- **Upgraded maplibre-gl** from v4.3.2 → v5.17.0 (v4 didn't have setProjection)
-- MapLibre GL JS v5+ supports `map.setProjection({ type: 'projectionName' })`
-- Projections are applied client-side - no tile reprojection needed
-- `style.load` event listener re-applies projection after basemap changes
-- Globe view allows rotation and 3D perspective
-- Only `mercator` and `globe` are fully supported in MapLibre GL JS v5
-
-**Usage:**
-1. Open Dev Tools dropdown in header (🛠️ button)
-2. Find "Map Projection" section
-3. Click any projection to switch
-4. Description shows what each projection is best for
-5. Selection persists across sessions
-
-**Projection Tradeoffs:**
-- **Mercator (Flat):** Standard 2D view, familiar to users, distorts polar regions
-- **Globe (3D):** Natural spherical view, can rotate/tilt, shows Earth's curvature - most visually distinctive option
-
----
-
-### Task 9: Set Initial Map Orientation to Center on West Coast
-
-**Status:** ✅ COMPLETE (Feb 4, 2026)
-
-**Priority:** MEDIUM
-
-**Description:** Set the map's initial center and zoom level to properly frame the west coast study region.
-
-**Notes from meeting:**
-- Speaker 2: "I need to set the initial orientation of the map so that everything in the west coast is like properly centered, so that's on my to-do list"
-
-**Completed:**
-- ✅ Updated initial map center to [-143.47, 52.53] (longitude: -143.47°W, latitude: 52.53°N)
-- ✅ Set initial zoom level to 2.9 (frames entire study region from Alaska to Arizona)
-- ✅ Updated reset view button to use same coordinates for consistency
-- ✅ Added center coordinate display to Label Config widget (shows current map center for fine-tuning)
-- ✅ Study region includes: 12 US states (AK, AZ, CA, CO, ID, MT, NV, NM, OR, UT, WA, WY) + 2 Canadian provinces (BC, Yukon)
-
-**Files Modified:**
-- `src/components/MapArea/MapArea.tsx` - Updated map initialization center/zoom and reset view function, added center tracking for dev tools
-- `src/components/App.tsx` - Added currentCenter state and onCenterChange callback
-- `src/components/DevTools/LabelConfigWidget.tsx` - Added center coordinate display in widget header
 
 ---
 
@@ -1312,103 +130,37 @@ NCEAS requested Albers Equal Area (NAD83 / EPSG:5070) for west coast visualizati
 
 **Priority:** LOW
 
-**Description:** The "View Report" button in the left sidebar may or may not be needed. Cat wants to discuss with the Moore Foundation comms team before deciding.
-
-**Notes from meeting:**
-- Cat: "Put a pin in the report thing. I want to talk to the comms people at our funding agency about whether or not we actually want to provide something like that"
-- Speaker 2: "Waiting on the report, you're gonna let us know if you do want that"
+**Description:** The "View Report" button may or may not be needed. Cat wants to discuss with the Moore Foundation comms team before deciding.
 
 **Action:** Wait for Cat's decision after Feb 17 Moore meeting
-
-**Related:** Task 3 (left sidebar removal) - Report section is included in new right sidebar layout
 
 ---
 
 ### Task 11: Update Species/Iconic Species Messaging
 
-**Status:** Pending
+**Status:** ⬜ Pending
 
 **Priority:** MEDIUM
 
 **Description:** Improve the messaging/descriptions to clarify the difference between "Species" domain and "Iconic Species" subdomain (under Sense of Place).
 
-**The distinction (from Cat's explanation):**
+**The distinction:**
 
 **Species domain:**
 - General biodiversity - all species
 - Based on IUCN data
 - Measured wherever the species occur
-- Examples: 500 different species of cactuses
 
 **Iconic Species (Sense of Place subdomain):**
 - Species of special cultural/emotional importance to a specific place
-- State-designated special species (on currency, stamps, legislated as iconic)
+- State-designated special species
 - Only evaluated in the state/province where they're iconic
-- Examples: California poppy (only in California), Caribou (British Columbia but not Alaska), banana slug, California condor
-
-**Key messaging points:**
-- Iconic species is a **subset** of all species
-- About emotional connection to landscape
-- About persistence and health of culturally important populations
-- Geographically specific (California poppy exists in OR/WA but only measured as "iconic" in CA)
-
-**Notes from meeting:**
-- Cat: "I need to do a little bit of workshopping there to make sure the intent is clear"
-- Speaker 2: "I think the messaging [is important]"
+- Examples: California poppy (only in CA), Caribou (BC but not AK)
 
 **Files to modify:**
 - `src/data/domainHierarchy.ts` - Update description fields for Species domain and Iconic Species subdomain
-- Possibly add tooltip or help text
 
 **Related:** Task 6 (waiting for Cat's text)
-
----
-
-### Task 12: Create Debugging Widget System
-
-**Status:** ⬜ Pending
-
-**Priority:** 🔴 MEDIUM
-
-**Scope:** Single chat window - widget framework
-
-**Description:** Create a reusable debugging widget system that lives in the header area, allowing rapid parameter tweaking for various features without code changes. Widgets export JSON configurations that can be applied as defaults in code.
-
-**Use Cases:**
-- **Labels** (Task 1b): Tweak font sizes, weights, colors, minzoom thresholds, halo width, padding, opacity
-- **Gradients** (Task 2): Adjust color stops, interpolation, ranges
-- **Basemaps** (Task 7): Test and compare different basemaps
-- **Projections** (Task 8): Test and compare different map projections
-- **Future debugging**: Any feature that needs rapid iteration
-
-**Requirements:**
-- Lives in header area or floating panel
-- Hidden by default, toggleable (e.g., keyboard shortcut or dev mode)
-- Exports configuration as JSON
-- Easy to add new widget types
-- Stays in codebase for future debugging (not removed after Task 1b)
-
-**Tasks:**
-- [ ] Design widget container/panel component
-- [ ] Implement show/hide toggle (keyboard shortcut + dev mode flag)
-- [ ] Create widget registry system for adding new widgets
-- [ ] Build label configuration widget (for Task 1b)
-- [ ] Add JSON export/copy functionality
-- [ ] Style to be non-intrusive but functional
-- [ ] Document how to add new widget types
-- [ ] Add localStorage persistence for widget state
-
-**Deliverables:**
-- Debugging widget framework component
-- Label configuration widget (first implementation)
-- Documentation for adding new widgets
-- JSON export functionality
-
-**Notes:**
-- This is infrastructure for multiple tasks
-- Should be built early to help with Task 1b
-- Expect to add more widgets over time (gradients, basemaps, etc.)
-- Keep in production code but hidden from end users
 
 ---
 
@@ -1418,9 +170,7 @@ NCEAS requested Albers Equal Area (NAD83 / EPSG:5070) for west coast visualizati
 
 **Priority:** 🟡 LOW (defer until near completion)
 
-**Scope:** Single chat window - testing and documentation
-
-**Description:** Comprehensive performance and load testing for both front-end and back-end to ensure production readiness. Measure latency, throughput, and identify bottlenecks.
+**Description:** Comprehensive performance and load testing for both front-end and back-end to ensure production readiness.
 
 **Goals:**
 - Measure request latency (tile loads, API calls, etc.)
@@ -1450,53 +200,268 @@ NCEAS requested Albers Equal Area (NAD83 / EPSG:5070) for west coast visualizati
 - Latency measurements for key operations
 - Load capacity estimates (users, requests/sec)
 - Bottleneck identification and recommendations
-- Optimization suggestions for future work
 
 **Notes:**
-- Defer until end of development (after Tasks 1-11)
-- Performance work can always continue post-launch
-- Document baseline metrics for future optimization
+- Defer until end of development (after other tasks)
 - Consider tools: Lighthouse, Chrome DevTools, Apache Bench, k6
 
 ---
 
-### Task 14: Expand One Domain by Default in Right Sidebar
+### Task 15: Add White-Black-White Border Styling to Map Polygons
 
-**Status:** ✅ COMPLETE (Feb 4, 2026)
+**Status:** ⬜ Pending
 
-**Priority:** 🔴 HIGH (from Cat meeting Feb 3, 2026)
+**Priority:** 🔥 HIGH
 
-**Scope:** Single small fix - ~1 hour
+**Scope:** Single chat window - styling update
 
-**Description:** Make one domain (e.g., "Infrastructure") expanded by default in the right sidebar indicator navigation so users immediately understand that domains can be expanded and collapsed.
+**Description:** Update the polygon border styling to use a "sandwich" pattern: white outer, black middle, white inner. This creates a high-contrast border that remains visible against both light and dark backgrounds.
 
-**Problem:** Users don't realize the domains in the indicator navigation can be expanded/collapsed because all domains are collapsed by default on initial load.
+**Current Issue:** Single-color borders don't stand out against similarly-colored polygons or backgrounds.
 
-**User Impact:** Without seeing an expanded state, users may never discover they can drill down into individual indicators within each domain.
+**Terminology Note:** This technique is similar to text "stroke" or "halo" styling, where multiple layers create contrast. In MapLibre GL JS, this is achieved by rendering the same layer multiple times with different line widths.
 
-**Completed:**
-- ✅ Updated `expandedSections` state initialization in `RightSidebar.tsx` to expand Infrastructure domain by default
-- ✅ Used function initializer `() => ({ infrastructure: true })` to ensure default expansion only happens on initial load
-- ✅ Preserved user's ability to collapse/expand all domains normally
-- ✅ Added explanatory comment documenting UX rationale
+**Implementation Approach:**
 
-**Files Modified:**
-- `src/components/RightSidebar.tsx` - Updated state initialization (line 137)
+MapLibre GL JS doesn't support multi-color borders natively. We need to render the polygon outline **three times** as separate layers:
+
+1. **Bottom layer (white outer):** Thickest line (e.g., 5px), white color
+2. **Middle layer (black):** Medium line (e.g., 3px), black color
+3. **Top layer (white inner):** Thinnest line (e.g., 1px), white color
+
+**Example layer structure:**
+```javascript
+// Layer 1: White outer border (thickest)
+{
+  id: 'selected-polygon-border-outer',
+  type: 'line',
+  source: 'selected-polygon',
+  paint: {
+    'line-color': '#FFFFFF',
+    'line-width': 5
+  }
+}
+
+// Layer 2: Black middle border
+{
+  id: 'selected-polygon-border-middle',
+  type: 'line',
+  source: 'selected-polygon',
+  paint: {
+    'line-color': '#000000',
+    'line-width': 3
+  }
+}
+
+// Layer 3: White inner border (thinnest)
+{
+  id: 'selected-polygon-border-inner',
+  type: 'line',
+  source: 'selected-polygon',
+  paint: {
+    'line-color': '#FFFFFF',
+    'line-width': 1
+  }
+}
+```
+
+**Visual Result:**
+```
+████████████████████  ← Dark polygon
+██▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓██  ← White outer (5px)
+██▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓██
+██▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓██
+██▓▓░░░░░░░░░░░░▓▓██  ← Black middle (3px)
+██▓▓░░░░░░░░░░░░▓▓██
+██▓▓░░▒▒▒▒▒▒▒▒░░▓▓██  ← White inner (1px)
+██▓▓░░▒▒▒▒▒▒▒▒░░▓▓██
+████████████████████
+```
+
+**Files to modify:**
+- `src/components/MapArea/MapArea.tsx` - Update selected polygon border layers
+
+**Testing:**
+- Test with light-colored polygons (e.g., yellow/light green)
+- Test with dark-colored polygons (e.g., dark red/blue)
+- Test at different zoom levels
+- Verify borders don't obscure small polygons
+
+**Edge Cases:**
+- Very small polygons (e.g., tiny census tracts) - may need to reduce border width at higher zoom levels
+- Adjacent selected regions - ensure borders don't overlap weirdly
+
+---
+
+### Task 16: Redesign Map Legend
+
+**Status:** ⬜ Pending
+
+**Priority:** 🔥 HIGH
+
+**Scope:** Single chat window - legend redesign
+
+**Description:** Redesign the map legend to be more space-efficient and informative. Current legend has excessive left/right margins and doesn't show enough context.
+
+**Current Issues:**
+1. Too much horizontal padding/margin - wasted space
+2. Only shows 4 color boxes - not very informative
+3. No progress bar for the selected metric score
+4. Layout could be more compact
+
+**Requirements:**
+
+**A) Layout Changes:**
+- Use wide horizontal rectangles stacked vertically instead of small boxes
+- Reduce left/right margins to maximize legend width
+- More compact vertical spacing
+
+**B) Add Selected Metric Progress Bar:**
+- Below the Overall Score circular progress bar in the Selected Region section (right sidebar)
+- Show the current region's score for the selected metric
+- Use same gradient colors as the domain
+- Label should show metric name (without domain prefix - see Task 17)
+
+**Example Layout:**
+```
+┌─────────────────────────────────────┐
+│ Legend: Infrastructure              │
+├─────────────────────────────────────┤
+│ ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ │ ← Wide rectangle (high score)
+│ ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░ │ ← Wide rectangle (mid score)
+│ ▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░░ │ ← Wide rectangle (low score)
+│ ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │ ← Wide rectangle (very low)
+│ 55                               90 │ ← Min/max labels
+└─────────────────────────────────────┘
+```
+
+**Selected Region Panel (new layout):**
+```
+┌──────────────────────────────────────────┐
+│ Selected Region             Overall Score│
+│ Santa Barbara County, CA          ┌────┐│
+│                                   │ 78 ││
+│                                   └────┘│
+├──────────────────────────────────────────┤
+│ Home Ownership                           │
+│ ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░  │
+│ 72 / 90                                  │
+└──────────────────────────────────────────┘
+```
+
+**Files to modify:**
+- `src/components/MapArea/MapLegend.tsx` - Redesign legend layout
+- `src/components/RightSidebar.tsx` - Add selected metric progress bar to Selected Region panel
+- Possibly create new component: `src/components/RightSidebar/SelectedMetricProgressBar.tsx`
+
+**Design Questions:**
+- Should selected metric progress bar be always visible, or only when a metric is selected?
+- Should it show numeric value (e.g., "72 / 90") or just the bar?
+- Should it use the same circular progress bar component or a linear bar?
+
+**Related:** Task 17 (metric naming bug - label should not show "Infrastructure Home Ownership", just "Home Ownership")
+
+---
+
+### Task 17: Fix Metric Naming Bug (Remove Duplicate Domain Name Prefix)
+
+**Status:** ⬜ Pending
+
+**Priority:** 🔥 HIGH
+
+**Scope:** Single chat window - bug fix
+
+**Description:** When a submetric or subsubmetric is selected in the indicator navigation, the domain name is incorrectly prepended to the metric name in both the subheader and the legend.
+
+**Bug Examples:**
+- Shows: "Infrastructure Home Ownership" 
+- Should show: "Home Ownership"
+- Shows: "Livelihoods Household Income"
+- Should show: "Household Income"
+
+**Where the bug appears:**
+1. Subheader (breadcrumb title)
+2. Map legend title
+3. Possibly other places that display the selected metric name
+
+**Root Cause (likely):**
+The metric name is being constructed by concatenating domain + metric name, when the metric name already contains the full path or the domain name is being added unnecessarily.
+
+**Expected Behavior:**
+- **Domain selected:** Show domain name only (e.g., "Infrastructure")
+- **Subdomain selected:** Show subdomain name only (e.g., "Home Ownership")
+- **Indicator selected:** Show indicator name only (e.g., "Homeownership Rate")
+
+**Implementation Tasks:**
+- [ ] Find where metric names are being constructed/displayed
+- [ ] Check `domainHierarchy.ts` - ensure metric names don't include domain prefix
+- [ ] Check subheader component - ensure it's not prepending domain name
+- [ ] Check legend component - ensure it's not prepending domain name
+- [ ] Test with various metric selections (domain, subdomain, indicator)
+
+**Files to investigate:**
+- `src/components/Subheader/Subheader.tsx`
+- `src/components/MapArea/MapLegend.tsx`
+- `src/data/domainHierarchy.ts`
+- `src/utils/buildBreadcrumbPath.ts`
+- Anywhere that uses `selectedMetricIdObject` to construct display names
+
+**Testing Checklist:**
+- [ ] Select top-level domain → shows "Infrastructure"
+- [ ] Select subdomain → shows "Home Ownership" (NOT "Infrastructure Home Ownership")
+- [ ] Select indicator → shows "Homeownership Rate" (NOT "Infrastructure Home Ownership Homeownership Rate")
+- [ ] Check subheader breadcrumb path is correct
+- [ ] Check legend title is correct
+- [ ] Check any tooltips or other displays
+
+---
+
+### Task 18: Add "Overall Score" Label Above Circular Progress Bar
+
+**Status:** ⬜ Pending
+
+**Priority:** 🔥 HIGH
+
+**Scope:** Single chat window - UI update
+
+**Description:** Restore the "Overall Score" label above the circular progress bar in the Selected Region section of the right sidebar. This label was previously removed in Task 4b for visual balance, but user feedback indicates it's needed for clarity.
+
+**Current State:**
+```
+┌──────────────────────────────────┐
+│ Selected Region          ┌────┐  │
+│ Santa Barbara County, CA │ 78 │  │
+│                          └────┘  │
+└──────────────────────────────────┘
+```
+
+**Desired State:**
+```
+┌──────────────────────────────────┐
+│ Selected Region   Overall Score  │
+│                          ┌────┐  │
+│ Santa Barbara County, CA │ 78 │  │
+│                          └────┘  │
+└──────────────────────────────────┘
+```
 
 **Implementation:**
-- Changed `expandedSections` state from empty object `{}` to function initializer that returns `{ infrastructure: true }`
-- Function initializer ensures default expansion only occurs on first render, not on re-renders
-- Users can still collapse Infrastructure and expand/collapse other domains normally
+- Add "Overall Score" label above the circular progress bar
+- Ensure vertical spacing is appropriate
+- May need to reduce circular progress bar size slightly to maintain section height
+- Label should match styling of "Selected Region" label (font, weight, size)
 
-**Why "Infrastructure":**
-- Mid-complexity domain (not too many, not too few indicators)
-- Provides clear example of the expand/collapse pattern
-- First domain in the list, good default choice
+**Constraints:**
+- Try to maintain current section height (it's "the right height" per user)
+- If space is tight, circular progress bar can be made smaller
+- Balance between label clarity and visual clutter
 
-**Notes from Cat Fong meeting (Feb 3, 2026):**
-- This was specifically mentioned as a high-priority UX improvement
-- Goal is user education: make the interaction pattern obvious
-- Quick win: small effort, high UX impact
+**Files to modify:**
+- `src/components/RightSidebar.tsx` - Add label above circular progress bar
+
+**Related:** 
+- Task 4b (previously removed this label)
+- Task 16 (will also add selected metric progress bar - ensure both fit well together)
 
 ---
 

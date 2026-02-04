@@ -538,15 +538,42 @@ const MapArea: React.FC<MapAreaProps> = ({
       },
     });
     
-    // Add US highlight layer
+    // ============================================================================
+    // SELECTION BORDER CONFIG - Adjust these values to change border appearance
+    // ============================================================================
+    const BORDER_OUTER_WIDTH = 5;   // White outer band width (try 6-7 for thicker white)
+    const BORDER_INNER_WIDTH = 2;   // Black inner band width (try 2 for thinner black)
+    const BORDER_OUTER_COLOR = "#FFFFFF";
+    const BORDER_INNER_COLOR = "#000000";
+    // Visual result: (OUTER - INNER) / 2 px white on each side
+    // Current: (5 - 3) / 2 = 1px white | 3px black | 1px white
+    // ============================================================================
+    
+    // Add US highlight layers - "sandwich" border: white | black | white
     map.addLayer({
-      id: "us-highlight",
+      id: "us-highlight-outer",
       type: "line",
       source: "us-tiles",
       "source-layer": config.us.sourceLayer,
       paint: {
-        "line-color": "#00FFFF",
-        "line-width": 3,
+        "line-color": BORDER_OUTER_COLOR,
+        "line-width": BORDER_OUTER_WIDTH,
+        "line-opacity": [
+          "case",
+          ["boolean", ["feature-state", "selected"], false],
+          1,
+          0,
+        ],
+      },
+    });
+    map.addLayer({
+      id: "us-highlight-inner",
+      type: "line",
+      source: "us-tiles",
+      "source-layer": config.us.sourceLayer,
+      paint: {
+        "line-color": BORDER_INNER_COLOR,
+        "line-width": BORDER_INNER_WIDTH,
         "line-opacity": [
           "case",
           ["boolean", ["feature-state", "selected"], false],
@@ -556,15 +583,31 @@ const MapArea: React.FC<MapAreaProps> = ({
       },
     });
     
-    // Add Canada highlight layer
+    // Add Canada highlight layers - "sandwich" border: white | black | white
     map.addLayer({
-      id: "canada-highlight",
+      id: "canada-highlight-outer",
       type: "line",
       source: "canada-tiles",
       "source-layer": config.canada.sourceLayer,
       paint: {
-        "line-color": "#00FFFF",
-        "line-width": 3,
+        "line-color": BORDER_OUTER_COLOR,
+        "line-width": BORDER_OUTER_WIDTH,
+        "line-opacity": [
+          "case",
+          ["boolean", ["feature-state", "selected"], false],
+          1,
+          0,
+        ],
+      },
+    });
+    map.addLayer({
+      id: "canada-highlight-inner",
+      type: "line",
+      source: "canada-tiles",
+      "source-layer": config.canada.sourceLayer,
+      paint: {
+        "line-color": BORDER_INNER_COLOR,
+        "line-width": BORDER_INNER_WIDTH,
         "line-opacity": [
           "case",
           ["boolean", ["feature-state", "selected"], false],
@@ -582,7 +625,12 @@ const MapArea: React.FC<MapAreaProps> = ({
    */
   const removeGeoLevelLayers = useCallback((map: maplibregl.Map) => {
     // Remove layers first (must be done before removing sources)
-    const layersToRemove = ["us-highlight", "canada-highlight", "us-fill", "canada-fill"];
+    // Highlight layers have 2 layers each (outer white, inner black) for sandwich border
+    const layersToRemove = [
+      "us-highlight-outer", "us-highlight-inner",
+      "canada-highlight-outer", "canada-highlight-inner",
+      "us-fill", "canada-fill"
+    ];
     layersToRemove.forEach(layerId => {
       if (map.getLayer(layerId)) {
         map.removeLayer(layerId);
@@ -650,7 +698,8 @@ const MapArea: React.FC<MapAreaProps> = ({
     BOUNDARY_LAYERS.forEach(layerId => {
       if (map.getLayer(layerId)) {
         // Move before highlight layers (so boundaries are below selection)
-        map.moveLayer(layerId, "us-highlight");
+        // Use the outer highlight layer as reference (it's the bottom of the highlight stack)
+        map.moveLayer(layerId, "us-highlight-outer");
       }
     });
   }, []);

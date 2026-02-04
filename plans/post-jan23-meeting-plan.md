@@ -35,12 +35,12 @@
 | 12 | Create debugging widget system (label config, hidden but toggleable) | ✅ Complete |
 | 13 | Performance and saturation testing (front-end and back-end) | ⬜ Pending |
 | 14 | Expand one domain by default in right sidebar (Cat meeting Feb 3) | ✅ Complete |
-| 15 | Add white-black-white border styling to map polygons | ⬜ Pending |
+| 15 | Add white-black-white border styling to map polygons | ✅ Complete |
 | 16 | Redesign map legend (fix margins, layout, add selected metric progress bar) | ⬜ Pending |
 | 17 | Fix metric naming bug (remove duplicate domain name prefix) | ⬜ Pending |
 | 18 | Add "Overall Score" label above circular progress bar | ⬜ Pending |
 
-**Progress:** 18/24 complete (5 pending, 1 blocked, 1 on hold)
+**Progress:** 19/24 complete (4 pending, 1 blocked, 1 on hold)
 
 **Note:** Completed task details archived in [post-jan23-completed-tasks.md](./archive/post-jan23-completed-tasks.md)
 
@@ -85,6 +85,7 @@
 | Feb 4 | **✅ Task 14 COMPLETE!** - Infrastructure domain now expanded by default in right sidebar indicator navigation. Updated `expandedSections` state initialization to use function initializer `() => ({ infrastructure: true })` so default expansion only occurs on initial load. Users can still collapse/expand all domains normally. This makes the expand/collapse interaction pattern immediately discoverable. Files modified: `RightSidebar.tsx`. |
 | Feb 4 | **📦 ARCHIVED COMPLETED TASKS** - Moved detailed descriptions of Tasks 1-14 to `archive/post-jan23-completed-tasks.md` to keep main plan concise. |
 | Feb 4 | **📋 ADDED TASKS 15-18** - New tasks for polygon borders (white-black-white sandwich), legend redesign, metric naming bug fix, and Overall Score label restoration. |
+| Feb 4 | **✅ Task 15 COMPLETE!** - Implemented white-black-white sandwich border for selected map polygons. Replaced single cyan highlight layer with 2-layer system: white outer (5px) + black inner (3px), creating 3-band border pattern (white | black | white). Border widths extracted to configurable constants (`BORDER_OUTER_WIDTH`, `BORDER_INNER_WIDTH`) for easy adjustment. Works for both US and Canada polygons. Files modified: `MapArea.tsx`. |
 
 ---
 
@@ -209,7 +210,7 @@ This includes implementation details, file changes, and technical notes for:
 
 ### Task 15: Add White-Black-White Border Styling to Map Polygons
 
-**Status:** ⬜ Pending
+**Status:** ✅ Complete
 
 **Priority:** 🔥 HIGH
 

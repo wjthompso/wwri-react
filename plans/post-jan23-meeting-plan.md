@@ -34,9 +34,9 @@
 | 11 | Update Species/Iconic Species messaging for clarity | ⬜ Pending |
 | 12 | Create debugging widget system (label config, hidden but toggleable) | ✅ Complete |
 | 13 | Performance and saturation testing (front-end and back-end) | ⬜ Pending |
-| 14 | Expand one domain by default in right sidebar (Cat meeting Feb 3) | ⬜ Pending |
+| 14 | Expand one domain by default in right sidebar (Cat meeting Feb 3) | ✅ Complete |
 
-**Progress:** 17/21 complete (3 pending, 1 blocked, 1 on hold)
+**Progress:** 18/21 complete (2 pending, 1 blocked, 1 on hold)
 
 **Note:** Task 1 (map labels) ✅ COMPLETE! Two issues fixed: (1) Y-flip script was breaking tiles - removed, (2) `text-variable-anchor` was causing labels to slide during zoom - switched to fixed `text-anchor: "center"`.
 
@@ -76,6 +76,7 @@
 | Feb 4 | **✅ Task 12 COMPLETE!** - Debugging widget system was already implemented as part of Tasks 1b (LabelConfigWidget) and 2 (GradientCustomizer). Both widgets are feature-flagged, hidden by default, toggleable via keyboard shortcuts (Ctrl+Shift+L and Ctrl+Shift+G), and accessible via Dev Tools dropdown in header. System provides real-time configuration controls for labels and gradients with export capabilities. |
 | Feb 4 | **✅ Task 9 COMPLETE!** - Set initial map orientation to center on west coast study region. Updated map initialization center to [-143.47, 52.53] (longitude: -143.47°W, latitude: 52.53°N) with zoom level 2.9 to properly frame the entire study region (12 US states: AK, AZ, CA, CO, ID, MT, NV, NM, OR, UT, WA, WY + 2 Canadian provinces: BC, Yukon). Also updated reset view button to use same coordinates. Added center coordinate display to Label Config widget for easier fine-tuning. Files modified: `MapArea.tsx`, `App.tsx`, `LabelConfigWidget.tsx`. |
 | Feb 4 | **📋 Task 14 ADDED** - From Cat Fong meeting (Feb 3). Make one domain (e.g., Infrastructure) expanded by default in right sidebar indicator navigation. Users need to see an expanded state on load to discover the expand/collapse interaction pattern. High priority UX improvement, ~1 hour effort. |
+| Feb 4 | **✅ Task 14 COMPLETE!** - Infrastructure domain now expanded by default in right sidebar indicator navigation. Updated `expandedSections` state initialization to use function initializer `() => ({ infrastructure: true })` so default expansion only occurs on initial load. Users can still collapse/expand all domains normally. This makes the expand/collapse interaction pattern immediately discoverable. Files modified: `RightSidebar.tsx`. |
 
 ---
 
@@ -1461,7 +1462,7 @@ NCEAS requested Albers Equal Area (NAD83 / EPSG:5070) for west coast visualizati
 
 ### Task 14: Expand One Domain by Default in Right Sidebar
 
-**Status:** ⬜ Pending
+**Status:** ✅ COMPLETE (Feb 4, 2026)
 
 **Priority:** 🔴 HIGH (from Cat meeting Feb 3, 2026)
 
@@ -1473,37 +1474,24 @@ NCEAS requested Albers Equal Area (NAD83 / EPSG:5070) for west coast visualizati
 
 **User Impact:** Without seeing an expanded state, users may never discover they can drill down into individual indicators within each domain.
 
+**Completed:**
+- ✅ Updated `expandedSections` state initialization in `RightSidebar.tsx` to expand Infrastructure domain by default
+- ✅ Used function initializer `() => ({ infrastructure: true })` to ensure default expansion only happens on initial load
+- ✅ Preserved user's ability to collapse/expand all domains normally
+- ✅ Added explanatory comment documenting UX rationale
+
+**Files Modified:**
+- `src/components/RightSidebar.tsx` - Updated state initialization (line 137)
+
 **Implementation:**
-- [ ] Identify where domain expansion state is initialized (likely in `RightSidebar.tsx`)
-- [ ] Set one domain (suggest "Infrastructure") to expanded state by default
-- [ ] Ensure this only happens on initial load
-- [ ] Preserve user's ability to collapse/expand all domains
-- [ ] Test that default expansion doesn't break existing functionality
-
-**Files to Modify:**
-- `src/components/RightSidebar.tsx` (or related indicator navigation component)
-- Possibly `src/components/RightSidebar/layouts/` components if they manage expansion state
-
-**Acceptance Criteria:**
-- ✅ On first load, one domain is expanded (showing its indicators)
-- ✅ User can collapse the default-expanded domain
-- ✅ User can expand/collapse other domains normally
-- ✅ Selection persists if we have localStorage for domain expansion state
-- ✅ No visual glitches or layout issues
-
-**Example Implementation Pattern:**
-```typescript
-// In component state initialization
-const [expandedDomains, setExpandedDomains] = useState<string[]>(() => {
-  // On initial load, expand Infrastructure domain
-  return ['Infrastructure']; // or whatever the domain key is
-});
-```
+- Changed `expandedSections` state from empty object `{}` to function initializer that returns `{ infrastructure: true }`
+- Function initializer ensures default expansion only occurs on first render, not on re-renders
+- Users can still collapse Infrastructure and expand/collapse other domains normally
 
 **Why "Infrastructure":**
 - Mid-complexity domain (not too many, not too few indicators)
 - Provides clear example of the expand/collapse pattern
-- Alternative suggestions welcome (could be any domain)
+- First domain in the list, good default choice
 
 **Notes from Cat Fong meeting (Feb 3, 2026):**
 - This was specifically mentioned as a high-priority UX improvement

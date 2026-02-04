@@ -133,7 +133,8 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
   const [resistanceLabel, setResistanceLabel] = useState<string | null>(null);
   const [recoveryLabel, setRecoveryLabel] = useState<string | null>(null);
   const [selectedIndicator, setSelectedIndicator] = useState<string | null>("Air Quality Score");
-  const [expandedSections, setExpandedSections] = useState<{ [key: string]: boolean }>({});
+  // Initialize with Infrastructure domain expanded by default so users discover the expand/collapse pattern
+  const [expandedSections, setExpandedSections] = useState<{ [key: string]: boolean }>(() => ({ infrastructure: true }));
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filteredSuggestions, setFilteredSuggestions] = useState<IndicatorObject[]>([]);
 

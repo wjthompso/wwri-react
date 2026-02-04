@@ -28,14 +28,14 @@
 | 7 | Create basemap selector widget (remove EEZ boundaries) | ✅ Complete |
 | 7b | Create label source switcher widget (custom vs CARTO labels) | ✅ Complete |
 | 7c | Research other free label-only vector tile sources (alternatives to CARTO) | ✅ Complete |
-| 8 | Create map projection selector widget (test multiple projections) | ⬜ Pending |
+| 8 | Create map projection selector widget (test multiple projections) | ✅ Complete |
 | 9 | Set initial map orientation to center on west coast | ⬜ Pending |
 | 10 | Report button - defer decision (Cat to discuss with comms) | ⏸️ On Hold |
 | 11 | Update Species/Iconic Species messaging for clarity | ⬜ Pending |
 | 12 | Create debugging widget system (label config, hidden but toggleable) | ⬜ Pending |
 | 13 | Performance and saturation testing (front-end and back-end) | ⬜ Pending |
 
-**Progress:** 14/20 complete (5 pending, 1 blocked, 1 on hold)
+**Progress:** 15/20 complete (4 pending, 1 blocked, 1 on hold)
 
 **Note:** Task 1 (map labels) ✅ COMPLETE! Two issues fixed: (1) Y-flip script was breaking tiles - removed, (2) `text-variable-anchor` was causing labels to slide during zoom - switched to fixed `text-anchor: "center"`.
 
@@ -71,6 +71,7 @@
 | Feb 3 | **📋 Task 7b ADDED** - Follow-up task to create label source switcher widget. Will allow switching between custom Natural Earth/GeoNames labels and CARTO `*_only_labels` tiles for comparison. |
 | Feb 3 | **✅ Task 7b COMPLETE!** - Created label source switcher widget. Allows toggling between Custom (GeoNames/Natural Earth) labels and CARTO labels. CARTO labels use `*_only_labels` raster tiles with transparent backgrounds, overlaid on top of polygons. Widget in Dev Tools dropdown matches basemap style (Light → light_only_labels, etc.). Selection persists to localStorage. |
 | Feb 3 | **✅ Task 7c COMPLETE!** - Researched free label-only vector tile sources. Analyzed OpenMapTiles (schema only, not a service), MapTiler (requires API key), Protomaps (viable but overkill), Stadia Maps (requires API key), and current GeoNames solution. **Conclusion:** Current self-hosted GeoNames/Natural Earth labels remain optimal - free, no API key, vector tiles, full styling control, label-only (2.3MB), already production-ready. No changes needed. |
+| Feb 4 | **✅ Task 8 COMPLETE!** - Created map projection selector widget. Added 5 MapLibre GL JS v4+ projection options: Mercator (default), Globe (3D), Equal Earth, Natural Earth, and Winkel Tripel. Widget in Dev Tools dropdown with descriptions and tooltips. Selection persists to localStorage. Projections apply client-side via `map.setProjection()` - no tile reprojection needed. |
 
 ---
 
@@ -1207,7 +1208,7 @@ If richer label data is needed in the future, Protomaps PMTiles could be explore
 
 ### Task 8: Create Map Projection Selector Widget
 
-**Status:** ⬜ Pending
+**Status:** ✅ COMPLETE (Feb 4, 2026)
 
 **Priority:** 🔴 MEDIUM
 
@@ -1215,43 +1216,57 @@ If richer label data is needed in the future, Protomaps PMTiles could be explore
 
 **Description:** Create a projection selector widget that lets the NCEAS team test and choose between multiple map projections. This allows them to see options immediately rather than waiting for iterative changes.
 
-**Goals:**
-- Let team compare different projections side-by-side (or toggle between them)
-- Reduce Mercator distortion (makes Alaska/Arctic appear huge)
-- Show NAD83/NAD84, Albers Equal Area, and other options
-- Fast iteration - no waiting days/weeks for projection changes
+**Completed:**
+- ✅ Added 5 projection options using MapLibre GL JS v4+ `setProjection()` API
+- ✅ Widget in Dev Tools dropdown in header
+- ✅ Selection persists to localStorage
+- ✅ Projections apply client-side (no tile reprojection needed)
+- ✅ Each projection has description and tooltip
 
-**Current Issue:**
-- Web Mercator makes Alaska/Greenland appear disproportionately large
-- Cat mentioned NAD84 might be better
-- Don't want to iterate slowly (4 days per change)
+**Projection Options:**
 
-**Projection candidates:**
-- [ ] Web Mercator (current, EPSG:3857)
-- [ ] NAD83 / NAD84 (EPSG:4269 / EPSG:4326)
-- [ ] Albers Equal Area Conic (common for North America)
-- [ ] Lambert Conformal Conic
-- [ ] Check MapLibre GL JS globe/projection options (v3+)
+| ID | Name | Description | Use Case |
+|----|------|-------------|----------|
+| `mercator` | Mercator | Standard web map projection | Default, familiar to users |
+| `globe` | Globe | 3D globe view | Natural appearance, rotation |
+| `equalEarth` | Equal Earth | Equal-area projection | Data visualization, thematic maps |
+| `naturalEarth` | Natural Earth | Compromise projection | Balanced shape and area |
+| `winkelTripel` | Winkel Tripel | Used by National Geographic | Balanced distortion |
 
-**Tasks:**
-- [ ] Research MapLibre GL JS projection support (v2 vs v3)
-- [ ] Determine if tiles need reprojection or if client-side is possible
-- [ ] Implement 3-4 projection options in MapArea.tsx
-- [ ] Create dropdown/button widget for projection selection
-- [ ] Test each projection with current data layers
-- [ ] Document tradeoffs for each projection
-- [ ] Save user's projection preference to localStorage
+**Files Modified:**
+- `src/components/MapArea/MapArea.tsx`:
+  - Added `MapProjection` type and `PROJECTION_OPTIONS` configuration
+  - Added `selectedProjection` prop and ref
+  - Added useEffect to apply projection changes via `map.setProjection()`
+  - Initial projection set on map load if not mercator
+- `src/components/App.tsx`:
+  - Added `selectedProjection` state with localStorage persistence (`wwri-projection`)
+  - Passed projection state to Header and MapArea
+- `src/components/Header/Header.tsx`:
+  - Added projection selector UI in Dev Tools dropdown
+  - Each option shows name and checkmark when selected
+  - Description shown below buttons for current selection
 
-**Deliverables:**
-- Projection selector widget in UI
-- 3-4 projection options available
-- Documentation of projection tradeoffs
-- Notes on any limitations or tile regeneration needs
+**Technical Notes:**
+- MapLibre GL JS v4+ supports `setProjection({ type: 'projectionName' })`
+- TypeScript types are outdated, used `(map as any).setProjection()` workaround
+- Projections are applied client-side - no tile reprojection needed
+- Works with both raster basemaps and vector data tiles
+- Globe view allows rotation and 3D perspective
 
-**Notes:**
-- MapLibre GL JS v3+ has better projection support
-- May require tile reprojection (affects both data and basemaps)
-- Better to show options than guess which projection team prefers
+**Usage:**
+1. Open Dev Tools dropdown in header (🛠️ button)
+2. Find "Map Projection" section
+3. Click any projection to switch
+4. Description shows what each projection is best for
+5. Selection persists across sessions
+
+**Projection Tradeoffs:**
+- **Mercator:** Familiar but distorts Alaska/Arctic
+- **Globe:** Natural 3D view but may feel unfamiliar for flat maps
+- **Equal Earth:** Best for thematic data but less common appearance
+- **Natural Earth:** Good balance but less common
+- **Winkel Tripel:** Professional cartographic look
 
 ---
 

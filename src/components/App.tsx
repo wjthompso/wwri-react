@@ -8,7 +8,7 @@ import { LabelConfig, DEFAULT_LABEL_CONFIG } from "../types/labelConfigTypes";
 import { DomainScores } from "../utils/domainScoreColors";
 import { GradientCustomizer, LabelConfigWidget } from "./DevTools";
 import Header from "./Header/Header";
-import MapArea, { BasemapId, BASEMAP_OPTIONS, LabelSource } from "./MapArea/MapArea";
+import MapArea, { BasemapId, BASEMAP_OPTIONS, LabelSource, MapProjection, PROJECTION_OPTIONS } from "./MapArea/MapArea";
 import RightSidebar from "./RightSidebar";
 import Subheader from "./Subheader/Subheader";
 
@@ -19,6 +19,10 @@ const DEFAULT_BASEMAP: BasemapId = "carto-positron";
 // Label source localStorage key
 const LABEL_SOURCE_STORAGE_KEY = "wwri-label-source";
 const DEFAULT_LABEL_SOURCE: LabelSource = "custom";
+
+// Projection localStorage key
+const PROJECTION_STORAGE_KEY = "wwri-projection";
+const DEFAULT_PROJECTION: MapProjection = "mercator";
 
 // Summary data structure: geoid -> domain scores
 interface SummaryData {
@@ -159,6 +163,17 @@ function App() {
     localStorage.setItem(LABEL_SOURCE_STORAGE_KEY, labelSource);
   }, [labelSource]);
 
+  // Dev tools: Projection selection
+  const [selectedProjection, setSelectedProjection] = useState<MapProjection>(() => {
+    const stored = localStorage.getItem(PROJECTION_STORAGE_KEY);
+    return (stored && stored in PROJECTION_OPTIONS) ? stored as MapProjection : DEFAULT_PROJECTION;
+  });
+
+  // Save projection to localStorage when it changes
+  useEffect(() => {
+    localStorage.setItem(PROJECTION_STORAGE_KEY, selectedProjection);
+  }, [selectedProjection]);
+
   // Save label config to localStorage when it changes
   useEffect(() => {
     localStorage.setItem("wwri-label-config", JSON.stringify(labelConfig));
@@ -280,6 +295,8 @@ function App() {
         onBasemapChange={setSelectedBasemap}
         labelSource={labelSource}
         onLabelSourceChange={setLabelSource}
+        selectedProjection={selectedProjection}
+        onProjectionChange={setSelectedProjection}
       />
       
       {/* Dev Tools: Label Configuration Widget (only in DEBUG mode) */}
@@ -324,6 +341,7 @@ function App() {
             gradientConfig={gradientConfig}
             selectedBasemap={selectedBasemap}
             labelSource={labelSource}
+            selectedProjection={selectedProjection}
           />
         </div>
         <RightSidebar

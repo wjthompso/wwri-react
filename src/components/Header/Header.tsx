@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import Vector from "../../assets/Vector.svg";
 import { isDebugMode } from "../../config/featureFlags";
-import { BasemapId, BASEMAP_OPTIONS, LabelSource } from "../MapArea/MapArea";
+import { BasemapId, BASEMAP_OPTIONS, LabelSource, MapProjection, PROJECTION_OPTIONS } from "../MapArea/MapArea";
 
 interface HeaderProps {
   labelConfigOpen?: boolean;
@@ -12,6 +12,8 @@ interface HeaderProps {
   onBasemapChange?: (basemap: BasemapId) => void;
   labelSource?: LabelSource;
   onLabelSourceChange?: (source: LabelSource) => void;
+  selectedProjection?: MapProjection;
+  onProjectionChange?: (projection: MapProjection) => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ 
@@ -23,6 +25,8 @@ const Header: React.FC<HeaderProps> = ({
   onBasemapChange,
   labelSource = "custom",
   onLabelSourceChange,
+  selectedProjection = "mercator",
+  onProjectionChange,
 }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -194,6 +198,37 @@ const Header: React.FC<HeaderProps> = ({
                     CARTO
                   </button>
                 </div>
+              </div>
+
+              {/* Map Projection Selector */}
+              <div className="border-t border-gray-100 px-3 py-2">
+                <div className="mb-1.5 flex items-center gap-2">
+                  <span>🌐</span>
+                  <span className="text-sm">Map Projection</span>
+                </div>
+                <div className="flex flex-col gap-1">
+                  {(Object.keys(PROJECTION_OPTIONS) as MapProjection[]).map((projectionId) => (
+                    <button
+                      key={projectionId}
+                      id={`projection-option-${projectionId}`}
+                      onClick={() => onProjectionChange?.(projectionId)}
+                      className={`flex items-center justify-between rounded px-2 py-1.5 text-left text-xs transition-colors ${
+                        selectedProjection === projectionId
+                          ? "bg-leftSidebarOverallResilience text-white"
+                          : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                      }`}
+                      title={PROJECTION_OPTIONS[projectionId].description}
+                    >
+                      <span className="font-medium">{PROJECTION_OPTIONS[projectionId].name}</span>
+                      {selectedProjection === projectionId && (
+                        <span className="text-[10px] opacity-75">✓</span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+                <p className="mt-1.5 text-[10px] leading-tight text-gray-400">
+                  {PROJECTION_OPTIONS[selectedProjection].description}
+                </p>
               </div>
 
               {/* Keyboard shortcuts */}

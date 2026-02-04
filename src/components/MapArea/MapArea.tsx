@@ -91,6 +91,60 @@ export const CARTO_LABEL_TILES: Record<BasemapId, string> = {
 
 const DEFAULT_LABEL_SOURCE: LabelSource = "custom";
 
+// ============================================================================
+// MAP PROJECTION CONFIGURATION
+// ============================================================================
+
+/**
+ * Available map projections in MapLibre GL JS v4+.
+ * - mercator: Standard Web Mercator (default) - distorts polar regions
+ * - globe: 3D globe view - reduces distortion, interactive rotation
+ * - equalEarth: Equal-area projection - good for thematic maps
+ * - naturalEarth: Similar to equalEarth, slightly softer shape
+ * - winkelTripel: Compromise projection used by National Geographic
+ */
+export type MapProjection = "mercator" | "globe" | "equalEarth" | "naturalEarth" | "winkelTripel";
+
+export interface ProjectionOption {
+  id: MapProjection;
+  name: string;
+  description: string;
+}
+
+/**
+ * Available projection options with descriptions for the selector widget.
+ * These are all built-in to MapLibre GL JS v4+ and don't require tile reprojection.
+ */
+export const PROJECTION_OPTIONS: Record<MapProjection, ProjectionOption> = {
+  mercator: {
+    id: "mercator",
+    name: "Mercator",
+    description: "Standard web map projection. Distorts Alaska/Arctic regions.",
+  },
+  globe: {
+    id: "globe",
+    name: "Globe",
+    description: "3D globe view. Natural appearance, can be rotated.",
+  },
+  equalEarth: {
+    id: "equalEarth",
+    name: "Equal Earth",
+    description: "Equal-area projection. Good for data visualization.",
+  },
+  naturalEarth: {
+    id: "naturalEarth",
+    name: "Natural Earth",
+    description: "Compromise projection. Balanced shape and area.",
+  },
+  winkelTripel: {
+    id: "winkelTripel",
+    name: "Winkel Tripel",
+    description: "Used by National Geographic. Balanced distortion.",
+  },
+};
+
+export const DEFAULT_PROJECTION: MapProjection = "mercator";
+
 // Boundary layer IDs (for state/province borders that persist across geo levels)
 const BOUNDARY_LAYERS = [
   "us-state-boundary",
@@ -295,6 +349,7 @@ interface MapAreaProps {
   gradientConfig?: GradientConfig | null;
   selectedBasemap?: BasemapId;
   labelSource?: LabelSource;
+  selectedProjection?: MapProjection;
 }
 
 const MapArea: React.FC<MapAreaProps> = ({
@@ -312,6 +367,7 @@ const MapArea: React.FC<MapAreaProps> = ({
   gradientConfig,
   selectedBasemap = DEFAULT_BASEMAP,
   labelSource = DEFAULT_LABEL_SOURCE,
+  selectedProjection = DEFAULT_PROJECTION,
 }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const [geoMetrics, setGeoMetrics] = useState<Record<string, number>>({});
@@ -324,6 +380,8 @@ const MapArea: React.FC<MapAreaProps> = ({
 
   // Track basemap in ref for use in callbacks
   const selectedBasemapRef = useRef(selectedBasemap);
+  // Track projection in ref for use in callbacks
+  const selectedProjectionRef = useRef(selectedProjection);
   const popupRef = useRef<maplibregl.Popup | null>(null);
   
   // Track selected feature for highlight
@@ -397,6 +455,25 @@ const MapArea: React.FC<MapAreaProps> = ({
       }
     }
   }, [selectedBasemap, mapLoaded]);
+
+  // Handle projection changes from props - update map projection
+  useEffect(() => {
+    selectedProjectionRef.current = selectedProjection;
+    
+    // Update the map projection if map is loaded
+    if (mapRef.current && mapLoaded) {
+      const map = mapRef.current;
+      try {
+        // MapLibre GL JS v4+ supports setProjection with projection name or object
+        // TypeScript types may be outdated, so we use 'as any' for the method call
+        // Using object format for consistency: { type: 'mercator' }
+        (map as any).setProjection({ type: selectedProjection });
+        console.log(`Map projection changed to: ${selectedProjection}`);
+      } catch (error) {
+        console.error(`Failed to set projection to ${selectedProjection}:`, error);
+      }
+    }
+  }, [selectedProjection, mapLoaded]);
 
   // Fetch data when metric or geo level changes
   useEffect(() => {
@@ -1234,6 +1311,18 @@ const MapArea: React.FC<MapAreaProps> = ({
         repositionCartoLabelsLayer(map);
         // Set initial label source visibility
         updateLabelSourceVisibility(map, labelSource);
+        
+        // Set initial projection (if not mercator, which is the default)
+        if (selectedProjectionRef.current !== "mercator") {
+          try {
+            // TypeScript types may be outdated for setProjection, use 'as any'
+            (map as any).setProjection({ type: selectedProjectionRef.current });
+            console.log(`Initial map projection set to: ${selectedProjectionRef.current}`);
+          } catch (error) {
+            console.error(`Failed to set initial projection:`, error);
+          }
+        }
+        
         setMapLoaded(true);
         
         // Report initial zoom level

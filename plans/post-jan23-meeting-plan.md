@@ -32,10 +32,10 @@
 | 9 | Set initial map orientation to center on west coast | ⬜ Pending |
 | 10 | Report button - defer decision (Cat to discuss with comms) | ⏸️ On Hold |
 | 11 | Update Species/Iconic Species messaging for clarity | ⬜ Pending |
-| 12 | Create debugging widget system (label config, hidden but toggleable) | ⬜ Pending |
+| 12 | Create debugging widget system (label config, hidden but toggleable) | ✅ Complete |
 | 13 | Performance and saturation testing (front-end and back-end) | ⬜ Pending |
 
-**Progress:** 15/20 complete (4 pending, 1 blocked, 1 on hold)
+**Progress:** 16/20 complete (3 pending, 1 blocked, 1 on hold)
 
 **Note:** Task 1 (map labels) ✅ COMPLETE! Two issues fixed: (1) Y-flip script was breaking tiles - removed, (2) `text-variable-anchor` was causing labels to slide during zoom - switched to fixed `text-anchor: "center"`.
 
@@ -72,6 +72,7 @@
 | Feb 3 | **✅ Task 7b COMPLETE!** - Created label source switcher widget. Allows toggling between Custom (GeoNames/Natural Earth) labels and CARTO labels. CARTO labels use `*_only_labels` raster tiles with transparent backgrounds, overlaid on top of polygons. Widget in Dev Tools dropdown matches basemap style (Light → light_only_labels, etc.). Selection persists to localStorage. |
 | Feb 3 | **✅ Task 7c COMPLETE!** - Researched free label-only vector tile sources. Analyzed OpenMapTiles (schema only, not a service), MapTiler (requires API key), Protomaps (viable but overkill), Stadia Maps (requires API key), and current GeoNames solution. **Conclusion:** Current self-hosted GeoNames/Natural Earth labels remain optimal - free, no API key, vector tiles, full styling control, label-only (2.3MB), already production-ready. No changes needed. |
 | Feb 4 | **✅ Task 8 COMPLETE (with limitations)** - Created map projection selector widget. Upgraded maplibre-gl from v4.3.2 → v5.17.0 to enable projection support. Added 2 projection options: Mercator (flat, default) and Globe (3D sphere). Widget in Dev Tools dropdown. Selection persists to localStorage. **⚠️ Albers/NAD83/EPSG:5070 NOT POSSIBLE** - MapLibre GL JS only supports mercator and globe. Albers falls back to mercator silently. For Albers support, would need to switch to Mapbox GL JS (commercial) or pre-project all tiles server-side. |
+| Feb 4 | **✅ Task 12 COMPLETE!** - Debugging widget system was already implemented as part of Tasks 1b (LabelConfigWidget) and 2 (GradientCustomizer). Both widgets are feature-flagged, hidden by default, toggleable via keyboard shortcuts (Ctrl+Shift+L and Ctrl+Shift+G), and accessible via Dev Tools dropdown in header. System provides real-time configuration controls for labels and gradients with export capabilities. |
 
 ---
 

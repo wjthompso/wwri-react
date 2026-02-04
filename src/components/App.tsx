@@ -164,9 +164,14 @@ function App() {
   }, [labelSource]);
 
   // Dev tools: Projection selection
+  // MapLibre GL JS v5 only supports mercator and globe (albers/conic projections NOT supported)
   const [selectedProjection, setSelectedProjection] = useState<MapProjection>(() => {
     const stored = localStorage.getItem(PROJECTION_STORAGE_KEY);
-    return (stored && stored in PROJECTION_OPTIONS) ? stored as MapProjection : DEFAULT_PROJECTION;
+    // Only accept mercator or globe (albers is not supported by MapLibre)
+    if (stored === "mercator" || stored === "globe") {
+      return stored;
+    }
+    return DEFAULT_PROJECTION;
   });
 
   // Save projection to localStorage when it changes

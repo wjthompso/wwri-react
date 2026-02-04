@@ -28,7 +28,7 @@
 | 7 | Create basemap selector widget (remove EEZ boundaries) | ✅ Complete |
 | 7b | Create label source switcher widget (custom vs CARTO labels) | ✅ Complete |
 | 7c | Research other free label-only vector tile sources (alternatives to CARTO) | ✅ Complete |
-| 8 | Create map projection selector widget (test multiple projections) | ✅ Complete |
+| 8 | Create map projection selector widget (test multiple projections) | ✅ Complete (Mercator + Globe only; Albers not supported by MapLibre) |
 | 9 | Set initial map orientation to center on west coast | ⬜ Pending |
 | 10 | Report button - defer decision (Cat to discuss with comms) | ⏸️ On Hold |
 | 11 | Update Species/Iconic Species messaging for clarity | ⬜ Pending |
@@ -71,7 +71,7 @@
 | Feb 3 | **📋 Task 7b ADDED** - Follow-up task to create label source switcher widget. Will allow switching between custom Natural Earth/GeoNames labels and CARTO `*_only_labels` tiles for comparison. |
 | Feb 3 | **✅ Task 7b COMPLETE!** - Created label source switcher widget. Allows toggling between Custom (GeoNames/Natural Earth) labels and CARTO labels. CARTO labels use `*_only_labels` raster tiles with transparent backgrounds, overlaid on top of polygons. Widget in Dev Tools dropdown matches basemap style (Light → light_only_labels, etc.). Selection persists to localStorage. |
 | Feb 3 | **✅ Task 7c COMPLETE!** - Researched free label-only vector tile sources. Analyzed OpenMapTiles (schema only, not a service), MapTiler (requires API key), Protomaps (viable but overkill), Stadia Maps (requires API key), and current GeoNames solution. **Conclusion:** Current self-hosted GeoNames/Natural Earth labels remain optimal - free, no API key, vector tiles, full styling control, label-only (2.3MB), already production-ready. No changes needed. |
-| Feb 4 | **✅ Task 8 COMPLETE!** - Created map projection selector widget. Added 5 MapLibre GL JS v4+ projection options: Mercator (default), Globe (3D), Equal Earth, Natural Earth, and Winkel Tripel. Widget in Dev Tools dropdown with descriptions and tooltips. Selection persists to localStorage. Projections apply client-side via `map.setProjection()` - no tile reprojection needed. |
+| Feb 4 | **✅ Task 8 COMPLETE (with limitations)** - Created map projection selector widget. Upgraded maplibre-gl from v4.3.2 → v5.17.0 to enable projection support. Added 2 projection options: Mercator (flat, default) and Globe (3D sphere). Widget in Dev Tools dropdown. Selection persists to localStorage. **⚠️ Albers/NAD83/EPSG:5070 NOT POSSIBLE** - MapLibre GL JS only supports mercator and globe. Albers falls back to mercator silently. For Albers support, would need to switch to Mapbox GL JS (commercial) or pre-project all tiles server-side. |
 
 ---
 
@@ -1208,7 +1208,7 @@ If richer label data is needed in the future, Protomaps PMTiles could be explore
 
 ### Task 8: Create Map Projection Selector Widget
 
-**Status:** ✅ COMPLETE (Feb 4, 2026)
+**Status:** ✅ COMPLETE (Feb 4, 2026) - with limitations
 
 **Priority:** 🔴 MEDIUM
 
@@ -1217,21 +1217,29 @@ If richer label data is needed in the future, Protomaps PMTiles could be explore
 **Description:** Create a projection selector widget that lets the NCEAS team test and choose between multiple map projections. This allows them to see options immediately rather than waiting for iterative changes.
 
 **Completed:**
-- ✅ Added 5 projection options using MapLibre GL JS v4+ `setProjection()` API
+- ✅ Upgraded maplibre-gl from v4.3.2 → v5.17.0 (v4 didn't have setProjection)
 - ✅ Widget in Dev Tools dropdown in header
 - ✅ Selection persists to localStorage
 - ✅ Projections apply client-side (no tile reprojection needed)
 - ✅ Each projection has description and tooltip
 
-**Projection Options:**
+**Projection Options (Final):**
 
 | ID | Name | Description | Use Case |
 |----|------|-------------|----------|
-| `mercator` | Mercator | Standard web map projection | Default, familiar to users |
-| `globe` | Globe | 3D globe view | Natural appearance, rotation |
-| `equalEarth` | Equal Earth | Equal-area projection | Data visualization, thematic maps |
-| `naturalEarth` | Natural Earth | Compromise projection | Balanced shape and area |
-| `winkelTripel` | Winkel Tripel | Used by National Geographic | Balanced distortion |
+| `mercator` | Mercator (Flat) | Standard 2D web map | Default, familiar to users |
+| `globe` | Globe (3D) ★ | 3D sphere view | Natural appearance, can rotate |
+
+**⚠️ LIMITATION: Albers/NAD83/EPSG:5070 NOT SUPPORTED**
+
+MapLibre GL JS v5 only supports `mercator` and `globe`. Other projections (equalEarth, naturalEarth, winkelTripel, **albers/NAD83/EPSG:5070**) are **NOT** supported and fall back to mercator silently.
+
+NCEAS requested Albers Equal Area (NAD83 / EPSG:5070) for west coast visualization. This is **not possible** with MapLibre GL JS. Options if Albers is truly required:
+1. **Switch to Mapbox GL JS** (commercial, requires API key, usage costs) - supports albers and other conic projections
+2. **Pre-project all tiles server-side** - Reproject all vector tiles to Albers before serving (complex, expensive, would break other projections)
+3. **Use a different mapping library** (e.g., OpenLayers with proj4js) - would require significant rewrite
+
+**Recommendation:** Accept Mercator (standard) or Globe (visually dramatic). Albers is not feasible without major infrastructure changes.
 
 **Files Modified:**
 - `src/components/MapArea/MapArea.tsx`:
@@ -1248,11 +1256,12 @@ If richer label data is needed in the future, Protomaps PMTiles could be explore
   - Description shown below buttons for current selection
 
 **Technical Notes:**
-- MapLibre GL JS v4+ supports `setProjection({ type: 'projectionName' })`
-- TypeScript types are outdated, used `(map as any).setProjection()` workaround
+- **Upgraded maplibre-gl** from v4.3.2 → v5.17.0 (v4 didn't have setProjection)
+- MapLibre GL JS v5+ supports `map.setProjection({ type: 'projectionName' })`
 - Projections are applied client-side - no tile reprojection needed
-- Works with both raster basemaps and vector data tiles
+- `style.load` event listener re-applies projection after basemap changes
 - Globe view allows rotation and 3D perspective
+- Only `mercator` and `globe` are fully supported in MapLibre GL JS v5
 
 **Usage:**
 1. Open Dev Tools dropdown in header (🛠️ button)
@@ -1262,11 +1271,8 @@ If richer label data is needed in the future, Protomaps PMTiles could be explore
 5. Selection persists across sessions
 
 **Projection Tradeoffs:**
-- **Mercator:** Familiar but distorts Alaska/Arctic
-- **Globe:** Natural 3D view but may feel unfamiliar for flat maps
-- **Equal Earth:** Best for thematic data but less common appearance
-- **Natural Earth:** Good balance but less common
-- **Winkel Tripel:** Professional cartographic look
+- **Mercator (Flat):** Standard 2D view, familiar to users, distorts polar regions
+- **Globe (3D):** Natural spherical view, can rotate/tilt, shows Earth's curvature - most visually distinctive option
 
 ---
 

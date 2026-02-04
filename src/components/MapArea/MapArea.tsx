@@ -96,14 +96,12 @@ const DEFAULT_LABEL_SOURCE: LabelSource = "custom";
 // ============================================================================
 
 /**
- * Available map projections in MapLibre GL JS v4+.
- * - mercator: Standard Web Mercator (default) - distorts polar regions
- * - globe: 3D globe view - reduces distortion, interactive rotation
- * - equalEarth: Equal-area projection - good for thematic maps
- * - naturalEarth: Similar to equalEarth, slightly softer shape
- * - winkelTripel: Compromise projection used by National Geographic
+ * Available map projections in MapLibre GL JS v5+.
+ * NOTE: MapLibre only supports 'mercator' and 'globe'. 
+ * Other projections (albers, equalEarth, etc.) are NOT supported and fall back to mercator.
+ * For Albers/NAD83 support, you would need Mapbox GL JS (commercial) or pre-projected tiles.
  */
-export type MapProjection = "mercator" | "globe" | "equalEarth" | "naturalEarth" | "winkelTripel";
+export type MapProjection = "mercator" | "globe";
 
 export interface ProjectionOption {
   id: MapProjection;
@@ -113,33 +111,18 @@ export interface ProjectionOption {
 
 /**
  * Available projection options with descriptions for the selector widget.
- * These are all built-in to MapLibre GL JS v4+ and don't require tile reprojection.
+ * MapLibre GL JS v5 only supports mercator (flat) and globe (3D sphere).
  */
 export const PROJECTION_OPTIONS: Record<MapProjection, ProjectionOption> = {
   mercator: {
     id: "mercator",
-    name: "Mercator",
-    description: "Standard web map projection. Distorts Alaska/Arctic regions.",
+    name: "Mercator (Flat)",
+    description: "Standard flat web map. Familiar 2D view.",
   },
   globe: {
     id: "globe",
-    name: "Globe",
-    description: "3D globe view. Natural appearance, can be rotated.",
-  },
-  equalEarth: {
-    id: "equalEarth",
-    name: "Equal Earth",
-    description: "Equal-area projection. Good for data visualization.",
-  },
-  naturalEarth: {
-    id: "naturalEarth",
-    name: "Natural Earth",
-    description: "Compromise projection. Balanced shape and area.",
-  },
-  winkelTripel: {
-    id: "winkelTripel",
-    name: "Winkel Tripel",
-    description: "Used by National Geographic. Balanced distortion.",
+    name: "Globe (3D) ★",
+    description: "3D sphere! Shows Earth's curvature. Try rotating!",
   },
 };
 
@@ -159,10 +142,13 @@ const TILE_SERVER_URL = "https://major-sculpin.nceas.ucsb.edu";
  * State/province boundary sources are included so they're always available.
  * Labels can use either self-hosted vector tiles (Natural Earth) or CARTO raster tiles.
  * Data layers are added dynamically based on selected geo level.
+ * Note: Projection is set via map.setProjection() after style load, not in the style spec.
  */
 const getBaseMapStyle = (basemapId: BasemapId = DEFAULT_BASEMAP): StyleSpecification => {
   const basemap = BASEMAP_OPTIONS[basemapId];
-  return {
+  
+  // Build the base style (projection is applied separately via setProjection)
+  const style: StyleSpecification = {
     version: 8,
     // Free font glyphs from OpenMapTiles (required for text labels)
     glyphs: "https://fonts.openmaptiles.org/{fontstack}/{range}.pbf",
@@ -211,6 +197,8 @@ const getBaseMapStyle = (basemapId: BasemapId = DEFAULT_BASEMAP): StyleSpecifica
       },
     ],
   };
+  
+  return style;
 };
 
 /**
@@ -449,29 +437,39 @@ const MapArea: React.FC<MapAreaProps> = ({
             tileSize: basemap.tileSize || 256,
             attribution: basemap.attribution,
           };
-          // Re-set the style (preserves layers but updates source)
+          // Re-set the style (projection will be re-applied via style.load event)
           map.setStyle(style);
         }
       }
     }
   }, [selectedBasemap, mapLoaded]);
 
-  // Handle projection changes from props - update map projection
+  // Handle projection changes from props - use map.setProjection() after style.load
   useEffect(() => {
     selectedProjectionRef.current = selectedProjection;
     
     // Update the map projection if map is loaded
     if (mapRef.current && mapLoaded) {
       const map = mapRef.current;
-      try {
-        // MapLibre GL JS v4+ supports setProjection with projection name or object
-        // TypeScript types may be outdated, so we use 'as any' for the method call
-        // Using object format for consistency: { type: 'mercator' }
-        (map as any).setProjection({ type: selectedProjection });
-        console.log(`Map projection changed to: ${selectedProjection}`);
-      } catch (error) {
-        console.error(`Failed to set projection to ${selectedProjection}:`, error);
-      }
+      
+      // Apply projection using setProjection method
+      // This must be called after style is loaded
+      const applyProjection = () => {
+        try {
+          // MapLibre GL JS v5 only supports 'mercator' and 'globe'
+          const projectionConfig = { type: selectedProjection };
+          
+          console.log(`Setting projection to: ${selectedProjection}`);
+          (map as any).setProjection(projectionConfig);
+          map.triggerRepaint();
+          
+        } catch (error) {
+          console.error(`Failed to set projection to ${selectedProjection}:`, error);
+        }
+      };
+      
+      // Apply immediately if style is already loaded
+      applyProjection();
     }
   }, [selectedProjection, mapLoaded]);
 
@@ -1312,14 +1310,13 @@ const MapArea: React.FC<MapAreaProps> = ({
         // Set initial label source visibility
         updateLabelSourceVisibility(map, labelSource);
         
-        // Set initial projection (if not mercator, which is the default)
-        if (selectedProjectionRef.current !== "mercator") {
+        // Apply initial projection if not mercator (only globe is supported besides mercator)
+        if (selectedProjectionRef.current === "globe") {
           try {
-            // TypeScript types may be outdated for setProjection, use 'as any'
-            (map as any).setProjection({ type: selectedProjectionRef.current });
-            console.log(`Initial map projection set to: ${selectedProjectionRef.current}`);
+            (map as any).setProjection({ type: "globe" });
+            console.log(`Initial projection set to: globe`);
           } catch (error) {
-            console.error(`Failed to set initial projection:`, error);
+            console.error("Failed to set initial projection:", error);
           }
         }
         
@@ -1335,6 +1332,19 @@ const MapArea: React.FC<MapAreaProps> = ({
       // Track zoom changes for dev tools
       map.on("zoom", () => {
         onZoomChange?.(map.getZoom());
+      });
+
+      // Re-apply projection after any style changes (e.g., basemap switch)
+      // This is necessary because setStyle can reset the projection
+      map.on("style.load", () => {
+        if (selectedProjectionRef.current === "globe") {
+          try {
+            (map as any).setProjection({ type: "globe" });
+            console.log(`Projection re-applied after style.load: globe`);
+          } catch (error) {
+            console.error("Failed to re-apply projection after style.load:", error);
+          }
+        }
       });
 
       // Click handler for both US and Canada layers

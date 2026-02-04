@@ -27,7 +27,7 @@
 | 6 | Update domain description text (Cat to provide copy) | ⬜ Blocked |
 | 7 | Create basemap selector widget (remove EEZ boundaries) | ✅ Complete |
 | 7b | Create label source switcher widget (custom vs CARTO labels) | ✅ Complete |
-| 7c | Research other free label-only vector tile sources (alternatives to CARTO) | ⬜ Pending |
+| 7c | Research other free label-only vector tile sources (alternatives to CARTO) | ✅ Complete |
 | 8 | Create map projection selector widget (test multiple projections) | ⬜ Pending |
 | 9 | Set initial map orientation to center on west coast | ⬜ Pending |
 | 10 | Report button - defer decision (Cat to discuss with comms) | ⏸️ On Hold |
@@ -35,7 +35,7 @@
 | 12 | Create debugging widget system (label config, hidden but toggleable) | ⬜ Pending |
 | 13 | Performance and saturation testing (front-end and back-end) | ⬜ Pending |
 
-**Progress:** 13/20 complete (6 pending, 1 blocked, 1 on hold)
+**Progress:** 14/20 complete (5 pending, 1 blocked, 1 on hold)
 
 **Note:** Task 1 (map labels) ✅ COMPLETE! Two issues fixed: (1) Y-flip script was breaking tiles - removed, (2) `text-variable-anchor` was causing labels to slide during zoom - switched to fixed `text-anchor: "center"`.
 
@@ -70,6 +70,7 @@
 | Feb 3 | **✅ Task 7 COMPLETE!** - Created basemap selector widget. Added 3 CARTO basemap options (Light, Voyager, Dark) using `_nolabels` variants so only our custom Natural Earth/GeoNames labels appear. Selector moved to Dev Tools dropdown in header. Persists selection to localStorage. Removed OpenStreetMap (no no-labels variant). |
 | Feb 3 | **📋 Task 7b ADDED** - Follow-up task to create label source switcher widget. Will allow switching between custom Natural Earth/GeoNames labels and CARTO `*_only_labels` tiles for comparison. |
 | Feb 3 | **✅ Task 7b COMPLETE!** - Created label source switcher widget. Allows toggling between Custom (GeoNames/Natural Earth) labels and CARTO labels. CARTO labels use `*_only_labels` raster tiles with transparent backgrounds, overlaid on top of polygons. Widget in Dev Tools dropdown matches basemap style (Light → light_only_labels, etc.). Selection persists to localStorage. |
+| Feb 3 | **✅ Task 7c COMPLETE!** - Researched free label-only vector tile sources. Analyzed OpenMapTiles (schema only, not a service), MapTiler (requires API key), Protomaps (viable but overkill), Stadia Maps (requires API key), and current GeoNames solution. **Conclusion:** Current self-hosted GeoNames/Natural Earth labels remain optimal - free, no API key, vector tiles, full styling control, label-only (2.3MB), already production-ready. No changes needed. |
 
 ---
 
@@ -1138,7 +1139,7 @@ This is a classic React "stale closure" bug. When using `useCallback` with event
 
 ### Task 7c: Research Other Free Label-Only Vector Tile Sources
 
-**Status:** ⬜ Pending
+**Status:** ✅ COMPLETE (Feb 3, 2026)
 
 **Priority:** 🔴 LOW
 
@@ -1146,37 +1147,61 @@ This is a classic React "stale closure" bug. When using `useCallback` with event
 
 **Description:** Research other free label-only vector tile sources that could be used as alternatives to CARTO labels. CARTO labels are raster tiles (not vector), so they can't be styled. Vector tile sources would allow full styling control while potentially offering better coverage or different city selection.
 
-**Goals:**
-- Find free/open-source label-only vector tile providers
-- Identify providers that don't require API keys
-- Compare coverage, quality, and licensing terms
-- Document findings for potential future integration
+**Completed:**
+- ✅ Researched 5 major providers: OpenMapTiles, MapTiler, Protomaps, Stadia Maps, and current GeoNames solution
+- ✅ Created comparison table evaluating each against criteria (free, vector tiles, no API key, label-only, North America coverage)
+- ✅ Documented findings and recommendations
 
-**Research Areas:**
-- [ ] OpenMapTiles - Do they offer label-only tiles?
-- [ ] MapTiler - Free tier options for labels
-- [ ] Stadia Maps - Open source vector tiles
-- [ ] Protomaps - Open source vector tiles
-- [ ] Other open-source tile providers
-- [ ] Self-hosted options (Natural Earth, GeoNames as vector tiles)
+**Research Findings:**
 
-**Criteria:**
-- Must be free (no API costs)
-- Must be vector tiles (not raster) for styling control
-- Must cover North America (US + Canada)
-- Must include city names and state/province labels
-- Must not require API keys or authentication
-- Prefer open-source or permissive licensing
+**1. OpenMapTiles** ⚠️
+- **What it is:** Open-source vector tile *schema* (specification), not a hosting service
+- **Verdict:** Not applicable - schema only, not a tile provider
+- **Note:** Current GeoNames solution already follows similar patterns
 
-**Deliverables:**
-- Research document listing potential providers
-- Comparison table (coverage, licensing, format, etc.)
-- Recommendations for integration if promising options found
+**2. MapTiler** ❌
+- **What it is:** Commercial provider (company behind OpenMapTiles schema)
+- **Free tier:** 100,000 map loads/month
+- **Issues:** Requires API key registration, no label-only tiles (full basemap only)
+- **Verdict:** Does not meet criteria (API key required, no label-only option)
+
+**3. Protomaps** ⭐⭐
+- **What it is:** Open-source vector tile system using PMTiles format (single-file archives)
+- **Pros:** Free basemap downloads, PMTiles format, full styling control, can filter to label layers
+- **Cons:** Large file size (North America ~5-10GB vs current 2.3MB), more complex setup, labels embedded in full basemap
+- **Verdict:** Viable alternative but **overkill** for labels-only use case
+
+**4. Stadia Maps** ❌
+- **What it is:** Commercial map tile provider
+- **Issues:** Free tier requires API key, usage limits apply, no label-only option
+- **Verdict:** Does not meet criteria (API key required)
+
+**5. Natural Earth + GeoNames (Current Solution)** ✅ ⭐⭐⭐
+- **What we're using:** Natural Earth state/province boundaries + GeoNames cities5000
+- **Pros:** Completely free, no API key, full styling control, label-only (no wasted bandwidth), tiny file size (2.3MB), already production-ready, 1,773 cities in study region
+- **Verdict:** **Best option** - already implemented and meets all requirements
+
+**Conclusion:**
+Current self-hosted GeoNames/Natural Earth labels remain **optimal** for WWRI's requirements:
+- ✅ Free (no API costs)
+- ✅ Vector tiles (full styling control)
+- ✅ No API key required
+- ✅ Covers North America (US + Canada)
+- ✅ Label-only (efficient, 2.3MB)
+- ✅ Already production-deployed
+
+**Recommendation:** No changes needed. Current solution is superior to all alternatives researched.
+
+**Future Consideration:**
+If richer label data is needed in the future, Protomaps PMTiles could be explored as an enhancement, but would require:
+- Downloading larger files (5-10GB for North America)
+- Setting up PMTiles protocol support
+- Styling to show only label layers
+- More complex hosting requirements
 
 **Notes:**
-- Current custom labels use GeoNames data (vector tiles, full control)
-- CARTO labels are raster (no styling control) but free and unlimited
-- Vector tile labels would combine best of both worlds: free + stylable
+- CARTO labels (Task 7b) remain useful for A/B testing/comparison, but are raster (no styling control)
+- Current GeoNames solution provides best balance of features, simplicity, and cost
 
 ---
 

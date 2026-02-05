@@ -41,6 +41,7 @@
 | 17 | Fix metric naming bug (remove duplicate domain name prefix) | ✅ Complete |
 | 18 | Add "Overall Score" label above circular progress bar | ⬜ Pending |
 | 19 | Refine flower chart: remove legend, show domain name in center on hover | ⬜ Pending |
+| 19b | Increase flower chart inner circle size to fit longer domain labels | ⬜ Pending |
 
 **Progress:** 21/26 complete (4 pending, 1 blocked, 1 on hold)
 
@@ -505,6 +506,41 @@ The metric name is being constructed by concatenating domain + metric name, when
 **Related:**
 - Task 16b (overall sidebar refinement)
 - Information hierarchy discussion (Cat's feedback on panel organization)
+- Task 19b (increase inner circle size for longer labels)
+
+---
+
+### Task 19b: Increase Flower Chart Inner Circle Size
+
+**Status:** ⬜ Pending
+
+**Priority:** 🟡 MEDIUM
+
+**Scope:** Flower chart refinement - improve label readability
+
+**Description:** Increase the inner radius of the flower chart's center circle to provide more space for longer domain labels (e.g., "Infrastructure", "Wildland Urban Interface") when displayed in the center on hover.
+
+**Current Issue:**
+- Inner radius is 40px
+- Longer domain names get truncated or don't fit comfortably
+- Labels like "Infrastructure" may appear cramped
+
+**Desired State:**
+- Increase inner radius to accommodate longer labels
+- Maintain visual balance with petal sizes
+- Ensure labels are fully readable without truncation
+
+**Implementation:**
+- Update `innerRadius` constant in `FlowerChart.tsx`
+- Adjust from 40px to larger value (e.g., 50px or 55px)
+- Verify petal proportions still look balanced
+- Test with longest domain names
+
+**Files to modify:**
+- `src/components/LeftSidebar/FlowerChart.tsx` - Update `innerRadius` value
+
+**Related:**
+- Task 19 (flower chart refinement)
 
 ---
 

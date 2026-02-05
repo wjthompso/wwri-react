@@ -247,7 +247,7 @@ const StackedBelowLayout: React.FC<LayoutProps> = ({
       {/* Left: Selected Region */}
       <div
         id="selected-region-panel"
-        className="flex flex-1 flex-col justify-center px-4 py-3"
+        className="flex flex-1 flex-col justify-center px-4 pt-3 pb-2"
       >
         <h1 className="font-BeVietnamPro text-sm font-bold uppercase tracking-wide text-gray-500">
           Selected Region
@@ -262,7 +262,7 @@ const StackedBelowLayout: React.FC<LayoutProps> = ({
               {displayText?.line1}
             </p>
             {displayText?.line2 && (
-              <p className="font-BeVietnamPro text-base text-gray-600">
+              <p className="mt-[0.15rem] font-BeVietnamPro text-base text-gray-600">
                 {displayText.line2}
               </p>
             )}

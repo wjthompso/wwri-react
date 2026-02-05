@@ -138,7 +138,7 @@ const FlowerChart: React.FC<FlowerChartProps> = ({
     data.forEach((d, i) => {
       const startAngle = i * arcAngle - offsetAngle;
       const endAngle = startAngle + arcAngle;
-      const innerRadius = 40;
+      const innerRadius = 50;
       // Use a minimum outer radius so slices are visible even with 0 value
       const outerRadius = innerRadius + Math.max(d.value * 125, 10);
 

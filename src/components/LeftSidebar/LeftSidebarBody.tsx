@@ -39,8 +39,12 @@ export function LeftSidebarBody({
       <h1 className="font-BeVietnamePro pb-2 text-sm font-bold text-leftSidebarOverallResilience">
         INDIVIDUAL DOMAIN SCORES
       </h1>
-      <div className="mb-1 w-[200px]">
-        <FlowerChart domainScores={domainScores} gradientConfig={gradientConfig} />
+      <div id="flower-chart-wrapper" className="mb-1 w-full max-w-[220px]">
+        <FlowerChart
+          domainScores={domainScores}
+          overallResilienceScore={overallResilienceScore}
+          gradientConfig={gradientConfig}
+        />
       </div>
       <button className="mt-2 flex w-full flex-row items-center rounded-md border-[1px] border-black p-1">
         <img

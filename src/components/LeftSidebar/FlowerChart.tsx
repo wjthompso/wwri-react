@@ -13,6 +13,7 @@ import getColor from "../../utils/getColor";
 
 interface FlowerChartProps {
   domainScores: DomainScores | null;
+  overallResilienceScore: number | null;
   gradientConfig?: GradientConfig | null;
 }
 
@@ -69,11 +70,30 @@ function getDomainColor(
   return getColor(WHITE, brandColorRgb, normalizedScore);
 }
 
-const FlowerChart: React.FC<FlowerChartProps> = ({ domainScores, gradientConfig }) => {
+/**
+ * Formats a raw score for display in the center of the chart.
+ * Handles both 0-1 and 0-100 scale scores.
+ */
+function formatScore(score: number | null | undefined): string {
+  if (score === null || score === undefined || isNaN(score)) return "--";
+  const displayScore = score <= 1 ? score * 100 : score;
+  return Math.round(displayScore).toString();
+}
+
+const FlowerChart: React.FC<FlowerChartProps> = ({
+  domainScores,
+  overallResilienceScore,
+  gradientConfig,
+}) => {
   const chartRef = useRef<SVGGElement | null>(null);
-  const [centerText, setCenterText] = useState("--");
+  const [centerText, setCenterText] = useState(() =>
+    formatScore(overallResilienceScore),
+  );
+  const [centerLabel, setCenterLabel] = useState("Overall");
   const [textColor, setTextColor] = useState("currentColor");
-  const [hoveredDomain, setHoveredDomain] = useState<string | null>(null);
+
+  // NOTE: hoveredDomain was previously used for legend highlight — kept for future use
+  // const [hoveredDomain, setHoveredDomain] = useState<string | null>(null);
 
   // Build data array from domain scores using new brand colors
   const data = FLOWER_CHART_DOMAINS.map((domain) => {
@@ -97,6 +117,7 @@ const FlowerChart: React.FC<FlowerChartProps> = ({ domainScores, gradientConfig 
       id: domain.apiKey,
       name: domain.displayName,
       value: normalizedValue,
+      rawScore: score,
       color: color,
       brandColor: domain.brandColor,
       hasData: score !== null,
@@ -159,13 +180,13 @@ const FlowerChart: React.FC<FlowerChartProps> = ({ domainScores, gradientConfig 
           }
         });
         if (d.hasData) {
-          setCenterText((d.value * 100).toFixed(0));
+          setCenterText(formatScore(d.rawScore));
           setTextColor(d.brandColor);
         } else {
           setCenterText("--");
           setTextColor(NEUTRAL_GRAY);
         }
-        setHoveredDomain(d.name);
+        setCenterLabel(d.name);
       });
 
       path.addEventListener("mouseout", () => {
@@ -175,9 +196,9 @@ const FlowerChart: React.FC<FlowerChartProps> = ({ domainScores, gradientConfig 
             paths[index].setAttribute("fill", domain.color);
           }
         });
-        setCenterText("--");
+        setCenterText(formatScore(overallResilienceScore));
         setTextColor("currentColor");
-        setHoveredDomain(null);
+        setCenterLabel("Overall");
       });
 
       chart.appendChild(path);
@@ -209,58 +230,46 @@ const FlowerChart: React.FC<FlowerChartProps> = ({ domainScores, gradientConfig 
     };
   }, [domainScores, gradientConfig]);
 
+  // Keep center text in sync when overall score changes externally
+  useEffect(() => {
+    setCenterText(formatScore(overallResilienceScore));
+    setCenterLabel("Overall");
+    setTextColor("currentColor");
+  }, [overallResilienceScore]);
+
   return (
-    <div id="flower-chart-container" className="flex items-start gap-4">
-      {/* Chart on the left */}
-      <div className="h-[15rem] w-[280px] flex-shrink-0">
-        <svg
-          id="flower-chart-svg"
-          className="aster__plot"
-          preserveAspectRatio="xMinYMid"
-          viewBox="0 0 400 400"
-        >
-          <g id="flower-chart-arcs" transform="translate(165,170)" ref={chartRef}>
-            <text
-              className="text-3xl font-bold text-leftSidebarRightBorder"
-              dy=".35em"
-              textAnchor="middle"
-              fill={textColor}
-            >
-              {centerText}
-            </text>
-          </g>
-        </svg>
-      </div>
-      {/* Legend on the right */}
-      <div id="flower-chart-legend" className="flex-1">
-        <h1 className="pb-2 font-BeVietnamPro text-xs font-semibold uppercase tracking-wide text-leftSidebarOverallResilience">
-          Legend
-        </h1>
-        <div className="flex flex-col gap-1">
-          {data.map((domain, index) => (
-            <div
-              key={index}
-              id={`legend-item-${domain.id}`}
-              className={`flex items-center transition-opacity duration-100 ${
-                hoveredDomain && hoveredDomain !== domain.name
-                  ? "opacity-50"
-                  : "opacity-100"
-              }`}
-            >
-              <div
-                className="mr-2 h-[14px] w-[14px] flex-shrink-0 rounded-sm transition-colors duration-100 ease-out"
-                style={{
-                  backgroundColor:
-                    hoveredDomain && hoveredDomain !== domain.name
-                      ? "#d3d3d3"
-                      : domain.color,
-                }}
-              />
-              <p className="font-BeVietnamPro text-sm">{domain.name}</p>
-            </div>
-          ))}
-        </div>
-      </div>
+    <div id="flower-chart-container" className="flex w-full items-center justify-center">
+      <svg
+        id="flower-chart-svg"
+        className="aster__plot"
+        width="100%"
+        height="100%"
+        preserveAspectRatio="xMidYMid"
+        viewBox="0 0 340 340"
+      >
+        <g id="flower-chart-arcs" transform="translate(170,170)" ref={chartRef}>
+          {/* Score number */}
+          <text
+            id="flower-chart-center-score"
+            className="text-3xl font-bold"
+            dy="-0.15em"
+            textAnchor="middle"
+            fill={textColor}
+          >
+            {centerText}
+          </text>
+          {/* Label below score */}
+          <text
+            id="flower-chart-center-label"
+            className="text-[11px] font-medium"
+            dy="1.1em"
+            textAnchor="middle"
+            fill={textColor}
+          >
+            {centerLabel}
+          </text>
+        </g>
+      </svg>
     </div>
   );
 };

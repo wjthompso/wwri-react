@@ -1,6 +1,6 @@
 import React from "react";
 import { GradientConfig } from "types/gradientConfigTypes";
-import { getOverallScoreColor, normalizeScoreWithRange, normalizeScore } from "utils/domainScoreColors";
+import { getOverallScoreColor, normalizeScore, normalizeScoreWithRange } from "utils/domainScoreColors";
 
 interface CircularProgressBarProps {
   percentage: number;
@@ -22,11 +22,12 @@ const CircularProgressBar: React.FC<CircularProgressBarProps> = ({
   overrideColor,
 }) => {
   // Size configurations
+  // Note: radius + strokeWidth/2 should equal containerSize/2 for snug fit
   const sizeConfig = {
-    xsmall: { containerClass: "h-14 w-14", radius: 20, strokeWidth: 8, textClass: "text-sm font-semibold" },
-    small: { containerClass: "h-20 w-20", radius: 30, strokeWidth: 12, textClass: "text-lg" },
-    medium: { containerClass: "h-28 w-28", radius: 42, strokeWidth: 16, textClass: "text-xl" },
-    large: { containerClass: "h-40 w-40", radius: 60, strokeWidth: 25, textClass: "text-2xl" },
+    xsmall: { containerClass: "h-12 w-12", radius: 20, strokeWidth: 8, textClass: "text-xs font-semibold" },
+    small: { containerClass: "h-20 w-20", radius: 36, strokeWidth: 12, textClass: "text-lg" },
+    medium: { containerClass: "h-28 w-28", radius: 50, strokeWidth: 16, textClass: "text-xl" },
+    large: { containerClass: "h-40 w-40", radius: 72, strokeWidth: 24, textClass: "text-2xl" },
   };
 
   const config = sizeConfig[size];

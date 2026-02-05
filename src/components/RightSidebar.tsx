@@ -234,90 +234,62 @@ const StackedBelowLayout: React.FC<LayoutProps> = ({
   // Get the domain color for the selected metric
   const metricColor = selectedMetricIdObject?.colorGradient?.endColor
     ? rgbToHex(selectedMetricIdObject.colorGradient.endColor)
-    : "#6b7280"; // gray-500 fallback
+    : undefined;
 
   const metricLabel = selectedMetricIdObject?.label || "Selected Metric";
+  const needsTooltip = metricLabel.length > 24;
 
   return (
-    <>
-      {/* Main Panel: Selected Region + Overall Score */}
+    <div
+      id="top-panel"
+      className="flex min-h-[100px] w-full items-stretch border-b border-gray-200 bg-subheaderBackground"
+    >
+      {/* Left: Selected Region */}
       <div
-        id="top-panel"
-        className="flex min-h-[100px] w-full items-stretch border-b border-gray-200 bg-subheaderBackground"
+        id="selected-region-panel"
+        className="flex flex-1 flex-col justify-center px-4 py-3"
       >
-        {/* Left: Selected Region */}
-        <div
-          id="selected-region-panel"
-          className="flex flex-1 flex-col justify-center border-r border-gray-200 px-4 py-3"
-        >
-          <h1 className="font-BeVietnamPro text-sm font-bold uppercase tracking-wide text-gray-500">
-            Selected Region
-          </h1>
-          {!hasSelection ? (
-            <p className="mt-1 font-BeVietnamPro text-base text-gray-500">
-              Click on a region to view data
+        <h1 className="font-BeVietnamPro text-sm font-bold uppercase tracking-wide text-gray-500">
+          Selected Region
+        </h1>
+        {!hasSelection ? (
+          <p className="mt-1 font-BeVietnamPro text-base text-gray-500">
+            Click on a region to view data
+          </p>
+        ) : (
+          <div className="mt-1">
+            <p className="font-BeVietnamPro text-xl font-semibold leading-tight text-gray-900">
+              {displayText?.line1}
             </p>
-          ) : (
-            <div className="mt-1">
-              <p className="font-BeVietnamPro text-xl font-semibold leading-tight text-gray-900">
-                {displayText?.line1}
+            {displayText?.line2 && (
+              <p className="font-BeVietnamPro text-base text-gray-600">
+                {displayText.line2}
               </p>
-              {displayText?.line2 && (
-                <p className="font-BeVietnamPro text-base text-gray-600">
-                  {displayText.line2}
-                </p>
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* Right: Overall Score Widget */}
-        <div
-          id="overall-score-panel"
-          className="flex w-[140px] flex-col items-center justify-center px-3 py-3"
-        >
-          <span className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-gray-500">
-            Overall
-          </span>
-          <CircularProgressBar
-            percentage={overallScoreFormatted}
-            gradientConfig={gradientConfig}
-            size="small"
-          />
-        </div>
-      </div>
-
-      {/* Secondary Panel: Selected Metric Linear Bar */}
-      <div
-        id="selected-metric-bar-panel"
-        className="flex w-full items-center gap-3 border-b border-gray-200 bg-subheaderBackground px-4 py-2"
-      >
-        <div className="flex min-w-0 flex-1 flex-col">
-          <span className="text-[10px] font-semibold uppercase tracking-wide text-gray-500">
-            {metricLabel}
-          </span>
-          <div className="mt-1 flex items-center gap-2">
-            {/* Linear progress bar */}
-            <div className="h-3 flex-1 overflow-hidden rounded-full bg-gray-200">
-              <div
-                className="h-full rounded-full transition-all duration-500"
-                style={{
-                  width: hasSelection ? `${Math.min(100, Math.max(0, metricValueFormatted))}%` : "0%",
-                  backgroundColor: metricColor,
-                }}
-              />
-            </div>
-            {/* Score value */}
-            <span
-              className="min-w-[3ch] text-right text-sm font-semibold"
-              style={{ color: hasSelection ? metricColor : "#9ca3af" }}
-            >
-              {hasSelection && metricValueFormatted > 0 ? metricValueFormatted.toFixed(0) : "--"}
-            </span>
+            )}
           </div>
-        </div>
+        )}
       </div>
-    </>
+
+      {/* Right: Selected Metric Score Widget */}
+      <div
+        id="selected-metric-panel"
+        className="flex w-[110px] flex-col items-center py-3 px-2"
+        title={needsTooltip ? metricLabel : undefined}
+      >
+        <span
+          className="mb-1 flex h-[20px] max-w-[100px] items-center justify-center overflow-hidden text-center text-[10px] leading-tight font-semibold uppercase tracking-wide text-gray-500"
+          title={needsTooltip ? metricLabel : undefined}
+        >
+          {metricLabel}
+        </span>
+        <CircularProgressBar
+          percentage={hasSelection ? metricValueFormatted : 0}
+          gradientConfig={gradientConfig}
+          size="xsmall"
+          overrideColor={metricColor}
+        />
+      </div>
+    </div>
   );
 };
 
@@ -747,8 +719,12 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
         <h1 className="mb-2 font-BeVietnamPro text-sm font-bold uppercase tracking-wide text-gray-500">
           Individual Domain Scores
         </h1>
-        <div className="flex justify-start overflow-hidden">
-          <FlowerChart domainScores={domainScores} gradientConfig={gradientConfig} />
+        <div id="flower-chart-right-sidebar-wrapper" className="max-w-[290px]">
+          <FlowerChart
+            domainScores={domainScores}
+            overallResilienceScore={overallResilienceScore}
+            gradientConfig={gradientConfig}
+          />
         </div>
       </div>
     </div>

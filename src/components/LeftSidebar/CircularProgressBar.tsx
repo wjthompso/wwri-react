@@ -5,7 +5,9 @@ import { getOverallScoreColor, normalizeScoreWithRange, normalizeScore } from "u
 interface CircularProgressBarProps {
   percentage: number;
   gradientConfig?: GradientConfig | null;
-  size?: "small" | "medium" | "large";
+  size?: "xsmall" | "small" | "medium" | "large";
+  /** Optional override color (e.g., for domain-specific coloring) */
+  overrideColor?: string;
 }
 
 /**
@@ -17,9 +19,11 @@ const CircularProgressBar: React.FC<CircularProgressBarProps> = ({
   percentage,
   gradientConfig,
   size = "medium",
+  overrideColor,
 }) => {
   // Size configurations
   const sizeConfig = {
+    xsmall: { containerClass: "h-14 w-14", radius: 20, strokeWidth: 8, textClass: "text-sm font-semibold" },
     small: { containerClass: "h-20 w-20", radius: 30, strokeWidth: 12, textClass: "text-lg" },
     medium: { containerClass: "h-28 w-28", radius: 42, strokeWidth: 16, textClass: "text-xl" },
     large: { containerClass: "h-40 w-40", radius: 60, strokeWidth: 25, textClass: "text-2xl" },
@@ -29,10 +33,10 @@ const CircularProgressBar: React.FC<CircularProgressBarProps> = ({
   const circumference = 2 * Math.PI * config.radius;
   const dashOffset = circumference - (circumference * percentage) / 100;
 
-  // Get the score color using the overall resilience gradient
+  // Get the score color using the overall resilience gradient (or override if provided)
   // Convert percentage back to 0-1 or 0-100 scale for the color function
   const scoreValue = percentage > 0 ? percentage : null;
-  const scoreColor = getOverallScoreColor(scoreValue, gradientConfig);
+  const scoreColor = overrideColor || getOverallScoreColor(scoreValue, gradientConfig);
 
   // Calculate normalized value for background transparency
   let normalizedValue = 0;

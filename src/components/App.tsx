@@ -24,6 +24,11 @@ const DEFAULT_LABEL_SOURCE: LabelSource = "custom";
 const PROJECTION_STORAGE_KEY = "wwri-projection";
 const DEFAULT_PROJECTION: MapProjection = "mercator";
 
+// Selected Region panel layout options
+export type SelectedRegionLayout = "side-by-side" | "stacked-below";
+const LAYOUT_STORAGE_KEY = "wwri-selected-region-layout";
+const DEFAULT_LAYOUT: SelectedRegionLayout = "side-by-side";
+
 // Summary data structure: geoid -> domain scores
 interface SummaryData {
   [geoid: string]: DomainScores;
@@ -180,6 +185,17 @@ function App() {
     localStorage.setItem(PROJECTION_STORAGE_KEY, selectedProjection);
   }, [selectedProjection]);
 
+  // Dev tools: Selected Region panel layout
+  const [selectedRegionLayout, setSelectedRegionLayout] = useState<SelectedRegionLayout>(() => {
+    const stored = localStorage.getItem(LAYOUT_STORAGE_KEY);
+    return (stored === "side-by-side" || stored === "stacked-below") ? stored : DEFAULT_LAYOUT;
+  });
+
+  // Save layout to localStorage when it changes
+  useEffect(() => {
+    localStorage.setItem(LAYOUT_STORAGE_KEY, selectedRegionLayout);
+  }, [selectedRegionLayout]);
+
   // Save label config to localStorage when it changes
   useEffect(() => {
     localStorage.setItem("wwri-label-config", JSON.stringify(labelConfig));
@@ -303,6 +319,8 @@ function App() {
         onLabelSourceChange={setLabelSource}
         selectedProjection={selectedProjection}
         onProjectionChange={setSelectedProjection}
+        selectedRegionLayout={selectedRegionLayout}
+        onLayoutChange={setSelectedRegionLayout}
       />
       
       {/* Dev Tools: Label Configuration Widget (only in DEBUG mode) */}
@@ -364,6 +382,7 @@ function App() {
           selectedStateName={selectedStateName}
           selectedCountry={selectedCountry}
           selectedGeoLevel={selectedGeoLevel}
+          selectedRegionLayout={selectedRegionLayout}
         />
       </div>
     </div>

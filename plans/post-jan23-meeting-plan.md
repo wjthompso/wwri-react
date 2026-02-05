@@ -36,11 +36,13 @@
 | 13 | Performance and saturation testing (front-end and back-end) | ⬜ Pending |
 | 14 | Expand one domain by default in right sidebar (Cat meeting Feb 3) | ✅ Complete |
 | 15 | Add white-black-white border styling to map polygons | ✅ Complete |
-| 16 | Redesign map legend (fix margins, layout, add selected metric progress bar) | ⬜ Pending |
+| 16a | Add selected metric progress bar to Selected Region panel (debug toggle for layouts) | ✅ Complete |
+| 16b | Refine legend & selected metric display (polish after Task 17) | ⬜ Pending |
 | 17 | Fix metric naming bug (remove duplicate domain name prefix) | ⬜ Pending |
 | 18 | Add "Overall Score" label above circular progress bar | ⬜ Pending |
+| 19 | Refine flower chart: remove legend, show domain name in center on hover | ⬜ Pending |
 
-**Progress:** 19/24 complete (4 pending, 1 blocked, 1 on hold)
+**Progress:** 20/26 complete (5 pending, 1 blocked, 1 on hold)
 
 **Note:** Completed task details archived in [post-jan23-completed-tasks.md](./archive/post-jan23-completed-tasks.md)
 
@@ -86,6 +88,7 @@
 | Feb 4 | **📦 ARCHIVED COMPLETED TASKS** - Moved detailed descriptions of Tasks 1-14 to `archive/post-jan23-completed-tasks.md` to keep main plan concise. |
 | Feb 4 | **📋 ADDED TASKS 15-18** - New tasks for polygon borders (white-black-white sandwich), legend redesign, metric naming bug fix, and Overall Score label restoration. |
 | Feb 4 | **✅ Task 15 COMPLETE!** - Implemented white-black-white sandwich border for selected map polygons. Replaced single cyan highlight layer with 2-layer system: white outer (5px) + black inner (3px), creating 3-band border pattern (white | black | white). Border widths extracted to configurable constants (`BORDER_OUTER_WIDTH`, `BORDER_INNER_WIDTH`) for easy adjustment. Works for both US and Canada polygons. Files modified: `MapArea.tsx`. |
+| Feb 4 | **✅ Task 16a COMPLETE!** - Added selected metric progress bar to Selected Region panel with debug toggle for layout experimentation. Two layout options: (1) Side-by-Side - two circular progress bars for Overall and Selected Metric, (2) Stacked Below - linear progress bar below main panel. Added "xsmall" CircularProgressBar size (56×56px). Label truncation with tooltip for long metric names. Debug toggle in Dev Tools dropdown under "Score Display Layout". Files modified: `App.tsx`, `Header.tsx`, `RightSidebar.tsx`, `CircularProgressBar.tsx`, `rgb.ts`. Task 16b (refinement) deferred until after Task 17. |
 
 ---
 
@@ -294,73 +297,52 @@ MapLibre GL JS doesn't support multi-color borders natively. We need to render t
 
 ---
 
-### Task 16: Redesign Map Legend
+### Task 16a: Add Selected Metric Progress Bar to Selected Region Panel
 
-**Status:** ⬜ Pending
+**Status:** ✅ Complete
 
 **Priority:** 🔥 HIGH
 
-**Scope:** Single chat window - legend redesign
+**Scope:** Single chat window - layout implementation
 
-**Description:** Redesign the map legend to be more space-efficient and informative. Current legend has excessive left/right margins and doesn't show enough context.
+**Description:** Added selected metric display to the Selected Region panel with two layout options accessible via debug toggle.
 
-**Current Issues:**
-1. Too much horizontal padding/margin - wasted space
-2. Only shows 4 color boxes - not very informative
-3. No progress bar for the selected metric score
-4. Layout could be more compact
+**Implementation:**
+- **Side-by-Side Layout**: Two circular progress bars (Overall + Selected Metric) 
+  - "xsmall" size circles (56×56px) to fit in fixed panel height
+  - Label truncation with "…" and tooltip for long metric names
+- **Stacked Below Layout**: Linear progress bar below main panel
+  - Full metric label (no truncation needed)
+  - Same gray background as main panel
 
-**Requirements:**
+**Debug Toggle:** Dev Tools → "📊 Score Display Layout"
 
-**A) Layout Changes:**
-- Use wide horizontal rectangles stacked vertically instead of small boxes
-- Reduce left/right margins to maximize legend width
-- More compact vertical spacing
+**Files Modified:**
+- `App.tsx` - Added `SelectedRegionLayout` type and state
+- `Header.tsx` - Added layout toggle to Dev Tools dropdown
+- `RightSidebar.tsx` - Implemented both layout components
+- `CircularProgressBar.tsx` - Added "xsmall" size and `overrideColor` prop
+- `rgb.ts` - Added `rgbToHex()` utility function
 
-**B) Add Selected Metric Progress Bar:**
-- Below the Overall Score circular progress bar in the Selected Region section (right sidebar)
-- Show the current region's score for the selected metric
-- Use same gradient colors as the domain
-- Label should show metric name (without domain prefix - see Task 17)
+---
 
-**Example Layout:**
-```
-┌─────────────────────────────────────┐
-│ Legend: Infrastructure              │
-├─────────────────────────────────────┤
-│ ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ │ ← Wide rectangle (high score)
-│ ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░ │ ← Wide rectangle (mid score)
-│ ▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░░ │ ← Wide rectangle (low score)
-│ ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │ ← Wide rectangle (very low)
-│ 55                               90 │ ← Min/max labels
-└─────────────────────────────────────┘
-```
+### Task 16b: Refine Legend & Selected Metric Display
 
-**Selected Region Panel (new layout):**
-```
-┌──────────────────────────────────────────┐
-│ Selected Region             Overall Score│
-│ Santa Barbara County, CA          ┌────┐│
-│                                   │ 78 ││
-│                                   └────┘│
-├──────────────────────────────────────────┤
-│ Home Ownership                           │
-│ ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░  │
-│ 72 / 90                                  │
-└──────────────────────────────────────────┘
-```
+**Status:** ⬜ Pending (after Task 17)
 
-**Files to modify:**
-- `src/components/MapArea/MapLegend.tsx` - Redesign legend layout
-- `src/components/RightSidebar.tsx` - Add selected metric progress bar to Selected Region panel
-- Possibly create new component: `src/components/RightSidebar/SelectedMetricProgressBar.tsx`
+**Priority:** 🟡 MEDIUM
 
-**Design Questions:**
-- Should selected metric progress bar be always visible, or only when a metric is selected?
-- Should it show numeric value (e.g., "72 / 90") or just the bar?
-- Should it use the same circular progress bar component or a linear bar?
+**Scope:** Polish and refinement
 
-**Related:** Task 17 (metric naming bug - label should not show "Infrastructure Home Ownership", just "Home Ownership")
+**Description:** Further refinement of the legend and selected metric display after fixing the metric naming bug (Task 17).
+
+**Remaining Work:**
+- Polish layout based on feedback
+- Consider legend redesign (wide horizontal rectangles instead of small boxes)
+- Reduce legend margins
+- Final decision on Side-by-Side vs Stacked Below layout
+
+**Related:** Task 17 (metric naming bug must be fixed first)
 
 ---
 
@@ -463,6 +445,65 @@ The metric name is being constructed by concatenating domain + metric name, when
 **Related:** 
 - Task 4b (previously removed this label)
 - Task 16 (will also add selected metric progress bar - ensure both fit well together)
+
+---
+
+### Task 19: Refine Flower Chart - Remove Legend, Show Domain Name in Center
+
+**Status:** ⬜ Pending
+
+**Priority:** 🔥 HIGH
+
+**Scope:** Flower chart refinement - reduce cognitive load
+
+**Description:** Remove the legend from the flower chart and display domain names dynamically in the center circle. This reduces visual clutter and creates a more direct mapping between petals and their labels.
+
+**Current State:**
+- Flower chart has 8 colored petals (radar chart)
+- Legend on the right shows domain names and colors
+- Center shows "--" or score when hovering
+- Requires users to cross-reference legend with petals
+
+**Desired Behavior:**
+
+**Default State:**
+- Center shows: "Overall: 72" (or just "72" with "Overall" below)
+- No legend visible
+- Tooltip on hover shows domain name + score near petal
+
+**Hover State:**
+- Center shows: "Infrastructure: 68" (domain name + score)
+- Hovered petal is highlighted/glowed
+- Other petals slightly dimmed
+- Tooltip near petal reinforces domain name
+
+**Design Principles:**
+- **Nielsen: Minimalist Design** - Remove legend to reduce clutter
+- **Norman: Direct Mapping** - Label appears where attention is (center)
+- **Gestalt: Proximity** - Label co-located with visual element
+- **Nielsen: Recognition vs Recall** - Domain name shown on hover, no need to remember color mappings
+
+**Implementation Tasks:**
+- [ ] Remove legend component from flower chart
+- [ ] Update center display to show domain name + score on hover
+- [ ] Keep "Overall: [score]" as default state
+- [ ] Add tooltip on petal hover (domain name + score)
+- [ ] Add visual highlighting for hovered petal (glow/brightness)
+- [ ] Dim non-hovered petals when one is hovered
+- [ ] Ensure accessibility (keyboard navigation, screen readers)
+
+**Files to modify:**
+- `src/components/LeftSidebar/FlowerChart.tsx` - Remove legend, update center display logic
+- Possibly update tooltip/accessibility components
+
+**Design Questions:**
+- Should tooltip be required, or is center label sufficient?
+- Should legend be collapsible/toggleable for accessibility?
+- How to handle initial state - show "Overall" or domain names?
+
+**Related:**
+- Task 16b (overall sidebar refinement)
+- Information hierarchy discussion (Cat's feedback on panel organization)
 
 ---
 

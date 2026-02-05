@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import SelectedMetricIdObject from "types/componentStatetypes";
 import { Domain } from "types/domainTypes";
 import { GradientConfig } from "types/gradientConfigTypes";
+import { rgbToHex } from "types/rgb";
 import DownArrow from "../assets/DownArrow.svg";
 import RightSideArrow from "../assets/RightSideArrow.svg";
 import SearchIcon from "../assets/SearchIcon.svg";
@@ -18,7 +19,7 @@ import {
 import flattenDomainHierarchy, {
   IndicatorObject,
 } from "../utils/flattenDomainHierarchyForSearch";
-import { Country, RegionAllMetrics } from "./App";
+import { Country, RegionAllMetrics, SelectedRegionLayout } from "./App";
 import CircularProgressBar from "./LeftSidebar/CircularProgressBar";
 import FlowerChart from "./LeftSidebar/FlowerChart";
 import { LayoutUnified, LayoutUnifiedCompact } from "./RightSidebar/layouts";
@@ -36,6 +37,8 @@ interface RightSidebarProps {
   selectedStateName: string;
   selectedCountry: Country;
   selectedGeoLevel: UnifiedGeoLevel;
+  // Layout mode for Selected Region panel
+  selectedRegionLayout?: SelectedRegionLayout;
 }
 
 /**
@@ -92,6 +95,233 @@ function buildRegionDisplayText(
 }
 
 /**
+ * Truncates text with ellipsis if it exceeds maxLength
+ */
+function truncateText(text: string, maxLength: number): string {
+  if (text.length <= maxLength) return text;
+  return text.slice(0, maxLength - 1) + "…";
+}
+
+/**
+ * Props for the layout components
+ */
+interface LayoutProps {
+  hasSelection: boolean;
+  displayText: { line1: string; line2?: string } | null;
+  overallScoreFormatted: number;
+  selectedMetricValue: number | null;
+  selectedMetricIdObject: SelectedMetricIdObject | null;
+  gradientConfig?: GradientConfig | null;
+}
+
+/**
+ * Side-by-Side Layout: Overall and Selected Metric as two circular progress bars
+ */
+const SideBySideLayout: React.FC<LayoutProps> = ({
+  hasSelection,
+  displayText,
+  overallScoreFormatted,
+  selectedMetricValue,
+  selectedMetricIdObject,
+  gradientConfig,
+}) => {
+  // Format the selected metric value (handle 0-1 vs 0-100 scale)
+  let metricValueFormatted = 0;
+  if (selectedMetricValue !== null) {
+    metricValueFormatted = selectedMetricValue < 1 && selectedMetricValue > 0
+      ? selectedMetricValue * 100
+      : selectedMetricValue;
+  }
+
+  // Get the domain color for the selected metric
+  const metricColor = selectedMetricIdObject?.colorGradient?.endColor
+    ? rgbToHex(selectedMetricIdObject.colorGradient.endColor)
+    : undefined;
+
+  // Truncate label for display (max ~18 chars to fit in wider column)
+  const metricLabel = selectedMetricIdObject?.label || "Selected Metric";
+  const truncatedLabel = truncateText(metricLabel, 18);
+  const needsTooltip = metricLabel.length > 18;
+
+  return (
+    <div
+      id="top-panel"
+      className="flex min-h-[100px] w-full items-stretch border-b border-gray-200 bg-subheaderBackground"
+    >
+      {/* Left: Selected Region */}
+      <div
+        id="selected-region-panel"
+        className="flex flex-1 flex-col justify-center border-r border-gray-200 px-4 py-3"
+      >
+        <h1 className="font-BeVietnamPro text-sm font-bold uppercase tracking-wide text-gray-500">
+          Selected Region
+        </h1>
+        {!hasSelection ? (
+          <p className="mt-1 font-BeVietnamPro text-base text-gray-500">
+            Click on a region to view data
+          </p>
+        ) : (
+          <div className="mt-1">
+            <p className="font-BeVietnamPro text-xl font-semibold leading-tight text-gray-900">
+              {displayText?.line1}
+            </p>
+            {displayText?.line2 && (
+              <p className="font-BeVietnamPro text-base text-gray-600">
+                {displayText.line2}
+              </p>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Middle: Overall Score */}
+      <div
+        id="overall-score-panel"
+        className="flex w-[90px] flex-col items-center justify-center border-r border-gray-200 px-2 py-2"
+      >
+        <span className="mb-1 text-xs font-semibold uppercase tracking-wide text-gray-500">
+          Overall
+        </span>
+        <CircularProgressBar
+          percentage={overallScoreFormatted}
+          gradientConfig={gradientConfig}
+          size="xsmall"
+        />
+      </div>
+
+      {/* Right: Selected Metric Score */}
+      <div
+        id="selected-metric-panel"
+        className="flex w-[130px] flex-col items-center justify-center px-2 py-2"
+        title={needsTooltip ? metricLabel : undefined}
+      >
+        <span 
+          className="mb-1 max-w-[120px] truncate text-center text-xs font-semibold uppercase tracking-wide text-gray-500"
+          title={needsTooltip ? metricLabel : undefined}
+        >
+          {truncatedLabel}
+        </span>
+        <CircularProgressBar
+          percentage={hasSelection ? metricValueFormatted : 0}
+          gradientConfig={gradientConfig}
+          size="xsmall"
+          overrideColor={metricColor}
+        />
+      </div>
+    </div>
+  );
+};
+
+/**
+ * Stacked Below Layout: Overall score in main panel, Selected Metric as linear bar below
+ */
+const StackedBelowLayout: React.FC<LayoutProps> = ({
+  hasSelection,
+  displayText,
+  overallScoreFormatted,
+  selectedMetricValue,
+  selectedMetricIdObject,
+  gradientConfig,
+}) => {
+  // Format the selected metric value (handle 0-1 vs 0-100 scale)
+  let metricValueFormatted = 0;
+  if (selectedMetricValue !== null) {
+    metricValueFormatted = selectedMetricValue < 1 && selectedMetricValue > 0
+      ? selectedMetricValue * 100
+      : selectedMetricValue;
+  }
+
+  // Get the domain color for the selected metric
+  const metricColor = selectedMetricIdObject?.colorGradient?.endColor
+    ? rgbToHex(selectedMetricIdObject.colorGradient.endColor)
+    : "#6b7280"; // gray-500 fallback
+
+  const metricLabel = selectedMetricIdObject?.label || "Selected Metric";
+
+  return (
+    <>
+      {/* Main Panel: Selected Region + Overall Score */}
+      <div
+        id="top-panel"
+        className="flex min-h-[100px] w-full items-stretch border-b border-gray-200 bg-subheaderBackground"
+      >
+        {/* Left: Selected Region */}
+        <div
+          id="selected-region-panel"
+          className="flex flex-1 flex-col justify-center border-r border-gray-200 px-4 py-3"
+        >
+          <h1 className="font-BeVietnamPro text-sm font-bold uppercase tracking-wide text-gray-500">
+            Selected Region
+          </h1>
+          {!hasSelection ? (
+            <p className="mt-1 font-BeVietnamPro text-base text-gray-500">
+              Click on a region to view data
+            </p>
+          ) : (
+            <div className="mt-1">
+              <p className="font-BeVietnamPro text-xl font-semibold leading-tight text-gray-900">
+                {displayText?.line1}
+              </p>
+              {displayText?.line2 && (
+                <p className="font-BeVietnamPro text-base text-gray-600">
+                  {displayText.line2}
+                </p>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Right: Overall Score Widget */}
+        <div
+          id="overall-score-panel"
+          className="flex w-[140px] flex-col items-center justify-center px-3 py-3"
+        >
+          <span className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+            Overall
+          </span>
+          <CircularProgressBar
+            percentage={overallScoreFormatted}
+            gradientConfig={gradientConfig}
+            size="small"
+          />
+        </div>
+      </div>
+
+      {/* Secondary Panel: Selected Metric Linear Bar */}
+      <div
+        id="selected-metric-bar-panel"
+        className="flex w-full items-center gap-3 border-b border-gray-200 bg-subheaderBackground px-4 py-2"
+      >
+        <div className="flex min-w-0 flex-1 flex-col">
+          <span className="text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+            {metricLabel}
+          </span>
+          <div className="mt-1 flex items-center gap-2">
+            {/* Linear progress bar */}
+            <div className="h-3 flex-1 overflow-hidden rounded-full bg-gray-200">
+              <div
+                className="h-full rounded-full transition-all duration-500"
+                style={{
+                  width: hasSelection ? `${Math.min(100, Math.max(0, metricValueFormatted))}%` : "0%",
+                  backgroundColor: metricColor,
+                }}
+              />
+            </div>
+            {/* Score value */}
+            <span
+              className="min-w-[3ch] text-right text-sm font-semibold"
+              style={{ color: hasSelection ? metricColor : "#9ca3af" }}
+            >
+              {hasSelection && metricValueFormatted > 0 ? metricValueFormatted.toFixed(0) : "--"}
+            </span>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
+/**
  * Highlights all matching words from the search term in the text.
  */
 const highlightMatches = (text: string, searchTerm: string) => {
@@ -126,6 +356,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
   selectedStateName,
   selectedCountry,
   selectedGeoLevel,
+  selectedRegionLayout = "side-by-side",
 }) => {
   const [showIndicatorSuggestions, setShowIndicatorSuggestions] = useState(false);
   const [activeButton, setActiveButton] = useState<string | null>("infrastructure");
@@ -486,48 +717,25 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
       {/* ============================================ */}
       {/* SELECTED REGION + OVERALL SCORE PANEL       */}
       {/* ============================================ */}
-      <div
-        id="top-panel"
-        className="flex min-h-[100px] w-full items-stretch border-b border-gray-200 bg-subheaderBackground"
-      >
-        {/* Left: Selected Region */}
-        <div
-          id="selected-region-panel"
-          className="flex flex-1 flex-col justify-center border-r border-gray-200 px-4 py-3"
-        >
-          <h1 className="font-BeVietnamPro text-sm font-bold uppercase tracking-wide text-gray-500">
-            Selected Region
-          </h1>
-          {!hasSelection ? (
-            <p className="mt-1 font-BeVietnamPro text-base text-gray-500">
-              Click on a region to view data
-            </p>
-          ) : (
-            <div className="mt-1">
-              <p className="font-BeVietnamPro text-xl font-semibold leading-tight text-gray-900">
-                {displayText?.line1}
-              </p>
-              {displayText?.line2 && (
-                <p className="font-BeVietnamPro text-base text-gray-600">
-                  {displayText.line2}
-                </p>
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* Right: Overall Score Widget */}
-        <div
-          id="overall-score-panel"
-          className="flex w-[140px] flex-col items-center justify-center px-3 py-3"
-        >
-          <CircularProgressBar
-            percentage={overallScoreFormatted}
-            gradientConfig={gradientConfig}
-            size="small"
-          />
-        </div>
-      </div>
+      {selectedRegionLayout === "side-by-side" ? (
+        <SideBySideLayout
+          hasSelection={hasSelection}
+          displayText={displayText}
+          overallScoreFormatted={overallScoreFormatted}
+          selectedMetricValue={selectedMetricValue}
+          selectedMetricIdObject={selectedMetricIdObject}
+          gradientConfig={gradientConfig}
+        />
+      ) : (
+        <StackedBelowLayout
+          hasSelection={hasSelection}
+          displayText={displayText}
+          overallScoreFormatted={overallScoreFormatted}
+          selectedMetricValue={selectedMetricValue}
+          selectedMetricIdObject={selectedMetricIdObject}
+          gradientConfig={gradientConfig}
+        />
+      )}
 
       {/* ============================================ */}
       {/* INDIVIDUAL DOMAIN SCORES (Flower Chart)     */}

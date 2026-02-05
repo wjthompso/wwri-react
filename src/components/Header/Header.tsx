@@ -1,7 +1,20 @@
 import React, { useState, useRef, useEffect } from "react";
 import Vector from "../../assets/Vector.svg";
 import { isDebugMode } from "../../config/featureFlags";
+import { SelectedRegionLayout } from "../App";
 import { BasemapId, BASEMAP_OPTIONS, LabelSource, MapProjection, PROJECTION_OPTIONS } from "../MapArea/MapArea";
+
+// Layout options for the Selected Region panel
+export const LAYOUT_OPTIONS: Record<SelectedRegionLayout, { name: string; description: string }> = {
+  "side-by-side": {
+    name: "Side-by-Side",
+    description: "Overall and Selected Metric scores displayed as two circles side-by-side",
+  },
+  "stacked-below": {
+    name: "Stacked Below",
+    description: "Selected Metric shown as a linear progress bar below the main panel",
+  },
+};
 
 interface HeaderProps {
   labelConfigOpen?: boolean;
@@ -14,6 +27,8 @@ interface HeaderProps {
   onLabelSourceChange?: (source: LabelSource) => void;
   selectedProjection?: MapProjection;
   onProjectionChange?: (projection: MapProjection) => void;
+  selectedRegionLayout?: SelectedRegionLayout;
+  onLayoutChange?: (layout: SelectedRegionLayout) => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ 
@@ -27,6 +42,8 @@ const Header: React.FC<HeaderProps> = ({
   onLabelSourceChange,
   selectedProjection = "mercator",
   onProjectionChange,
+  selectedRegionLayout = "side-by-side",
+  onLayoutChange,
 }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -228,6 +245,37 @@ const Header: React.FC<HeaderProps> = ({
                 </div>
                 <p className="mt-1.5 text-[10px] leading-tight text-gray-400">
                   {PROJECTION_OPTIONS[selectedProjection].description}
+                </p>
+              </div>
+
+              {/* Selected Region Layout Selector */}
+              <div className="border-t border-gray-100 px-3 py-2">
+                <div className="mb-1.5 flex items-center gap-2">
+                  <span>📊</span>
+                  <span className="text-sm">Score Display Layout</span>
+                </div>
+                <div className="flex flex-col gap-1">
+                  {(Object.keys(LAYOUT_OPTIONS) as SelectedRegionLayout[]).map((layoutId) => (
+                    <button
+                      key={layoutId}
+                      id={`layout-option-${layoutId}`}
+                      onClick={() => onLayoutChange?.(layoutId)}
+                      className={`flex items-center justify-between rounded px-2 py-1.5 text-left text-xs transition-colors ${
+                        selectedRegionLayout === layoutId
+                          ? "bg-leftSidebarOverallResilience text-white"
+                          : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                      }`}
+                      title={LAYOUT_OPTIONS[layoutId].description}
+                    >
+                      <span className="font-medium">{LAYOUT_OPTIONS[layoutId].name}</span>
+                      {selectedRegionLayout === layoutId && (
+                        <span className="text-[10px] opacity-75">✓</span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+                <p className="mt-1.5 text-[10px] leading-tight text-gray-400">
+                  {LAYOUT_OPTIONS[selectedRegionLayout].description}
                 </p>
               </div>
 

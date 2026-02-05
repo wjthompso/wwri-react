@@ -53,8 +53,8 @@ const flattenDomainHierarchy = (domains: Domain[]): IndicatorObject[] => {
         domainId: domain.id,
         metricId: `${domain.id}_resilience`,
         traversedPathForSearchSuggestions: `${domainLabel} > ${domain.resilience.label}`,
-        label: `${domainLabel} Resilience`,
-        description: domain.resilience.description,
+      label: domain.resilience.label,
+      description: domain.resilience.description,
         colorGradient: domain.colorGradient,
       });
 
@@ -65,7 +65,7 @@ const flattenDomainHierarchy = (domains: Domain[]): IndicatorObject[] => {
           domainId: domain.id,
           metricId: `${domain.id}_resistance`,
           traversedPathForSearchSuggestions: `${domainLabel} > ${domain.resilience.label} > ${domain.resilience.resistance.label}`,
-          label: `${domainLabel} Resistance`,
+          label: domain.resilience.resistance.label,
           description: domain.resilience.resistance.description,
           colorGradient: domain.colorGradient,
         });
@@ -89,7 +89,7 @@ const flattenDomainHierarchy = (domains: Domain[]): IndicatorObject[] => {
           domainId: domain.id,
           metricId: `${domain.id}_recovery`,
           traversedPathForSearchSuggestions: `${domainLabel} > ${domain.resilience.label} > ${domain.resilience.recovery.label}`,
-          label: `${domainLabel} Recovery`,
+          label: domain.resilience.recovery.label,
           description: domain.resilience.recovery.description,
           colorGradient: domain.colorGradient,
         });

@@ -119,7 +119,7 @@ const LayoutUnifiedCompact: React.FC<LayoutUnifiedCompactProps> = ({
                   id={makeId(subdomain.status!.id)}
                   onClick={() => {
                     setActiveButton(makeId(subdomain.status!.id));
-                    setSelectedIndicator(`${subdomain.label} ${subdomain.status!.label}`);
+                    setSelectedIndicator(subdomain.status!.label);
                     setSelectedMetricIdObject({
                       domainId: parentDomainId,
                       metricId: subdomain.status!.id,
@@ -158,11 +158,11 @@ const LayoutUnifiedCompact: React.FC<LayoutUnifiedCompactProps> = ({
                       setSelectedMetricIdObject({
                         domainId: parentDomainId,
                         metricId: metric.id,
-                        label: `${subdomain.label} ${metric.label}`,
+                        label: metric.label,
                         description: metric.description,
                         colorGradient,
                       });
-                      setSelectedIndicator(`${subdomain.label} ${metric.label}`);
+                      setSelectedIndicator(metric.label);
                     }}
                     className={getButtonClass(makeId(metric.id), "sm")}
                     style={{ backgroundColor: getButtonColorByMetricId(metric.id) }}
@@ -186,7 +186,7 @@ const LayoutUnifiedCompact: React.FC<LayoutUnifiedCompactProps> = ({
               onClick={() => {
                 if (subdomain.resilience) {
                   setActiveButton(makeId(subdomain.resilience.id));
-                  setSelectedIndicator(`${subdomain.label} ${subdomain.resilience.label}`);
+                  setSelectedIndicator(subdomain.resilience.label);
                   setSelectedMetricIdObject({
                     domainId: parentDomainId,
                     metricId: subdomain.resilience.id,
@@ -221,7 +221,7 @@ const LayoutUnifiedCompact: React.FC<LayoutUnifiedCompactProps> = ({
                       id={makeId(subdomain.resilience!.resistance!.id)}
                       onClick={() => {
                         setActiveButton(makeId(subdomain.resilience!.resistance!.id));
-                        setSelectedIndicator(`${subdomain.label} ${subdomain.resilience!.resistance!.label}`);
+                        setSelectedIndicator(subdomain.resilience!.resistance!.label);
                         setSelectedMetricIdObject({
                           domainId: parentDomainId,
                           metricId: subdomain.resilience!.resistance!.id,
@@ -260,11 +260,11 @@ const LayoutUnifiedCompact: React.FC<LayoutUnifiedCompactProps> = ({
                           setSelectedMetricIdObject({
                             domainId: parentDomainId,
                             metricId: metric.id,
-                            label: `${subdomain.label} ${metric.label}`,
+                            label: metric.label,
                             description: metric.description,
                             colorGradient,
                           });
-                          setSelectedIndicator(`${subdomain.label} ${metric.label}`);
+                          setSelectedIndicator(metric.label);
                         }}
                         className={getButtonClass(makeId(metric.id), "sm")}
                         style={{ backgroundColor: getButtonColorByMetricId(metric.id) }}
@@ -289,7 +289,7 @@ const LayoutUnifiedCompact: React.FC<LayoutUnifiedCompactProps> = ({
                       id={makeId(subdomain.resilience!.recovery!.id)}
                       onClick={() => {
                         setActiveButton(makeId(subdomain.resilience!.recovery!.id));
-                        setSelectedIndicator(`${subdomain.label} ${subdomain.resilience!.recovery!.label}`);
+                        setSelectedIndicator(subdomain.resilience!.recovery!.label);
                         setSelectedMetricIdObject({
                           domainId: parentDomainId,
                           metricId: subdomain.resilience!.recovery!.id,
@@ -328,11 +328,11 @@ const LayoutUnifiedCompact: React.FC<LayoutUnifiedCompactProps> = ({
                           setSelectedMetricIdObject({
                             domainId: parentDomainId,
                             metricId: metric.id,
-                            label: `${subdomain.label} ${metric.label}`,
+                            label: metric.label,
                             description: metric.description,
                             colorGradient,
                           });
-                          setSelectedIndicator(`${subdomain.label} ${metric.label}`);
+                          setSelectedIndicator(metric.label);
                         }}
                         className={getButtonClass(makeId(metric.id), "sm")}
                         style={{ backgroundColor: getButtonColorByMetricId(metric.id) }}

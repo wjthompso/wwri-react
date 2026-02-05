@@ -113,7 +113,7 @@ const LayoutUnified: React.FC<LayoutUnifiedProps> = ({
                   id={`${domain.id}-${domain.status!.id}`}
                   onClick={() => {
                     setActiveButton(`${domain.id}-${domain.status!.id}`);
-                    setSelectedIndicator(`${domain.label} ${domain.status!.label}`);
+                    setSelectedIndicator(domain.status!.label);
                     setSelectedMetricIdObject({
                       domainId: domain.id,
                       metricId: domain.status!.id,
@@ -152,11 +152,11 @@ const LayoutUnified: React.FC<LayoutUnifiedProps> = ({
                       setSelectedMetricIdObject({
                         domainId: domain.id,
                         metricId: metric.id,
-                        label: `${domain.label} ${metric.label}`,
+                        label: metric.label,
                         description: metric.description,
                         colorGradient: domain.colorGradient,
                       });
-                      setSelectedIndicator(`${domain.label} ${metric.label}`);
+                      setSelectedIndicator(metric.label);
                     }}
                     className={getButtonClass(`${domain.id}-${metric.id}`, "sm")}
                     style={{ backgroundColor: getButtonColorByMetricId(metric.id) }}
@@ -180,7 +180,7 @@ const LayoutUnified: React.FC<LayoutUnifiedProps> = ({
               onClick={() => {
                 if (domain.resilience) {
                   setActiveButton(`${domain.id}-${domain.resilience.id}`);
-                  setSelectedIndicator(`${domain.label} ${domain.resilience.label}`);
+                  setSelectedIndicator(domain.resilience.label);
                   setSelectedMetricIdObject({
                     domainId: domain.id,
                     metricId: domain.resilience.id,
@@ -215,7 +215,7 @@ const LayoutUnified: React.FC<LayoutUnifiedProps> = ({
                       id={`${domain.id}-${domain.resilience!.resistance!.id}`}
                       onClick={() => {
                         setActiveButton(`${domain.id}-${domain.resilience!.resistance!.id}`);
-                        setSelectedIndicator(`${domain.label} ${domain.resilience!.resistance!.label}`);
+                        setSelectedIndicator(domain.resilience!.resistance!.label);
                         setSelectedMetricIdObject({
                           domainId: domain.id,
                           metricId: domain.resilience!.resistance!.id,
@@ -254,11 +254,11 @@ const LayoutUnified: React.FC<LayoutUnifiedProps> = ({
                           setSelectedMetricIdObject({
                             domainId: domain.id,
                             metricId: metric.id,
-                            label: `${domain.label} ${metric.label}`,
+                            label: metric.label,
                             description: metric.description,
                             colorGradient: domain.colorGradient,
                           });
-                          setSelectedIndicator(`${domain.label} ${metric.label}`);
+                          setSelectedIndicator(metric.label);
                         }}
                         className={getButtonClass(`${domain.id}-${metric.id}`, "sm")}
                         style={{ backgroundColor: getButtonColorByMetricId(metric.id) }}
@@ -283,7 +283,7 @@ const LayoutUnified: React.FC<LayoutUnifiedProps> = ({
                       id={`${domain.id}-${domain.resilience!.recovery!.id}`}
                       onClick={() => {
                         setActiveButton(`${domain.id}-${domain.resilience!.recovery!.id}`);
-                        setSelectedIndicator(`${domain.label} ${domain.resilience!.recovery!.label}`);
+                        setSelectedIndicator(domain.resilience!.recovery!.label);
                         setSelectedMetricIdObject({
                           domainId: domain.id,
                           metricId: domain.resilience!.recovery!.id,
@@ -322,11 +322,11 @@ const LayoutUnified: React.FC<LayoutUnifiedProps> = ({
                           setSelectedMetricIdObject({
                             domainId: domain.id,
                             metricId: metric.id,
-                            label: `${domain.label} ${metric.label}`,
+                            label: metric.label,
                             description: metric.description,
                             colorGradient: domain.colorGradient,
                           });
-                          setSelectedIndicator(`${domain.label} ${metric.label}`);
+                          setSelectedIndicator(metric.label);
                         }}
                         className={getButtonClass(`${domain.id}-${metric.id}`, "sm")}
                         style={{ backgroundColor: getButtonColorByMetricId(metric.id) }}

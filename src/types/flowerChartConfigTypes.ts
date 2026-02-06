@@ -64,6 +64,10 @@ export interface FlowerChartConfig {
   progressRingGap: number;
   /** Track (background) color for the unfilled portion */
   progressRingTrackColor: string;
+
+  // --- Debug: preview label override ---
+  /** Override center label for tinkering without hovering (empty string = normal behavior) */
+  previewLabel: string;
 }
 
 /**
@@ -97,6 +101,8 @@ export const DEFAULT_FLOWER_CHART_CONFIG: FlowerChartConfig = {
   progressRingWidth: 9.5,
   progressRingGap: 0,
   progressRingTrackColor: "#e5e7eb",
+  // Debug preview
+  previewLabel: "",
 };
 
 /** localStorage key for persisting flower chart config */

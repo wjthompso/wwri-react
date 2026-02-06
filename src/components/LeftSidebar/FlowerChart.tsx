@@ -212,15 +212,24 @@ const FlowerChart: React.FC<FlowerChartProps> = ({
         setIsHoveringPetal(true);
       });
 
-      // Mouse out: restore all petals, show overall
+      // Mouse out: restore all petals, show overall (or preview label if set)
       path.addEventListener("mouseout", () => {
         data.forEach((domain, index) => {
           const paths = chart.querySelectorAll("path.aster__solid-arc");
           if (paths[index]) paths[index].setAttribute("fill", domain.color);
         });
-        setCenterText(formatScore(overallResilienceScore));
-        setTextColor(overallScoreColor);
-        setCenterLabel("Overall");
+        const preview = cfg.previewLabel
+          ? data.find((dd) => dd.name === cfg.previewLabel)
+          : null;
+        if (preview) {
+          setCenterText(formatScore(preview.rawScore));
+          setTextColor(preview.brandColor);
+          setCenterLabel(preview.name);
+        } else {
+          setCenterText(formatScore(overallResilienceScore));
+          setTextColor(overallScoreColor);
+          setCenterLabel("Overall");
+        }
         setIsHoveringPetal(false);
       });
 
@@ -249,13 +258,23 @@ const FlowerChart: React.FC<FlowerChartProps> = ({
     };
   }, [domainScores, gradientConfig, cfg, overallScoreColor]);
 
+  // Resolve preview label override from config (if any)
+  const previewDomain = cfg.previewLabel
+    ? data.find((d) => d.name === cfg.previewLabel)
+    : null;
+
   // Keep center text in sync when overall score changes externally
   useEffect(() => {
-    setCenterText(formatScore(overallResilienceScore));
-    setCenterLabel("Overall");
-    setTextColor(overallScoreColor);
-    setIsHoveringPetal(false);
-  }, [overallResilienceScore, overallScoreColor]);
+    if (previewDomain && !isHoveringPetal) {
+      setCenterText(formatScore(previewDomain.rawScore));
+      setCenterLabel(previewDomain.name);
+      setTextColor(previewDomain.brandColor);
+    } else if (!isHoveringPetal) {
+      setCenterText(formatScore(overallResilienceScore));
+      setCenterLabel("Overall");
+      setTextColor(overallScoreColor);
+    }
+  }, [overallResilienceScore, overallScoreColor, previewDomain, isHoveringPetal]);
 
   const halfViewBox = cfg.viewBoxSize / 2;
 

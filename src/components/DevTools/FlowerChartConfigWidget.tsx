@@ -5,6 +5,7 @@ import {
   LabelVerticalAlign,
   LabelTextAnchor,
 } from "../../types/flowerChartConfigTypes";
+import { FLOWER_CHART_DOMAINS } from "../../utils/domainScoreColors";
 
 interface FlowerChartConfigWidgetProps {
   isOpen: boolean;
@@ -340,6 +341,33 @@ const FlowerChartConfigWidget: React.FC<FlowerChartConfigWidgetProps> = ({
             )}
             <div className="text-[9px] text-gray-400">
               ℹ️ "Overall" text auto-colors to match the Overall score in Indicator Nav
+            </div>
+          </div>
+        </div>
+
+        {/* Preview Label Override (debug) */}
+        <div>
+          <h4 className="mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-gray-400">
+            Preview Label
+          </h4>
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-2">
+              <label className="w-[130px] shrink-0 text-[11px] text-gray-600">Show As</label>
+              <select
+                value={config.previewLabel}
+                onChange={(e) => update({ previewLabel: e.target.value })}
+                className="flex-1 rounded border border-gray-300 bg-white px-2 py-0.5 text-[11px] text-gray-700"
+              >
+                <option value="">Overall (default)</option>
+                {FLOWER_CHART_DOMAINS.map((d) => (
+                  <option key={d.apiKey} value={d.displayName}>
+                    {d.displayName}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="text-[9px] text-gray-400">
+              🔍 Lock center text to a domain label for tinkering without hovering
             </div>
           </div>
         </div>

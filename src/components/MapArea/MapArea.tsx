@@ -7,6 +7,7 @@ import {
   UNIFIED_GEO_LEVELS,
   UnifiedGeoLevel
 } from "config/api";
+import { isDebugMode } from "config/featureFlags";
 import { getRegionAbbreviation } from "data/StateNameToAbbrevsMap";
 import maplibregl, { StyleSpecification } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
@@ -322,6 +323,283 @@ const fetchLocationData = async (geoLevel: UnifiedGeoLevel): Promise<Record<stri
   return locationData;
 };
 
+// ============================================================================
+// PAN/ZOOM CONFIGURATION (tunable via debug overlay)
+// ============================================================================
+
+/** All parameters that control the fit-to-region animation */
+export interface ZoomPanConfig {
+  /** Max zoom ceiling per geo level */
+  maxZoom: Record<UnifiedGeoLevel, number>;
+  /** Base padding (px) around fitted polygon per geo level */
+  padding: Record<UnifiedGeoLevel, number>;
+  /** Extra top padding to clear the geo-level selector / zoom buttons */
+  paddingTopExtra: number;
+  /** Extra right padding to clear the map legend */
+  paddingRightExtra: number;
+  /** Duration formula: BASE + RATE × |zoomDelta|, clamped to [MIN, MAX] */
+  duration: {
+    baseMs: number;
+    msPerZoom: number;
+    minMs: number;
+    maxMs: number;
+  };
+  /** Two-phase "breathe out, dive in" animation config */
+  pullback: {
+    /** Zoom levels to pull back below the target zoom */
+    levels: number;
+    /** % of total duration spent on the zoom-out phase (0–1) */
+    outRatio: number;
+  };
+}
+
+export const DEFAULT_ZOOM_PAN_CONFIG: ZoomPanConfig = {
+  maxZoom: { state: 7, county: 10, tract: 13 },
+  padding: { state: 120, county: 100, tract: 80 },
+  paddingTopExtra: 50,
+  paddingRightExtra: 140,
+  duration: { baseMs: 800, msPerZoom: 350, minMs: 2200, maxMs: 4600 },
+  pullback: { levels: 2, outRatio: 0.4 },
+};
+
+/** Builds the asymmetric padding object for fitBounds, offsetting for map UI overlays. */
+const buildFitPadding = (base: number, cfg: ZoomPanConfig) => ({
+  top: base + cfg.paddingTopExtra,
+  right: base + cfg.paddingRightExtra,
+  bottom: base,
+  left: base,
+});
+
+/** Computes animation duration from a ZoomPanConfig */
+const computeFitDuration = (
+  cfg: ZoomPanConfig["duration"],
+  currentZoom: number,
+  targetZoom: number,
+): number => {
+  const delta = Math.abs(targetZoom - currentZoom);
+  return Math.min(cfg.maxMs, Math.max(cfg.minMs, cfg.baseMs + delta * cfg.msPerZoom));
+};
+
+/**
+ * Recursively walks any GeoJSON coordinate structure and updates the running bbox.
+ * Coordinates are arrays that eventually bottom out at [lng, lat] number pairs.
+ */
+const extendBounds = (
+  coords: any,
+  bounds: [number, number, number, number],
+): void => {
+  if (typeof coords[0] === "number") {
+    // Leaf coordinate: [lng, lat]
+    bounds[0] = Math.min(bounds[0], coords[0]);
+    bounds[1] = Math.min(bounds[1], coords[1]);
+    bounds[2] = Math.max(bounds[2], coords[0]);
+    bounds[3] = Math.max(bounds[3], coords[1]);
+  } else {
+    for (const child of coords) {
+      extendBounds(child, bounds);
+    }
+  }
+};
+
+/**
+ * Computes the bounding box [west, south, east, north] from one or more
+ * GeoJSON features. Returns null when no coordinates are found.
+ */
+const computeFeatureBounds = (
+  features: { geometry: GeoJSON.Geometry }[],
+): [number, number, number, number] | null => {
+  const bounds: [number, number, number, number] = [Infinity, Infinity, -Infinity, -Infinity];
+
+  for (const f of features) {
+    const geom = f.geometry;
+    if (!geom) continue;
+
+    if (geom.type === "GeometryCollection") {
+      for (const g of geom.geometries) {
+        extendBounds((g as any).coordinates, bounds);
+      }
+    } else {
+      extendBounds((geom as any).coordinates, bounds);
+    }
+  }
+
+  return bounds[0] === Infinity ? null : bounds;
+};
+
+// ============================================================================
+// DEBUG: Zoom/Pan Tuning Panel
+// ============================================================================
+
+/** Compact slider row used in the debug panel */
+const Slider: React.FC<{
+  id: string;
+  label: string;
+  value: number;
+  min: number;
+  max: number;
+  step: number;
+  onChange: (v: number) => void;
+}> = ({ id, label, value, min, max, step, onChange }) => (
+  <div id={id} className="flex items-center gap-2">
+    <span className="w-[72px] shrink-0 text-[10px] text-gray-500">{label}</span>
+    <input
+      type="range"
+      min={min}
+      max={max}
+      step={step}
+      value={value}
+      onChange={(e) => onChange(Number(e.target.value))}
+      className="h-1 w-full accent-amber-500"
+    />
+    <span className="w-10 shrink-0 text-right font-mono text-[10px] text-gray-700">
+      {value}
+    </span>
+  </div>
+);
+
+/** Floating debug panel for live-tuning zoom/pan animation parameters */
+const ZoomPanDebugPanel: React.FC<{
+  config: ZoomPanConfig;
+  onChange: React.Dispatch<React.SetStateAction<ZoomPanConfig>>;
+}> = ({ config, onChange }) => {
+  const [open, setOpen] = useState(false);
+
+  const setMaxZoom = (level: UnifiedGeoLevel, v: number) =>
+    onChange((prev) => ({ ...prev, maxZoom: { ...prev.maxZoom, [level]: v } }));
+
+  const setPadding = (level: UnifiedGeoLevel, v: number) =>
+    onChange((prev) => ({ ...prev, padding: { ...prev.padding, [level]: v } }));
+
+  const setDuration = (key: keyof ZoomPanConfig["duration"], v: number) =>
+    onChange((prev) => ({ ...prev, duration: { ...prev.duration, [key]: v } }));
+
+  const handleReset = () => onChange(DEFAULT_ZOOM_PAN_CONFIG);
+
+  if (!open) {
+    return (
+      <button
+        id="zoom-pan-debug-toggle"
+        onClick={() => setOpen(true)}
+        className="absolute bottom-12 left-3 z-20 rounded-md border border-amber-300 bg-amber-50 px-2 py-1 text-[10px] font-medium text-amber-700 shadow-sm hover:bg-amber-100"
+        title="Zoom/Pan Tuning"
+      >
+        🎚️ Zoom/Pan
+      </button>
+    );
+  }
+
+  const GEO_LEVELS: UnifiedGeoLevel[] = ["state", "county", "tract"];
+
+  return (
+    <div
+      id="zoom-pan-debug-panel"
+      className="absolute bottom-12 left-3 z-20 w-72 rounded-lg border border-amber-300 bg-white/95 shadow-lg backdrop-blur-sm"
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between border-b border-amber-200 px-3 py-1.5">
+        <span className="text-xs font-semibold text-amber-800">🎚️ Zoom/Pan Tuning</span>
+        <div className="flex gap-1">
+          <button
+            id="zoom-pan-debug-reset"
+            onClick={handleReset}
+            className="rounded px-1.5 py-0.5 text-[10px] text-gray-500 hover:bg-gray-100"
+            title="Reset to defaults"
+          >
+            ↺
+          </button>
+          <button
+            id="zoom-pan-debug-close"
+            onClick={() => setOpen(false)}
+            className="rounded px-1.5 py-0.5 text-[10px] text-gray-500 hover:bg-gray-100"
+          >
+            ✕
+          </button>
+        </div>
+      </div>
+
+      <div className="space-y-3 p-3">
+        {/* Max Zoom per level */}
+        <div>
+          <div className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-gray-400">
+            Max Zoom
+          </div>
+          {GEO_LEVELS.map((lvl) => (
+            <Slider
+              key={`mz-${lvl}`}
+              id={`zoom-pan-maxzoom-${lvl}`}
+              label={lvl}
+              value={config.maxZoom[lvl]}
+              min={3}
+              max={18}
+              step={0.5}
+              onChange={(v) => setMaxZoom(lvl, v)}
+            />
+          ))}
+        </div>
+
+        {/* Padding per level */}
+        <div>
+          <div className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-gray-400">
+            Padding (px)
+          </div>
+          {GEO_LEVELS.map((lvl) => (
+            <Slider
+              key={`pad-${lvl}`}
+              id={`zoom-pan-padding-${lvl}`}
+              label={lvl}
+              value={config.padding[lvl]}
+              min={20}
+              max={300}
+              step={10}
+              onChange={(v) => setPadding(lvl, v)}
+            />
+          ))}
+        </div>
+
+        {/* Extra padding offsets for map overlays */}
+        <div>
+          <div className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-gray-400">
+            Overlay Offsets (px)
+          </div>
+          <Slider id="zoom-pan-pad-top" label="top (buttons)" value={config.paddingTopExtra} min={0} max={200} step={10} onChange={(v) => onChange((prev) => ({ ...prev, paddingTopExtra: v }))} />
+          <Slider id="zoom-pan-pad-right" label="right (legend)" value={config.paddingRightExtra} min={0} max={300} step={10} onChange={(v) => onChange((prev) => ({ ...prev, paddingRightExtra: v }))} />
+        </div>
+
+        {/* Duration curve */}
+        <div>
+          <div className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-gray-400">
+            Duration Curve (ms)
+          </div>
+          <Slider id="zoom-pan-dur-base" label="base" value={config.duration.baseMs} min={200} max={2000} step={50} onChange={(v) => setDuration("baseMs", v)} />
+          <Slider id="zoom-pan-dur-rate" label="per zoom lvl" value={config.duration.msPerZoom} min={50} max={1000} step={25} onChange={(v) => setDuration("msPerZoom", v)} />
+          <Slider id="zoom-pan-dur-min" label="min" value={config.duration.minMs} min={200} max={6000} step={100} onChange={(v) => setDuration("minMs", v)} />
+          <Slider id="zoom-pan-dur-max" label="max" value={config.duration.maxMs} min={1000} max={8000} step={100} onChange={(v) => setDuration("maxMs", v)} />
+        </div>
+
+        {/* Pullback (two-phase animation) */}
+        <div>
+          <div className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-gray-400">
+            Pullback (zoom out → in)
+          </div>
+          <Slider id="zoom-pan-pullback-levels" label="zoom levels" value={config.pullback.levels} min={0} max={5} step={0.5} onChange={(v) => onChange((prev) => ({ ...prev, pullback: { ...prev.pullback, levels: v } }))} />
+          <Slider id="zoom-pan-pullback-ratio" label="out % of time" value={config.pullback.outRatio} min={0.1} max={0.7} step={0.05} onChange={(v) => onChange((prev) => ({ ...prev, pullback: { ...prev.pullback, outRatio: v } }))} />
+        </div>
+
+        {/* Computed preview */}
+        <div className="rounded bg-gray-50 px-2 py-1.5 text-[10px] text-gray-500">
+          <span className="font-medium">Preview: </span>
+          Δ2 → {computeFitDuration(config.duration, 0, 2)}ms
+          {" · "}Δ5 → {computeFitDuration(config.duration, 0, 5)}ms
+          {" · "}Δ8 → {computeFitDuration(config.duration, 0, 8)}ms
+          <br />
+          <span className="font-medium">Pullback: </span>
+          {config.pullback.levels} lvls, {Math.round(config.pullback.outRatio * 100)}% out / {Math.round((1 - config.pullback.outRatio) * 100)}% in
+        </div>
+      </div>
+    </div>
+  );
+};
+
 interface MapAreaProps {
   selectedGeoId: string;
   selectedMetricIdObject: SelectedMetricIdObject;
@@ -380,6 +658,11 @@ const MapArea: React.FC<MapAreaProps> = ({
     sourceLayer: string;
     id: number | string;
   } | null>(null);
+
+  // Zoom/pan config — mutable via debug overlay, consumed in click handler via ref
+  const [zoomPanConfig, setZoomPanConfig] = useState<ZoomPanConfig>(DEFAULT_ZOOM_PAN_CONFIG);
+  const zoomPanConfigRef = useRef(zoomPanConfig);
+  useEffect(() => { zoomPanConfigRef.current = zoomPanConfig; }, [zoomPanConfig]);
   
   // Get configs for current geo level
   const geoLevelConfig = UNIFIED_GEO_LEVELS[selectedGeoLevel];
@@ -1454,6 +1737,77 @@ const MapArea: React.FC<MapAreaProps> = ({
             setSelectedGeoId(geoId);
             setSelectedMetricValue(metric);
           }
+
+          // ---- Two-phase pan/zoom: "breathe out, then dive in" ----
+          // Phase 1: Zoom OUT to an overview level so the full polygon (and
+          //          its surroundings) are visible, giving tiles time to load.
+          // Phase 2: Re-query features (now fully loaded), compute the true
+          //          bounding box, and zoom IN to frame the polygon properly.
+          const allFragments = map.querySourceFeatures(sourceName, {
+            sourceLayer: config.sourceLayer,
+            filter: ["==", ["get", config.idField], geoId],
+          });
+          const featuresToMeasure = allFragments.length > 0 ? allFragments : [feature];
+          const bounds = computeFeatureBounds(featuresToMeasure);
+
+          if (bounds) {
+            const geoLevel = currentGeoLevelRef.current;
+            const cfg = zoomPanConfigRef.current;
+            const boundsArg: [[number, number], [number, number]] = [
+              [bounds[0], bounds[1]],
+              [bounds[2], bounds[3]],
+            ];
+            const basePad = cfg.padding[geoLevel] ?? 100;
+            const padding = buildFitPadding(basePad, cfg);
+            const maxZoom = cfg.maxZoom[geoLevel] ?? 10;
+
+            // Preview target camera to compute duration
+            const cam = map.cameraForBounds(boundsArg, { padding, maxZoom });
+            const targetZoom = cam?.zoom ?? map.getZoom();
+            const targetCenter = cam?.center ?? map.getCenter();
+            const totalDuration = computeFitDuration(cfg.duration, map.getZoom(), targetZoom);
+
+            // Overview zoom: pull back below target so polygon + surroundings are visible
+            const { levels: pullbackLevels, outRatio } = cfg.pullback;
+            const overviewZoom = Math.max(targetZoom - pullbackLevels, 2);
+            const outDuration = Math.round(totalDuration * outRatio);
+            const inDuration = totalDuration - outDuration;
+
+            // Capture values for the second phase closure
+            const phase2Source = sourceName;
+            const phase2Layer = config.sourceLayer;
+            const phase2IdField = config.idField;
+            const phase2GeoId = geoId;
+
+            // Phase 1: Zoom out toward the target center at overview zoom
+            map.flyTo({
+              center: targetCenter,
+              zoom: overviewZoom,
+              duration: outDuration,
+              essential: true,
+            });
+
+            // Phase 2: After zoom-out settles, re-query tiles and zoom in to frame
+            map.once("moveend", () => {
+              const updatedFragments = map.querySourceFeatures(phase2Source, {
+                sourceLayer: phase2Layer,
+                filter: ["==", ["get", phase2IdField], phase2GeoId],
+              });
+              const updatedFeatures = updatedFragments.length > 0 ? updatedFragments : featuresToMeasure;
+              const finalBounds = computeFeatureBounds(updatedFeatures);
+
+              if (finalBounds) {
+                const finalBoundsArg: [[number, number], [number, number]] = [
+                  [finalBounds[0], finalBounds[1]],
+                  [finalBounds[2], finalBounds[3]],
+                ];
+                map.fitBounds(finalBoundsArg, { padding, maxZoom, duration: inDuration });
+              } else {
+                // Fallback: just fit to original bounds
+                map.fitBounds(boundsArg, { padding, maxZoom, duration: inDuration });
+              }
+            });
+          }
         }
       };
 
@@ -1824,6 +2178,11 @@ const MapArea: React.FC<MapAreaProps> = ({
         minValue={gradientConfig?.domains[selectedMetricIdObject.domainId as DomainKey]?.minValue}
         maxValue={gradientConfig?.domains[selectedMetricIdObject.domainId as DomainKey]?.maxValue}
       />
+
+      {/* Debug overlay: Zoom/Pan tuning (only in DEBUG mode) */}
+      {isDebugMode() && (
+        <ZoomPanDebugPanel config={zoomPanConfig} onChange={setZoomPanConfig} />
+      )}
 
       <div
         ref={mapContainerRef}

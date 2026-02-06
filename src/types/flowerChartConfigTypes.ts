@@ -68,31 +68,32 @@ export interface FlowerChartConfig {
 
 /**
  * Default flower chart configuration.
- * Inner radius: 54px, max petal: 103px, viewBox: 360px
- * Progress ring enabled at 9.5px width with 0px gap
+ * Inner radius: 54px, max petal: 103px, viewBox: 340px
+ * Text wrapping enabled at 12 chars (wraps "Sense of Place" only)
+ * Overall label uses custom larger font (20px) for differentiation
  */
 export const DEFAULT_FLOWER_CHART_CONFIG: FlowerChartConfig = {
   innerRadius: 54,
   maxPetalLength: 103,
   minPetalLength: 10,
-  viewBoxSize: 360,
-  scoreFontSize: 34,
-  labelFontSize: 14,
-  scoreOffsetY: -0.05,
-  labelOffsetY: 1.2,
-  outlineStrokeWidth: 2.5,
+  viewBoxSize: 340,
+  scoreFontSize: 36,
+  labelFontSize: 15,
+  scoreOffsetY: 0,
+  labelOffsetY: 1,
+  outlineStrokeWidth: 1,
   dimColor: "#d3d3d3",
   outlineColor: "#ededf1",
-  labelMaxCharsPerLine: 0,
+  labelMaxCharsPerLine: 12,
   labelLineHeight: 1,
   labelVerticalAlign: "top",
   labelTextAnchor: "middle",
   // Overall label differentiation
-  overallLabelCustomStyle: false,
-  overallLabelFontSize: 14,
+  overallLabelCustomStyle: true,
+  overallLabelFontSize: 20,
   overallLabelOffsetY: 1.15,
   // Progress ring
-  showProgressRing: true,
+  showProgressRing: false,
   progressRingWidth: 9.5,
   progressRingGap: 0,
   progressRingTrackColor: "#e5e7eb",

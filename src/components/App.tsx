@@ -155,7 +155,15 @@ function App() {
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        if (typeof parsed.innerRadius === "number") return { ...DEFAULT_FLOWER_CHART_CONFIG, ...parsed };
+        if (typeof parsed.innerRadius === "number") {
+          const merged = { ...DEFAULT_FLOWER_CHART_CONFIG, ...parsed };
+          // Migrate: if saved config had an outdated labelMaxCharsPerLine,
+          // upgrade to the new default so wrapping is enabled
+          if (!parsed.labelMaxCharsPerLine || parsed.labelMaxCharsPerLine < DEFAULT_FLOWER_CHART_CONFIG.labelMaxCharsPerLine) {
+            merged.labelMaxCharsPerLine = DEFAULT_FLOWER_CHART_CONFIG.labelMaxCharsPerLine;
+          }
+          return merged;
+        }
         localStorage.removeItem(FLOWER_CHART_CONFIG_STORAGE_KEY);
       } catch { /* use defaults */ }
     }

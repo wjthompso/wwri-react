@@ -450,13 +450,13 @@ const FlowerChart: React.FC<FlowerChartProps> = ({
   const ringFillColor = isHoveringPetal ? cfg.dimColor : overallScoreColor;
 
   return (
-    <div id="flower-chart-container" className="flex w-full items-center justify-center">
+    <div id="flower-chart-container" className="flex w-full items-center justify-start">
       <svg
         id="flower-chart-svg"
         className="aster__plot"
         width="100%"
         height="100%"
-        preserveAspectRatio="xMidYMid"
+        preserveAspectRatio="xMinYMid"
         viewBox={`0 0 ${cfg.viewBoxSize} ${cfg.viewBoxSize}`}
       >
         <g id="flower-chart-arcs" transform={`translate(${halfViewBox},${halfViewBox})`} ref={chartRef}>

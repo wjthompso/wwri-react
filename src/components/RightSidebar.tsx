@@ -252,7 +252,7 @@ const StackedBelowLayout: React.FC<LayoutProps> = ({
         id="selected-region-panel"
         className="flex flex-1 flex-col justify-center px-4 pt-3 pb-2"
       >
-        <h1 className="font-BeVietnamPro text-sm font-bold uppercase tracking-wide text-gray-500">
+        <h1 className="font-BeVietnamPro text-base font-bold uppercase tracking-wide text-gray-500">
           Selected Region
         </h1>
         {!hasSelection ? (
@@ -720,10 +720,10 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
         id="domain-scores-panel"
         className="overflow-hidden px-4 py-3"
       >
-        <h1 className="mb-2 font-BeVietnamPro text-sm font-bold uppercase tracking-wide text-gray-500">
+        <h1 className="mb-2 font-BeVietnamPro text-base font-semibold uppercase tracking-wide text-gray-500">
           Individual Domain Scores
         </h1>
-        <div id="flower-chart-right-sidebar-wrapper" className="max-w-[290px]">
+        <div id="flower-chart-right-sidebar-wrapper" className="max-w-[250px]">
           <FlowerChart
             domainScores={domainScores}
             overallResilienceScore={overallResilienceScore}

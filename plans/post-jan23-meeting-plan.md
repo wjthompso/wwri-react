@@ -39,11 +39,11 @@
 | 16a | Add selected metric progress bar to Selected Region panel (debug toggle for layouts) | ✅ Complete |
 | 16b | Refine legend & selected metric display (polish after Task 17) | ⬜ Pending |
 | 17 | Fix metric naming bug (remove duplicate domain name prefix) | ✅ Complete |
-| 18 | Add "Overall Score" label above circular progress bar | ⬜ Pending |
-| 19 | Refine flower chart: remove legend, show domain name in center on hover | ⬜ Pending |
-| 19b | Increase flower chart inner circle size to fit longer domain labels | ⬜ Pending |
+| 18 | Add "Overall Score" label above circular progress bar | ⬜ Pending | [MAY NOT DO THIS]
+| 19 | Refine flower chart: remove legend, show domain name in center on hover | ✅ Complete |
+| 19b | Increase flower chart inner circle size to fit longer domain labels | ✅ Complete |
 
-**Progress:** 21/26 complete (4 pending, 1 blocked, 1 on hold)
+**Progress:** 23/26 complete (2 pending, 1 blocked, 1 on hold)
 
 **Note:** Completed task details archived in [post-jan23-completed-tasks.md](./archive/post-jan23-completed-tasks.md)
 
@@ -91,6 +91,7 @@
 | Feb 4 | **✅ Task 15 COMPLETE!** - Implemented white-black-white sandwich border for selected map polygons. Replaced single cyan highlight layer with 2-layer system: white outer (5px) + black inner (3px), creating 3-band border pattern (white | black | white). Border widths extracted to configurable constants (`BORDER_OUTER_WIDTH`, `BORDER_INNER_WIDTH`) for easy adjustment. Works for both US and Canada polygons. Files modified: `MapArea.tsx`. |
 | Feb 5 | **✅ Task 17 COMPLETE!** - Fixed metric naming bug. Individual metrics were displaying with domain/subdomain prefix (e.g., "Infrastructure Building Codes" instead of "Building Codes"). Root cause: `label` field in click handlers was set to `` `${domain.label} ${metric.label}` `` instead of just `metric.label`. Fixed in `LayoutUnified.tsx` (3 metric-level + 4 category-level), `LayoutUnifiedCompact.tsx` (3 metric-level + 4 category-level), and `flattenDomainHierarchyForSearch.ts` (3 category-level labels). Breadcrumb path already provides full hierarchy context. |
 | Feb 4 | **✅ Task 16a COMPLETE!** - Added selected metric progress bar to Selected Region panel with debug toggle for layout experimentation. Two layout options: (1) Side-by-Side - two circular progress bars for Overall and Selected Metric, (2) Stacked Below - linear progress bar below main panel. Added "xsmall" CircularProgressBar size (56×56px). Label truncation with tooltip for long metric names. Debug toggle in Dev Tools dropdown under "Score Display Layout". Files modified: `App.tsx`, `Header.tsx`, `RightSidebar.tsx`, `CircularProgressBar.tsx`, `rgb.ts`. Task 16b (refinement) deferred until after Task 17. |
+| Feb 5 | **✅ Tasks 19 & 19b COMPLETE!** - Flower chart refinement + configurable inner circle. (1) Removed legend (already absent), confirmed domain name + score displayed in center on hover with brand-color text. (2) Increased inner radius from 50→65 SVG units so center fits two lines (score + domain label like "Sense of Place"). (3) Created `FlowerChartConfigWidget` dev tool (🌸 in Dev Tools dropdown, Ctrl+Shift+F) with real-time sliders for: innerRadius, maxPetalLength, minPetalLength, viewBoxSize, scoreFontSize, labelFontSize, scoreOffsetY, labelOffsetY, outlineStrokeWidth, dimColor, outlineColor. Includes clipping warning indicator and Reset button. All settings persist to localStorage. Files created: `flowerChartConfigTypes.ts`, `FlowerChartConfigWidget.tsx`. Files modified: `FlowerChart.tsx`, `App.tsx`, `Header.tsx`, `RightSidebar.tsx`, `DevTools/index.ts`. |
 
 ---
 
@@ -452,7 +453,7 @@ The metric name is being constructed by concatenating domain + metric name, when
 
 ### Task 19: Refine Flower Chart - Remove Legend, Show Domain Name in Center
 
-**Status:** ⬜ Pending
+**Status:** ✅ Complete
 
 **Priority:** 🔥 HIGH
 
@@ -512,7 +513,7 @@ The metric name is being constructed by concatenating domain + metric name, when
 
 ### Task 19b: Increase Flower Chart Inner Circle Size
 
-**Status:** ⬜ Pending
+**Status:** ✅ Complete
 
 **Priority:** 🟡 MEDIUM
 

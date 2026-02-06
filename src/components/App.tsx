@@ -3,10 +3,11 @@ import { isDebugMode } from "config/featureFlags";
 import { useCallback, useEffect, useState } from "react";
 import "../index.css";
 import SelectedMetricIdObject from "../types/componentStatetypes";
+import { FlowerChartConfig, DEFAULT_FLOWER_CHART_CONFIG, FLOWER_CHART_CONFIG_STORAGE_KEY } from "../types/flowerChartConfigTypes";
 import { GradientConfig, DEFAULT_GRADIENT_CONFIG } from "../types/gradientConfigTypes";
 import { LabelConfig, DEFAULT_LABEL_CONFIG } from "../types/labelConfigTypes";
 import { DomainScores } from "../utils/domainScoreColors";
-import { GradientCustomizer, LabelConfigWidget } from "./DevTools";
+import { GradientCustomizer, LabelConfigWidget, FlowerChartConfigWidget } from "./DevTools";
 import Header from "./Header/Header";
 import MapArea, { BasemapId, BASEMAP_OPTIONS, LabelSource, MapProjection, PROJECTION_OPTIONS } from "./MapArea/MapArea";
 import RightSidebar from "./RightSidebar";
@@ -147,6 +148,20 @@ function App() {
     return JSON.parse(JSON.stringify(DEFAULT_GRADIENT_CONFIG));
   });
 
+  // Dev tools: Flower chart configuration widget
+  const [flowerChartConfigOpen, setFlowerChartConfigOpen] = useState(false);
+  const [flowerChartConfig, setFlowerChartConfig] = useState<FlowerChartConfig>(() => {
+    const saved = localStorage.getItem(FLOWER_CHART_CONFIG_STORAGE_KEY);
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (typeof parsed.innerRadius === "number") return { ...DEFAULT_FLOWER_CHART_CONFIG, ...parsed };
+        localStorage.removeItem(FLOWER_CHART_CONFIG_STORAGE_KEY);
+      } catch { /* use defaults */ }
+    }
+    return { ...DEFAULT_FLOWER_CHART_CONFIG };
+  });
+
   // Dev tools: Basemap selection
   const [selectedBasemap, setSelectedBasemap] = useState<BasemapId>(() => {
     const stored = localStorage.getItem(BASEMAP_STORAGE_KEY);
@@ -196,6 +211,11 @@ function App() {
     localStorage.setItem(LAYOUT_STORAGE_KEY, selectedRegionLayout);
   }, [selectedRegionLayout]);
 
+  // Save flower chart config to localStorage when it changes
+  useEffect(() => {
+    localStorage.setItem(FLOWER_CHART_CONFIG_STORAGE_KEY, JSON.stringify(flowerChartConfig));
+  }, [flowerChartConfig]);
+
   // Save label config to localStorage when it changes
   useEffect(() => {
     localStorage.setItem("wwri-label-config", JSON.stringify(labelConfig));
@@ -221,6 +241,11 @@ function App() {
         e.preventDefault();
         setGradientConfigOpen((prev) => !prev);
       }
+      // Ctrl+Shift+F for flower chart config
+      if (e.ctrlKey && e.shiftKey && e.key === "F") {
+        e.preventDefault();
+        setFlowerChartConfigOpen((prev) => !prev);
+      }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
@@ -232,6 +257,10 @@ function App() {
 
   const handleGradientConfigChange = useCallback((newConfig: GradientConfig) => {
     setGradientConfig(newConfig);
+  }, []);
+
+  const handleFlowerChartConfigChange = useCallback((newConfig: FlowerChartConfig) => {
+    setFlowerChartConfig(newConfig);
   }, []);
 
   // Fetch summary data for both US and Canada when geo level changes
@@ -313,6 +342,8 @@ function App() {
         onToggleLabelConfig={() => setLabelConfigOpen((prev) => !prev)}
         gradientConfigOpen={gradientConfigOpen}
         onToggleGradientConfig={() => setGradientConfigOpen((prev) => !prev)}
+        flowerChartConfigOpen={flowerChartConfigOpen}
+        onToggleFlowerChartConfig={() => setFlowerChartConfigOpen((prev) => !prev)}
         selectedBasemap={selectedBasemap}
         onBasemapChange={setSelectedBasemap}
         labelSource={labelSource}
@@ -342,6 +373,16 @@ function App() {
           onClose={() => setGradientConfigOpen(false)}
           config={gradientConfig}
           onConfigChange={handleGradientConfigChange}
+        />
+      )}
+
+      {/* Dev Tools: Flower Chart Config Widget (only in DEBUG mode) */}
+      {isDebugMode() && (
+        <FlowerChartConfigWidget
+          isOpen={flowerChartConfigOpen}
+          onClose={() => setFlowerChartConfigOpen(false)}
+          config={flowerChartConfig}
+          onConfigChange={handleFlowerChartConfigChange}
         />
       )}
 
@@ -383,6 +424,7 @@ function App() {
           selectedCountry={selectedCountry}
           selectedGeoLevel={selectedGeoLevel}
           selectedRegionLayout={selectedRegionLayout}
+          flowerChartConfig={flowerChartConfig}
         />
       </div>
     </div>

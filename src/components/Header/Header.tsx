@@ -21,6 +21,8 @@ interface HeaderProps {
   onToggleLabelConfig?: () => void;
   gradientConfigOpen?: boolean;
   onToggleGradientConfig?: () => void;
+  flowerChartConfigOpen?: boolean;
+  onToggleFlowerChartConfig?: () => void;
   selectedBasemap?: BasemapId;
   onBasemapChange?: (basemap: BasemapId) => void;
   labelSource?: LabelSource;
@@ -36,6 +38,8 @@ const Header: React.FC<HeaderProps> = ({
   onToggleLabelConfig,
   gradientConfigOpen = false,
   onToggleGradientConfig,
+  flowerChartConfigOpen = false,
+  onToggleFlowerChartConfig,
   selectedBasemap = "carto-positron",
   onBasemapChange,
   labelSource = "custom",
@@ -84,7 +88,7 @@ const Header: React.FC<HeaderProps> = ({
             id="debug-tools-button"
             onClick={() => setDropdownOpen(!dropdownOpen)}
             className={`flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-sm font-medium transition-colors ${
-              dropdownOpen || labelConfigOpen || gradientConfigOpen
+              dropdownOpen || labelConfigOpen || gradientConfigOpen || flowerChartConfigOpen
                 ? "border-amber-400 bg-amber-50 text-amber-700"
                 : "border-gray-300 bg-white text-gray-600 hover:bg-gray-50"
             }`}
@@ -158,6 +162,30 @@ const Header: React.FC<HeaderProps> = ({
                   }`}
                 >
                   {gradientConfigOpen ? "ON" : "OFF"}
+                </span>
+              </button>
+
+              {/* Flower Chart Config toggle */}
+              <button
+                id="toggle-flower-chart-config"
+                onClick={() => {
+                  onToggleFlowerChartConfig?.();
+                  setDropdownOpen(false);
+                }}
+                className="flex w-full items-center justify-between px-3 py-2 text-left text-sm hover:bg-gray-50"
+              >
+                <div className="flex items-center gap-2">
+                  <span>🌸</span>
+                  <span>Flower Chart Config</span>
+                </div>
+                <span
+                  className={`rounded px-1.5 py-0.5 text-[10px] font-medium ${
+                    flowerChartConfigOpen
+                      ? "bg-green-100 text-green-700"
+                      : "bg-gray-100 text-gray-500"
+                  }`}
+                >
+                  {flowerChartConfigOpen ? "ON" : "OFF"}
                 </span>
               </button>
 
@@ -287,6 +315,9 @@ const Header: React.FC<HeaderProps> = ({
                   </div>
                   <div>
                     <kbd className="rounded bg-gray-100 px-1">Ctrl+Shift+G</kbd> Gradients
+                  </div>
+                  <div>
+                    <kbd className="rounded bg-gray-100 px-1">Ctrl+Shift+F</kbd> Flower Chart
                   </div>
                 </div>
               </div>

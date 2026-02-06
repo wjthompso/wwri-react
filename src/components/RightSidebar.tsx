@@ -4,6 +4,7 @@ import { getRegionAbbreviation } from "data/StateNameToAbbrevsMap";
 import { useEffect, useState } from "react";
 import SelectedMetricIdObject from "types/componentStatetypes";
 import { Domain } from "types/domainTypes";
+import { FlowerChartConfig } from "types/flowerChartConfigTypes";
 import { GradientConfig } from "types/gradientConfigTypes";
 import { rgbToHex } from "types/rgb";
 import DownArrow from "../assets/DownArrow.svg";
@@ -39,6 +40,8 @@ interface RightSidebarProps {
   selectedGeoLevel: UnifiedGeoLevel;
   // Layout mode for Selected Region panel
   selectedRegionLayout?: SelectedRegionLayout;
+  // Flower chart visual configuration
+  flowerChartConfig?: FlowerChartConfig | null;
 }
 
 /**
@@ -329,6 +332,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
   selectedCountry,
   selectedGeoLevel,
   selectedRegionLayout = "side-by-side",
+  flowerChartConfig,
 }) => {
   const [showIndicatorSuggestions, setShowIndicatorSuggestions] = useState(false);
   const [activeButton, setActiveButton] = useState<string | null>("infrastructure");
@@ -724,6 +728,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
             domainScores={domainScores}
             overallResilienceScore={overallResilienceScore}
             gradientConfig={gradientConfig}
+            chartConfig={flowerChartConfig}
           />
         </div>
       </div>

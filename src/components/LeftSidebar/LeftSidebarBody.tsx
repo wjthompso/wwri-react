@@ -8,12 +8,14 @@ interface LeftSidebarBodyProps {
   overallResilienceScore: number | null;
   domainScores: DomainScores | null;
   gradientConfig?: GradientConfig | null;
+  hasSelectedRegion?: boolean;
 }
 
 export function LeftSidebarBody({
   overallResilienceScore,
   domainScores,
   gradientConfig,
+  hasSelectedRegion = true,
 }: LeftSidebarBodyProps) {
   let overallResilienceScoreFormatted: number;
   if (overallResilienceScore && overallResilienceScore < 1) {
@@ -44,6 +46,7 @@ export function LeftSidebarBody({
           domainScores={domainScores}
           overallResilienceScore={overallResilienceScore}
           gradientConfig={gradientConfig}
+          hasSelectedRegion={hasSelectedRegion}
         />
       </div>
       <button className="mt-2 flex w-full flex-row items-center rounded-md border-[1px] border-black p-1">

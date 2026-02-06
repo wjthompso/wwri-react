@@ -73,6 +73,7 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
           overallResilienceScore={overallResilienceScore}
           domainScores={domainScores}
           gradientConfig={gradientConfig}
+          hasSelectedRegion={selectedGeoId !== ""}
         />
       </aside>
       {!isOpen && !isAnimating && (

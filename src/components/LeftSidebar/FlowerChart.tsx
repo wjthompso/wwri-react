@@ -21,6 +21,7 @@ interface FlowerChartProps {
   overallResilienceScore: number | null;
   gradientConfig?: GradientConfig | null;
   chartConfig?: FlowerChartConfig | null;
+  hasSelectedRegion?: boolean;
 }
 
 // White color for gradient interpolation
@@ -107,6 +108,7 @@ const FlowerChart: React.FC<FlowerChartProps> = ({
   overallResilienceScore,
   gradientConfig,
   chartConfig: chartConfigProp,
+  hasSelectedRegion = true,
 }) => {
   const cfg = chartConfigProp ?? DEFAULT_FLOWER_CHART_CONFIG;
 
@@ -183,59 +185,62 @@ const FlowerChart: React.FC<FlowerChartProps> = ({
 
       const largeArcFlag = endAngle - startAngle <= Math.PI ? "0" : "1";
 
-      const pathData = [
-        `M ${x0} ${y0}`,
-        `A ${innerRadius} ${innerRadius} 0 ${largeArcFlag} 1 ${x1} ${y1}`,
-        `L ${x2} ${y2}`,
-        `A ${outerRadius} ${outerRadius} 0 ${largeArcFlag} 0 ${x3} ${y3}`,
-        `Z`,
-      ].join(" ");
+      // Only render filled petals if a region is selected and domain scores are available
+      if (hasSelectedRegion && domainScores) {
+        const pathData = [
+          `M ${x0} ${y0}`,
+          `A ${innerRadius} ${innerRadius} 0 ${largeArcFlag} 1 ${x1} ${y1}`,
+          `L ${x2} ${y2}`,
+          `A ${outerRadius} ${outerRadius} 0 ${largeArcFlag} 0 ${x3} ${y3}`,
+          `Z`,
+        ].join(" ");
 
-      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-      path.setAttribute("d", pathData);
-      path.setAttribute("fill", d.color);
-      path.setAttribute("class", "aster__solid-arc transition-colors duration-100 ease-out cursor-pointer");
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path.setAttribute("d", pathData);
+        path.setAttribute("fill", d.color);
+        path.setAttribute("class", "aster__solid-arc transition-colors duration-100 ease-out cursor-pointer");
 
-      // Hover: dim other petals, show domain info
-      path.addEventListener("mouseover", () => {
-        chart.querySelectorAll("path.aster__solid-arc").forEach((p) => {
-          if (p !== path) p.setAttribute("fill", cfg.dimColor);
+        // Hover: dim other petals, show domain info
+        path.addEventListener("mouseover", () => {
+          chart.querySelectorAll("path.aster__solid-arc").forEach((p) => {
+            if (p !== path) p.setAttribute("fill", cfg.dimColor);
+          });
+          if (d.hasData) {
+            setCenterText(formatScore(d.rawScore));
+            setTextColor(d.brandColor);
+          } else {
+            setCenterText("--");
+            setTextColor(NEUTRAL_GRAY);
+          }
+          setCenterLabel(d.name);
+          setIsHoveringPetal(true);
         });
-        if (d.hasData) {
-          setCenterText(formatScore(d.rawScore));
-          setTextColor(d.brandColor);
-        } else {
-          setCenterText("--");
-          setTextColor(NEUTRAL_GRAY);
-        }
-        setCenterLabel(d.name);
-        setIsHoveringPetal(true);
-      });
 
-      // Mouse out: restore all petals, show overall (or preview label if set)
-      path.addEventListener("mouseout", () => {
-        data.forEach((domain, index) => {
-          const paths = chart.querySelectorAll("path.aster__solid-arc");
-          if (paths[index]) paths[index].setAttribute("fill", domain.color);
+        // Mouse out: restore all petals, show overall (or preview label if set)
+        path.addEventListener("mouseout", () => {
+          data.forEach((domain, index) => {
+            const paths = chart.querySelectorAll("path.aster__solid-arc");
+            if (paths[index]) paths[index].setAttribute("fill", domain.color);
+          });
+          const preview = cfg.previewLabel
+            ? data.find((dd) => dd.name === cfg.previewLabel)
+            : null;
+          if (preview) {
+            setCenterText(formatScore(preview.rawScore));
+            setTextColor(preview.brandColor);
+            setCenterLabel(preview.name);
+          } else {
+            setCenterText(formatScore(overallResilienceScore));
+            setTextColor(overallScoreColor);
+            setCenterLabel("Overall");
+          }
+          setIsHoveringPetal(false);
         });
-        const preview = cfg.previewLabel
-          ? data.find((dd) => dd.name === cfg.previewLabel)
-          : null;
-        if (preview) {
-          setCenterText(formatScore(preview.rawScore));
-          setTextColor(preview.brandColor);
-          setCenterLabel(preview.name);
-        } else {
-          setCenterText(formatScore(overallResilienceScore));
-          setTextColor(overallScoreColor);
-          setCenterLabel("Overall");
-        }
-        setIsHoveringPetal(false);
-      });
 
-      chart.appendChild(path);
+        chart.appendChild(path);
+      }
 
-      // Outline arc (max possible size)
+      // Always render outline arc (max possible size) - shows the petal structure even when no region selected
       const outlineRadius = innerRadius + cfg.maxPetalLength;
       const outlinePathData = [
         `M ${Math.cos(startAngle) * innerRadius} ${Math.sin(startAngle) * innerRadius}`,
@@ -256,7 +261,7 @@ const FlowerChart: React.FC<FlowerChartProps> = ({
     return () => {
       chart.querySelectorAll("path").forEach((path) => path.remove());
     };
-  }, [domainScores, gradientConfig, cfg, overallScoreColor]);
+  }, [domainScores, gradientConfig, cfg, overallScoreColor, hasSelectedRegion]);
 
   // Resolve preview label override from config (if any)
   const previewDomain = cfg.previewLabel

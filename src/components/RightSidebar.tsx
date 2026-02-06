@@ -729,6 +729,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
             overallResilienceScore={overallResilienceScore}
             gradientConfig={gradientConfig}
             chartConfig={flowerChartConfig}
+            hasSelectedRegion={hasSelection}
           />
         </div>
       </div>

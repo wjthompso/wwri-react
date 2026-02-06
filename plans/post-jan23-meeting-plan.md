@@ -43,10 +43,12 @@
 | 19 | Refine flower chart: remove legend, show domain name in center on hover | ✅ Complete |
 | 19b | Increase flower chart inner circle size to fit longer domain labels | ✅ Complete |
 | 20 | Adjust "Individual Domain Scores" label styling (size/font) | ⬜ Pending |
-| 21 | Remove gray inner circle/petals in flower chart when no region selected | ⬜ Pending |
+| 21 | Remove gray inner circle/petals in flower chart when no region selected | ✅ Complete |
 | 22 | Add pan/zoom to selected region on map click | ⬜ Pending |
+| 23 | Add petal growth animation when region is initially selected | ⬜ Pending |
+| 24 | Expand hover area for flower petals to include entire petal track | ⬜ Pending |
 
-**Progress:** 23/29 complete (5 pending, 1 blocked, 1 on hold)
+**Progress:** 24/31 complete (6 pending, 1 blocked, 1 on hold)
 
 **Note:** Completed task details archived in [post-jan23-completed-tasks.md](./archive/post-jan23-completed-tasks.md)
 
@@ -95,6 +97,8 @@
 | Feb 5 | **✅ Task 17 COMPLETE!** - Fixed metric naming bug. Individual metrics were displaying with domain/subdomain prefix (e.g., "Infrastructure Building Codes" instead of "Building Codes"). Root cause: `label` field in click handlers was set to `` `${domain.label} ${metric.label}` `` instead of just `metric.label`. Fixed in `LayoutUnified.tsx` (3 metric-level + 4 category-level), `LayoutUnifiedCompact.tsx` (3 metric-level + 4 category-level), and `flattenDomainHierarchyForSearch.ts` (3 category-level labels). Breadcrumb path already provides full hierarchy context. |
 | Feb 4 | **✅ Task 16a COMPLETE!** - Added selected metric progress bar to Selected Region panel with debug toggle for layout experimentation. Two layout options: (1) Side-by-Side - two circular progress bars for Overall and Selected Metric, (2) Stacked Below - linear progress bar below main panel. Added "xsmall" CircularProgressBar size (56×56px). Label truncation with tooltip for long metric names. Debug toggle in Dev Tools dropdown under "Score Display Layout". Files modified: `App.tsx`, `Header.tsx`, `RightSidebar.tsx`, `CircularProgressBar.tsx`, `rgb.ts`. Task 16b (refinement) deferred until after Task 17. |
 | Feb 5 | **✅ Tasks 19 & 19b COMPLETE!** - Flower chart refinement + configurable inner circle. (1) Removed legend (already absent), confirmed domain name + score displayed in center on hover with brand-color text. (2) Increased inner radius from 50→65 SVG units so center fits two lines (score + domain label like "Sense of Place"). (3) Created `FlowerChartConfigWidget` dev tool (🌸 in Dev Tools dropdown, Ctrl+Shift+F) with real-time sliders for: innerRadius, maxPetalLength, minPetalLength, viewBoxSize, scoreFontSize, labelFontSize, scoreOffsetY, labelOffsetY, outlineStrokeWidth, dimColor, outlineColor. Includes clipping warning indicator and Reset button. All settings persist to localStorage. Files created: `flowerChartConfigTypes.ts`, `FlowerChartConfigWidget.tsx`. Files modified: `FlowerChart.tsx`, `App.tsx`, `Header.tsx`, `RightSidebar.tsx`, `DevTools/index.ts`. |
+| Feb 5 | **✅ Task 21 COMPLETE!** - Removed gray filled petals in flower chart when no region selected. Added `hasSelectedRegion` prop to FlowerChart component. When no region is selected, only the outline structure (petal tracks) is visible - no gray filled "baby petal buds". When a region is selected, both outlines and filled petals appear. This reduces visual clutter on initial page load. Files modified: `FlowerChart.tsx`, `RightSidebar.tsx`, `LeftSidebarBody.tsx`, `LeftSidebar.tsx`. |
+| Feb 5 | **📋 ADDED TASKS 23 & 24** - New tasks for flower chart enhancements: (1) Petal growth animation on initial region selection, (2) Expanded hover area to include entire petal track for easier interaction with small petals. |
 
 ---
 
@@ -651,6 +655,86 @@ The metric name is being constructed by concatenating domain + metric name, when
 
 **Related:**
 - Task 9 (initial map orientation)
+
+---
+
+### Task 23: Add Petal Growth Animation When Region is Initially Selected
+
+**Status:** ⬜ Pending
+
+**Priority:** 🟡 MEDIUM
+
+**Scope:** Single chat window - UX enhancement
+
+**Description:** When a user initially clicks on a region, the flower chart petals should animate "growing" from the root (inner circle) outward to their final size. This provides delightful visual feedback and makes the data visualization feel more engaging.
+
+**Current Behavior:**
+- Petals appear instantly when a region is selected
+- No animation or transition effect
+
+**Desired Behavior:**
+- On initial region selection: petals animate from inner radius to their final outer radius
+- Animation should be smooth and feel natural (e.g., ease-out timing)
+- Duration should be quick enough to feel responsive (~300-500ms)
+- Animation should only trigger on initial selection, not on subsequent updates
+
+**Implementation:**
+- Add CSS transitions or SVG animation to petal paths
+- Use `stroke-dasharray` and `stroke-dashoffset` technique, or animate the path `d` attribute
+- Alternatively, use CSS `transform: scale()` or SVG `animateTransform`
+- Track whether this is the initial selection vs. an update to avoid re-animating on data changes
+- Consider using `requestAnimationFrame` for smooth animation
+
+**Files to modify:**
+- `src/components/LeftSidebar/FlowerChart.tsx` - Add animation logic to petal rendering
+
+**Design Considerations:**
+- Animation should feel natural and not distract from the data
+- Consider animating all petals simultaneously vs. staggered (simultaneous likely better)
+- Ensure animation doesn't interfere with hover interactions
+
+**Related:**
+- Task 21 (flower chart refinement)
+
+---
+
+### Task 24: Expand Hover Area for Flower Petals to Include Entire Petal Track
+
+**Status:** ⬜ Pending
+
+**Priority:** 🔥 HIGH
+
+**Scope:** Single chat window - UX improvement
+
+**Description:** Currently, users must hover directly over the small filled petal area to see domain scores. For domains with low scores (e.g., 10), the petal is very small and hard to hover over. The hover area should be expanded to include the entire petal "track" (the outline area), making it much easier to interact with the chart.
+
+**Current Issue:**
+- Hover only works on the filled petal area
+- Small petals (low scores) are difficult to hover over
+- Users must precisely position mouse over tiny petal segments
+
+**Desired Behavior:**
+- Hover anywhere within the petal track (the outline area) should highlight the entire petal
+- Center text should update to show domain name and score when hovering over any part of the petal track
+- Visual feedback (highlighting/dimming) should work consistently across the entire petal area
+
+**Implementation:**
+- Add hover event listeners to the outline paths (currently only have hover on filled petals)
+- When hovering over outline, trigger the same hover behavior as filled petal
+- Ensure both filled petal and outline trigger the same hover state
+- May need to add invisible hit area or expand the hoverable region
+
+**Files to modify:**
+- `src/components/LeftSidebar/FlowerChart.tsx` - Add hover listeners to outline paths
+
+**Edge Cases:**
+- Ensure hover doesn't conflict between adjacent petals
+- Handle cases where outline and filled petal overlap
+- Maintain accessibility (keyboard navigation, screen readers)
+
+**Related:**
+- Task 21 (flower chart refinement)
+- Task 23 (petal growth animation)
 
 ---
 

@@ -46,9 +46,9 @@
 | 21 | Remove gray inner circle/petals in flower chart when no region selected | ✅ Complete |
 | 22 | Add pan/zoom to selected region on map click | ⬜ Pending |
 | 23 | Add petal growth animation when region is initially selected | ✅ Complete |
-| 24 | Expand hover area for flower petals to include entire petal track | ⬜ Pending |
+| 24 | Expand hover area for flower petals to include entire petal track | ✅ Complete |
 
-**Progress:** 25/31 complete (5 pending, 1 blocked, 1 on hold)
+**Progress:** 26/31 complete (4 pending, 1 blocked, 1 on hold)
 
 **Note:** Completed task details archived in [post-jan23-completed-tasks.md](./archive/post-jan23-completed-tasks.md)
 
@@ -100,6 +100,7 @@
 | Feb 5 | **✅ Task 21 COMPLETE!** - Removed gray filled petals in flower chart when no region selected. Added `hasSelectedRegion` prop to FlowerChart component. When no region is selected, only the outline structure (petal tracks) is visible - no gray filled "baby petal buds". When a region is selected, both outlines and filled petals appear. This reduces visual clutter on initial page load. Files modified: `FlowerChart.tsx`, `RightSidebar.tsx`, `LeftSidebarBody.tsx`, `LeftSidebar.tsx`. |
 | Feb 5 | **📋 ADDED TASKS 23 & 24** - New tasks for flower chart enhancements: (1) Petal growth animation on initial region selection, (2) Expanded hover area to include entire petal track for easier interaction with small petals. |
 | Feb 6 | **✅ Task 23 COMPLETE (v2)!** - Full petal transition animation system. Petals now animate smoothly between ANY state change: first selection (grow from 0), region switches (morph from old lengths to new), and re-selection after deselect (grow from 0 again). Uses `currentPetalLengthsRef` to track live visual petal lengths each frame, enabling mid-animation interrupts (click rapidly between regions and petals smoothly redirect). `buildPetalArcPath()` simplified to accept direct petal length. Duration increased from 600ms → 900ms for a more gradual feel. Cubic ease-out easing. Files modified: `FlowerChart.tsx`. |
+| Feb 6 | **✅ Task 24 COMPLETE!** - Expanded flower chart hover area to cover entire petal track. Added invisible hit-area SVG paths (`aster__hit-area`) rendered on top of all layers with `fill: transparent` + `pointer-events: all`. Each hit area spans the full petal wedge (inner radius → max outer radius), so users can hover anywhere in the track — not just the tiny filled petal. All hover logic (dim siblings, update center text/color, restore on mouseout) moved from filled petals to hit areas. Works even without a selected region for domain name discovery. Files modified: `FlowerChart.tsx`. |
 
 ---
 
@@ -693,37 +694,23 @@ The metric name is being constructed by concatenating domain + metric name, when
 
 ### Task 24: Expand Hover Area for Flower Petals to Include Entire Petal Track
 
-**Status:** ⬜ Pending
+**Status:** ✅ Complete
 
 **Priority:** 🔥 HIGH
 
 **Scope:** Single chat window - UX improvement
 
-**Description:** Currently, users must hover directly over the small filled petal area to see domain scores. For domains with low scores (e.g., 10), the petal is very small and hard to hover over. The hover area should be expanded to include the entire petal "track" (the outline area), making it much easier to interact with the chart.
-
-**Current Issue:**
-- Hover only works on the filled petal area
-- Small petals (low scores) are difficult to hover over
-- Users must precisely position mouse over tiny petal segments
-
-**Desired Behavior:**
-- Hover anywhere within the petal track (the outline area) should highlight the entire petal
-- Center text should update to show domain name and score when hovering over any part of the petal track
-- Visual feedback (highlighting/dimming) should work consistently across the entire petal area
+**Description:** Expanded the hover target for each flower chart petal to cover the **entire petal track** (outline area), not just the small filled petal. Users can now hover anywhere in a petal's wedge to see domain scores — critical for low-score domains where the filled petal is tiny.
 
 **Implementation:**
-- Add hover event listeners to the outline paths (currently only have hover on filled petals)
-- When hovering over outline, trigger the same hover behavior as filled petal
-- Ensure both filled petal and outline trigger the same hover state
-- May need to add invisible hit area or expand the hoverable region
+- Added invisible **hit-area paths** (`aster__hit-area`) rendered on top of all other SVG elements
+- Each hit-area path covers the full petal track (inner radius → max outer radius) with `fill: transparent`, `stroke: none`, `pointer-events: all`
+- Moved all hover logic (dim other petals, update center text/color, restore on mouseout) from filled petals to these hit-area paths
+- Hit areas are always present — even without a selected region, users can hover petal tracks to discover domain names (shows domain name with brand color and "--" score)
+- Filled petals (`aster__solid-arc`) retain their visual styling but no longer carry event listeners (hit areas on top capture everything)
 
-**Files to modify:**
-- `src/components/LeftSidebar/FlowerChart.tsx` - Add hover listeners to outline paths
-
-**Edge Cases:**
-- Ensure hover doesn't conflict between adjacent petals
-- Handle cases where outline and filled petal overlap
-- Maintain accessibility (keyboard navigation, screen readers)
+**Files modified:**
+- `src/components/LeftSidebar/FlowerChart.tsx` - Added hit-area path layer, moved hover logic from filled petals
 
 **Related:**
 - Task 21 (flower chart refinement)

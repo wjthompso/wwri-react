@@ -273,44 +273,7 @@ const FlowerChart: React.FC<FlowerChartProps> = ({
         const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
         path.setAttribute("d", pathData);
         path.setAttribute("fill", d.color);
-        path.setAttribute("class", "aster__solid-arc transition-colors duration-100 ease-out cursor-pointer");
-
-        // Hover: dim other petals, show domain info
-        path.addEventListener("mouseover", () => {
-          chart.querySelectorAll("path.aster__solid-arc").forEach((p) => {
-            if (p !== path) p.setAttribute("fill", cfg.dimColor);
-          });
-          if (d.hasData) {
-            setCenterText(formatScore(d.rawScore));
-            setTextColor(d.brandColor);
-          } else {
-            setCenterText("--");
-            setTextColor(NEUTRAL_GRAY);
-          }
-          setCenterLabel(d.name);
-          setIsHoveringPetal(true);
-        });
-
-        // Mouse out: restore all petals, show overall (or preview label if set)
-        path.addEventListener("mouseout", () => {
-          data.forEach((domain, index) => {
-            const paths = chart.querySelectorAll("path.aster__solid-arc");
-            if (paths[index]) paths[index].setAttribute("fill", domain.color);
-          });
-          const preview = cfg.previewLabel
-            ? data.find((dd) => dd.name === cfg.previewLabel)
-            : null;
-          if (preview) {
-            setCenterText(formatScore(preview.rawScore));
-            setTextColor(preview.brandColor);
-            setCenterLabel(preview.name);
-          } else {
-            setCenterText(formatScore(overallResilienceScore));
-            setTextColor(overallScoreColor);
-            setCenterLabel("Overall");
-          }
-          setIsHoveringPetal(false);
-        });
+        path.setAttribute("class", "aster__solid-arc transition-colors duration-100 ease-out");
 
         filledPaths.push(path);
         chart.appendChild(path);
@@ -332,6 +295,61 @@ const FlowerChart: React.FC<FlowerChartProps> = ({
       outlinePath.setAttribute("stroke", cfg.outlineColor);
       outlinePath.setAttribute("stroke-width", String(cfg.outlineStrokeWidth));
       chart.appendChild(outlinePath);
+    });
+
+    // Invisible hit-area paths — cover the entire petal track so hover works
+    // even on domains with tiny filled petals. Rendered last (on top of everything).
+    data.forEach((d, i) => {
+      const hitPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      hitPath.setAttribute("d", buildPetalArcPath(i, totalArcs, cfg.innerRadius, cfg.maxPetalLength));
+      hitPath.setAttribute("fill", "transparent");
+      hitPath.setAttribute("stroke", "none");
+      hitPath.setAttribute("pointer-events", "all");
+      hitPath.setAttribute("class", "aster__hit-area cursor-pointer");
+
+      hitPath.addEventListener("mouseover", () => {
+        // Dim other filled petals (only when they exist)
+        if (willDrawFilledPetals) {
+          const solidPaths = chart.querySelectorAll("path.aster__solid-arc");
+          solidPaths.forEach((p, idx) => {
+            if (idx !== i) p.setAttribute("fill", cfg.dimColor);
+          });
+        }
+        if (d.hasData) {
+          setCenterText(formatScore(d.rawScore));
+          setTextColor(d.brandColor);
+        } else {
+          setCenterText("--");
+          setTextColor(d.brandColor);
+        }
+        setCenterLabel(d.name);
+        setIsHoveringPetal(true);
+      });
+
+      hitPath.addEventListener("mouseout", () => {
+        // Restore filled petal colors
+        if (willDrawFilledPetals) {
+          const solidPaths = chart.querySelectorAll("path.aster__solid-arc");
+          data.forEach((domain, idx) => {
+            if (solidPaths[idx]) solidPaths[idx].setAttribute("fill", domain.color);
+          });
+        }
+        const preview = cfg.previewLabel
+          ? data.find((dd) => dd.name === cfg.previewLabel)
+          : null;
+        if (preview) {
+          setCenterText(formatScore(preview.rawScore));
+          setTextColor(preview.brandColor);
+          setCenterLabel(preview.name);
+        } else {
+          setCenterText(formatScore(overallResilienceScore));
+          setTextColor(overallScoreColor);
+          setCenterLabel("Overall");
+        }
+        setIsHoveringPetal(false);
+      });
+
+      chart.appendChild(hitPath);
     });
 
     // ── Petal transition animation ──

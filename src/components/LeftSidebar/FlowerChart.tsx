@@ -103,6 +103,62 @@ function scoreToPercent(score: number | null | undefined): number {
   return score <= 1 ? score * 100 : score;
 }
 
+// ── Petal animation helpers ─────────────────────────────────────────
+
+/** Cubic ease-out — fast start, gentle deceleration. */
+function easeOutCubic(t: number): number {
+  return 1 - Math.pow(1 - t, 3);
+}
+
+/** Duration of the petal transition animation (ms). */
+const PETAL_ANIM_DURATION_MS = 900;
+
+/** Minimum petal-length difference (SVG units) that triggers an animation. */
+const PETAL_ANIM_THRESHOLD = 0.5;
+
+/** Converts a normalised domain value to its visual petal length (SVG units). */
+function petalLength(value: number, maxLen: number, minLen: number): number {
+  return Math.max(value * maxLen, minLen);
+}
+
+/**
+ * Builds an SVG arc path for a single flower-chart petal.
+ * `len` is the radial distance from the inner circle to the petal tip.
+ */
+function buildPetalArcPath(
+  index: number,
+  totalArcs: number,
+  innerRadius: number,
+  len: number,
+): string {
+  const arcAngle = (2 * Math.PI) / totalArcs;
+  const offsetAngle = Math.PI / 2;
+  const startAngle = index * arcAngle - offsetAngle;
+  const endAngle = startAngle + arcAngle;
+  const outerRadius = innerRadius + len;
+
+  const x0 = Math.cos(startAngle) * innerRadius;
+  const y0 = Math.sin(startAngle) * innerRadius;
+  const x1 = Math.cos(endAngle) * innerRadius;
+  const y1 = Math.sin(endAngle) * innerRadius;
+  const x2 = Math.cos(endAngle) * outerRadius;
+  const y2 = Math.sin(endAngle) * outerRadius;
+  const x3 = Math.cos(startAngle) * outerRadius;
+  const y3 = Math.sin(startAngle) * outerRadius;
+
+  const largeArcFlag = endAngle - startAngle <= Math.PI ? "0" : "1";
+
+  return [
+    `M ${x0} ${y0}`,
+    `A ${innerRadius} ${innerRadius} 0 ${largeArcFlag} 1 ${x1} ${y1}`,
+    `L ${x2} ${y2}`,
+    `A ${outerRadius} ${outerRadius} 0 ${largeArcFlag} 0 ${x3} ${y3}`,
+    `Z`,
+  ].join(" ");
+}
+
+// ────────────────────────────────────────────────────────────────────
+
 const FlowerChart: React.FC<FlowerChartProps> = ({
   domainScores,
   overallResilienceScore,
@@ -116,6 +172,11 @@ const FlowerChart: React.FC<FlowerChartProps> = ({
   const [centerText, setCenterText] = useState(() => formatScore(overallResilienceScore));
   const [centerLabel, setCenterLabel] = useState("Overall");
   const [isHoveringPetal, setIsHoveringPetal] = useState(false);
+
+  // Tracks the current visual petal lengths (updated every animation frame).
+  // Used as the "from" state for the next transition, enabling smooth interrupts.
+  const currentPetalLengthsRef = useRef<number[]>([]);
+  const animationFrameRef = useRef<number | null>(null);
 
   // (#1) Compute the overall score color (same as the indicator nav box color)
   const overallScoreColor = useMemo(
@@ -157,10 +218,16 @@ const FlowerChart: React.FC<FlowerChartProps> = ({
     };
   });
 
-  // Draw petal arcs imperatively (SVG path generation)
+  // Draw petal arcs imperatively (SVG path generation) with smooth transitions
   useEffect(() => {
     const chart = chartRef.current;
     if (!chart) return;
+
+    // Cancel any in-flight animation from a previous render
+    if (animationFrameRef.current !== null) {
+      cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = null;
+    }
 
     chart.querySelectorAll("path").forEach((path) => path.remove());
 
@@ -168,32 +235,40 @@ const FlowerChart: React.FC<FlowerChartProps> = ({
     const arcAngle = (2 * Math.PI) / totalArcs;
     const offsetAngle = Math.PI / 2;
 
+    const willDrawFilledPetals = hasSelectedRegion && domainScores !== null;
+
+    // Target petal lengths for the new data set
+    const targetLengths = data.map((d) =>
+      petalLength(d.value, cfg.maxPetalLength, cfg.minPetalLength),
+    );
+
+    // "From" lengths: use whatever the petals were visually showing (mid-animation safe).
+    // If there were no previous petals (first selection, or re-select after deselect), start from 0.
+    const prev = currentPetalLengthsRef.current;
+    const fromLengths =
+      willDrawFilledPetals && prev.length === totalArcs
+        ? prev
+        : new Array(totalArcs).fill(0);
+
+    // Animate whenever petals are drawn and ANY petal length meaningfully differs
+    const shouldAnimate =
+      willDrawFilledPetals &&
+      targetLengths.some(
+        (len, i) => Math.abs(len - fromLengths[i]) > PETAL_ANIM_THRESHOLD,
+      );
+
+    // Collect filled-petal path elements for the animation loop
+    const filledPaths: SVGPathElement[] = [];
+
     data.forEach((d, i) => {
       const startAngle = i * arcAngle - offsetAngle;
       const endAngle = startAngle + arcAngle;
-      const innerRadius = cfg.innerRadius;
-      const outerRadius = innerRadius + Math.max(d.value * cfg.maxPetalLength, cfg.minPetalLength);
-
-      const x0 = Math.cos(startAngle) * innerRadius;
-      const y0 = Math.sin(startAngle) * innerRadius;
-      const x1 = Math.cos(endAngle) * innerRadius;
-      const y1 = Math.sin(endAngle) * innerRadius;
-      const x2 = Math.cos(endAngle) * outerRadius;
-      const y2 = Math.sin(endAngle) * outerRadius;
-      const x3 = Math.cos(startAngle) * outerRadius;
-      const y3 = Math.sin(startAngle) * outerRadius;
-
       const largeArcFlag = endAngle - startAngle <= Math.PI ? "0" : "1";
 
-      // Only render filled petals if a region is selected and domain scores are available
-      if (hasSelectedRegion && domainScores) {
-        const pathData = [
-          `M ${x0} ${y0}`,
-          `A ${innerRadius} ${innerRadius} 0 ${largeArcFlag} 1 ${x1} ${y1}`,
-          `L ${x2} ${y2}`,
-          `A ${outerRadius} ${outerRadius} 0 ${largeArcFlag} 0 ${x3} ${y3}`,
-          `Z`,
-        ].join(" ");
+      // Only render filled petals if a region is selected and data is loaded
+      if (willDrawFilledPetals) {
+        const initialLen = shouldAnimate ? fromLengths[i] : targetLengths[i];
+        const pathData = buildPetalArcPath(i, totalArcs, cfg.innerRadius, initialLen);
 
         const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
         path.setAttribute("d", pathData);
@@ -237,14 +312,15 @@ const FlowerChart: React.FC<FlowerChartProps> = ({
           setIsHoveringPetal(false);
         });
 
+        filledPaths.push(path);
         chart.appendChild(path);
       }
 
-      // Always render outline arc (max possible size) - shows the petal structure even when no region selected
-      const outlineRadius = innerRadius + cfg.maxPetalLength;
+      // Always render outline arc (max possible size) — shows petal structure even with no selection
+      const outlineRadius = cfg.innerRadius + cfg.maxPetalLength;
       const outlinePathData = [
-        `M ${Math.cos(startAngle) * innerRadius} ${Math.sin(startAngle) * innerRadius}`,
-        `A ${innerRadius} ${innerRadius} 0 ${largeArcFlag} 1 ${Math.cos(endAngle) * innerRadius} ${Math.sin(endAngle) * innerRadius}`,
+        `M ${Math.cos(startAngle) * cfg.innerRadius} ${Math.sin(startAngle) * cfg.innerRadius}`,
+        `A ${cfg.innerRadius} ${cfg.innerRadius} 0 ${largeArcFlag} 1 ${Math.cos(endAngle) * cfg.innerRadius} ${Math.sin(endAngle) * cfg.innerRadius}`,
         `L ${Math.cos(endAngle) * outlineRadius} ${Math.sin(endAngle) * outlineRadius}`,
         `A ${outlineRadius} ${outlineRadius} 0 ${largeArcFlag} 0 ${Math.cos(startAngle) * outlineRadius} ${Math.sin(startAngle) * outlineRadius}`,
         `Z`,
@@ -258,7 +334,45 @@ const FlowerChart: React.FC<FlowerChartProps> = ({
       chart.appendChild(outlinePath);
     });
 
+    // ── Petal transition animation ──
+    if (shouldAnimate && filledPaths.length > 0) {
+      // Snapshot "from" so a later effect run can't mutate our source
+      const snapFrom = [...fromLengths];
+      const snapTo = [...targetLengths];
+      const startTime = performance.now();
+
+      const tick = (now: number) => {
+        const elapsed = now - startTime;
+        const rawT = Math.min(elapsed / PETAL_ANIM_DURATION_MS, 1);
+        const t = easeOutCubic(rawT);
+
+        const frameLengths: number[] = [];
+        filledPaths.forEach((path, i) => {
+          const len = snapFrom[i] + (snapTo[i] - snapFrom[i]) * t;
+          frameLengths.push(len);
+          path.setAttribute("d", buildPetalArcPath(i, totalArcs, cfg.innerRadius, len));
+        });
+        // Keep ref in sync so the next render can pick up mid-animation values
+        currentPetalLengthsRef.current = frameLengths;
+
+        if (rawT < 1) {
+          animationFrameRef.current = requestAnimationFrame(tick);
+        } else {
+          animationFrameRef.current = null;
+        }
+      };
+
+      animationFrameRef.current = requestAnimationFrame(tick);
+    } else {
+      // No animation — just store the final lengths (or clear if deselected)
+      currentPetalLengthsRef.current = willDrawFilledPetals ? targetLengths : [];
+    }
+
     return () => {
+      if (animationFrameRef.current !== null) {
+        cancelAnimationFrame(animationFrameRef.current);
+        animationFrameRef.current = null;
+      }
       chart.querySelectorAll("path").forEach((path) => path.remove());
     };
   }, [domainScores, gradientConfig, cfg, overallScoreColor, hasSelectedRegion]);

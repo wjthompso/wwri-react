@@ -42,8 +42,11 @@
 | 18 | Add "Overall Score" label above circular progress bar | ⬜ Pending | [MAY NOT DO THIS]
 | 19 | Refine flower chart: remove legend, show domain name in center on hover | ✅ Complete |
 | 19b | Increase flower chart inner circle size to fit longer domain labels | ✅ Complete |
+| 20 | Adjust "Individual Domain Scores" label styling (size/font) | ⬜ Pending |
+| 21 | Remove gray inner circle/petals in flower chart when no region selected | ⬜ Pending |
+| 22 | Add pan/zoom to selected region on map click | ⬜ Pending |
 
-**Progress:** 23/26 complete (2 pending, 1 blocked, 1 on hold)
+**Progress:** 23/29 complete (5 pending, 1 blocked, 1 on hold)
 
 **Note:** Completed task details archived in [post-jan23-completed-tasks.md](./archive/post-jan23-completed-tasks.md)
 
@@ -542,6 +545,112 @@ The metric name is being constructed by concatenating domain + metric name, when
 
 **Related:**
 - Task 19 (flower chart refinement)
+
+---
+
+### Task 20: Adjust "Individual Domain Scores" Label Styling
+
+**Status:** ⬜ Pending
+
+**Priority:** 🔥 HIGH
+
+**Scope:** Single chat window - UI refinement
+
+**Description:** The "Individual Domain Scores" label in the right sidebar looks visually off. Adjust the font size, weight, or other styling properties to improve its appearance.
+
+**Current State:**
+- Label uses: `text-sm font-bold uppercase tracking-wide text-gray-500`
+- Located in right sidebar above the flower chart
+- User feedback: "it looks weird"
+
+**Implementation:**
+- Review current styling and adjust as needed
+- Consider: font size (text-sm → text-xs or text-base), weight, color, letter spacing
+- Test visual balance with surrounding elements
+
+**Files to modify:**
+- `src/components/RightSidebar.tsx` - Update label styling (line ~723)
+
+**Related:**
+- Task 19 (flower chart refinement)
+
+---
+
+### Task 21: Remove Gray Inner Circle/Petals in Flower Chart When No Region Selected
+
+**Status:** ⬜ Pending
+
+**Priority:** 🔥 HIGH
+
+**Scope:** Single chat window - UI refinement
+
+**Description:** On initial load (when no region is selected), the flower chart displays gray petals/circle segments. These should be hidden when there's no selected region to avoid visual clutter.
+
+**Current Issue:**
+- Flower chart shows gray petals even when no region is selected
+- Creates visual noise on initial page load
+- Gray inner circle/petals appear before user interaction
+
+**Desired State:**
+- When `selectedGeoId` is empty/null: hide gray petals entirely
+- When region is selected: show petals with data (colored) or without data (gray)
+- Clean initial state with no gray visual elements
+
+**Implementation:**
+- Check if `selectedGeoId` or `domainScores` is null/empty
+- Conditionally render petals only when region is selected
+- May need to pass `selectedGeoId` or `hasSelectedRegion` prop to FlowerChart component
+- Ensure center text still shows "--" or "Overall" appropriately
+
+**Files to modify:**
+- `src/components/LeftSidebar/FlowerChart.tsx` - Add conditional rendering logic
+- `src/components/RightSidebar.tsx` - Pass selectedGeoId or hasSelectedRegion prop to FlowerChart
+
+**Related:**
+- Task 19 (flower chart refinement)
+
+---
+
+### Task 22: Add Pan/Zoom to Selected Region on Map Click
+
+**Status:** ⬜ Pending
+
+**Priority:** 🔥 HIGH
+
+**Scope:** Single chat window - UX improvement
+
+**Description:** When a user clicks on a polygon/region on the map, the map should automatically pan and zoom to center on that region. This provides better visual feedback and ensures the selected region is visible.
+
+**Current Behavior:**
+- Clicking a polygon selects it and updates sidebar
+- Map view remains unchanged (may be zoomed out)
+- Selected region may be off-screen or too small to see clearly
+
+**Desired Behavior:**
+- On polygon click: calculate bounding box of clicked feature
+- Use `map.fitBounds()` or `map.flyTo()` to smoothly pan/zoom to region
+- Ensure region is centered and appropriately zoomed (not too close, not too far)
+- Smooth animation (flyTo) preferred over instant jump
+
+**Implementation:**
+- In `handleClick` function in `MapArea.tsx`, after setting selection:
+  - Get feature geometry (polygon coordinates)
+  - Calculate bounding box using `turf.bbox()` or MapLibre's built-in methods
+  - Call `map.fitBounds(bbox, { padding: 50, duration: 1000 })` or `map.flyTo()`
+- Consider zoom limits (min/max) to avoid over-zooming on small regions
+- Add padding around bounds for better visual framing
+
+**Files to modify:**
+- `src/components/MapArea/MapArea.tsx` - Add pan/zoom logic to `handleClick` function (around line 1414)
+
+**Edge Cases:**
+- Very large regions (states) - may need max zoom limit
+- Very small regions (tracts) - may need min zoom limit
+- Multiple clicks on same region - should still re-center if zoomed out
+- Clicking when already zoomed in - may want to skip animation if already visible
+
+**Related:**
+- Task 9 (initial map orientation)
 
 ---
 

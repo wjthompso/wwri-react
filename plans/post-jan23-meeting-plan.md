@@ -42,13 +42,13 @@
 | 18 | Add "Overall Score" label above circular progress bar | ⬜ Pending | [MAY NOT DO THIS]
 | 19 | Refine flower chart: remove legend, show domain name in center on hover | ✅ Complete |
 | 19b | Increase flower chart inner circle size to fit longer domain labels | ✅ Complete |
-| 20 | Adjust "Individual Domain Scores" label styling (size/font) | ⬜ Pending |
+| 20 | Adjust "Individual Domain Scores" label styling (size/font) | ✅ Complete |
 | 21 | Remove gray inner circle/petals in flower chart when no region selected | ✅ Complete |
-| 22 | Add pan/zoom to selected region on map click | ⬜ Pending |
+| 22 | Add pan/zoom to selected region on map click | ✅ Complete |
 | 23 | Add petal growth animation when region is initially selected | ✅ Complete |
 | 24 | Expand hover area for flower petals to include entire petal track | ✅ Complete |
 
-**Progress:** 26/31 complete (4 pending, 1 blocked, 1 on hold)
+**Progress:** 28/31 complete (2 pending, 1 blocked, 1 on hold)
 
 **Note:** Completed task details archived in [post-jan23-completed-tasks.md](./archive/post-jan23-completed-tasks.md)
 
@@ -101,6 +101,7 @@
 | Feb 5 | **📋 ADDED TASKS 23 & 24** - New tasks for flower chart enhancements: (1) Petal growth animation on initial region selection, (2) Expanded hover area to include entire petal track for easier interaction with small petals. |
 | Feb 6 | **✅ Task 23 COMPLETE (v2)!** - Full petal transition animation system. Petals now animate smoothly between ANY state change: first selection (grow from 0), region switches (morph from old lengths to new), and re-selection after deselect (grow from 0 again). Uses `currentPetalLengthsRef` to track live visual petal lengths each frame, enabling mid-animation interrupts (click rapidly between regions and petals smoothly redirect). `buildPetalArcPath()` simplified to accept direct petal length. Duration increased from 600ms → 900ms for a more gradual feel. Cubic ease-out easing. Files modified: `FlowerChart.tsx`. |
 | Feb 6 | **✅ Task 24 COMPLETE!** - Expanded flower chart hover area to cover entire petal track. Added invisible hit-area SVG paths (`aster__hit-area`) rendered on top of all layers with `fill: transparent` + `pointer-events: all`. Each hit area spans the full petal wedge (inner radius → max outer radius), so users can hover anywhere in the track — not just the tiny filled petal. All hover logic (dim siblings, update center text/color, restore on mouseout) moved from filled petals to hit areas. Works even without a selected region for domain name discovery. Files modified: `FlowerChart.tsx`. |
+| Feb 6 | **✅ Tasks 20 & 22 COMPLETE!** - (1) Adjusted "Individual Domain Scores" label styling - updated font size and styling for better visual balance. (2) Added pan/zoom to selected region on map click - map now smoothly animates to center on clicked regions using `fitBounds()` with appropriate padding and zoom limits. Files modified: `RightSidebar.tsx`, `MapArea.tsx`. |
 
 ---
 
@@ -556,7 +557,7 @@ The metric name is being constructed by concatenating domain + metric name, when
 
 ### Task 20: Adjust "Individual Domain Scores" Label Styling
 
-**Status:** ⬜ Pending
+**Status:** ✅ Complete
 
 **Priority:** 🔥 HIGH
 
@@ -619,7 +620,7 @@ The metric name is being constructed by concatenating domain + metric name, when
 
 ### Task 22: Add Pan/Zoom to Selected Region on Map Click
 
-**Status:** ⬜ Pending
+**Status:** ✅ Complete
 
 **Priority:** 🔥 HIGH
 

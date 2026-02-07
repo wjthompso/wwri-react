@@ -2027,12 +2027,20 @@ const MapArea: React.FC<MapAreaProps> = ({
             location?.name || ""
           );
 
+          // Primary label = most specific entity; secondary = broader context
+          const isTractLevel = selectedGeoLevel === "tract";
+          const locationLine = `${location?.name?.toUpperCase() || "N/A"}${regionDisplay ? `, ${regionDisplay}` : ""}`;
+          const primaryLabel = isTractLevel
+            ? `${geoLevelDisplay} ${formattedGeoId}`
+            : locationLine;
+          const secondaryLabel = isTractLevel ? locationLine : "";
+
           const tooltipHTML = `
             <div id="map-tooltip" class="rounded">
               <h1 class="font-bold text-[0.8rem] text-selectedIndicatorTextColor">
-                ${location?.name?.toUpperCase() || "N/A"}${regionDisplay ? `, ${regionDisplay}` : ""}
+                ${primaryLabel}
               </h1>
-              <h2 class="text-xs tracking-widest">${geoLevelDisplay} ${formattedGeoId}</h2>
+              ${secondaryLabel ? `<h2 class="text-xs tracking-widest">${secondaryLabel}</h2>` : ""}
               <div class="mt-1 flex items-center">
                 <div class="blackc mr-1 inline-block min-h-4 min-w-4 rounded-sm border-[1px] border-solid border-black" style="background-color: ${color}"></div>
                 <span class="font-bold text-black">

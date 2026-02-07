@@ -47,11 +47,12 @@ function buildRegionDisplayText(
     case "tract": {
       const tractLabel = country === "canada" ? "Census Subdivision" : "Census Tract";
       const tractId = formatTractId(geoId, country);
-      const line1 = regionName && stateName 
+      // Primary label = most specific entity (the tract); secondary = broader context
+      const line1 = `${tractLabel} ${tractId}`;
+      const line2 = regionName && stateName 
         ? `${regionName}, ${stateAbbrev}` 
         : stateName ? stateAbbrev : "";
-      const line2 = `${tractLabel} ${tractId}`;
-      return { line1, line2 };
+      return { line1, line2: line2 || undefined };
     }
     case "county": {
       if (regionName && stateName) {

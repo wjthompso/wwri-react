@@ -18,9 +18,9 @@
 | 11 | Update Species/Iconic Species messaging for clarity | ⬜ Pending |
 | 13 | Performance and saturation testing (front-end and back-end) | ⬜ Pending |
 | 18 | Add "Overall Score" label above circular progress bar | ⬜ Pending | [MAY NOT DO THIS] |
-| 25 | Refine map legend styling and layout | ⬜ Pending |
+| 25 | Refine map legend styling and layout | ✅ Complete |
 
-**Progress:** 29/31 complete (3 pending, 1 blocked, 1 on hold)
+**Progress:** 30/31 complete (2 pending, 1 blocked, 1 on hold)
 
 **Note:** All completed tasks (1-24) archived in [post-jan23-completed-tasks.md](./archive/post-jan23-completed-tasks.md)
 
@@ -79,6 +79,7 @@
 | Feb 6 | **✅ Task 16b COMPLETE!** - Refined legend and selected metric display after Task 17 completion. Polish work on layout and visual balance completed. |
 | Feb 6 | **📋 Task 25 ADDED** - New task to refine map legend styling and layout (user feedback: "looks wonky"). |
 | Feb 6 | **📋 PLAN CLEANUP** - Removed all completed tasks from summary table, keeping only pending/blocked/on hold tasks. All completed task details remain in archive. |
+| Feb 6 | **✅ Task 25 COMPLETE!** - Refined map legend styling and layout. |
 
 ---
 
@@ -252,7 +253,7 @@ This includes implementation details, file changes, and technical notes for:
 
 ### Task 25: Refine Map Legend Styling and Layout
 
-**Status:** ⬜ Pending
+**Status:** ✅ Complete
 
 **Priority:** 🔥 HIGH
 

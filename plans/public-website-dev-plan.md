@@ -13,9 +13,31 @@ Development of public-facing WWRI website pages (separate from the dashboard app
 
 ---
 
+## 📋 Task Summary
+
+| # | Task | Priority | Effort | Deadline | Status |
+|---|------|----------|--------|---------|--------|
+| 1 | Dashboard indicator fix (default expanded domain) | 🔥 High | Small (~1hr) | ASAP | ✅ Complete |
+| 2.1 | Research & Design Direction | 🔥 High | Medium (4-8hrs) | Feb 10 | ⬜ Not Started |
+| 2.2 | Create HTML/CSS Mockups (4-5 themes) | 🔥 High | Large (16-24hrs) | Feb 15 | ⬜ Not Started |
+| 2.3 | Media/Press Section Template | 🟡 Medium | Small (2-4hrs) | Feb 15 | ⬜ Not Started |
+| - | **Funder Review** | - | - | **Feb 17** | - |
+| 3.1 | Incorporate Funder Feedback | 🔥 High | TBD | TBD | ⬜ Blocked |
+| 3.2 | Video/Visual Assets Integration | 🔥 High | TBD | TBD | ⬜ Blocked |
+| 4.1 | Printable Policy Report | 🟢 Low | TBD | TBD | ⏸️ On Hold |
+
+**Progress:** 1/7 complete (3 pending, 2 blocked, 1 on hold)
+
+**Note:** Task 1 was already completed as part of post-jan23-meeting-plan (Task 14).
+
+**Note:** Tasks 3.1, 3.2, and 4.1 are blocked/on hold until after Feb 17 funder review.
+
+---
+
 ## Phase 1: Dashboard Quick Fix (Immediate)
 
 ### Task: Indicator Navigation Default State
+**Status:** ✅ Complete (completed as Task 14 in post-jan23-meeting-plan)  
 **Priority:** High  
 **Effort:** Small (~1 hour)
 

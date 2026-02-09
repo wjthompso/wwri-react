@@ -29,21 +29,23 @@ const MapLegend: React.FC<MapLegendProps> = ({
   return (
     <div
       id="map-legend"
-      className="absolute bottom-10 right-1 z-20 flex w-[9rem] flex-col rounded-lg bg-white px-2 py-4 shadow-lg"
+      className="absolute min-w-[138px] bottom-10 right-1 z-20 flex flex-col rounded-lg bg-white px-3 py-3 shadow-lg"
     >
       <h2 className="mb-2 text-center text-base font-bold leading-5">
         {label}
       </h2>
-      <div className="flex columns-2 flex-row justify-center align-middle">
-        <div className="relative flex flex-col justify-between">
-          {legendColors.map((color, index) => (
-            <div
-              key={index}
-              className="min-h-7 w-7"
-              style={{ backgroundColor: color }}
-            ></div>
-          ))}
-          <div className="absolute left-7 ml-1 flex h-full w-full flex-col justify-between">
+      <div className="ml-4 flex flex-row justify-center">
+        <div className="flex flex-row gap-1">
+          <div className="flex flex-col justify-between border border-gray-200">
+            {legendColors.map((color, index) => (
+              <div
+                key={index}
+                className="min-h-7 w-16"
+                style={{ backgroundColor: color }}
+              ></div>
+            ))}
+          </div>
+          <div className="flex flex-col justify-between">
             <span className="mt-[-0.3rem] text-sm">{maxValue}</span>
             <span className="mb-[0rem] text-sm">{midValue}</span>
             <span className="mb-[-0.3rem] text-sm">{minValue}</span>

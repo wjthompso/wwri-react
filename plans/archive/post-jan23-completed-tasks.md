@@ -376,4 +376,257 @@ The `moveend` event handler was registered **once** during initial map load, but
 
 ---
 
+---
+
+## Task 15: Add White-Black-White Border Styling to Map Polygons
+
+**Status:** ✅ COMPLETE
+
+**Priority:** 🔥 HIGH
+
+**Scope:** Single chat window - styling update
+
+**Description:** Update the polygon border styling to use a "sandwich" pattern: white outer, black middle, white inner. This creates a high-contrast border that remains visible against both light and dark backgrounds.
+
+**Completed:**
+- ✅ Implemented white-black-white sandwich border for selected map polygons
+- ✅ Replaced single cyan highlight layer with 2-layer system: white outer (5px) + black inner (3px)
+- ✅ Created 3-band border pattern (white | black | white)
+- ✅ Border widths extracted to configurable constants (`BORDER_OUTER_WIDTH`, `BORDER_INNER_WIDTH`)
+- ✅ Works for both US and Canada polygons
+
+**Files Modified:**
+- `src/components/MapArea/MapArea.tsx`
+
+---
+
+## Task 16a: Add Selected Metric Progress Bar to Selected Region Panel
+
+**Status:** ✅ COMPLETE
+
+**Priority:** 🔥 HIGH
+
+**Scope:** Single chat window - layout implementation
+
+**Description:** Added selected metric display to the Selected Region panel with two layout options accessible via debug toggle.
+
+**Completed:**
+- ✅ **Side-by-Side Layout**: Two circular progress bars (Overall + Selected Metric)
+  - "xsmall" size circles (56×56px) to fit in fixed panel height
+  - Label truncation with "…" and tooltip for long metric names
+- ✅ **Stacked Below Layout**: Linear progress bar below main panel
+  - Full metric label (no truncation needed)
+  - Same gray background as main panel
+- ✅ Debug toggle in Dev Tools dropdown under "📊 Score Display Layout"
+
+**Files Modified:**
+- `App.tsx` - Added `SelectedRegionLayout` type and state
+- `Header.tsx` - Added layout toggle to Dev Tools dropdown
+- `RightSidebar.tsx` - Implemented both layout components
+- `CircularProgressBar.tsx` - Added "xsmall" size and `overrideColor` prop
+- `rgb.ts` - Added `rgbToHex()` utility function
+
+---
+
+## Task 16b: Refine Legend & Selected Metric Display
+
+**Status:** ✅ COMPLETE
+
+**Priority:** 🟡 MEDIUM
+
+**Scope:** Polish and refinement
+
+**Description:** Further refinement of the legend and selected metric display after fixing the metric naming bug (Task 17).
+
+**Completed:**
+- ✅ Polish work on layout and visual balance completed
+
+**Related:** Task 17 (metric naming bug must be fixed first)
+
+---
+
+## Task 17: Fix Metric Naming Bug (Remove Duplicate Domain Name Prefix)
+
+**Status:** ✅ COMPLETE
+
+**Priority:** 🔥 HIGH
+
+**Scope:** Single chat window - bug fix
+
+**Description:** When a submetric or subsubmetric is selected in the indicator navigation, the domain name is incorrectly prepended to the metric name in both the subheader and the legend.
+
+**Completed:**
+- ✅ Fixed metric naming bug - removed duplicate domain name prefix
+- ✅ Root cause: `label` field in click handlers was set to `` `${domain.label} ${metric.label}` `` instead of just `metric.label`
+- ✅ Fixed in `LayoutUnified.tsx` (3 metric-level + 4 category-level)
+- ✅ Fixed in `LayoutUnifiedCompact.tsx` (3 metric-level + 4 category-level)
+- ✅ Fixed in `flattenDomainHierarchyForSearch.ts` (3 category-level labels)
+- ✅ Breadcrumb path already provides full hierarchy context
+
+**Files Modified:**
+- `src/components/RightSidebar/layouts/LayoutUnified.tsx`
+- `src/components/RightSidebar/layouts/LayoutUnifiedCompact.tsx`
+- `src/utils/flattenDomainHierarchyForSearch.ts`
+
+---
+
+## Task 19: Refine Flower Chart - Remove Legend, Show Domain Name in Center
+
+**Status:** ✅ COMPLETE
+
+**Priority:** 🔥 HIGH
+
+**Scope:** Flower chart refinement - reduce cognitive load
+
+**Description:** Remove the legend from the flower chart and display domain names dynamically in the center circle. This reduces visual clutter and creates a more direct mapping between petals and their labels.
+
+**Completed:**
+- ✅ Removed legend (already absent)
+- ✅ Confirmed domain name + score displayed in center on hover with brand-color text
+- ✅ Created `FlowerChartConfigWidget` dev tool (🌸 in Dev Tools dropdown, Ctrl+Shift+F)
+- ✅ Real-time sliders for: innerRadius, maxPetalLength, minPetalLength, viewBoxSize, scoreFontSize, labelFontSize, scoreOffsetY, labelOffsetY, outlineStrokeWidth, dimColor, outlineColor
+- ✅ Includes clipping warning indicator and Reset button
+- ✅ All settings persist to localStorage
+
+**Files Created:**
+- `src/types/flowerChartConfigTypes.ts`
+- `src/components/DevTools/FlowerChartConfigWidget.tsx`
+
+**Files Modified:**
+- `src/components/LeftSidebar/FlowerChart.tsx`
+- `src/components/App.tsx`
+- `src/components/Header.tsx`
+- `src/components/RightSidebar.tsx`
+- `src/components/DevTools/index.ts`
+
+---
+
+## Task 19b: Increase Flower Chart Inner Circle Size
+
+**Status:** ✅ COMPLETE
+
+**Priority:** 🟡 MEDIUM
+
+**Scope:** Flower chart refinement - improve label readability
+
+**Description:** Increase the inner radius of the flower chart's center circle to provide more space for longer domain labels (e.g., "Infrastructure", "Wildland Urban Interface") when displayed in the center on hover.
+
+**Completed:**
+- ✅ Increased inner radius from 50→65 SVG units
+- ✅ Center fits two lines (score + domain label like "Sense of Place")
+- ✅ Configurable via FlowerChartConfigWidget
+
+**Files Modified:**
+- `src/components/LeftSidebar/FlowerChart.tsx`
+
+---
+
+## Task 20: Adjust "Individual Domain Scores" Label Styling
+
+**Status:** ✅ COMPLETE
+
+**Priority:** 🔥 HIGH
+
+**Scope:** Single chat window - UI refinement
+
+**Description:** The "Individual Domain Scores" label in the right sidebar looks visually off. Adjust the font size, weight, or other styling properties to improve its appearance.
+
+**Completed:**
+- ✅ Updated font size and styling for better visual balance
+
+**Files Modified:**
+- `src/components/RightSidebar.tsx`
+
+---
+
+## Task 21: Remove Gray Inner Circle/Petals in Flower Chart When No Region Selected
+
+**Status:** ✅ COMPLETE
+
+**Priority:** 🔥 HIGH
+
+**Scope:** Single chat window - UI refinement
+
+**Description:** On initial load (when no region is selected), the flower chart displays gray petals/circle segments. These should be hidden when there's no selected region to avoid visual clutter.
+
+**Completed:**
+- ✅ Removed gray filled petals in flower chart when no region selected
+- ✅ Added `hasSelectedRegion` prop to FlowerChart component
+- ✅ When no region is selected, only the outline structure (petal tracks) is visible - no gray filled "baby petal buds"
+- ✅ When a region is selected, both outlines and filled petals appear
+- ✅ Reduces visual clutter on initial page load
+
+**Files Modified:**
+- `src/components/LeftSidebar/FlowerChart.tsx`
+- `src/components/RightSidebar.tsx`
+- `src/components/LeftSidebar/LeftSidebarBody.tsx`
+- `src/components/LeftSidebar/LeftSidebar.tsx`
+
+---
+
+## Task 22: Add Pan/Zoom to Selected Region on Map Click
+
+**Status:** ✅ COMPLETE
+
+**Priority:** 🔥 HIGH
+
+**Scope:** Single chat window - UX improvement
+
+**Description:** When a user clicks on a polygon/region on the map, the map should automatically pan and zoom to center on that region. This provides better visual feedback and ensures the selected region is visible.
+
+**Completed:**
+- ✅ Added pan/zoom to selected region on map click
+- ✅ Map now smoothly animates to center on clicked regions using `fitBounds()`
+- ✅ Appropriate padding and zoom limits implemented
+
+**Files Modified:**
+- `src/components/MapArea/MapArea.tsx`
+
+---
+
+## Task 23: Add Petal Growth Animation When Region is Initially Selected
+
+**Status:** ✅ COMPLETE
+
+**Priority:** 🟡 MEDIUM
+
+**Scope:** Single chat window - UX enhancement
+
+**Description:** Flower chart petals smoothly animate between any state change — first selection, region switches, and re-selections. Petals morph from their previous visual lengths to the new target lengths, creating fluid data transitions.
+
+**Completed:**
+- ✅ Full petal transition animation system implemented
+- ✅ Petals animate smoothly between ANY state change: first selection (grow from 0), region switches (morph from old lengths to new), and re-selection after deselect (grow from 0 again)
+- ✅ Uses `currentPetalLengthsRef` to track live visual petal lengths each frame, enabling smooth mid-animation interrupts
+- ✅ `buildPetalArcPath()` simplified to accept direct petal length
+- ✅ Duration increased from 600ms → 900ms for a more gradual feel
+- ✅ Cubic ease-out easing
+
+**Files Modified:**
+- `src/components/LeftSidebar/FlowerChart.tsx` - Rewrote animation system: `easeOutCubic()`, `petalLength()`, `buildPetalArcPath()`, `currentPetalLengthsRef`, interpolating rAF loop
+
+---
+
+## Task 24: Expand Hover Area for Flower Petals to Include Entire Petal Track
+
+**Status:** ✅ COMPLETE
+
+**Priority:** 🔥 HIGH
+
+**Scope:** Single chat window - UX improvement
+
+**Description:** Expanded the hover target for each flower chart petal to cover the **entire petal track** (outline area), not just the small filled petal. Users can now hover anywhere in a petal's wedge to see domain scores — critical for low-score domains where the filled petal is tiny.
+
+**Completed:**
+- ✅ Expanded flower chart hover area to cover entire petal track
+- ✅ Added invisible hit-area SVG paths (`aster__hit-area`) rendered on top of all layers with `fill: transparent` + `pointer-events: all`
+- ✅ Each hit area spans the full petal wedge (inner radius → max outer radius)
+- ✅ All hover logic (dim siblings, update center text/color, restore on mouseout) moved from filled petals to hit areas
+- ✅ Works even without a selected region for domain name discovery
+
+**Files Modified:**
+- `src/components/LeftSidebar/FlowerChart.tsx` - Added hit-area path layer, moved hover logic from filled petals
+
+---
+
 **End of Archive**

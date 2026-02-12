@@ -12,8 +12,9 @@
 export type AppMode = "PRODUCTION" | "DEBUG";
 
 // Determine mode from environment variables
-const envMode = import.meta.env.VITE_APP_MODE || 
-  (import.meta.env.MODE === 'production' ? 'PRODUCTION' : 'DEBUG');
+// Default to DEBUG to allow team to tinker with dev tools
+// Set VITE_APP_MODE=PRODUCTION explicitly when ready for full public launch
+const envMode = import.meta.env.VITE_APP_MODE || 'DEBUG';
 
 export const APP_MODE: AppMode = envMode as AppMode;
 

@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Planning &amp; Governance | WWRI - Wildfire Resilience Index</title>
+  <meta name="description" content="Preparedness through strategic planning — emergency plans, land use policies, and multi-agency coordination that guide long-term resilience.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Shared Styles -->
+  <link rel="stylesheet" href="../../assets/css/shared.css">
+
+  <!-- Theme 5 + Domain Page Styles -->
+  <style>
+    :root {
+      --primary-darkest: #160e08;
+      --primary-dark: #343434;
+      --primary-brown: #513221;
+      --secondary-brown: #8e4b27;
+      --secondary-tan: #815e45;
+      --secondary-orange: #dc7e49;
+      --accent-magenta: #84325F;
+      --accent-orange-light: #f4a460;
+      --text-light: #ffffff;
+      --text-dark: #160e08;
+      --bg-cream: #FFF8F0;
+      --bg-warm: #FFF5E8;
+    }
+
+    body {
+      background: var(--bg-cream);
+      color: var(--text-dark);
+      line-height: 1.75;
+      padding-top: 0;
+    }
+
+    /* ── Navigation Header ── */
+    .site-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(22, 14, 8, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(220, 126, 73, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .site-header.scrolled {
+      background: rgba(22, 14, 8, 0.98);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .nav-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 80px;
+    }
+
+    .site-logo {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      color: var(--text-light);
+      font-size: 1.5rem;
+      font-weight: 700;
+      gap: 0.75rem;
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--secondary-orange) 0%, var(--accent-magenta) 100%);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+
+    .logo-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.2;
+    }
+
+    .logo-text-main { font-size: 1.25rem; font-weight: 700; }
+    .logo-text-sub  { font-size: 0.7rem; opacity: 0.8; font-weight: 400; letter-spacing: 0.05em; }
+
+    .site-nav {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .site-nav a {
+      color: var(--text-light);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      position: relative;
+      padding: 0.5rem 0;
+    }
+
+    .site-nav a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--secondary-orange) 0%, var(--accent-magenta) 100%);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .site-nav a:hover { color: var(--secondary-orange); }
+    .site-nav a:hover::after { transform: scaleX(1); }
+
+    .site-nav a.active {
+      color: var(--secondary-orange);
+    }
+    .site-nav a.active::after {
+      transform: scaleX(1);
+    }
+
+    .nav-dropdown { position: relative; }
+
+    .nav-dropdown-trigger {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .nav-dropdown-trigger .chevron {
+      font-size: 0.6rem;
+      transition: transform 0.3s ease;
+    }
+
+    .nav-dropdown-menu {
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%) translateY(8px);
+      background: rgba(22, 14, 8, 0.98);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(220, 126, 73, 0.2);
+      border-radius: 12px;
+      padding: 0.5rem 0;
+      min-width: 220px;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.25s ease;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+    }
+
+    .nav-dropdown:hover .nav-dropdown-menu {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .nav-dropdown:hover .chevron { transform: rotate(180deg); }
+
+    .nav-dropdown-menu a {
+      display: block;
+      padding: 0.65rem 1.5rem;
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+
+    .nav-dropdown-menu a::after { display: none; }
+    .nav-dropdown-menu a:hover { background: rgba(220, 126, 73, 0.15); }
+
+    .nav-cta {
+      background: linear-gradient(135deg, var(--secondary-orange) 0%, var(--accent-magenta) 100%);
+      color: white !important;
+      padding: 0.75rem 1.5rem !important;
+      border-radius: 50px;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(220, 126, 73, 0.3);
+    }
+
+    .nav-cta::after { display: none; }
+
+    .nav-cta:hover {
+      color: white !important;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(220, 126, 73, 0.4);
+    }
+
+    .mobile-menu-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.5rem;
+    }
+
+    .mobile-menu-toggle span {
+      width: 28px;
+      height: 3px;
+      background: var(--text-light);
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+
+    @media (max-width: 768px) {
+      .site-nav {
+        position: fixed;
+        top: 80px;
+        left: 0;
+        right: 0;
+        background: rgba(22, 14, 8, 0.98);
+        backdrop-filter: blur(10px);
+        flex-direction: column;
+        gap: 0;
+        padding: 1rem 0;
+        transform: translateY(-100%);
+        opacity: 0;
+        transition: all 0.3s ease;
+        pointer-events: none;
+        border-bottom: 1px solid rgba(220, 126, 73, 0.2);
+      }
+
+      .site-nav.active {
+        transform: translateY(0);
+        opacity: 1;
+        pointer-events: all;
+      }
+
+      .site-nav a {
+        width: 100%;
+        padding: 1rem 2rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .mobile-menu-toggle { display: flex; }
+
+      .nav-dropdown-menu {
+        position: static;
+        transform: none;
+        background: rgba(255, 255, 255, 0.05);
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+        opacity: 1;
+        visibility: visible;
+        min-width: 100%;
+        padding: 0;
+      }
+
+      .nav-dropdown-menu a { padding-left: 3rem; }
+    }
+
+    /* ── Domain Hero ── */
+    .domain-hero {
+      margin-top: 80px;
+      min-height: 50vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, var(--primary-darkest) 0%, var(--secondary-tan) 45%, var(--secondary-orange) 100%);
+    }
+
+    .domain-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 35% 55%, rgba(220, 126, 73, 0.2) 0%, transparent 55%),
+        radial-gradient(ellipse at 70% 30%, rgba(129, 94, 69, 0.25) 0%, transparent 50%);
+      z-index: 1;
+    }
+
+    .domain-hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 800px;
+      padding: 4rem 2rem;
+      color: var(--text-light);
+    }
+
+    .domain-hero-icon {
+      font-size: 4rem;
+      margin-bottom: 1.5rem;
+      display: block;
+      filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+    }
+
+    .domain-hero-content h1 {
+      font-size: clamp(2.25rem, 4.5vw, 3.5rem);
+      font-weight: 700;
+      margin-bottom: 1rem;
+      text-shadow: 0 4px 20px rgba(22, 14, 8, 0.5);
+      line-height: 1.15;
+    }
+
+    .domain-hero-content p {
+      font-size: clamp(1.05rem, 2vw, 1.35rem);
+      line-height: 1.6;
+      opacity: 0.92;
+      text-shadow: 0 2px 8px rgba(22, 14, 8, 0.4);
+    }
+
+    /* ── Content Sections ── */
+    .section { padding: 5rem 0; }
+
+    .section-warm {
+      background: linear-gradient(180deg, var(--bg-warm) 0%, #FFE8D8 100%);
+    }
+
+    .section-dark {
+      background: linear-gradient(135deg, var(--primary-brown) 0%, var(--primary-dark) 100%);
+      color: var(--text-light);
+    }
+
+    .section-sunset {
+      background: linear-gradient(135deg, #FFE0CC 0%, #FFD4B8 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tile-content {
+      padding: 2.5rem;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(22, 14, 8, 0.12);
+      border: 1px solid rgba(142, 75, 39, 0.15);
+    }
+
+    .tile-content h2 {
+      color: var(--secondary-brown);
+      margin-bottom: 1.25rem;
+      line-height: 1.3;
+    }
+
+    .tile-content .accent-line {
+      width: 100px;
+      height: 6px;
+      background: linear-gradient(90deg, var(--secondary-orange) 0%, var(--accent-magenta) 100%);
+      margin-bottom: 1.75rem;
+      border-radius: 3px;
+      box-shadow: 0 2px 8px rgba(220, 126, 73, 0.3);
+    }
+
+    .tile-content p {
+      margin-bottom: 1.25rem;
+      line-height: 1.75;
+      color: var(--text-dark);
+    }
+
+    .section-dark .tile-content {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .section-dark .tile-content h2 { color: var(--secondary-orange); }
+    .section-dark .tile-content p   { color: rgba(255, 255, 255, 0.9); }
+
+    .tile-visual {
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 16px 48px rgba(22, 14, 8, 0.25);
+      border: 2px solid rgba(142, 75, 39, 0.2);
+    }
+
+    /* ── Video Placeholder ── */
+    .video-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #2a1a10 0%, #1a1a1a 100%);
+      color: rgba(255, 255, 255, 0.7);
+      text-align: center;
+      padding: 3rem 2rem;
+      min-height: 280px;
+      position: relative;
+    }
+
+    .video-placeholder::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border: 2px dashed rgba(220, 126, 73, 0.3);
+      border-radius: 18px;
+      pointer-events: none;
+    }
+
+    .video-play-btn {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--secondary-orange) 0%, var(--accent-magenta) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.25rem;
+      box-shadow: 0 8px 24px rgba(220, 126, 73, 0.4);
+      opacity: 0.85;
+    }
+
+    .video-play-btn span {
+      font-size: 1.75rem;
+      color: white;
+      margin-left: 4px;
+    }
+
+    .video-placeholder strong {
+      color: var(--secondary-orange);
+      font-size: 0.95rem;
+      letter-spacing: 0.04em;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    .video-placeholder .video-desc {
+      font-size: 0.9rem;
+      line-height: 1.5;
+      max-width: 280px;
+      opacity: 0.7;
+    }
+
+    .video-format-note {
+      display: inline-block;
+      margin-top: 0.75rem;
+      font-size: 0.75rem;
+      opacity: 0.5;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+    }
+
+    /* ── Indicator List ── */
+    .indicator-list {
+      list-style: none;
+      padding: 0;
+      margin: 1.25rem 0;
+    }
+
+    .indicator-list li {
+      padding: 0.6rem 0;
+      border-bottom: 1px solid rgba(142, 75, 39, 0.12);
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .indicator-list li:last-child { border-bottom: none; }
+
+    .indicator-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--secondary-orange), var(--accent-magenta));
+      flex-shrink: 0;
+    }
+
+    .section-dark .indicator-list li {
+      border-bottom-color: rgba(255, 255, 255, 0.1);
+    }
+
+    /* ── Domain Navigation Cards ── */
+    .domain-nav-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin: 2.5rem 0;
+    }
+
+    .domain-nav-card {
+      background: white;
+      border-radius: 16px;
+      padding: 2rem;
+      text-decoration: none;
+      color: var(--text-dark);
+      box-shadow: 0 6px 24px rgba(22, 14, 8, 0.08);
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+      display: block;
+    }
+
+    .domain-nav-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 36px rgba(22, 14, 8, 0.15);
+      border-color: var(--secondary-orange);
+    }
+
+    .domain-nav-card .card-icon { font-size: 2.5rem; margin-bottom: 1rem; display: block; }
+    .domain-nav-card .card-title { font-size: 1.2rem; font-weight: 700; color: var(--secondary-brown); margin-bottom: 0.5rem; }
+    .domain-nav-card .card-desc  { font-size: 0.9rem; line-height: 1.5; opacity: 0.75; }
+
+    /* ── Buttons ── */
+    .btn-theme-primary {
+      background: linear-gradient(135deg, var(--secondary-orange) 0%, var(--accent-magenta) 100%);
+      color: white;
+      padding: 1.125rem 2.75rem;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 600;
+      display: inline-block;
+      box-shadow: 0 8px 28px rgba(220, 126, 73, 0.4);
+      transition: all 0.3s ease;
+      font-size: 1.05rem;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-theme-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 36px rgba(220, 126, 73, 0.5);
+    }
+
+    /* ── Footer ── */
+    .footer {
+      background: linear-gradient(135deg, var(--primary-darkest) 0%, var(--primary-brown) 100%);
+      color: white;
+      padding: 3rem 0 2rem;
+      text-align: center;
+    }
+
+    .footer a { color: var(--secondary-orange); text-decoration: none; font-weight: 600; }
+    .footer a:hover { color: var(--accent-magenta); text-decoration: underline; }
+
+    @media (max-width: 767px) {
+      .domain-hero { min-height: 40vh; }
+      .domain-hero-content h1 { font-size: 2rem; }
+      .domain-nav-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body id="top">
+
+  <!-- ── Site Header ── -->
+  <header class="site-header" id="site-header">
+    <nav class="nav-container" id="main-nav">
+      <a href="index.html" class="site-logo" id="site-logo">
+        <div class="logo-icon" id="logo-icon">🔥</div>
+        <div class="logo-text" id="logo-text">
+          <span class="logo-text-main">WWRI</span>
+          <span class="logo-text-sub">Wildfire Resilience Index</span>
+        </div>
+      </a>
+
+      <div class="site-nav" id="site-nav">
+        <a href="index.html" id="nav-link-home">Home</a>
+        <div class="nav-dropdown" id="nav-dropdown-domains">
+          <a href="#" class="nav-dropdown-trigger" id="nav-link-domains">Domains <span class="chevron">▼</span></a>
+          <div class="nav-dropdown-menu" id="nav-dropdown-menu">
+            <a href="infrastructure.html" id="nav-dd-infrastructure">Infrastructure</a>
+            <a href="social.html" id="nav-dd-social">Social Systems</a>
+            <a href="natural-resources.html" id="nav-dd-natural">Natural Resources</a>
+            <a href="planning.html" class="active" id="nav-dd-planning">Planning &amp; Governance</a>
+          </div>
+        </div>
+        <a href="#" class="nav-cta" id="nav-link-dashboard">Dashboard</a>
+      </div>
+
+      <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- ── Domain Hero ── -->
+  <section class="domain-hero" id="domain-hero">
+    <div class="domain-hero-content fade-in" id="domain-hero-content">
+      <span class="domain-hero-icon" id="domain-hero-icon">📋</span>
+      <h1 id="domain-hero-heading">Preparedness Through Strategic Planning</h1>
+      <p id="domain-hero-subtitle">Evaluating the emergency plans, land use policies, and multi-agency coordination that transform reactive responses into proactive resilience strategies.</p>
+    </div>
+  </section>
+
+  <!-- ── Section 1: Emergency Plans & Preparedness ── -->
+  <section class="section section-warm" id="section-emergency">
+    <div class="container">
+      <div class="grid-two-col tile-left-right">
+        <div class="tile-visual fade-in" id="video-tile-emergency">
+          <div class="video-placeholder" id="video-placeholder-emergency">
+            <div class="video-play-btn" id="video-play-emergency"><span>▶</span></div>
+            <strong>Cat to provide:</strong>
+            <span class="video-desc">Footage of emergency planning meetings, tabletop exercises, and community preparedness drills</span>
+            <span class="video-format-note">16:9 inline video</span>
+          </div>
+        </div>
+        <div class="tile-content fade-in" id="content-emergency">
+          <div class="accent-line" id="accent-emergency"></div>
+          <h2 id="heading-emergency" class="heading-lg">Emergency Plans &amp; Community Preparedness</h2>
+          <p id="desc-emergency-1" class="body-text">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. A plan on paper is just the beginning. Effective emergency preparedness means communities have practiced their response, know their evacuation zones, and have clear chains of command that activate within minutes.
+          </p>
+          <p id="desc-emergency-2" class="body-text">
+            Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. We evaluate the comprehensiveness, recency, and tested readiness of Community Wildfire Protection Plans (CWPPs), emergency operation plans, and evacuation protocols.
+          </p>
+          <ul class="indicator-list" id="indicators-emergency">
+            <li><span class="indicator-dot"></span> CWPP adoption &amp; recency</li>
+            <li><span class="indicator-dot"></span> Evacuation drill frequency</li>
+            <li><span class="indicator-dot"></span> Emergency operations plan quality</li>
+            <li><span class="indicator-dot"></span> Alert system coverage &amp; testing</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Section 2: Land Use & Building Policies ── -->
+  <section class="section section-dark" id="section-land-use">
+    <div class="container">
+      <div class="grid-two-col tile-right-left">
+        <div class="tile-visual fade-in" id="video-tile-land-use">
+          <div class="video-placeholder" id="video-placeholder-land-use">
+            <div class="video-play-btn" id="video-play-land-use"><span>▶</span></div>
+            <strong>Cat to provide:</strong>
+            <span class="video-desc">Footage of policy documents, zoning maps, building code inspections, and land use planning sessions</span>
+            <span class="video-format-note">16:9 inline video</span>
+          </div>
+        </div>
+        <div class="tile-content fade-in" id="content-land-use">
+          <div class="accent-line" id="accent-land-use"></div>
+          <h2 id="heading-land-use" class="heading-lg">Land Use &amp; Building Policies</h2>
+          <p id="desc-land-use-1" class="body-text">
+            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris. Where we build — and how we build — matters more than almost any other factor. Communities that enforce WUI building codes and restrict development in high-risk areas dramatically reduce their exposure.
+          </p>
+          <p id="desc-land-use-2" class="body-text">
+            Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore. We assess zoning regulations, building code adoption (especially WUI-specific codes), defensible space enforcement, and whether new development is being directed away from high-risk zones.
+          </p>
+          <ul class="indicator-list" id="indicators-land-use">
+            <li><span class="indicator-dot"></span> WUI building code adoption</li>
+            <li><span class="indicator-dot"></span> Defensible space enforcement rate</li>
+            <li><span class="indicator-dot"></span> High-risk zone development controls</li>
+            <li><span class="indicator-dot"></span> Fire-resistant construction standards</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Section 3: Multi-Agency Coordination ── -->
+  <section class="section section-sunset" id="section-coordination">
+    <div class="container">
+      <div class="grid-two-col tile-left-right">
+        <div class="tile-visual fade-in" id="video-tile-coordination">
+          <div class="video-placeholder" id="video-placeholder-coordination">
+            <div class="video-play-btn" id="video-play-coordination"><span>▶</span></div>
+            <strong>Cat to provide:</strong>
+            <span class="video-desc">Footage of multi-agency meetings, inter-jurisdictional coordination, and collaborative governance activities</span>
+            <span class="video-format-note">16:9 inline video</span>
+          </div>
+        </div>
+        <div class="tile-content fade-in" id="content-coordination">
+          <div class="accent-line" id="accent-coordination"></div>
+          <h2 id="heading-coordination" class="heading-lg">Multi-Agency Coordination &amp; Governance</h2>
+          <p id="desc-coordination-1" class="body-text">
+            Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit. Wildfires don't respect jurisdictional boundaries. Effective resilience requires seamless coordination between federal, state, county, and local agencies — plus NGOs and community organizations.
+          </p>
+          <p id="desc-coordination-2" class="body-text">
+            Sunt in culpa qui officia deserunt mollit anim id est laborum. We evaluate mutual aid agreements, joint training exercises, shared communication systems, and the institutional frameworks that enable rapid multi-agency response when fires cross borders.
+          </p>
+          <ul class="indicator-list" id="indicators-coordination">
+            <li><span class="indicator-dot"></span> Mutual aid agreement coverage</li>
+            <li><span class="indicator-dot"></span> Joint training exercise frequency</li>
+            <li><span class="indicator-dot"></span> Interoperable communication systems</li>
+            <li><span class="indicator-dot"></span> Cross-jurisdictional governance structures</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Explore Other Domains ── -->
+  <section class="section" id="section-other-domains">
+    <div class="container">
+      <div class="text-center mb-4" id="other-domains-header">
+        <h2 class="heading-lg fade-in" id="other-domains-heading">Explore Other Domains</h2>
+        <p class="body-text fade-in" id="other-domains-desc" style="max-width: 650px; margin: 0 auto;">
+          Good governance amplifies every other domain. See how infrastructure investments, social networks, and natural resource management are shaped by — and shape — planning decisions.
+        </p>
+      </div>
+      <div class="domain-nav-grid" id="domain-nav-grid">
+        <a href="infrastructure.html" class="domain-nav-card fade-in" id="domain-nav-infrastructure">
+          <span class="card-icon">🏗️</span>
+          <div class="card-title">Infrastructure</div>
+          <div class="card-desc">Roads, power grids, water systems, and emergency services that protect communities physically.</div>
+        </a>
+        <a href="social.html" class="domain-nav-card fade-in" id="domain-nav-social">
+          <span class="card-icon">👥</span>
+          <div class="card-title">Social Systems</div>
+          <div class="card-desc">Community networks, demographics, and social capital that support mutual aid during disasters.</div>
+        </a>
+        <a href="natural-resources.html" class="domain-nav-card fade-in" id="domain-nav-natural">
+          <span class="card-icon">🌲</span>
+          <div class="card-title">Natural Resources</div>
+          <div class="card-desc">Forest health, fuel loads, and ecological conditions that shape fire behavior and recovery.</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA Section ── -->
+  <section class="section section-dark" id="section-cta">
+    <div class="container text-center" id="cta-content">
+      <h2 class="heading-lg fade-in" id="cta-heading">See Governance Scores in Your Community</h2>
+      <p class="body-text fade-in" id="cta-description" style="max-width: 600px; margin: 0 auto 2rem; color: rgba(255,255,255,0.85);">
+        Explore how your community's planning and governance frameworks compare — and where policy improvements can drive measurable resilience gains.
+      </p>
+      <a href="#" class="btn-theme-primary fade-in" id="cta-button">Launch Dashboard</a>
+    </div>
+  </section>
+
+  <!-- ── Footer ── -->
+  <footer class="footer" id="footer">
+    <div class="container" id="footer-content">
+      <p id="footer-text">&copy; 2026 Wildfire Resilience Index. Supported by the <a href="#" id="footer-link-moore">Moore Foundation</a>.</p>
+      <p class="caption-text mt-2" id="footer-disclaimer">Design mockup with placeholder content. Final content provided by Cat Fong.</p>
+    </div>
+  </footer>
+
+  <script src="../../assets/js/shared.js"></script>
+  <script>
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const siteNav = document.getElementById('site-nav');
+
+    mobileMenuToggle.addEventListener('click', () => {
+      mobileMenuToggle.classList.toggle('active');
+      siteNav.classList.toggle('active');
+    });
+
+    document.querySelectorAll('.site-nav a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenuToggle.classList.remove('active');
+        siteNav.classList.remove('active');
+      });
+    });
+
+    const siteHeader = document.getElementById('site-header');
+    window.addEventListener('scroll', () => {
+      if (window.pageYOffset > 50) {
+        siteHeader.classList.add('scrolled');
+      } else {
+        siteHeader.classList.remove('scrolled');
+      }
+    });
+  </script>
+</body>
+</html>

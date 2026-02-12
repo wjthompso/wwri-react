@@ -148,6 +148,65 @@
       transform: scaleX(1);
     }
 
+    /* Domains dropdown */
+    .nav-dropdown {
+      position: relative;
+    }
+
+    .nav-dropdown-trigger {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .nav-dropdown-trigger .chevron {
+      font-size: 0.6rem;
+      transition: transform 0.3s ease;
+    }
+
+    .nav-dropdown-menu {
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%) translateY(8px);
+      background: rgba(22, 14, 8, 0.98);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(220, 126, 73, 0.2);
+      border-radius: 12px;
+      padding: 0.5rem 0;
+      min-width: 220px;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.25s ease;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+    }
+
+    .nav-dropdown:hover .nav-dropdown-menu {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .nav-dropdown:hover .chevron {
+      transform: rotate(180deg);
+    }
+
+    .nav-dropdown-menu a {
+      display: block;
+      padding: 0.65rem 1.5rem;
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+
+    .nav-dropdown-menu a::after {
+      display: none;
+    }
+
+    .nav-dropdown-menu a:hover {
+      background: rgba(220, 126, 73, 0.15);
+    }
+
     .nav-cta {
       background: linear-gradient(135deg, var(--secondary-orange) 0%, var(--accent-magenta) 100%);
       color: white !important;
@@ -231,6 +290,23 @@
 
       .mobile-menu-toggle {
         display: flex;
+      }
+
+      .nav-dropdown-menu {
+        position: static;
+        transform: none;
+        background: rgba(255, 255, 255, 0.05);
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+        opacity: 1;
+        visibility: visible;
+        min-width: 100%;
+        padding: 0;
+      }
+
+      .nav-dropdown-menu a {
+        padding-left: 3rem;
       }
     }
 
@@ -803,7 +879,15 @@
         <a href="#what-is-wri" id="nav-link-about">About</a>
         <a href="#why-resilience" id="nav-link-why">Why Resilience</a>
         <a href="#how-it-works" id="nav-link-how">How It Works</a>
-        <a href="#domains-overview" id="nav-link-domains">Domains</a>
+        <div class="nav-dropdown" id="nav-dropdown-domains">
+          <a href="#domains-overview" class="nav-dropdown-trigger" id="nav-link-domains">Domains <span class="chevron">▼</span></a>
+          <div class="nav-dropdown-menu" id="nav-dropdown-menu">
+            <a href="infrastructure.html" id="nav-dd-infrastructure">Infrastructure</a>
+            <a href="social.html" id="nav-dd-social">Social Systems</a>
+            <a href="natural-resources.html" id="nav-dd-natural">Natural Resources</a>
+            <a href="planning.html" id="nav-dd-planning">Planning &amp; Governance</a>
+          </div>
+        </div>
         <a href="#" id="nav-link-dashboard" class="nav-cta">Dashboard</a>
       </div>
 
@@ -958,34 +1042,34 @@
         </p>
       </div>
       <div class="domains-sunset" id="domains-grid">
-        <div class="domain-card-sunset fade-in" id="domain-card-infrastructure">
+        <a href="infrastructure.html" class="domain-card-sunset fade-in" id="domain-card-infrastructure" style="text-decoration:none; color:inherit;">
           <span class="domain-icon-sunset" id="domain-icon-infrastructure">🏗️</span>
           <h3 class="domain-title-sunset" id="domain-title-infrastructure">Infrastructure</h3>
           <p class="domain-description-sunset" id="domain-description-infrastructure">
             Critical systems including roads for evacuation, power grids for communication, water systems for firefighting, and emergency response capacity that keeps communities functioning.
           </p>
-        </div>
-        <div class="domain-card-sunset fade-in" id="domain-card-social">
+        </a>
+        <a href="social.html" class="domain-card-sunset fade-in" id="domain-card-social" style="text-decoration:none; color:inherit;">
           <span class="domain-icon-sunset" id="domain-icon-social">👥</span>
           <h3 class="domain-title-sunset" id="domain-title-social">Social Systems</h3>
           <p class="domain-description-sunset" id="domain-description-social">
             Community networks, demographic factors, and social capital that determine how well neighbors can support each other during and after disasters.
           </p>
-        </div>
-        <div class="domain-card-sunset fade-in" id="domain-card-natural">
+        </a>
+        <a href="natural-resources.html" class="domain-card-sunset fade-in" id="domain-card-natural" style="text-decoration:none; color:inherit;">
           <span class="domain-icon-sunset" id="domain-icon-natural">🌲</span>
           <h3 class="domain-title-sunset" id="domain-title-natural">Natural Resources</h3>
           <p class="domain-description-sunset" id="domain-description-natural">
             Forest health, fuel loads, topography, and ecological conditions that influence fire behavior and support landscape recovery after burns.
           </p>
-        </div>
-        <div class="domain-card-sunset fade-in" id="domain-card-planning">
+        </a>
+        <a href="planning.html" class="domain-card-sunset fade-in" id="domain-card-planning" style="text-decoration:none; color:inherit;">
           <span class="domain-icon-sunset" id="domain-icon-planning">📋</span>
-          <h3 class="domain-title-sunset" id="domain-title-planning">Planning & Governance</h3>
+          <h3 class="domain-title-sunset" id="domain-title-planning">Planning &amp; Governance</h3>
           <p class="domain-description-sunset" id="domain-description-planning">
             Preparedness plans, land use policies, and coordination structures that guide long-term resilience investments and emergency response.
           </p>
-        </div>
+        </a>
       </div>
     </div>
   </section>

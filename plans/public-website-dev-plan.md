@@ -21,15 +21,15 @@ Development of public-facing WWRI website pages (separate from the dashboard app
 | 2.1 | Research & Design Direction | 🔥 High | Medium (4-8hrs) | Feb 10 | ✅ Complete |
 | 2.2 | Create HTML/CSS Mockups (5 themes) | 🔥 High | Large (16-24hrs) | Feb 15 | ✅ Complete |
 | 2.3 | Add scroll indicator to video section | 🔥 High | Small (~30min) | Feb 13 | ✅ Complete |
-| 2.4 | Build 4 Domain Pages (Infrastructure, Social, Natural, Planning) | 🔥 High | Medium (5-7hrs) | Feb 15 | ⬜ Not Started |
-| 2.5 | Wire up navigation between all pages | 🟡 Medium | Small (~30min) | Feb 15 | ⬜ Not Started |
+| 2.4 | Build 4 Domain Pages (Infrastructure, Social, Natural, Planning) | 🔥 High | Medium (5-7hrs) | Feb 15 | ✅ Complete |
+| 2.5 | Wire up navigation between all pages | 🟡 Medium | Small (~30min) | Feb 15 | ✅ Complete |
 | 2.6 | Package and send mockups to Cat | 🔥 High | Small (~1hr) | Feb 15 | ⬜ Not Started |
 | - | **Funder Review** | - | - | **Feb 17** | - |
 | 3.1 | Incorporate Funder Feedback | 🔥 High | TBD | TBD | ⬜ Blocked |
 | 3.2 | Video/Visual Assets Integration | 🔥 High | TBD | TBD | ⬜ Blocked |
 | 4.1 | Printable Policy Report | 🟢 Low | TBD | TBD | ⏸️ On Hold |
 
-**Progress:** 4/10 complete (3 pending, 2 blocked, 1 on hold)
+**Progress:** 6/10 complete (1 pending, 2 blocked, 1 on hold)
 
 **Note:** Task 1 was already completed as part of post-jan23-meeting-plan (Task 14).
 
@@ -178,7 +178,7 @@ Add a visual scroll-down arrow/indicator to the video section (first thing users
 ### Task 2.4: Build 4 Domain Pages
 **Priority:** High  
 **Effort:** Medium (5-7 hours)  
-**Status:** Not Started
+**Status:** ✅ Complete (Feb 12, 2026)
 
 **Description:**  
 Create 4 separate domain pages (Infrastructure, Social Systems, Natural Resources, Planning & Governance) with embedded video placeholders to demonstrate the concept for funder buy-in.
@@ -261,7 +261,7 @@ public-website-mockups/
 ### Task 2.5: Wire Up Navigation Between Pages
 **Priority:** Medium  
 **Effort:** Small (~30 minutes)  
-**Status:** Not Started
+**Status:** ✅ Complete (Feb 12, 2026)
 
 **Description:**  
 Update navigation links across all pages (homepage + 4 domain pages) so users can navigate between pages.
@@ -434,8 +434,8 @@ Create a printable, policy-oriented report that can be generated from the system
 | 2.1 | Design research | Will | Feb 10 | ✅ Complete |
 | 2.2 | HTML mockups (5 themes) | Will | Feb 15 | ✅ Complete |
 | 2.3 | Add scroll indicator to video section | Will | Feb 13 | ✅ Complete |
-| 2.4 | Build 4 domain pages | Will | Feb 15 | Not Started |
-| 2.5 | Wire up navigation | Will | Feb 15 | Not Started |
+| 2.4 | Build 4 domain pages | Will | Feb 15 | ✅ Complete |
+| 2.5 | Wire up navigation | Will | Feb 15 | ✅ Complete |
 | 2.6 | Package and send to Cat | Will | Feb 15 | Not Started |
 | - | **Funder Review** | Cat | **Feb 17** | - |
 | 3.1 | Incorporate feedback | Will | TBD | Blocked |
@@ -557,8 +557,8 @@ Create a printable, policy-oriented report that can be generated from the system
 1. **Will Thompson:** ~~Start dashboard indicator fix immediately~~ ✅ Complete
 2. **Will Thompson:** ~~Begin design research and mockup creation~~ ✅ Complete
 3. **Will Thompson:** ~~Add scroll indicator to video section (Task 2.3)~~ ✅ Complete
-4. **Will Thompson:** Build 4 domain pages with video placeholders (Task 2.4) - Feb 13-14
-5. **Will Thompson:** Wire up navigation between all pages (Task 2.5) - Feb 14
+4. **Will Thompson:** ~~Build 4 domain pages with video placeholders (Task 2.4)~~ ✅ Complete
+5. **Will Thompson:** ~~Wire up navigation between all pages (Task 2.5)~~ ✅ Complete
 6. **Will Thompson:** Package and send mockups to Cat (Task 2.6) - Feb 15
 7. **Cat Fong:** Review mockups and provide feedback - Feb 15-16
 8. **Cat Fong:** Prepare funder presentation materials - Feb 16
@@ -589,12 +589,8 @@ Created at user request based on wildfire sunset color palette (#160e08, #dc7e49
 **Next Actions (Updated Feb 12, 2026):**
 1. ~~Cat to review all 5 themes~~ ✅ Theme 5 selected
 2. ~~Add scroll indicator to video section (Task 2.3)~~ ✅ Complete
-3. Build 4 domain pages with embedded video placeholders (Task 2.4):
-   - Infrastructure
-   - Social Systems
-   - Natural Resources
-   - Planning & Governance
-4. Wire up navigation between all pages (Task 2.5)
+3. ~~Build 4 domain pages with embedded video placeholders (Task 2.4)~~ ✅ Complete
+4. ~~Wire up navigation between all pages (Task 2.5)~~ ✅ Complete
 5. Test mockups in multiple browsers and mobile
 6. Package and send to Cat for review (Task 2.6)
 7. Cat presents to funders Feb 17
@@ -610,3 +606,11 @@ Demonstrate concept of embedded videos throughout site to get funder buy-in befo
 - Fixed at viewport bottom; fades out as user scrolls past video
 - Bounce animation; click scrolls smoothly to hero section
 - No button background or "Scroll" text (refined per feedback)
+
+### February 12, 2026 - Tasks 2.4 & 2.5 Complete
+
+**What Was Delivered:**
+- 4 domain pages: `infrastructure.html`, `social.html`, `natural-resources.html`, `planning.html`
+- Each page: domain-specific hero, 3 alternating tile sections with inline 16:9 video placeholders ("Cat to provide" labels), indicator lists, cross-domain navigation cards, CTA
+- Homepage: Domains dropdown in nav, domain cards now link to domain pages
+- Theme 5 aesthetic matched across all pages; mobile-responsive with hamburger menu

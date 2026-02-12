@@ -9,7 +9,7 @@
 export type AppMode = "PRODUCTION" | "DEBUG";
 
 // Change this to "PRODUCTION" before deploying to production
-export const APP_MODE: AppMode = "DEBUG";
+export const APP_MODE: AppMode = "PRODUCTION";
 
 // Feature flag checks
 export const isDebugMode = (): boolean => APP_MODE === "DEBUG";

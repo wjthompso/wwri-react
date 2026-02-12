@@ -18,17 +18,22 @@ Development of public-facing WWRI website pages (separate from the dashboard app
 | # | Task | Priority | Effort | Deadline | Status |
 |---|------|----------|--------|---------|--------|
 | 1 | Dashboard indicator fix (default expanded domain) | 🔥 High | Small (~1hr) | ASAP | ✅ Complete |
-| 2.1 | Research & Design Direction | 🔥 High | Medium (4-8hrs) | Feb 10 | ⬜ Not Started |
-| 2.2 | Create HTML/CSS Mockups (4-5 themes) | 🔥 High | Large (16-24hrs) | Feb 15 | ⬜ Not Started |
-| 2.3 | Media/Press Section Template | 🟡 Medium | Small (2-4hrs) | Feb 15 | ⬜ Not Started |
+| 2.1 | Research & Design Direction | 🔥 High | Medium (4-8hrs) | Feb 10 | ✅ Complete |
+| 2.2 | Create HTML/CSS Mockups (5 themes) | 🔥 High | Large (16-24hrs) | Feb 15 | ✅ Complete |
+| 2.3 | Add scroll indicator to video section | 🔥 High | Small (~30min) | Feb 13 | ⬜ Not Started |
+| 2.4 | Build 4 Domain Pages (Infrastructure, Social, Natural, Planning) | 🔥 High | Medium (5-7hrs) | Feb 15 | ⬜ Not Started |
+| 2.5 | Wire up navigation between all pages | 🟡 Medium | Small (~30min) | Feb 15 | ⬜ Not Started |
+| 2.6 | Package and send mockups to Cat | 🔥 High | Small (~1hr) | Feb 15 | ⬜ Not Started |
 | - | **Funder Review** | - | - | **Feb 17** | - |
 | 3.1 | Incorporate Funder Feedback | 🔥 High | TBD | TBD | ⬜ Blocked |
 | 3.2 | Video/Visual Assets Integration | 🔥 High | TBD | TBD | ⬜ Blocked |
 | 4.1 | Printable Policy Report | 🟢 Low | TBD | TBD | ⏸️ On Hold |
 
-**Progress:** 1/7 complete (3 pending, 2 blocked, 1 on hold)
+**Progress:** 3/10 complete (4 pending, 2 blocked, 1 on hold)
 
 **Note:** Task 1 was already completed as part of post-jan23-meeting-plan (Task 14).
+
+**Note:** Tasks 2.3-2.6 added Feb 12 based on Cat's request for landing page + 4 domain pages with embedded video placeholders.
 
 **Note:** Tasks 3.1, 3.2, and 4.1 are blocked/on hold until after Feb 17 funder review.
 
@@ -153,25 +158,187 @@ Create 4-5 distinct theme mockups showing different layout and styling approache
 
 ---
 
-### Task 2.3: Media/Press Section
-**Priority:** Medium  
-**Effort:** Small (2-4 hours)
+### Task 2.3: Add Scroll Indicator to Video Section
+**Priority:** High  
+**Effort:** Small (~30 minutes)  
+**Status:** Not Started
 
 **Description:**  
-Create a media section template similar to Mega Fire Action Plan's press coverage area.
+Add a visual scroll-down arrow/indicator to the video section (first thing users see) to signal that there's more content below.
 
 **Requirements:**
-- Display press releases and media coverage
-- Easy for Cat to populate in the future (potentially via CMS or simple markdown)
-- Consider Carlos (team member) may help with population
-- Clean, scannable layout
+- Place scroll indicator at bottom of video section
+- Match Theme 5 aesthetic (wildfire sunset colors)
+- Animate (bounce/pulse) to draw attention
+- On click, smoothly scroll to hero section below
+- Should be visible and obvious on both desktop and mobile
 
-**Technical Considerations:**
-- How will Cat update this? Options:
-  - Simple CMS (Strapi, Sanity)
-  - Markdown files + build process
-  - Admin panel
-  - AI-assisted population (Carlos has AI proficiency)
+**Implementation:**
+- Add scroll indicator element overlaying video section
+- Style with Theme 5 colors (orange/magenta gradient)
+- Use CSS animation for movement
+- Wire up click handler to scroll to #hero-section
+
+**Acceptance Criteria:**
+- Scroll indicator is immediately visible when page loads
+- Clicking/tapping scrolls smoothly to content below
+- Styling is consistent with Theme 5 aesthetic
+- Works on mobile and desktop
+
+---
+
+### Task 2.4: Build 4 Domain Pages
+**Priority:** High  
+**Effort:** Medium (5-7 hours)  
+**Status:** Not Started
+
+**Description:**  
+Create 4 separate domain pages (Infrastructure, Social Systems, Natural Resources, Planning & Governance) with embedded video placeholders to demonstrate the concept for funder buy-in.
+
+**Purpose:**  
+Show Cat and funders what embedded videos would look like throughout the site before Cat produces all video content.
+
+**Requirements for Each Domain Page:**
+
+**Page Structure:**
+1. Same header/nav as homepage (with working links)
+2. Hero section specific to that domain
+3. 2-3 content sections with:
+   - Embedded video placeholders (inline, not full-width)
+   - Placeholder text about domain indicators
+   - Alternating tile layout (video-left/text-right, then text-left/video-right)
+4. CTA section linking to dashboard/other domains
+5. Same footer as homepage
+
+**Domain-Specific Content:**
+
+**Infrastructure Page:**
+- Hero: "Critical Systems for Community Safety"
+- Videos showing: Road networks, power grids, water systems, emergency response
+- Content: Evacuation routes, utilities, firefighting capacity
+
+**Social Systems Page:**
+- Hero: "Community Networks Build Resilience"
+- Videos showing: Community meetings, demographic diversity, social cohesion
+- Content: Social capital, vulnerable populations, community organizations
+
+**Natural Resources Page:**
+- Hero: "Landscape Health and Fire Behavior"
+- Videos showing: Forest management, fuel loads, topography, watersheds
+- Content: Vegetation health, wildfire-urban interface, ecosystem recovery
+
+**Planning & Governance Page:**
+- Hero: "Preparedness Through Strategic Planning"
+- Videos showing: Planning meetings, policy documents, coordination activities
+- Content: Emergency plans, land use policies, multi-agency coordination
+
+**Design Requirements:**
+- Match Theme 5 (Wildfire Sunset) aesthetic exactly
+- Maintain consistent navigation across all pages
+- Video placeholders should be inline (not full-width like homepage hero)
+- Use 16:9 or square aspect ratio for video placeholders
+- Clear labels: "Cat to provide: [video description]"
+- Placeholder text using Lorem Ipsum + domain-specific keywords
+- Mobile-friendly responsive design
+
+**File Structure:**
+```
+public-website-mockups/
+├── themes/
+│   └── theme5-wildfire-sunset/
+│       ├── index.html (homepage - already exists)
+│       ├── infrastructure.html (NEW)
+│       ├── social.html (NEW)
+│       ├── natural-resources.html (NEW)
+│       └── planning.html (NEW)
+```
+
+**Deliverables:**
+- 4 complete HTML files (one per domain)
+- Each page matches Theme 5 aesthetic
+- All navigation links functional
+- Video placeholders clearly marked
+- Responsive design tested
+
+**Acceptance Criteria:**
+- All 4 domain pages render correctly
+- Navigation links work between all pages
+- Video placeholders clearly show where videos will go
+- Cat can see the concept of embedded videos throughout site
+- Styling is consistent across all pages
+- Mobile-friendly layout
+
+---
+
+### Task 2.5: Wire Up Navigation Between Pages
+**Priority:** Medium  
+**Effort:** Small (~30 minutes)  
+**Status:** Not Started
+
+**Description:**  
+Update navigation links across all pages (homepage + 4 domain pages) so users can navigate between pages.
+
+**Requirements:**
+- Update homepage nav to link to domain pages
+- Update domain page navs to link to homepage and other domains
+- Add "Domains" dropdown in header showing all 4 domains
+- Ensure all relative paths work correctly
+- Test navigation flow from every page
+
+**Implementation:**
+- Update header nav in index.html (homepage)
+- Update header nav in all 4 domain pages
+- Consider adding dropdown menu for domains
+- Update footer links if applicable
+- Test all links work in zipped folder structure
+
+**Acceptance Criteria:**
+- Can navigate from homepage to any domain page
+- Can navigate from any domain page back to homepage
+- Can navigate between domain pages
+- All links use correct relative paths
+- Navigation works when folder is zipped/unzipped
+
+---
+
+### Task 2.6: Package and Send Mockups to Cat
+**Priority:** High  
+**Effort:** Small (~1 hour)  
+**Status:** Not Started
+
+**Description:**  
+Prepare mockup files for delivery to Cat for review before Feb 17 funder presentation.
+
+**Requirements:**
+- Test all pages in multiple browsers (Chrome, Firefox, Safari)
+- Test on mobile (iPhone/Android or responsive mode)
+- Verify all relative paths work
+- Check video playback
+- Zip the entire `public-website-mockups/` folder
+- Write clear instructions for Cat on how to view mockups
+
+**Deliverables:**
+- Tested mockups (all browsers, mobile)
+- Zipped folder: `wwri-public-website-mockups.zip`
+- Instructions document/email for Cat:
+  - How to unzip and open files
+  - Which file to open: `themes/theme5-wildfire-sunset/index.html`
+  - How to navigate to domain pages
+  - What to look for / provide feedback on
+
+**Email to Cat Should Include:**
+- Link to download zip file (or attached if <25MB)
+- Clear unzip instructions
+- Browser recommendation (Chrome)
+- What you're showing: landing page + 4 domain pages with video placeholders
+- Request for feedback before Feb 17
+- Note that this is for funder review to get buy-in on video concept
+
+**Acceptance Criteria:**
+- All pages tested and working
+- Zip file created and ready to send
+- Instructions are clear and complete
+- Cat can successfully view mockups without assistance
 
 ---
 
@@ -275,10 +442,13 @@ Create a printable, policy-oriented report that can be generated from the system
 
 | Phase | Task | Owner | Deadline | Status |
 |-------|------|-------|----------|--------|
-| 1 | Dashboard indicator fix | Will | ASAP | Not Started |
-| 2.1 | Design research | Will | Feb 10 | Not Started |
-| 2.2 | HTML mockups (4-5 themes) | Will | Feb 15 | Not Started |
-| 2.3 | Media section template | Will | Feb 15 | Not Started |
+| 1 | Dashboard indicator fix | Will | ASAP | ✅ Complete |
+| 2.1 | Design research | Will | Feb 10 | ✅ Complete |
+| 2.2 | HTML mockups (5 themes) | Will | Feb 15 | ✅ Complete |
+| 2.3 | Add scroll indicator to video section | Will | Feb 13 | Not Started |
+| 2.4 | Build 4 domain pages | Will | Feb 15 | Not Started |
+| 2.5 | Wire up navigation | Will | Feb 15 | Not Started |
+| 2.6 | Package and send to Cat | Will | Feb 15 | Not Started |
 | - | **Funder Review** | Cat | **Feb 17** | - |
 | 3.1 | Incorporate feedback | Will | TBD | Blocked |
 | 3.2 | Video integration | Will + Cat | TBD | Blocked |
@@ -396,9 +566,51 @@ Create a printable, policy-oriented report that can be generated from the system
 
 ## Next Steps
 
-1. **Will Thompson:** Start dashboard indicator fix immediately
-2. **Will Thompson:** Begin design research and mockup creation
-3. **Cat Fong:** Prepare funder presentation materials
-4. **Cat Fong:** Identify 2 types of b-roll footage to provide
-5. **Both:** Check in mid-week (Feb 10) on mockup progress
-6. **Both:** Final review before Feb 17 funder meeting
+1. **Will Thompson:** ~~Start dashboard indicator fix immediately~~ ✅ Complete
+2. **Will Thompson:** ~~Begin design research and mockup creation~~ ✅ Complete
+3. **Will Thompson:** Add scroll indicator to video section (Task 2.3) - Feb 13
+4. **Will Thompson:** Build 4 domain pages with video placeholders (Task 2.4) - Feb 13-14
+5. **Will Thompson:** Wire up navigation between all pages (Task 2.5) - Feb 14
+6. **Will Thompson:** Package and send mockups to Cat (Task 2.6) - Feb 15
+7. **Cat Fong:** Review mockups and provide feedback - Feb 15-16
+8. **Cat Fong:** Prepare funder presentation materials - Feb 16
+9. **Both:** Final review before Feb 17 funder meeting
+
+---
+
+## Completion Notes
+
+### February 9, 2026 - Tasks 2.1 & 2.2 Complete
+
+**What Was Delivered:**
+- ✅ Design direction documentation (`public-website-mockups/docs/design-direction.md`)
+- ✅ Theme 1: Professional Gradient (Navy/teal, corporate, data-driven)
+- ✅ Theme 2: Earth & Fire (Green/orange, natural, community-focused)
+- ✅ Theme 3: Data Visualization Focus (Blue/gray, technical, analytical)
+- ✅ Theme 4: Balanced Storytelling (Warm earth tones, accessible, human-centered)
+- ✅ **Theme 5: Wildfire Sunset** (Deep browns/sunset oranges, dramatic, evocative) **⭐ ADDED**
+- ✅ Shared CSS utilities for animations and layouts
+- ✅ Shared JavaScript for progressive disclosure
+- ✅ README with overview and comparison
+
+**Location:** `/public-website-mockups/`
+
+**Theme 5 Addition:**
+Created at user request based on wildfire sunset color palette (#160e08, #dc7e49, #84325F, #8e4b27, #815e45). Features dramatic gradients, ember-glow effects, and authentic wildfire landscape aesthetic. Most emotionally resonant and visually striking theme. Theme 5 selected as primary direction.
+
+**Next Actions (Updated Feb 12, 2026):**
+1. ~~Cat to review all 5 themes~~ ✅ Theme 5 selected
+2. Add scroll indicator to video section (Task 2.3)
+3. Build 4 domain pages with embedded video placeholders (Task 2.4):
+   - Infrastructure
+   - Social Systems
+   - Natural Resources
+   - Planning & Governance
+4. Wire up navigation between all pages (Task 2.5)
+5. Test mockups in multiple browsers and mobile
+6. Package and send to Cat for review (Task 2.6)
+7. Cat presents to funders Feb 17
+8. After funder feedback, proceed to Task 3.1 (incorporate feedback)
+
+**Purpose of Domain Pages:**
+Demonstrate concept of embedded videos throughout site to get funder buy-in before Cat produces all video content. Placeholder videos will show where real footage will go.

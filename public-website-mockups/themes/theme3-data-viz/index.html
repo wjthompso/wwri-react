@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WWRI - Wildfire Resilience Index | Theme 3: Data Visualization Focus</title>
+  <meta name="description" content="Understanding wildfire resilience through data-driven insights and community preparedness">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Shared Styles -->
+  <link rel="stylesheet" href="../../assets/css/shared.css">
+  
+  <!-- Theme-Specific Styles -->
+  <style>
+    :root {
+      --primary-blue: #1565C0;
+      --primary-blue-dark: #0D47A1;
+      --secondary-teal: #00838F;
+      --accent-yellow: #F9A825;
+      --accent-pink: #D81B60;
+      --neutral-gray: #37474F;
+      --neutral-light: #ECEFF1;
+      --text-light: #ffffff;
+      --text-dark: #263238;
+    }
+
+    body {
+      background: #FAFAFA;
+      color: var(--text-dark);
+    }
+
+    /* Hero Section - Tech/Data Aesthetic */
+    .hero {
+      background: 
+        linear-gradient(135deg, var(--primary-blue-dark) 0%, var(--secondary-teal) 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Animated grid background */
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+      background-size: 50px 50px;
+      opacity: 0.5;
+      animation: gridScroll 20s linear infinite;
+    }
+
+    @keyframes gridScroll {
+      0% { background-position: 0 0; }
+      100% { background-position: 50px 50px; }
+    }
+
+    /* Data visualization accents */
+    .hero::after {
+      content: '';
+      position: absolute;
+      top: 10%;
+      right: 10%;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(249, 168, 37, 0.15) 0%, transparent 70%);
+      border-radius: 50%;
+      animation: pulse 8s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.15; }
+      50% { transform: scale(1.2); opacity: 0.25; }
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 3;
+      text-align: center;
+      color: var(--text-light);
+      max-width: 900px;
+      padding: 0 2rem;
+    }
+
+    .hero-content h1 {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+      letter-spacing: -0.02em;
+    }
+
+    .hero-content p {
+      font-size: clamp(1.125rem, 2vw, 1.5rem);
+      margin-bottom: 2rem;
+      opacity: 0.95;
+      font-weight: 400;
+    }
+
+    /* Glassmorphism data cards */
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 3rem;
+      flex-wrap: wrap;
+    }
+
+    .hero-stat-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      padding: 1.5rem 2rem;
+      min-width: 140px;
+      text-align: center;
+    }
+
+    .hero-stat-number {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--accent-yellow);
+      display: block;
+    }
+
+    .hero-stat-label {
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.9);
+      margin-top: 0.5rem;
+    }
+
+    /* Section styling - Clean, minimal */
+    .section {
+      background: white;
+    }
+
+    .section-alt {
+      background: var(--neutral-light);
+    }
+
+    .section-highlight {
+      background: linear-gradient(180deg, #E3F2FD 0%, #F5F5F5 100%);
+    }
+
+    /* Content Cards - Sharp, Data-focused */
+    .tile-content {
+      padding: 2rem;
+    }
+
+    .tile-content h2 {
+      color: var(--primary-blue-dark);
+      margin-bottom: 1rem;
+      letter-spacing: -0.01em;
+    }
+
+    .tile-content .accent-line {
+      width: 100px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent-yellow) 0%, var(--accent-pink) 100%);
+      margin-bottom: 1.5rem;
+    }
+
+    /* Visual elements - Sharp edges, data viz style */
+    .tile-visual {
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    /* Data visualization placeholder */
+    .dataviz-placeholder {
+      background: linear-gradient(135deg, #263238 0%, #37474F 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .dataviz-placeholder::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60%;
+      background: 
+        linear-gradient(to top, 
+          var(--accent-yellow) 0%, 
+          transparent 20%,
+          var(--primary-blue) 40%,
+          transparent 60%,
+          var(--accent-pink) 80%,
+          transparent 100%
+        );
+      opacity: 0.3;
+      clip-path: polygon(
+        0% 100%, 10% 70%, 20% 80%, 30% 50%, 40% 60%, 
+        50% 30%, 60% 40%, 70% 20%, 80% 35%, 90% 25%, 100% 15%, 
+        100% 100%
+      );
+    }
+
+    /* CTA Buttons - Bold, data-driven colors */
+    .btn-theme-primary {
+      background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-teal) 100%);
+      color: white;
+      padding: 1rem 2.5rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      display: inline-block;
+      box-shadow: 0 4px 16px rgba(21, 101, 192, 0.3);
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 0.9rem;
+    }
+
+    .btn-theme-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(21, 101, 192, 0.4);
+    }
+
+    .btn-theme-secondary {
+      background: transparent;
+      color: var(--primary-blue);
+      padding: 1rem 2.5rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      display: inline-block;
+      border: 2px solid var(--primary-blue);
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 0.9rem;
+    }
+
+    .btn-theme-secondary:hover {
+      background: var(--primary-blue);
+      color: white;
+    }
+
+    /* Stats Grid - Technical aesthetic */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin: 3rem 0;
+    }
+
+    .stat-card {
+      text-align: center;
+      padding: 2rem;
+      background: white;
+      border-radius: 8px;
+      border-left: 4px solid var(--accent-yellow);
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    .stat-card:nth-child(2) { border-left-color: var(--primary-blue); }
+    .stat-card:nth-child(3) { border-left-color: var(--accent-pink); }
+
+    .stat-number {
+      font-size: 3.5rem;
+      font-weight: 700;
+      color: var(--primary-blue-dark);
+      margin-bottom: 0.5rem;
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 1rem;
+      color: var(--neutral-gray);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 0.85rem;
+    }
+
+    /* Domain Cards - Grid-based, technical */
+    .domains-grid-technical {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin: 3rem 0;
+    }
+
+    .domain-card-technical {
+      background: white;
+      border-radius: 8px;
+      padding: 2rem;
+      border-top: 4px solid var(--primary-blue);
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+    }
+
+    .domain-card-technical:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    .domain-card-technical:nth-child(1) { border-top-color: var(--accent-yellow); }
+    .domain-card-technical:nth-child(2) { border-top-color: var(--primary-blue); }
+    .domain-card-technical:nth-child(3) { border-top-color: var(--secondary-teal); }
+    .domain-card-technical:nth-child(4) { border-top-color: var(--accent-pink); }
+
+    .domain-number {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--neutral-gray);
+      opacity: 0.5;
+      margin-bottom: 1rem;
+      letter-spacing: 0.1em;
+    }
+
+    .domain-title-technical {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 1rem;
+    }
+
+    .domain-description-technical {
+      font-size: 0.95rem;
+      color: var(--neutral-gray);
+      line-height: 1.6;
+    }
+
+    /* Footer */
+    .footer {
+      background: linear-gradient(135deg, var(--neutral-gray) 0%, #263238 100%);
+      color: white;
+      padding: 3rem 0 2rem;
+      text-align: center;
+    }
+
+    .footer a {
+      color: var(--accent-yellow);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 767px) {
+      .hero-stats {
+        gap: 1rem;
+      }
+      
+      .hero-stat-card {
+        min-width: 120px;
+        padding: 1rem 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body id="top">
+
+  <!-- Hero Section -->
+  <section id="hero-section" class="section-hero hero">
+    <div class="hero-content container">
+      <h1 id="hero-heading" class="fade-in">Data-Driven Wildfire Resilience</h1>
+      <p id="hero-subheading" class="fade-in">Quantifying community preparedness through comprehensive analysis</p>
+      <div class="hero-stats" id="hero-stats">
+        <div class="hero-stat-card fade-in" id="hero-stat-1">
+          <span class="hero-stat-number" id="hero-stat-number-1">120+</span>
+          <span class="hero-stat-label" id="hero-stat-label-1">Indicators</span>
+        </div>
+        <div class="hero-stat-card fade-in" id="hero-stat-2">
+          <span class="hero-stat-number" id="hero-stat-number-2">15</span>
+          <span class="hero-stat-label" id="hero-stat-label-2">States</span>
+        </div>
+        <div class="hero-stat-card fade-in" id="hero-stat-3">
+          <span class="hero-stat-number" id="hero-stat-number-3">200+</span>
+          <span class="hero-stat-label" id="hero-stat-label-3">Communities</span>
+        </div>
+      </div>
+      <a href="#what-is-wri" id="hero-cta" class="btn-theme-primary fade-in" style="margin-top: 2rem;">View the Data</a>
+    </div>
+    <div class="scroll-indicator" id="scroll-indicator">↓</div>
+  </section>
+
+  <!-- What is WRI Section -->
+  <section id="what-is-wri" class="section">
+    <div class="container">
+      <div class="grid-two-col tile-left-right">
+        <div class="tile-visual fade-in">
+          <div class="placeholder-image dataviz-placeholder" id="wri-placeholder-image" style="aspect-ratio: 16/9;">
+            <div style="position: relative; z-index: 2; color: white; padding: 2rem;">
+              <strong>Data Visualization</strong><br>
+              Cat to provide: Index map visualization<br>
+              Suggested: Heat map of resilience scores
+            </div>
+          </div>
+        </div>
+        <div class="tile-content fade-in">
+          <div class="accent-line" id="wri-accent-line"></div>
+          <h2 id="wri-heading" class="heading-lg">The Wildfire Resilience Index</h2>
+          <p id="wri-description-1" class="body-text">
+            Lorem ipsum dolor sit amet. A comprehensive, evidence-based assessment framework that quantifies community preparedness across multiple domains.
+          </p>
+          <p id="wri-description-2" class="body-text">
+            Sed do eiusmod tempor incididunt. Our methodology synthesizes over 120 indicators from infrastructure systems, social vulnerability, natural resource conditions, and planning frameworks into actionable insights.
+          </p>
+          <a href="#" id="wri-learn-more" class="btn-theme-secondary">Technical Documentation</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Resilience Section -->
+  <section id="why-resilience" class="section section-highlight">
+    <div class="container">
+      <div class="grid-two-col tile-right-left">
+        <div class="tile-visual fade-in">
+          <div class="placeholder-image dataviz-placeholder" id="resilience-placeholder-image" style="aspect-ratio: 16/9;">
+            <div style="position: relative; z-index: 2; color: white; padding: 2rem;">
+              <strong>Trend Analysis</strong><br>
+              Cat to provide: Fire season trend data<br>
+              Suggested: Time series or comparative charts
+            </div>
+          </div>
+        </div>
+        <div class="tile-content fade-in">
+          <div class="accent-line" id="resilience-accent-line"></div>
+          <h2 id="resilience-heading" class="heading-lg">Evidence of Growing Risk</h2>
+          <p id="resilience-description-1" class="body-text">
+            Ut enim ad minim veniam. Quantitative analysis demonstrates escalating wildfire frequency and severity across Western United States regions over the past three decades.
+          </p>
+          <p id="resilience-description-2" class="body-text">
+            Duis aute irure dolor. Resilience metrics enable evidence-based resource allocation, policy development, and strategic planning for wildfire adaptation.
+          </p>
+          <div class="stats-grid" id="resilience-stats">
+            <div class="stat-card fade-in" id="stat-card-1">
+              <div class="stat-number" id="stat-number-1">247%</div>
+              <div class="stat-label" id="stat-label-1">Fire Season Increase</div>
+            </div>
+            <div class="stat-card fade-in" id="stat-card-2">
+              <div class="stat-number" id="stat-number-2">8.5M</div>
+              <div class="stat-label" id="stat-label-2">Acres Burned (2023)</div>
+            </div>
+            <div class="stat-card fade-in" id="stat-card-3">
+              <div class="stat-number" id="stat-number-3">$4.2B</div>
+              <div class="stat-label" id="stat-label-3">Economic Impact</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- What is an Index Section -->
+  <section id="what-is-index" class="section">
+    <div class="container">
+      <div class="grid-two-col tile-left-right">
+        <div class="tile-visual fade-in">
+          <div class="placeholder-image dataviz-placeholder" id="index-placeholder-image" style="aspect-ratio: 16/9;">
+            <div style="position: relative; z-index: 2; color: white; padding: 2rem;">
+              <strong>Methodology Diagram</strong><br>
+              Cat to provide: Index structure visualization<br>
+              Suggested: Flowchart or hierarchical diagram
+            </div>
+          </div>
+        </div>
+        <div class="tile-content fade-in">
+          <div class="accent-line" id="index-accent-line"></div>
+          <h2 id="index-heading" class="heading-lg">Index Methodology</h2>
+          <p id="index-description-1" class="body-text">
+            Excepteur sint occaecat cupidatat. An index employs composite scoring algorithms to aggregate multidimensional data into normalized, interpretable metrics.
+          </p>
+          <p id="index-description-2" class="body-text">
+            Sunt in culpa qui officia. Our framework utilizes weighted indicators across four domains, validated through statistical analysis and expert consultation.
+          </p>
+          <a href="#" id="index-methodology-link" class="btn-theme-secondary">Access Methods Paper</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Domains Overview Section -->
+  <section id="domains-overview" class="section section-alt">
+    <div class="container">
+      <div class="text-center mb-4" id="domains-header">
+        <h2 id="domains-heading" class="heading-lg fade-in">Four Analytical Domains</h2>
+        <p id="domains-description" class="body-text fade-in" style="max-width: 700px; margin: 0 auto;">
+          Comprehensive resilience assessment requires integrated analysis across infrastructure, social, natural, and planning dimensions.
+        </p>
+      </div>
+      <div class="domains-grid-technical" id="domains-grid">
+        <div class="domain-card-technical fade-in" id="domain-card-infrastructure">
+          <div class="domain-number" id="domain-number-infrastructure">01</div>
+          <div class="domain-title-technical" id="domain-title-infrastructure">Infrastructure</div>
+          <p class="domain-description-technical" id="domain-description-infrastructure">
+            Critical systems including transportation networks, utilities, communication infrastructure, and emergency response capacity.
+          </p>
+        </div>
+        <div class="domain-card-technical fade-in" id="domain-card-social">
+          <div class="domain-number" id="domain-number-social">02</div>
+          <div class="domain-title-technical" id="domain-title-social">Social Vulnerability</div>
+          <p class="domain-description-technical" id="domain-description-social">
+            Demographic factors, community capacity, social networks, and economic indicators affecting adaptive capacity.
+          </p>
+        </div>
+        <div class="domain-card-technical fade-in" id="domain-card-natural">
+          <div class="domain-number" id="domain-number-natural">03</div>
+          <div class="domain-title-technical" id="domain-title-natural">Natural Resources</div>
+          <p class="domain-description-technical" id="domain-description-natural">
+            Ecological conditions, forest health metrics, fuel load assessments, and topographical risk factors.
+          </p>
+        </div>
+        <div class="domain-card-technical fade-in" id="domain-card-planning">
+          <div class="domain-number" id="domain-number-planning">04</div>
+          <div class="domain-title-technical" id="domain-title-planning">Planning & Governance</div>
+          <p class="domain-description-technical" id="domain-description-planning">
+            Policy frameworks, preparedness plans, land use regulations, and institutional coordination mechanisms.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to Action Section -->
+  <section id="cta-section" class="section section-highlight">
+    <div class="container text-center" id="cta-content">
+      <h2 id="cta-heading" class="heading-lg fade-in">Access the Interactive Dashboard</h2>
+      <p id="cta-description" class="body-text fade-in" style="max-width: 600px; margin: 0 auto 2rem;">
+        Explore detailed analytics, compare jurisdictions, and generate custom reports using our comprehensive data platform.
+      </p>
+      <a href="#" id="cta-button" class="btn-theme-primary fade-in">Launch Platform</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer" id="footer">
+    <div class="container" id="footer-content">
+      <p id="footer-text">&copy; 2026 Wildfire Resilience Index. Funded by the <a href="#" id="footer-link-moore">Moore Foundation</a>.</p>
+      <p id="footer-disclaimer" class="caption-text mt-2">
+        Design mockup. Placeholder content only. Final content by Cat Fong.
+      </p>
+    </div>
+  </footer>
+
+  <!-- Shared JavaScript -->
+  <script src="../../assets/js/shared.js"></script>
+  
+  <!-- Theme-specific JavaScript -->
+  <script>
+    document.getElementById('scroll-indicator').addEventListener('click', () => {
+      document.getElementById('what-is-wri').scrollIntoView({ behavior: 'smooth' });
+    });
+  </script>
+</body>
+</html>

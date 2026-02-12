@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WWRI - Wildfire Resilience Index | Theme 2: Earth & Fire</title>
+  <meta name="description" content="Understanding wildfire resilience through data-driven insights and community preparedness">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Shared Styles -->
+  <link rel="stylesheet" href="../../assets/css/shared.css">
+  
+  <!-- Theme-Specific Styles -->
+  <style>
+    :root {
+      --primary-green: #1B5E20;
+      --primary-green-light: #2E7D32;
+      --secondary-orange: #D84315;
+      --secondary-orange-light: #E64A19;
+      --accent-tan: #8D6E63;
+      --accent-fresh: #43A047;
+      --text-light: #ffffff;
+      --text-dark: #263238;
+      --bg-cream: #F5F1E8;
+    }
+
+    body {
+      background: var(--bg-cream);
+      color: var(--text-dark);
+    }
+
+    /* Hero Section - Earth to Fire Gradient */
+    .hero {
+      background: linear-gradient(135deg, var(--primary-green) 0%, var(--secondary-orange-light) 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -10%;
+      width: 80%;
+      height: 200%;
+      background: radial-gradient(ellipse at center, rgba(255, 138, 0, 0.2) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 3;
+      text-align: center;
+      color: var(--text-light);
+      max-width: 900px;
+      padding: 0 2rem;
+    }
+
+    .hero-content h1 {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      text-shadow: 0 3px 15px rgba(0, 0, 0, 0.4);
+    }
+
+    .hero-content p {
+      font-size: clamp(1.125rem, 2vw, 1.5rem);
+      margin-bottom: 2rem;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .hero-video-placeholder {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 1;
+      background: 
+        linear-gradient(135deg, rgba(27, 94, 32, 0.9) 0%, transparent 50%),
+        linear-gradient(225deg, rgba(216, 67, 21, 0.8) 0%, transparent 50%),
+        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" /></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)" opacity="0.05"/></svg>');
+    }
+
+    /* Organic curved section dividers */
+    .section-curve {
+      position: relative;
+      padding: 6rem 0;
+    }
+
+    .section-curve::before {
+      content: '';
+      position: absolute;
+      top: -50px;
+      left: 0;
+      right: 0;
+      height: 100px;
+      background: var(--bg-cream);
+      clip-path: ellipse(70% 100% at 50% 0%);
+    }
+
+    .section-earth {
+      background: linear-gradient(180deg, var(--bg-cream) 0%, #E8E0D5 100%);
+    }
+
+    .section-fire {
+      background: linear-gradient(180deg, #FFE8D5 0%, #FFE0CC 100%);
+    }
+
+    /* Content Cards with Warm Aesthetic */
+    .tile-content {
+      padding: 2.5rem;
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 16px;
+      border: 2px solid rgba(141, 110, 99, 0.2);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    }
+
+    .tile-content h2 {
+      color: var(--primary-green);
+      margin-bottom: 1rem;
+    }
+
+    .tile-content .accent-line {
+      width: 80px;
+      height: 5px;
+      background: linear-gradient(90deg, var(--secondary-orange) 0%, var(--accent-fresh) 100%);
+      margin-bottom: 1.5rem;
+      border-radius: 3px;
+    }
+
+    /* Visual elements with rounded corners */
+    .tile-visual {
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    /* CTA Buttons - Warm Earth Tones */
+    .btn-theme-primary {
+      background: linear-gradient(135deg, var(--secondary-orange) 0%, var(--secondary-orange-light) 100%);
+      color: white;
+      padding: 1rem 2.5rem;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 600;
+      display: inline-block;
+      box-shadow: 0 6px 20px rgba(216, 67, 21, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .btn-theme-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 28px rgba(216, 67, 21, 0.4);
+    }
+
+    .btn-theme-secondary {
+      background: transparent;
+      color: var(--primary-green);
+      padding: 1rem 2.5rem;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 600;
+      display: inline-block;
+      border: 2px solid var(--primary-green);
+      transition: all 0.3s ease;
+    }
+
+    .btn-theme-secondary:hover {
+      background: var(--primary-green);
+      color: white;
+    }
+
+    /* Stats with Organic Feel */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      margin: 3rem 0;
+    }
+
+    .stat-card {
+      text-align: center;
+      padding: 2.5rem 2rem;
+      background: linear-gradient(135deg, rgba(27, 94, 32, 0.08) 0%, rgba(216, 67, 21, 0.08) 100%);
+      border-radius: 20px;
+      border: 2px solid rgba(141, 110, 99, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+    }
+
+    .stat-number {
+      font-size: 3rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary-green) 0%, var(--secondary-orange) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      font-size: 1.125rem;
+      color: var(--text-dark);
+      font-weight: 600;
+    }
+
+    /* Domain Cards with Rounded Aesthetic */
+    .domain-card {
+      padding: 2.5rem 2rem;
+      background: white;
+      border-radius: 20px;
+      border-left: 5px solid var(--accent-fresh);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+    }
+
+    .domain-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+    }
+
+    .domain-card:nth-child(1) { border-left-color: var(--primary-green); }
+    .domain-card:nth-child(2) { border-left-color: var(--secondary-orange); }
+    .domain-card:nth-child(3) { border-left-color: var(--accent-fresh); }
+    .domain-card:nth-child(4) { border-left-color: var(--accent-tan); }
+
+    .domain-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .domain-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 1rem;
+    }
+
+    .domain-description {
+      font-size: 1rem;
+      color: var(--text-dark);
+      opacity: 0.8;
+      line-height: 1.6;
+    }
+
+    /* Footer */
+    .footer {
+      background: linear-gradient(135deg, var(--primary-green) 0%, #0d3d0f 100%);
+      color: white;
+      padding: 3rem 0 2rem;
+      text-align: center;
+    }
+
+    .footer a {
+      color: var(--secondary-orange-light);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body id="top">
+
+  <!-- Hero Section -->
+  <section id="hero-section" class="section-hero hero">
+    <div class="hero-video-placeholder"></div>
+    <div class="hero-content container">
+      <h1 id="hero-heading" class="fade-in">Wildfire Resilience Starts Here</h1>
+      <p id="hero-subheading" class="fade-in">Empowering communities to prepare, respond, and recover from wildfire threats</p>
+      <a href="#what-is-wri" id="hero-cta" class="btn-theme-primary fade-in">Discover How</a>
+    </div>
+    <div class="scroll-indicator" id="scroll-indicator">↓</div>
+  </section>
+
+  <!-- What is WRI Section -->
+  <section id="what-is-wri" class="section section-curve">
+    <div class="container">
+      <div class="grid-two-col tile-left-right">
+        <div class="tile-visual fade-in">
+          <div class="placeholder-image" id="wri-placeholder-image">
+            <div>
+              <strong>Visual Placeholder</strong><br>
+              Cat to provide: Community resilience imagery<br>
+              Suggested: People + forest landscape
+            </div>
+          </div>
+        </div>
+        <div class="tile-content fade-in">
+          <div class="accent-line" id="wri-accent-line"></div>
+          <h2 id="wri-heading" class="heading-lg">What is the Wildfire Resilience Index?</h2>
+          <p id="wri-description-1" class="body-text">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Our index measures how prepared communities are to face wildfire threats across the Western United States.
+          </p>
+          <p id="wri-description-2" class="body-text">
+            Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. We combine data from infrastructure, social systems, natural resources, and planning to create a comprehensive resilience score.
+          </p>
+          <a href="#" id="wri-learn-more" class="btn-theme-secondary">Explore the Data</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Resilience Section -->
+  <section id="why-resilience" class="section section-earth">
+    <div class="container">
+      <div class="grid-two-col tile-right-left">
+        <div class="tile-visual fade-in">
+          <div class="placeholder-image" id="resilience-placeholder-image">
+            <div>
+              <strong>Visual Placeholder</strong><br>
+              Cat to provide: Wildfire urgency imagery<br>
+              Suggested: Fire season or recovery scenes
+            </div>
+          </div>
+        </div>
+        <div class="tile-content fade-in">
+          <div class="accent-line" id="resilience-accent-line"></div>
+          <h2 id="resilience-heading" class="heading-lg">Why Resilience Matters</h2>
+          <p id="resilience-description-1" class="body-text">
+            Ut enim ad minim veniam, quis nostrud exercitation. Climate change is making wildfire seasons longer, hotter, and more destructive. Communities need tools to prepare.
+          </p>
+          <p id="resilience-description-2" class="body-text">
+            Duis aute irure dolor in reprehenderit in voluptate. Resilience isn't just about fighting fires—it's about protecting homes, preserving ecosystems, and supporting the people who call these landscapes home.
+          </p>
+          <div class="stats-grid" id="resilience-stats">
+            <div class="stat-card fade-in" id="stat-card-1">
+              <div class="stat-number" id="stat-number-1">60M</div>
+              <div class="stat-label" id="stat-label-1">People at Risk</div>
+            </div>
+            <div class="stat-card fade-in" id="stat-card-2">
+              <div class="stat-number" id="stat-number-2">200+</div>
+              <div class="stat-label" id="stat-label-2">Communities Analyzed</div>
+            </div>
+            <div class="stat-card fade-in" id="stat-card-3">
+              <div class="stat-number" id="stat-number-3">4</div>
+              <div class="stat-label" id="stat-label-3">Key Domains</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- What is an Index Section -->
+  <section id="what-is-index" class="section section-fire">
+    <div class="container">
+      <div class="grid-two-col tile-left-right">
+        <div class="tile-visual fade-in">
+          <div class="placeholder-image" id="index-placeholder-image">
+            <div>
+              <strong>Visual Placeholder</strong><br>
+              Cat to provide: Data visualization<br>
+              Suggested: Map with color-coded resilience scores
+            </div>
+          </div>
+        </div>
+        <div class="tile-content fade-in">
+          <div class="accent-line" id="index-accent-line"></div>
+          <h2 id="index-heading" class="heading-lg">Understanding the Index</h2>
+          <p id="index-description-1" class="body-text">
+            Excepteur sint occaecat cupidatat non proident. An index turns complex data into simple, actionable scores. Think of it as a report card for wildfire preparedness.
+          </p>
+          <p id="index-description-2" class="body-text">
+            Sunt in culpa qui officia deserunt mollit. We analyze over 100 indicators across four domains to show where communities are strong and where they need support.
+          </p>
+          <a href="#" id="index-methodology-link" class="btn-theme-secondary">See Our Methods</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Domains Overview Section -->
+  <section id="domains-overview" class="section">
+    <div class="container">
+      <div class="text-center mb-4" id="domains-header">
+        <h2 id="domains-heading" class="heading-lg fade-in">Four Pillars of Resilience</h2>
+        <p id="domains-description" class="body-text fade-in" style="max-width: 700px; margin: 0 auto;">
+          Every community's resilience depends on interconnected systems. We measure all four to see the complete picture.
+        </p>
+      </div>
+      <div class="stats-grid" id="domains-grid">
+        <div class="domain-card fade-in" id="domain-card-infrastructure">
+          <span class="domain-icon" id="domain-icon-infrastructure">🏗️</span>
+          <div class="domain-title" id="domain-title-infrastructure">Infrastructure</div>
+          <p class="domain-description" id="domain-description-infrastructure">
+            Roads, power grids, water systems, and emergency response capacity that keep communities functioning during and after fires.
+          </p>
+        </div>
+        <div class="domain-card fade-in" id="domain-card-social">
+          <span class="domain-icon" id="domain-icon-social">👥</span>
+          <div class="domain-title" id="domain-title-social">Social Systems</div>
+          <p class="domain-description" id="domain-description-social">
+            Community networks, demographic factors, and social capital that determine how well people can support each other.
+          </p>
+        </div>
+        <div class="domain-card fade-in" id="domain-card-natural">
+          <span class="domain-icon" id="domain-icon-natural">🌲</span>
+          <div class="domain-title" id="domain-title-natural">Natural Resources</div>
+          <p class="domain-description" id="domain-description-natural">
+            Forest health, fuel loads, topography, and ecological conditions that influence fire behavior and recovery.
+          </p>
+        </div>
+        <div class="domain-card fade-in" id="domain-card-planning">
+          <span class="domain-icon" id="domain-icon-planning">📋</span>
+          <div class="domain-title" id="domain-title-planning">Planning & Policy</div>
+          <p class="domain-description" id="domain-description-planning">
+            Preparedness plans, land use policies, and governance structures that guide long-term resilience investments.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to Action Section -->
+  <section id="cta-section" class="section section-earth">
+    <div class="container text-center" id="cta-content">
+      <h2 id="cta-heading" class="heading-lg fade-in">See Resilience in Your Region</h2>
+      <p id="cta-description" class="body-text fade-in" style="max-width: 600px; margin: 0 auto 2rem;">
+        Explore interactive maps, compare communities, and discover where investments can make the biggest difference.
+      </p>
+      <a href="#" id="cta-button" class="btn-theme-primary fade-in">Explore the Dashboard</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer" id="footer">
+    <div class="container" id="footer-content">
+      <p id="footer-text">&copy; 2026 Wildfire Resilience Index. Supported by the <a href="#" id="footer-link-moore">Moore Foundation</a>.</p>
+      <p id="footer-disclaimer" class="caption-text mt-2">
+        Design mockup with placeholder content. Final content by Cat Fong.
+      </p>
+    </div>
+  </footer>
+
+  <!-- Shared JavaScript -->
+  <script src="../../assets/js/shared.js"></script>
+  
+  <!-- Theme-specific JavaScript -->
+  <script>
+    document.getElementById('scroll-indicator').addEventListener('click', () => {
+      document.getElementById('what-is-wri').scrollIntoView({ behavior: 'smooth' });
+    });
+  </script>
+</body>
+</html>

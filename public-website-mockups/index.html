@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WWRI Public Website Mockups - Theme Overview</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #1A237E 0%, #00897B 100%);
+      min-height: 100vh;
+      padding: 3rem 2rem;
+      color: white;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      margin-bottom: 1rem;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      opacity: 0.9;
+      margin-bottom: 0.5rem;
+    }
+
+    .metadata {
+      font-size: 0.95rem;
+      opacity: 0.8;
+      margin-top: 1rem;
+    }
+
+    .themes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .theme-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      padding: 2rem;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      color: white;
+      display: block;
+    }
+
+    .theme-card:hover {
+      transform: translateY(-5px);
+      background: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .theme-number {
+      display: inline-block;
+      width: 50px;
+      height: 50px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+    }
+
+    .theme-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+
+    .theme-subtitle {
+      font-size: 1.125rem;
+      opacity: 0.9;
+      margin-bottom: 1rem;
+      font-style: italic;
+    }
+
+    .theme-description {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      opacity: 0.85;
+      margin-bottom: 1.5rem;
+    }
+
+    .theme-best-for {
+      font-size: 0.875rem;
+      opacity: 0.8;
+      margin-bottom: 1rem;
+    }
+
+    .theme-best-for strong {
+      display: block;
+      margin-bottom: 0.25rem;
+      opacity: 1;
+    }
+
+    .btn-view {
+      display: inline-block;
+      padding: 0.875rem 1.75rem;
+      background: white;
+      color: #1A237E;
+      border-radius: 8px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      text-align: center;
+    }
+
+    .btn-view:hover {
+      background: #F9A825;
+      color: white;
+    }
+
+    .info-section {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .info-section h2 {
+      font-size: 1.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .info-section p {
+      line-height: 1.6;
+      opacity: 0.9;
+      margin-bottom: 1rem;
+    }
+
+    .info-section ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .info-section li {
+      padding: 0.5rem 0 0.5rem 1.5rem;
+      position: relative;
+      opacity: 0.9;
+    }
+
+    .info-section li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: #66BB6A;
+      font-weight: 700;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      opacity: 0.8;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 767px) {
+      body {
+        padding: 2rem 1rem;
+      }
+
+      .themes-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>WWRI Public Website Mockups</h1>
+      <p class="subtitle">5 Design Themes for Funder Review</p>
+      <p class="metadata">
+        <strong>Created:</strong> February 9, 2026<br>
+        <strong>Updated:</strong> February 9, 2026 (Theme 5 added)<br>
+        <strong>Review Date:</strong> February 17, 2026<br>
+        <strong>Developer:</strong> Will Thompson
+      </p>
+    </header>
+
+    <div class="info-section">
+      <h2>About These Mockups</h2>
+      <p>
+        These five themes demonstrate different design approaches for the WWRI public website. 
+        Each balances professional credibility with modern visual appeal, targeting policy makers, 
+        resource managers, and homeowners (45+ demographic).
+      </p>
+      <p><strong>All themes include:</strong></p>
+      <ul>
+        <li>Progressive disclosure (scroll-triggered animations)</li>
+        <li>Tile-based alternating layouts</li>
+        <li>Gradient backgrounds (not solid colors)</li>
+        <li>Mobile-friendly responsive design</li>
+        <li>Placeholder content ready for Cat's videos and copy</li>
+      </ul>
+    </div>
+
+    <div class="themes-grid">
+      <a href="themes/theme1-professional-gradient/index.html" class="theme-card">
+        <div class="theme-number">1</div>
+        <h2 class="theme-title">Professional Gradient</h2>
+        <p class="theme-subtitle">Modern Corporate, Data-Driven</p>
+        <p class="theme-description">
+          Navy and teal gradients with clean typography, generous whitespace, and subtle 
+          glassmorphism. Sharp, professional aesthetic that conveys credibility and institutional trust.
+        </p>
+        <div class="theme-best-for">
+          <strong>Best For:</strong>
+          Policy makers, institutional stakeholders, grant reviewers
+        </div>
+        <span class="btn-view">View Theme 1 →</span>
+      </a>
+
+      <a href="themes/theme2-earth-fire/index.html" class="theme-card">
+        <div class="theme-number">2</div>
+        <h2 class="theme-title">Earth & Fire</h2>
+        <p class="theme-subtitle">Natural, Grounded, Hopeful</p>
+        <p class="theme-description">
+          Green and orange earth tones with organic shapes and curved dividers. Warmer aesthetic 
+          that emphasizes the human and environmental connection to wildfire resilience.
+        </p>
+        <div class="theme-best-for">
+          <strong>Best For:</strong>
+          Resource managers, community leaders, environmental advocates
+        </div>
+        <span class="btn-view">View Theme 2 →</span>
+      </a>
+
+      <a href="themes/theme3-data-viz/index.html" class="theme-card">
+        <div class="theme-number">3</div>
+        <h2 class="theme-title">Data Visualization Focus</h2>
+        <p class="theme-subtitle">Technical, Analytical, Evidence-Based</p>
+        <p class="theme-description">
+          Cool blues and grays with grid patterns and sharp edges. Emphasis on data, charts, 
+          and technical credibility. Clean, minimal aesthetic that lets data speak.
+        </p>
+        <div class="theme-best-for">
+          <strong>Best For:</strong>
+          Researchers, technical audiences, data scientists
+        </div>
+        <span class="btn-view">View Theme 3 →</span>
+      </a>
+
+      <a href="themes/theme4-balanced-storytelling/index.html" class="theme-card">
+        <div class="theme-number">4</div>
+        <h2 class="theme-title">Balanced Storytelling</h2>
+        <p class="theme-subtitle">Human-Centered, Accessible, Warm</p>
+        <p class="theme-description">
+          Warm earth tones with rounded corners and storytelling approach. Most accessible and 
+          friendly aesthetic. Balances data with narrative, perfect for broad public appeal.
+        </p>
+        <div class="theme-best-for">
+          <strong>Best For:</strong>
+          Homeowners, general public, broad community engagement
+        </div>
+        <span class="btn-view">View Theme 4 →</span>
+      </a>
+
+      <a href="themes/theme5-wildfire-sunset/index.html" class="theme-card" style="border: 3px solid rgba(220, 126, 73, 0.5);">
+        <div class="theme-number" style="background: linear-gradient(135deg, #dc7e49 0%, #84325F 100%);">5</div>
+        <h2 class="theme-title" style="color: #dc7e49;">Wildfire Sunset ⭐ NEW</h2>
+        <p class="theme-subtitle">Dramatic, Evocative, Authentic</p>
+        <p class="theme-description">
+          Deep browns and warm sunset oranges inspired by actual wildfire landscapes. Dramatic 
+          gradients with ember-glow effects. Most emotionally resonant and visually striking theme.
+        </p>
+        <div class="theme-best-for">
+          <strong>Best For:</strong>
+          Bold visual storytelling, emotional connection, all audiences
+        </div>
+        <span class="btn-view" style="background: linear-gradient(135deg, #dc7e49 0%, #84325F 100%); color: white; border: none;">View Theme 5 →</span>
+      </a>
+    </div>
+
+    <div class="info-section">
+      <h2>Questions for Funder Review</h2>
+      <ul>
+        <li>Which theme best represents WWRI's mission and values?</li>
+        <li>Are the gradients and animations appropriate for this audience?</li>
+        <li>Should we use Be Vietnam Pro or switch to Montserrat font?</li>
+        <li>Do any themes feel "too flashy" or "too plain"?</li>
+        <li>Budget approval for professional video production?</li>
+      </ul>
+    </div>
+
+    <footer>
+      <p>
+        &copy; 2026 Wildfire Resilience Index | Tasks 2.1 & 2.2 Complete<br>
+        <strong>Next:</strong> Funder review (Feb 17) → Incorporate feedback (Task 3.1) → Video integration (Task 3.2)
+      </p>
+    </footer>
+  </div>
+</body>
+</html>

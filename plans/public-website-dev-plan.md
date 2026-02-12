@@ -20,7 +20,7 @@ Development of public-facing WWRI website pages (separate from the dashboard app
 | 1 | Dashboard indicator fix (default expanded domain) | 🔥 High | Small (~1hr) | ASAP | ✅ Complete |
 | 2.1 | Research & Design Direction | 🔥 High | Medium (4-8hrs) | Feb 10 | ✅ Complete |
 | 2.2 | Create HTML/CSS Mockups (5 themes) | 🔥 High | Large (16-24hrs) | Feb 15 | ✅ Complete |
-| 2.3 | Add scroll indicator to video section | 🔥 High | Small (~30min) | Feb 13 | ⬜ Not Started |
+| 2.3 | Add scroll indicator to video section | 🔥 High | Small (~30min) | Feb 13 | ✅ Complete |
 | 2.4 | Build 4 Domain Pages (Infrastructure, Social, Natural, Planning) | 🔥 High | Medium (5-7hrs) | Feb 15 | ⬜ Not Started |
 | 2.5 | Wire up navigation between all pages | 🟡 Medium | Small (~30min) | Feb 15 | ⬜ Not Started |
 | 2.6 | Package and send mockups to Cat | 🔥 High | Small (~1hr) | Feb 15 | ⬜ Not Started |
@@ -29,7 +29,7 @@ Development of public-facing WWRI website pages (separate from the dashboard app
 | 3.2 | Video/Visual Assets Integration | 🔥 High | TBD | TBD | ⬜ Blocked |
 | 4.1 | Printable Policy Report | 🟢 Low | TBD | TBD | ⏸️ On Hold |
 
-**Progress:** 3/10 complete (4 pending, 2 blocked, 1 on hold)
+**Progress:** 4/10 complete (3 pending, 2 blocked, 1 on hold)
 
 **Note:** Task 1 was already completed as part of post-jan23-meeting-plan (Task 14).
 
@@ -161,28 +161,16 @@ Create 4-5 distinct theme mockups showing different layout and styling approache
 ### Task 2.3: Add Scroll Indicator to Video Section
 **Priority:** High  
 **Effort:** Small (~30 minutes)  
-**Status:** Not Started
+**Status:** ✅ Complete (Feb 12, 2026)
 
 **Description:**  
 Add a visual scroll-down arrow/indicator to the video section (first thing users see) to signal that there's more content below.
 
-**Requirements:**
-- Place scroll indicator at bottom of video section
-- Match Theme 5 aesthetic (wildfire sunset colors)
-- Animate (bounce/pulse) to draw attention
-- On click, smoothly scroll to hero section below
-- Should be visible and obvious on both desktop and mobile
-
-**Implementation:**
-- Add scroll indicator element overlaying video section
-- Style with Theme 5 colors (orange/magenta gradient)
-- Use CSS animation for movement
-- Wire up click handler to scroll to #hero-section
-
-**Acceptance Criteria:**
-- Scroll indicator is immediately visible when page loads
-- Clicking/tapping scrolls smoothly to content below
-- Styling is consistent with Theme 5 aesthetic
+**Implementation (as built):**
+- Minimal white arrow (no button, no "Scroll" text)
+- Fixed at bottom of viewport; fades out as user scrolls
+- Bounce animation to draw attention
+- Click scrolls smoothly to hero section below
 - Works on mobile and desktop
 
 ---
@@ -445,7 +433,7 @@ Create a printable, policy-oriented report that can be generated from the system
 | 1 | Dashboard indicator fix | Will | ASAP | ✅ Complete |
 | 2.1 | Design research | Will | Feb 10 | ✅ Complete |
 | 2.2 | HTML mockups (5 themes) | Will | Feb 15 | ✅ Complete |
-| 2.3 | Add scroll indicator to video section | Will | Feb 13 | Not Started |
+| 2.3 | Add scroll indicator to video section | Will | Feb 13 | ✅ Complete |
 | 2.4 | Build 4 domain pages | Will | Feb 15 | Not Started |
 | 2.5 | Wire up navigation | Will | Feb 15 | Not Started |
 | 2.6 | Package and send to Cat | Will | Feb 15 | Not Started |
@@ -568,7 +556,7 @@ Create a printable, policy-oriented report that can be generated from the system
 
 1. **Will Thompson:** ~~Start dashboard indicator fix immediately~~ ✅ Complete
 2. **Will Thompson:** ~~Begin design research and mockup creation~~ ✅ Complete
-3. **Will Thompson:** Add scroll indicator to video section (Task 2.3) - Feb 13
+3. **Will Thompson:** ~~Add scroll indicator to video section (Task 2.3)~~ ✅ Complete
 4. **Will Thompson:** Build 4 domain pages with video placeholders (Task 2.4) - Feb 13-14
 5. **Will Thompson:** Wire up navigation between all pages (Task 2.5) - Feb 14
 6. **Will Thompson:** Package and send mockups to Cat (Task 2.6) - Feb 15
@@ -600,7 +588,7 @@ Created at user request based on wildfire sunset color palette (#160e08, #dc7e49
 
 **Next Actions (Updated Feb 12, 2026):**
 1. ~~Cat to review all 5 themes~~ ✅ Theme 5 selected
-2. Add scroll indicator to video section (Task 2.3)
+2. ~~Add scroll indicator to video section (Task 2.3)~~ ✅ Complete
 3. Build 4 domain pages with embedded video placeholders (Task 2.4):
    - Infrastructure
    - Social Systems
@@ -614,3 +602,11 @@ Created at user request based on wildfire sunset color palette (#160e08, #dc7e49
 
 **Purpose of Domain Pages:**
 Demonstrate concept of embedded videos throughout site to get funder buy-in before Cat produces all video content. Placeholder videos will show where real footage will go.
+
+### February 12, 2026 - Task 2.3 Complete
+
+**What Was Delivered:**
+- Minimal white arrow scroll indicator at bottom of video section (Theme 5)
+- Fixed at viewport bottom; fades out as user scrolls past video
+- Bounce animation; click scrolls smoothly to hero section
+- No button background or "Scroll" text (refined per feedback)

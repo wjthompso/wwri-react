@@ -366,6 +366,52 @@
       object-fit: cover;
     }
 
+    /* Scroll Indicator - just a clean white arrow */
+    .video-showcase .scroll-indicator {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .scroll-indicator-icon {
+      font-size: 3rem;
+      color: white;
+      filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+      animation: bounce 2s ease-in-out infinite;
+      transition: transform 0.3s ease;
+    }
+
+    .scroll-indicator:hover .scroll-indicator-icon {
+      transform: translateY(-5px);
+    }
+
+    @keyframes bounce {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+
+    /* Mobile adjustments */
+    @media (max-width: 767px) {
+      .video-showcase .scroll-indicator {
+        bottom: 1.5rem;
+      }
+      
+      .scroll-indicator-icon {
+        font-size: 2.5rem;
+      }
+    }
+
     .hero-content {
       position: relative;
       z-index: 3;
@@ -777,6 +823,11 @@
         Your browser does not support the video tag.
       </video>
     </div>
+    
+    <!-- Scroll Indicator - just the arrow -->
+    <div class="scroll-indicator" id="scroll-indicator">
+      <div class="scroll-indicator-icon" id="scroll-indicator-icon">↓</div>
+    </div>
   </section>
 
   <!-- Hero Section - SECOND with prominent CTAs -->
@@ -790,7 +841,6 @@
         <a href="#what-is-wri" id="hero-cta-learn" class="hero-cta-secondary">Learn More</a>
       </div>
     </div>
-    <div class="scroll-indicator" id="scroll-indicator">↓</div>
   </section>
 
   <!-- What is WRI Section -->
@@ -978,10 +1028,37 @@
   
   <!-- Theme-specific JavaScript -->
   <script>
-    // Scroll indicator - scrolls to What is WRI section
-    document.getElementById('scroll-indicator').addEventListener('click', () => {
-      document.getElementById('what-is-wri').scrollIntoView({ behavior: 'smooth' });
+    // Scroll indicator - fades out as user scrolls
+    const scrollIndicator = document.getElementById('scroll-indicator');
+    const videoSection = document.getElementById('video-section');
+    
+    // Click to scroll to hero section
+    scrollIndicator.addEventListener('click', () => {
+      document.getElementById('hero-section').scrollIntoView({ behavior: 'smooth' });
     });
+
+    // Fade out as user scrolls down
+    function handleScrollIndicator() {
+      const videoRect = videoSection.getBoundingClientRect();
+      const videoBottom = videoRect.bottom;
+      const scrollProgress = Math.max(0, 1 - (window.scrollY / (videoRect.height * 0.5)));
+      
+      // Fade out the indicator as user scrolls
+      scrollIndicator.style.opacity = scrollProgress;
+      
+      // Hide completely when scrolled past video
+      if (videoBottom < 100) {
+        scrollIndicator.style.display = 'none';
+      } else {
+        scrollIndicator.style.display = 'flex';
+      }
+    }
+
+    // Listen to scroll events
+    window.addEventListener('scroll', handleScrollIndicator);
+    
+    // Initial check
+    handleScrollIndicator();
 
     // Mobile menu toggle
     const mobileMenuToggle = document.getElementById('mobile-menu-toggle');

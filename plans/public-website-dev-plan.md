@@ -23,13 +23,13 @@ Development of public-facing WWRI website pages (separate from the dashboard app
 | 2.3 | Add scroll indicator to video section | 🔥 High | Small (~30min) | Feb 13 | ✅ Complete |
 | 2.4 | Build 4 Domain Pages (Infrastructure, Social, Natural, Planning) | 🔥 High | Medium (5-7hrs) | Feb 15 | ✅ Complete |
 | 2.5 | Wire up navigation between all pages | 🟡 Medium | Small (~30min) | Feb 15 | ✅ Complete |
-| 2.6 | Package and send mockups to Cat | 🔥 High | Small (~1hr) | Feb 15 | ⬜ Not Started |
+| 2.6 | Package and send mockups to Cat | 🔥 High | Small (~1hr) | Feb 15 | ✅ Complete |
 | - | **Funder Review** | - | - | **Feb 17** | - |
 | 3.1 | Incorporate Funder Feedback | 🔥 High | TBD | TBD | ⬜ Blocked |
 | 3.2 | Video/Visual Assets Integration | 🔥 High | TBD | TBD | ⬜ Blocked |
 | 4.1 | Printable Policy Report | 🟢 Low | TBD | TBD | ⏸️ On Hold |
 
-**Progress:** 6/10 complete (1 pending, 2 blocked, 1 on hold)
+**Progress:** 7/10 complete (0 pending, 2 blocked, 1 on hold)
 
 **Note:** Task 1 was already completed as part of post-jan23-meeting-plan (Task 14).
 

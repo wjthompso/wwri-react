@@ -1,9 +1,31 @@
 # Public Website Development Plan
 
-**Status:** Planning Phase  
+**Status:** 📦 ARCHIVED - See New Task Tracker Below  
 **Target:** Feb 17, 2026 (Funder Review)  
 **Stakeholder:** Cat Fong  
 **Based on:** Meeting Feb 3, 2026
+
+---
+
+## 🚨 Important Notice
+
+**This plan has been archived following Cat's Feb 13, 2026 mockup review.**
+
+A new high-priority task tracker has been created based on comprehensive feedback:
+
+**👉 See:** [`public-website-high-priority-tasks.md`](./public-website-high-priority-tasks.md)
+
+The new task tracker includes:
+- 8 high-priority tasks based on Cat's feedback
+- Individual task cards designed for parallel development across chat windows
+- Supporting documentation in `/plans/docs/`
+- Asset tracking and feedback log
+
+**Use the new task tracker for all future work on this project.**
+
+---
+
+## Archive: Original Plan
 
 ---
 

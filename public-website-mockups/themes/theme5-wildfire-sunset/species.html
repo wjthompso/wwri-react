@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Infrastructure | WRI - The Wildfire Resilience Index</title>
+    <title id="species-title">Species | WRI</title>
     <meta
       name="description"
-      content="Critical systems for community safety — road networks, power grids, water systems, and emergency response capacity."
+      content="Preparedness through strategic planning — emergency plans, land use policies, and multi-agency coordination that guide long-term resilience."
     />
 
     <!-- Google Fonts -->
@@ -45,6 +45,7 @@
       }
 
       /* ── Navigation Header ── */
+      /* Navigation Header */
       .site-header {
         position: fixed;
         top: 0;
@@ -107,6 +108,7 @@
         font-size: 1.25rem;
         font-weight: 700;
       }
+
       .logo-text-sub {
         font-size: 0.7rem;
         opacity: 0.8;
@@ -137,11 +139,7 @@
         left: 0;
         right: 0;
         height: 2px;
-        background: linear-gradient(
-          90deg,
-          var(--secondary-orange) 0%,
-          var(--accent-magenta) 100%
-        );
+        background: var(--secondary-orange);
         transform: scaleX(0);
         transition: transform 0.3s ease;
       }
@@ -149,14 +147,8 @@
       .site-nav a:hover {
         color: var(--secondary-orange);
       }
-      .site-nav a:hover::after {
-        transform: scaleX(1);
-      }
 
-      .site-nav a.active {
-        color: var(--secondary-orange);
-      }
-      .site-nav a.active::after {
+      .site-nav a:hover::after {
         transform: scaleX(1);
       }
 
@@ -220,11 +212,7 @@
       }
 
       .nav-cta {
-        background: linear-gradient(
-          135deg,
-          var(--secondary-orange) 0%,
-          var(--accent-magenta) 100%
-        );
+        background: var(--secondary-orange);
         color: white !important;
         padding: 0.75rem 1.5rem !important;
         border-radius: 50px;
@@ -242,7 +230,7 @@
         box-shadow: 0 6px 20px rgba(220, 126, 73, 0.4);
       }
 
-      /* Mobile menu */
+      /* Mobile menu toggle */
       .mobile-menu-toggle {
         display: none;
         flex-direction: column;
@@ -261,6 +249,19 @@
         transition: all 0.3s ease;
       }
 
+      .mobile-menu-toggle.active span:nth-child(1) {
+        transform: rotate(45deg) translate(8px, 8px);
+      }
+
+      .mobile-menu-toggle.active span:nth-child(2) {
+        opacity: 0;
+      }
+
+      .mobile-menu-toggle.active span:nth-child(3) {
+        transform: rotate(-45deg) translate(7px, -7px);
+      }
+
+      /* Mobile menu */
       @media (max-width: 768px) {
         .site-nav {
           position: fixed;
@@ -326,8 +327,8 @@
         background: linear-gradient(
           135deg,
           var(--primary-darkest) 0%,
-          var(--primary-brown) 40%,
-          var(--secondary-brown) 100%
+          var(--secondary-tan) 45%,
+          var(--secondary-orange) 100%
         );
       }
 
@@ -336,13 +337,13 @@
         position: absolute;
         inset: 0;
         background: radial-gradient(
-            ellipse at 30% 50%,
-            rgba(220, 126, 73, 0.25) 0%,
-            transparent 60%
+            ellipse at 35% 55%,
+            rgba(220, 126, 73, 0.2) 0%,
+            transparent 55%
           ),
           radial-gradient(
             ellipse at 70% 30%,
-            rgba(132, 50, 95, 0.2) 0%,
+            rgba(129, 94, 69, 0.25) 0%,
             transparent 50%
           );
         z-index: 1;
@@ -402,7 +403,6 @@
         overflow: hidden;
       }
 
-      /* Tile cards */
       .tile-content {
         padding: 2.5rem;
         background: rgba(255, 255, 255, 0.95);
@@ -594,21 +594,19 @@
         margin-bottom: 1rem;
         display: block;
       }
-
       .domain-nav-card .card-title {
         font-size: 1.2rem;
         font-weight: 700;
         color: var(--secondary-brown);
         margin-bottom: 0.5rem;
       }
-
       .domain-nav-card .card-desc {
         font-size: 0.9rem;
         line-height: 1.5;
         opacity: 0.75;
       }
 
-      /* ── CTA & Buttons ── */
+      /* ── Buttons ── */
       .btn-theme-primary {
         background: linear-gradient(
           135deg,
@@ -632,25 +630,6 @@
         box-shadow: 0 12px 36px rgba(220, 126, 73, 0.5);
       }
 
-      .btn-theme-secondary {
-        background: transparent;
-        color: var(--secondary-brown);
-        padding: 1.125rem 2.75rem;
-        border-radius: 50px;
-        text-decoration: none;
-        font-weight: 600;
-        display: inline-block;
-        border: 2px solid var(--secondary-brown);
-        transition: all 0.3s ease;
-        font-size: 1.05rem;
-      }
-
-      .btn-theme-secondary:hover {
-        background: var(--secondary-brown);
-        color: white;
-        box-shadow: 0 6px 20px rgba(142, 75, 39, 0.3);
-      }
-
       /* ── Footer ── */
       .footer {
         background: linear-gradient(
@@ -668,13 +647,11 @@
         text-decoration: none;
         font-weight: 600;
       }
-
       .footer a:hover {
         color: var(--accent-magenta);
         text-decoration: underline;
       }
 
-      /* ── Responsive ── */
       @media (max-width: 767px) {
         .domain-hero {
           min-height: 40vh;
@@ -985,17 +962,16 @@
             >
             <div class="nav-dropdown-menu" id="nav-dropdown-menu">
               <a href="livelihoods.html" id="nav-dd-livelihoods">Livelihoods</a>
-              <a
-                href="infrastructure.html"
-                id="nav-dd-infrastructure"
-                class="active"
+              <a href="infrastructure.html" id="nav-dd-infrastructure"
                 >Infrastructure</a
               >
               <a href="communities.html" id="nav-dd-communities">Communities</a>
               <a href="sense-of-place.html" id="nav-dd-sense-of-place"
                 >Sense of Place</a
               >
-              <a href="species.html" id="nav-dd-species">Species</a>
+              <a href="species.html" id="nav-dd-species" class="active"
+                >Species</a
+              >
               <a href="habitats.html" id="nav-dd-habitats">Habitats</a>
               <a href="water.html" id="nav-dd-water">Water</a>
               <a href="air-quality.html" id="nav-dd-air-quality">Air Quality</a>
@@ -1020,62 +996,67 @@
     <!-- ── Domain Hero ── -->
     <section class="domain-hero" id="domain-hero">
       <div class="domain-hero-content fade-in" id="domain-hero-content">
-        <span class="domain-hero-icon" id="domain-hero-icon">🏗️</span>
-        <h1 id="domain-hero-heading">Critical Systems for Community Safety</h1>
+        <span class="domain-hero-icon" id="domain-hero-icon">📋</span>
+        <h1 id="domain-hero-heading">
+          Preparedness Through Strategic Planning
+        </h1>
         <p id="domain-hero-subtitle">
-          Evaluating the roads, utilities, and emergency services that determine
-          whether communities can protect themselves and recover from wildfire.
+          Evaluating the emergency plans, land use policies, and multi-agency
+          coordination that transform reactive responses into proactive
+          resilience strategies.
         </p>
       </div>
     </section>
 
-    <!-- ── Section 1: Evacuation & Road Networks ── -->
-    <section class="section section-warm" id="section-roads">
+    <!-- ── Section 1: Emergency Plans & Preparedness ── -->
+    <section class="section section-warm" id="section-emergency">
       <div class="container">
         <div class="grid-two-col tile-left-right">
-          <div class="tile-visual fade-in" id="video-tile-roads">
-            <div class="video-placeholder" id="video-placeholder-roads">
-              <div class="video-play-btn" id="video-play-roads">
+          <div class="tile-visual fade-in" id="video-tile-emergency">
+            <div class="video-placeholder" id="video-placeholder-emergency">
+              <div class="video-play-btn" id="video-play-emergency">
                 <span>▶</span>
               </div>
               <strong>Cat to provide:</strong>
               <span class="video-desc"
-                >Footage of evacuation routes, road networks, and traffic flow
-                during emergency scenarios</span
+                >Footage of emergency planning meetings, tabletop exercises, and
+                community preparedness drills</span
               >
               <span class="video-format-note">16:9 inline video</span>
             </div>
           </div>
-          <div class="tile-content fade-in" id="content-roads">
-            <div class="accent-line" id="accent-roads"></div>
-            <h2 id="heading-roads" class="heading-lg">
-              Evacuation Routes &amp; Road Networks
+          <div class="tile-content fade-in" id="content-emergency">
+            <div class="accent-line" id="accent-emergency"></div>
+            <h2 id="heading-emergency" class="heading-lg">
+              Emergency Plans &amp; Community Preparedness
             </h2>
-            <p id="desc-roads-1" class="body-text">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. When
-              wildfire strikes, every minute counts. Road infrastructure
-              determines whether entire communities can evacuate safely or
-              become trapped.
+            <p id="desc-emergency-1" class="body-text">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. A plan on
+              paper is just the beginning. Effective emergency preparedness
+              means communities have practiced their response, know their
+              evacuation zones, and have clear chains of command that activate
+              within minutes.
             </p>
-            <p id="desc-roads-2" class="body-text">
+            <p id="desc-emergency-2" class="body-text">
               Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-              We analyze road density, alternative route availability, bridge
-              capacity, and historical traffic patterns during emergencies.
+              We evaluate the comprehensiveness, recency, and tested readiness
+              of Community Wildfire Protection Plans (CWPPs), emergency
+              operation plans, and evacuation protocols.
             </p>
-            <ul class="indicator-list" id="indicators-roads">
+            <ul class="indicator-list" id="indicators-emergency">
               <li>
-                <span class="indicator-dot"></span> Road density &amp;
-                connectivity
+                <span class="indicator-dot"></span> CWPP adoption &amp; recency
               </li>
               <li>
-                <span class="indicator-dot"></span> Evacuation route redundancy
+                <span class="indicator-dot"></span> Evacuation drill frequency
               </li>
               <li>
-                <span class="indicator-dot"></span> Bridge &amp; chokepoint
-                capacity
+                <span class="indicator-dot"></span> Emergency operations plan
+                quality
               </li>
               <li>
-                <span class="indicator-dot"></span> Emergency traffic management
+                <span class="indicator-dot"></span> Alert system coverage &amp;
+                testing
               </li>
             </ul>
           </div>
@@ -1083,107 +1064,116 @@
       </div>
     </section>
 
-    <!-- ── Section 2: Utilities & Power Systems ── -->
-    <section class="section section-dark" id="section-utilities">
+    <!-- ── Section 2: Land Use & Building Policies ── -->
+    <section class="section section-dark" id="section-land-use">
       <div class="container">
         <div class="grid-two-col tile-right-left">
-          <div class="tile-visual fade-in" id="video-tile-utilities">
-            <div class="video-placeholder" id="video-placeholder-utilities">
-              <div class="video-play-btn" id="video-play-utilities">
+          <div class="tile-visual fade-in" id="video-tile-land-use">
+            <div class="video-placeholder" id="video-placeholder-land-use">
+              <div class="video-play-btn" id="video-play-land-use">
                 <span>▶</span>
               </div>
               <strong>Cat to provide:</strong>
               <span class="video-desc"
-                >Footage of power grid infrastructure, utility lines, and
-                communication towers in fire-prone areas</span
+                >Footage of policy documents, zoning maps, building code
+                inspections, and land use planning sessions</span
               >
               <span class="video-format-note">16:9 inline video</span>
             </div>
           </div>
-          <div class="tile-content fade-in" id="content-utilities">
-            <div class="accent-line" id="accent-utilities"></div>
-            <h2 id="heading-utilities" class="heading-lg">
-              Power Grids &amp; Communication Systems
+          <div class="tile-content fade-in" id="content-land-use">
+            <div class="accent-line" id="accent-land-use"></div>
+            <h2 id="heading-land-use" class="heading-lg">
+              Land Use &amp; Building Policies
             </h2>
-            <p id="desc-utilities-1" class="body-text">
+            <p id="desc-land-use-1" class="body-text">
               Ut enim ad minim veniam, quis nostrud exercitation ullamco
-              laboris. Power infrastructure is both a vulnerability and a
-              lifeline — utility lines can spark fires while simultaneously
-              providing the communication networks needed for evacuation alerts.
+              laboris. Where we build — and how we build — matters more than
+              almost any other factor. Communities that enforce WUI building
+              codes and restrict development in high-risk areas dramatically
+              reduce their exposure.
             </p>
-            <p id="desc-utilities-2" class="body-text">
+            <p id="desc-land-use-2" class="body-text">
               Duis aute irure dolor in reprehenderit in voluptate velit esse
-              cillum dolore. We measure grid resilience, backup power
-              availability, and the reach of emergency alert systems across
-              communities.
+              cillum dolore. We assess zoning regulations, building code
+              adoption (especially WUI-specific codes), defensible space
+              enforcement, and whether new development is being directed away
+              from high-risk zones.
             </p>
-            <ul class="indicator-list" id="indicators-utilities">
+            <ul class="indicator-list" id="indicators-land-use">
               <li>
-                <span class="indicator-dot"></span> Power grid resilience &amp;
-                redundancy
+                <span class="indicator-dot"></span> WUI building code adoption
               </li>
               <li>
-                <span class="indicator-dot"></span> Utility line fire-risk
-                exposure
+                <span class="indicator-dot"></span> Defensible space enforcement
+                rate
               </li>
               <li>
-                <span class="indicator-dot"></span> Emergency communication
-                coverage
+                <span class="indicator-dot"></span> High-risk zone development
+                controls
               </li>
-              <li><span class="indicator-dot"></span> Backup power capacity</li>
+              <li>
+                <span class="indicator-dot"></span> Fire-resistant construction
+                standards
+              </li>
             </ul>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ── Section 3: Water Systems & Emergency Response ── -->
-    <section class="section section-sunset" id="section-water">
+    <!-- ── Section 3: Multi-Agency Coordination ── -->
+    <section class="section section-sunset" id="section-coordination">
       <div class="container">
         <div class="grid-two-col tile-left-right">
-          <div class="tile-visual fade-in" id="video-tile-water">
-            <div class="video-placeholder" id="video-placeholder-water">
-              <div class="video-play-btn" id="video-play-water">
+          <div class="tile-visual fade-in" id="video-tile-coordination">
+            <div class="video-placeholder" id="video-placeholder-coordination">
+              <div class="video-play-btn" id="video-play-coordination">
                 <span>▶</span>
               </div>
               <strong>Cat to provide:</strong>
               <span class="video-desc"
-                >Footage of water systems, fire hydrants, firefighting capacity,
-                and emergency response coordination</span
+                >Footage of multi-agency meetings, inter-jurisdictional
+                coordination, and collaborative governance activities</span
               >
               <span class="video-format-note">16:9 inline video</span>
             </div>
           </div>
-          <div class="tile-content fade-in" id="content-water">
-            <div class="accent-line" id="accent-water"></div>
-            <h2 id="heading-water" class="heading-lg">
-              Water Systems &amp; Firefighting Capacity
+          <div class="tile-content fade-in" id="content-coordination">
+            <div class="accent-line" id="accent-coordination"></div>
+            <h2 id="heading-coordination" class="heading-lg">
+              Multi-Agency Coordination &amp; Governance
             </h2>
-            <p id="desc-water-1" class="body-text">
-              Excepteur sint occaecat cupidatat non proident. Water availability
-              directly impacts firefighting success. Communities with robust
-              water systems and strategically placed fire stations have
-              significantly higher survival rates.
+            <p id="desc-coordination-1" class="body-text">
+              Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
+              officia deserunt mollit. Wildfires don't respect jurisdictional
+              boundaries. Effective resilience requires seamless coordination
+              between federal, state, county, and local agencies — plus NGOs and
+              community organizations.
             </p>
-            <p id="desc-water-2" class="body-text">
-              Sunt in culpa qui officia deserunt mollit anim id est laborum. Our
-              analysis covers hydrant density, water pressure reliability, fire
-              station proximity, and volunteer firefighter availability across
-              rural and urban areas.
+            <p id="desc-coordination-2" class="body-text">
+              Sunt in culpa qui officia deserunt mollit anim id est laborum. We
+              evaluate mutual aid agreements, joint training exercises, shared
+              communication systems, and the institutional frameworks that
+              enable rapid multi-agency response when fires cross borders.
             </p>
-            <ul class="indicator-list" id="indicators-water">
+            <ul class="indicator-list" id="indicators-coordination">
               <li>
-                <span class="indicator-dot"></span> Fire hydrant density &amp;
-                water pressure
+                <span class="indicator-dot"></span> Mutual aid agreement
+                coverage
               </li>
               <li>
-                <span class="indicator-dot"></span> Fire station response times
+                <span class="indicator-dot"></span> Joint training exercise
+                frequency
               </li>
               <li>
-                <span class="indicator-dot"></span> Firefighting resource
-                allocation
+                <span class="indicator-dot"></span> Interoperable communication
+                systems
               </li>
-              <li><span class="indicator-dot"></span> Mutual aid agreements</li>
+              <li>
+                <span class="indicator-dot"></span> Cross-jurisdictional
+                governance structures
+              </li>
             </ul>
           </div>
         </div>
@@ -1202,12 +1192,24 @@
             id="other-domains-desc"
             style="max-width: 650px; margin: 0 auto"
           >
-            Wildfire resilience depends on interconnected systems. Explore how
-            social networks, natural landscapes, and governance structures
-            contribute to community preparedness.
+            Good governance amplifies every other domain. See how infrastructure
+            investments, social networks, and natural resource management are
+            shaped by — and shape — planning decisions.
           </p>
         </div>
         <div class="domain-nav-grid" id="domain-nav-grid">
+          <a
+            href="infrastructure.html"
+            class="domain-nav-card fade-in"
+            id="domain-nav-infrastructure"
+          >
+            <span class="card-icon">🏗️</span>
+            <div class="card-title">Infrastructure</div>
+            <div class="card-desc">
+              Roads, power grids, water systems, and emergency services that
+              protect communities physically.
+            </div>
+          </a>
           <a
             href="social.html"
             class="domain-nav-card fade-in"
@@ -1232,18 +1234,6 @@
               fire behavior and recovery.
             </div>
           </a>
-          <a
-            href="planning.html"
-            class="domain-nav-card fade-in"
-            id="domain-nav-planning"
-          >
-            <span class="card-icon">📋</span>
-            <div class="card-title">Planning &amp; Governance</div>
-            <div class="card-desc">
-              Preparedness plans, land use policies, and coordination structures
-              guiding resilience investments.
-            </div>
-          </a>
         </div>
       </div>
     </section>
@@ -1252,7 +1242,7 @@
     <section class="section section-dark" id="section-cta">
       <div class="container text-center" id="cta-content">
         <h2 class="heading-lg fade-in" id="cta-heading">
-          See Infrastructure Scores in Your Community
+          See Governance Scores in Your Community
         </h2>
         <p
           class="body-text fade-in"
@@ -1263,8 +1253,9 @@
             color: rgba(255, 255, 255, 0.85);
           "
         >
-          Explore interactive maps and compare infrastructure resilience scores
-          across Western communities using the WRI Dashboard.
+          Explore how your community's planning and governance frameworks
+          compare — and where policy improvements can drive measurable
+          resilience gains.
         </p>
         <a href="#" class="btn-theme-primary fade-in" id="cta-button"
           >Launch Dashboard</a
@@ -1286,12 +1277,8 @@
       </div>
     </footer>
 
-    <!-- Shared JS -->
     <script src="../../assets/js/shared.js"></script>
-
-    <!-- Page JS -->
     <script>
-      // Mobile menu toggle
       const mobileMenuToggle = document.getElementById("mobile-menu-toggle");
       const siteNav = document.getElementById("site-nav");
 
@@ -1307,7 +1294,6 @@
         });
       });
 
-      // Header scroll effect
       const siteHeader = document.getElementById("site-header");
       window.addEventListener("scroll", () => {
         if (window.pageYOffset > 50) {

@@ -32,7 +32,7 @@
 | ID | Task | Priority | Est. Effort | Status | Dependencies |
 |----|------|----------|-------------|--------|--------------|
 | T1 | Logo Integration & Branding Update (WWRI → WRI) | 🔥 Critical | Medium (2-3hrs) | ✅ Complete | None |
-| T2 | Update Navigation & Page Structure | 🔥 Critical | Medium (2-3hrs) | ⬜ Not Started | None |
+| T2 | Update Navigation & Page Structure | 🔥 Critical | Medium (2-3hrs) | ✅ Complete | None |
 | T3 | Replace Video Hero with Photo + Overlay | 🔥 Critical | Small (1-2hrs) | ⬜ Not Started | None |
 | T4 | Color Palette Refactor (Remove Purple, Add Browns) | 🔥 Critical | Medium (2-4hrs) | ⬜ Not Started | None |
 | T5 | Content Integration from Cat's Document | 🔴 High | Large (4-6hrs) | ⬜ Not Started | T2 (pages must exist) |
@@ -40,7 +40,7 @@
 | T7 | Domain Page Content Updates | 🔴 High | Medium (2-3hrs) | ⬜ Not Started | T6 |
 | T8 | Map/Dashboard Language & Visual Fixes | 🟡 Medium | Small (1-2hrs) | ⬜ Not Started | T1 (branding) |
 
-**Progress:** 1/8 complete
+**Progress:** 2/8 complete
 
 ---
 
@@ -100,7 +100,7 @@ Update all branding from "WWRI" to "WRI" and integrate the actual logo asset tha
 ### T2: Update Navigation & Page Structure
 **Priority:** 🔥 Critical  
 **Effort:** Medium (2-3 hours)  
-**Status:** ⬜ Not Started  
+**Status:** ✅ Complete (Feb 13, 2026)  
 **Dependencies:** None
 
 #### Description
@@ -173,6 +173,24 @@ Header Nav:
 - **Question for Cat:** Confirm "In the News" page inclusion
 - Placeholder content can be minimal (hero + coming soon message)
 - Focus on structure first, content comes in T5
+
+#### Implementation Notes
+- ✅ Updated navigation in all existing theme pages (`index.html`, `infrastructure.html`, `social.html`, `natural-resources.html`, `planning.html`)
+- ✅ Added 7 new scaffold pages: `about.html`, `why-resilience.html`, `why-index.html`, `how-it-works.html`, `resources.html`, `in-the-news.html`, `meet-the-team.html`
+- ✅ Added domain placeholder pages to keep nav links functional: `economic.html`, `domain-6.html`, `domain-7.html`, `domain-8.html`
+- ✅ Standardized nav structure across all 16 pages with Home/About/Why pages/Domains/Resources/In the News/Meet the Team/Dashboard
+- ✅ Domain dropdown now includes 8 entries (5 named + 3 temporary placeholders pending Cat's final domain names)
+- ✅ **Updated domain names to match React app (Feb 13, 2026):**
+  - Renamed and updated all domain pages to match the 8 domains in `wwri-react/src/data/domainHierarchy.ts`
+  - Domain order: Livelihoods, Infrastructure, Communities, Sense of Place, Species, Habitats, Water, Air Quality
+  - Updated all navigation dropdowns across all 16 HTML files
+  - File renames: `economic.html` → `livelihoods.html`, `social.html` → `communities.html`, `natural-resources.html` → `sense-of-place.html`, `planning.html` → `species.html`, `domain-6.html` → `habitats.html`, `domain-7.html` → `water.html`, `domain-8.html` → `air-quality.html`
+- ✅ **Header consistency & nav fixes (Feb 13, 2026):**
+  - Standardized header height (80px), font family (Be Vietnam Pro), and styling across all 16 pages
+  - Removed purple gradient from nav hover/CTA; unified to orange accent
+  - Added "Header Size Consistency Lock" CSS: logo text (1.25rem / 0.7rem), Dashboard CTA (0.75rem 1.5rem padding)
+  - Standardized logo HTML structure (`.logo-icon` wrapper) across all pages
+  - Removed orphaned "Infrastructure" and "Communities" links that were rendering as top-level nav items; domain names now only appear inside Domains dropdown
 
 ---
 

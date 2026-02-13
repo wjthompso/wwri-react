@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Infrastructure | WRI - The Wildfire Resilience Index</title>
+    <title id="sense-of-place-title">Sense of Place | WRI</title>
     <meta
       name="description"
-      content="Critical systems for community safety — road networks, power grids, water systems, and emergency response capacity."
+      content="Landscape health and fire behavior — vegetation, fuel loads, topography, and watershed conditions that shape wildfire risk and ecosystem recovery."
     />
 
     <!-- Google Fonts -->
@@ -45,6 +45,7 @@
       }
 
       /* ── Navigation Header ── */
+      /* Navigation Header */
       .site-header {
         position: fixed;
         top: 0;
@@ -107,6 +108,7 @@
         font-size: 1.25rem;
         font-weight: 700;
       }
+
       .logo-text-sub {
         font-size: 0.7rem;
         opacity: 0.8;
@@ -137,11 +139,7 @@
         left: 0;
         right: 0;
         height: 2px;
-        background: linear-gradient(
-          90deg,
-          var(--secondary-orange) 0%,
-          var(--accent-magenta) 100%
-        );
+        background: var(--secondary-orange);
         transform: scaleX(0);
         transition: transform 0.3s ease;
       }
@@ -149,14 +147,8 @@
       .site-nav a:hover {
         color: var(--secondary-orange);
       }
-      .site-nav a:hover::after {
-        transform: scaleX(1);
-      }
 
-      .site-nav a.active {
-        color: var(--secondary-orange);
-      }
-      .site-nav a.active::after {
+      .site-nav a:hover::after {
         transform: scaleX(1);
       }
 
@@ -220,11 +212,7 @@
       }
 
       .nav-cta {
-        background: linear-gradient(
-          135deg,
-          var(--secondary-orange) 0%,
-          var(--accent-magenta) 100%
-        );
+        background: var(--secondary-orange);
         color: white !important;
         padding: 0.75rem 1.5rem !important;
         border-radius: 50px;
@@ -242,7 +230,7 @@
         box-shadow: 0 6px 20px rgba(220, 126, 73, 0.4);
       }
 
-      /* Mobile menu */
+      /* Mobile menu toggle */
       .mobile-menu-toggle {
         display: none;
         flex-direction: column;
@@ -261,6 +249,19 @@
         transition: all 0.3s ease;
       }
 
+      .mobile-menu-toggle.active span:nth-child(1) {
+        transform: rotate(45deg) translate(8px, 8px);
+      }
+
+      .mobile-menu-toggle.active span:nth-child(2) {
+        opacity: 0;
+      }
+
+      .mobile-menu-toggle.active span:nth-child(3) {
+        transform: rotate(-45deg) translate(7px, -7px);
+      }
+
+      /* Mobile menu */
       @media (max-width: 768px) {
         .site-nav {
           position: fixed;
@@ -326,7 +327,7 @@
         background: linear-gradient(
           135deg,
           var(--primary-darkest) 0%,
-          var(--primary-brown) 40%,
+          #2d3a1e 40%,
           var(--secondary-brown) 100%
         );
       }
@@ -336,13 +337,13 @@
         position: absolute;
         inset: 0;
         background: radial-gradient(
-            ellipse at 30% 50%,
-            rgba(220, 126, 73, 0.25) 0%,
-            transparent 60%
+            ellipse at 25% 40%,
+            rgba(80, 120, 50, 0.2) 0%,
+            transparent 55%
           ),
           radial-gradient(
-            ellipse at 70% 30%,
-            rgba(132, 50, 95, 0.2) 0%,
+            ellipse at 75% 60%,
+            rgba(220, 126, 73, 0.2) 0%,
             transparent 50%
           );
         z-index: 1;
@@ -402,7 +403,6 @@
         overflow: hidden;
       }
 
-      /* Tile cards */
       .tile-content {
         padding: 2.5rem;
         background: rgba(255, 255, 255, 0.95);
@@ -594,21 +594,19 @@
         margin-bottom: 1rem;
         display: block;
       }
-
       .domain-nav-card .card-title {
         font-size: 1.2rem;
         font-weight: 700;
         color: var(--secondary-brown);
         margin-bottom: 0.5rem;
       }
-
       .domain-nav-card .card-desc {
         font-size: 0.9rem;
         line-height: 1.5;
         opacity: 0.75;
       }
 
-      /* ── CTA & Buttons ── */
+      /* ── Buttons ── */
       .btn-theme-primary {
         background: linear-gradient(
           135deg,
@@ -632,25 +630,6 @@
         box-shadow: 0 12px 36px rgba(220, 126, 73, 0.5);
       }
 
-      .btn-theme-secondary {
-        background: transparent;
-        color: var(--secondary-brown);
-        padding: 1.125rem 2.75rem;
-        border-radius: 50px;
-        text-decoration: none;
-        font-weight: 600;
-        display: inline-block;
-        border: 2px solid var(--secondary-brown);
-        transition: all 0.3s ease;
-        font-size: 1.05rem;
-      }
-
-      .btn-theme-secondary:hover {
-        background: var(--secondary-brown);
-        color: white;
-        box-shadow: 0 6px 20px rgba(142, 75, 39, 0.3);
-      }
-
       /* ── Footer ── */
       .footer {
         background: linear-gradient(
@@ -668,13 +647,11 @@
         text-decoration: none;
         font-weight: 600;
       }
-
       .footer a:hover {
         color: var(--accent-magenta);
         text-decoration: underline;
       }
 
-      /* ── Responsive ── */
       @media (max-width: 767px) {
         .domain-hero {
           min-height: 40vh;
@@ -985,14 +962,14 @@
             >
             <div class="nav-dropdown-menu" id="nav-dropdown-menu">
               <a href="livelihoods.html" id="nav-dd-livelihoods">Livelihoods</a>
-              <a
-                href="infrastructure.html"
-                id="nav-dd-infrastructure"
-                class="active"
+              <a href="infrastructure.html" id="nav-dd-infrastructure"
                 >Infrastructure</a
               >
               <a href="communities.html" id="nav-dd-communities">Communities</a>
-              <a href="sense-of-place.html" id="nav-dd-sense-of-place"
+              <a
+                href="sense-of-place.html"
+                id="nav-dd-sense-of-place"
+                class="active"
                 >Sense of Place</a
               >
               <a href="species.html" id="nav-dd-species">Species</a>
@@ -1020,170 +997,170 @@
     <!-- ── Domain Hero ── -->
     <section class="domain-hero" id="domain-hero">
       <div class="domain-hero-content fade-in" id="domain-hero-content">
-        <span class="domain-hero-icon" id="domain-hero-icon">🏗️</span>
-        <h1 id="domain-hero-heading">Critical Systems for Community Safety</h1>
+        <span class="domain-hero-icon" id="domain-hero-icon">🌲</span>
+        <h1 id="domain-hero-heading">Landscape Health and Fire Behavior</h1>
         <p id="domain-hero-subtitle">
-          Evaluating the roads, utilities, and emergency services that determine
-          whether communities can protect themselves and recover from wildfire.
+          Assessing vegetation conditions, fuel loads, terrain, and watershed
+          health that determine how fire moves through landscapes and how
+          ecosystems recover.
         </p>
       </div>
     </section>
 
-    <!-- ── Section 1: Evacuation & Road Networks ── -->
-    <section class="section section-warm" id="section-roads">
+    <!-- ── Section 1: Vegetation & Fuel Loads ── -->
+    <section class="section section-warm" id="section-vegetation">
       <div class="container">
         <div class="grid-two-col tile-left-right">
-          <div class="tile-visual fade-in" id="video-tile-roads">
-            <div class="video-placeholder" id="video-placeholder-roads">
-              <div class="video-play-btn" id="video-play-roads">
+          <div class="tile-visual fade-in" id="video-tile-vegetation">
+            <div class="video-placeholder" id="video-placeholder-vegetation">
+              <div class="video-play-btn" id="video-play-vegetation">
                 <span>▶</span>
               </div>
               <strong>Cat to provide:</strong>
               <span class="video-desc"
-                >Footage of evacuation routes, road networks, and traffic flow
-                during emergency scenarios</span
+                >Footage of forest management, prescribed burns, and fuel load
+                conditions across Western landscapes</span
               >
               <span class="video-format-note">16:9 inline video</span>
             </div>
           </div>
-          <div class="tile-content fade-in" id="content-roads">
-            <div class="accent-line" id="accent-roads"></div>
-            <h2 id="heading-roads" class="heading-lg">
-              Evacuation Routes &amp; Road Networks
+          <div class="tile-content fade-in" id="content-vegetation">
+            <div class="accent-line" id="accent-vegetation"></div>
+            <h2 id="heading-vegetation" class="heading-lg">
+              Vegetation Health &amp; Fuel Loads
             </h2>
-            <p id="desc-roads-1" class="body-text">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. When
-              wildfire strikes, every minute counts. Road infrastructure
-              determines whether entire communities can evacuate safely or
-              become trapped.
+            <p id="desc-vegetation-1" class="body-text">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. A century
+              of fire suppression has left Western forests dangerously
+              overgrown. Dense undergrowth and accumulated dead material create
+              fuel conditions that turn manageable fires into catastrophic
+              infernos.
             </p>
-            <p id="desc-roads-2" class="body-text">
+            <p id="desc-vegetation-2" class="body-text">
               Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-              We analyze road density, alternative route availability, bridge
-              capacity, and historical traffic patterns during emergencies.
+              We analyze satellite imagery, vegetation indices, and ground-truth
+              surveys to map fuel load density, canopy closure, and areas where
+              forest management has reduced risk.
             </p>
-            <ul class="indicator-list" id="indicators-roads">
+            <ul class="indicator-list" id="indicators-vegetation">
               <li>
-                <span class="indicator-dot"></span> Road density &amp;
+                <span class="indicator-dot"></span> Fuel load density mapping
+              </li>
+              <li>
+                <span class="indicator-dot"></span> Canopy closure percentage
+              </li>
+              <li>
+                <span class="indicator-dot"></span> Defensible space compliance
+              </li>
+              <li>
+                <span class="indicator-dot"></span> Prescribed burn coverage
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Section 2: Topography & WUI ── -->
+    <section class="section section-dark" id="section-topography">
+      <div class="container">
+        <div class="grid-two-col tile-right-left">
+          <div class="tile-visual fade-in" id="video-tile-topography">
+            <div class="video-placeholder" id="video-placeholder-topography">
+              <div class="video-play-btn" id="video-play-topography">
+                <span>▶</span>
+              </div>
+              <strong>Cat to provide:</strong>
+              <span class="video-desc"
+                >Aerial footage of terrain, slope conditions, and wildland-urban
+                interface boundaries where homes meet wildlands</span
+              >
+              <span class="video-format-note">16:9 inline video</span>
+            </div>
+          </div>
+          <div class="tile-content fade-in" id="content-topography">
+            <div class="accent-line" id="accent-topography"></div>
+            <h2 id="heading-topography" class="heading-lg">
+              Topography &amp; Wildland-Urban Interface
+            </h2>
+            <p id="desc-topography-1" class="body-text">
+              Ut enim ad minim veniam, quis nostrud exercitation ullamco
+              laboris. Terrain is destiny in wildfire — steep slopes accelerate
+              fire spread dramatically, and narrow canyons create chimney
+              effects that propel flames at extraordinary speeds.
+            </p>
+            <p id="desc-topography-2" class="body-text">
+              Duis aute irure dolor in reprehenderit in voluptate velit esse
+              cillum dolore. The wildland-urban interface (WUI) is where the
+              greatest risk concentrates. We map where communities sit relative
+              to steep terrain and continuous fuels.
+            </p>
+            <ul class="indicator-list" id="indicators-topography">
+              <li>
+                <span class="indicator-dot"></span> Slope &amp; aspect analysis
+              </li>
+              <li><span class="indicator-dot"></span> WUI boundary exposure</li>
+              <li>
+                <span class="indicator-dot"></span> Canyon &amp; chimney-effect
+                zones
+              </li>
+              <li>
+                <span class="indicator-dot"></span> Fire spread modeling inputs
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Section 3: Watersheds & Ecosystem Recovery ── -->
+    <section class="section section-sunset" id="section-watersheds">
+      <div class="container">
+        <div class="grid-two-col tile-left-right">
+          <div class="tile-visual fade-in" id="video-tile-watersheds">
+            <div class="video-placeholder" id="video-placeholder-watersheds">
+              <div class="video-play-btn" id="video-play-watersheds">
+                <span>▶</span>
+              </div>
+              <strong>Cat to provide:</strong>
+              <span class="video-desc"
+                >Footage of watersheds, riparian corridors, post-fire recovery,
+                and ecosystem regeneration processes</span
+              >
+              <span class="video-format-note">16:9 inline video</span>
+            </div>
+          </div>
+          <div class="tile-content fade-in" id="content-watersheds">
+            <div class="accent-line" id="accent-watersheds"></div>
+            <h2 id="heading-watersheds" class="heading-lg">
+              Watersheds &amp; Ecosystem Recovery
+            </h2>
+            <p id="desc-watersheds-1" class="body-text">
+              Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
+              officia deserunt mollit. Healthy watersheds are nature's fire
+              breaks. Riparian corridors slow fire spread while providing
+              critical water sources for firefighting operations.
+            </p>
+            <p id="desc-watersheds-2" class="body-text">
+              Sunt in culpa qui officia deserunt mollit anim id est laborum.
+              Beyond active fire, landscape recovery determines long-term
+              resilience. We assess soil stability, erosion risk after burns,
+              and the ecosystem's natural capacity to regenerate.
+            </p>
+            <ul class="indicator-list" id="indicators-watersheds">
+              <li>
+                <span class="indicator-dot"></span> Watershed health index
+              </li>
+              <li>
+                <span class="indicator-dot"></span> Riparian corridor
                 connectivity
               </li>
               <li>
-                <span class="indicator-dot"></span> Evacuation route redundancy
+                <span class="indicator-dot"></span> Post-fire erosion risk
               </li>
               <li>
-                <span class="indicator-dot"></span> Bridge &amp; chokepoint
-                capacity
+                <span class="indicator-dot"></span> Ecosystem recovery potential
               </li>
-              <li>
-                <span class="indicator-dot"></span> Emergency traffic management
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ── Section 2: Utilities & Power Systems ── -->
-    <section class="section section-dark" id="section-utilities">
-      <div class="container">
-        <div class="grid-two-col tile-right-left">
-          <div class="tile-visual fade-in" id="video-tile-utilities">
-            <div class="video-placeholder" id="video-placeholder-utilities">
-              <div class="video-play-btn" id="video-play-utilities">
-                <span>▶</span>
-              </div>
-              <strong>Cat to provide:</strong>
-              <span class="video-desc"
-                >Footage of power grid infrastructure, utility lines, and
-                communication towers in fire-prone areas</span
-              >
-              <span class="video-format-note">16:9 inline video</span>
-            </div>
-          </div>
-          <div class="tile-content fade-in" id="content-utilities">
-            <div class="accent-line" id="accent-utilities"></div>
-            <h2 id="heading-utilities" class="heading-lg">
-              Power Grids &amp; Communication Systems
-            </h2>
-            <p id="desc-utilities-1" class="body-text">
-              Ut enim ad minim veniam, quis nostrud exercitation ullamco
-              laboris. Power infrastructure is both a vulnerability and a
-              lifeline — utility lines can spark fires while simultaneously
-              providing the communication networks needed for evacuation alerts.
-            </p>
-            <p id="desc-utilities-2" class="body-text">
-              Duis aute irure dolor in reprehenderit in voluptate velit esse
-              cillum dolore. We measure grid resilience, backup power
-              availability, and the reach of emergency alert systems across
-              communities.
-            </p>
-            <ul class="indicator-list" id="indicators-utilities">
-              <li>
-                <span class="indicator-dot"></span> Power grid resilience &amp;
-                redundancy
-              </li>
-              <li>
-                <span class="indicator-dot"></span> Utility line fire-risk
-                exposure
-              </li>
-              <li>
-                <span class="indicator-dot"></span> Emergency communication
-                coverage
-              </li>
-              <li><span class="indicator-dot"></span> Backup power capacity</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ── Section 3: Water Systems & Emergency Response ── -->
-    <section class="section section-sunset" id="section-water">
-      <div class="container">
-        <div class="grid-two-col tile-left-right">
-          <div class="tile-visual fade-in" id="video-tile-water">
-            <div class="video-placeholder" id="video-placeholder-water">
-              <div class="video-play-btn" id="video-play-water">
-                <span>▶</span>
-              </div>
-              <strong>Cat to provide:</strong>
-              <span class="video-desc"
-                >Footage of water systems, fire hydrants, firefighting capacity,
-                and emergency response coordination</span
-              >
-              <span class="video-format-note">16:9 inline video</span>
-            </div>
-          </div>
-          <div class="tile-content fade-in" id="content-water">
-            <div class="accent-line" id="accent-water"></div>
-            <h2 id="heading-water" class="heading-lg">
-              Water Systems &amp; Firefighting Capacity
-            </h2>
-            <p id="desc-water-1" class="body-text">
-              Excepteur sint occaecat cupidatat non proident. Water availability
-              directly impacts firefighting success. Communities with robust
-              water systems and strategically placed fire stations have
-              significantly higher survival rates.
-            </p>
-            <p id="desc-water-2" class="body-text">
-              Sunt in culpa qui officia deserunt mollit anim id est laborum. Our
-              analysis covers hydrant density, water pressure reliability, fire
-              station proximity, and volunteer firefighter availability across
-              rural and urban areas.
-            </p>
-            <ul class="indicator-list" id="indicators-water">
-              <li>
-                <span class="indicator-dot"></span> Fire hydrant density &amp;
-                water pressure
-              </li>
-              <li>
-                <span class="indicator-dot"></span> Fire station response times
-              </li>
-              <li>
-                <span class="indicator-dot"></span> Firefighting resource
-                allocation
-              </li>
-              <li><span class="indicator-dot"></span> Mutual aid agreements</li>
             </ul>
           </div>
         </div>
@@ -1202,12 +1179,24 @@
             id="other-domains-desc"
             style="max-width: 650px; margin: 0 auto"
           >
-            Wildfire resilience depends on interconnected systems. Explore how
-            social networks, natural landscapes, and governance structures
-            contribute to community preparedness.
+            Landscape conditions are just one piece of the puzzle. See how built
+            infrastructure, social networks, and governance decisions shape the
+            full picture of wildfire resilience.
           </p>
         </div>
         <div class="domain-nav-grid" id="domain-nav-grid">
+          <a
+            href="infrastructure.html"
+            class="domain-nav-card fade-in"
+            id="domain-nav-infrastructure"
+          >
+            <span class="card-icon">🏗️</span>
+            <div class="card-title">Infrastructure</div>
+            <div class="card-desc">
+              Roads, power grids, water systems, and emergency services that
+              protect communities physically.
+            </div>
+          </a>
           <a
             href="social.html"
             class="domain-nav-card fade-in"
@@ -1218,18 +1207,6 @@
             <div class="card-desc">
               Community networks, demographics, and social capital that support
               mutual aid during disasters.
-            </div>
-          </a>
-          <a
-            href="natural-resources.html"
-            class="domain-nav-card fade-in"
-            id="domain-nav-natural"
-          >
-            <span class="card-icon">🌲</span>
-            <div class="card-title">Natural Resources</div>
-            <div class="card-desc">
-              Forest health, fuel loads, and ecological conditions that shape
-              fire behavior and recovery.
             </div>
           </a>
           <a
@@ -1252,7 +1229,7 @@
     <section class="section section-dark" id="section-cta">
       <div class="container text-center" id="cta-content">
         <h2 class="heading-lg fade-in" id="cta-heading">
-          See Infrastructure Scores in Your Community
+          Explore Landscape Risk in Your Community
         </h2>
         <p
           class="body-text fade-in"
@@ -1263,8 +1240,8 @@
             color: rgba(255, 255, 255, 0.85);
           "
         >
-          Explore interactive maps and compare infrastructure resilience scores
-          across Western communities using the WRI Dashboard.
+          Visualize fuel loads, terrain risk, and watershed conditions across
+          Western communities using the interactive WRI Dashboard.
         </p>
         <a href="#" class="btn-theme-primary fade-in" id="cta-button"
           >Launch Dashboard</a
@@ -1286,12 +1263,8 @@
       </div>
     </footer>
 
-    <!-- Shared JS -->
     <script src="../../assets/js/shared.js"></script>
-
-    <!-- Page JS -->
     <script>
-      // Mobile menu toggle
       const mobileMenuToggle = document.getElementById("mobile-menu-toggle");
       const siteNav = document.getElementById("site-nav");
 
@@ -1307,7 +1280,6 @@
         });
       });
 
-      // Header scroll effect
       const siteHeader = document.getElementById("site-header");
       window.addEventListener("scroll", () => {
         if (window.pageYOffset > 50) {

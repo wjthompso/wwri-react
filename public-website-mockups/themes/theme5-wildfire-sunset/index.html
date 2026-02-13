@@ -1,1211 +1,1716 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WRI - The Wildfire Resilience Index | Theme 5: Wildfire Sunset</title>
-  <meta name="description" content="Understanding wildfire resilience through data-driven insights and community preparedness">
-  
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&display=swap" rel="stylesheet">
-  
-  <!-- Shared Styles -->
-  <link rel="stylesheet" href="../../assets/css/shared.css">
-  
-  <!-- Theme-Specific Styles -->
-  <style>
-    :root {
-      /* Primary Colors - Dark Browns & Grays */
-      --primary-darkest: #160e08;
-      --primary-dark: #343434;
-      --primary-brown: #513221;
-      
-      /* Secondary Colors - Warm Earth Tones */
-      --secondary-brown: #8e4b27;
-      --secondary-tan: #815e45;
-      --secondary-orange: #dc7e49;
-      
-      /* Accent Colors */
-      --accent-magenta: #84325F;
-      --accent-orange-light: #f4a460;
-      
-      /* Neutrals */
-      --text-light: #ffffff;
-      --text-dark: #160e08;
-      --bg-cream: #FFF8F0;
-      --bg-warm: #FFF5E8;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      WRI - The Wildfire Resilience Index | Theme 5: Wildfire Sunset
+    </title>
+    <meta
+      name="description"
+      content="Understanding wildfire resilience through data-driven insights and community preparedness"
+    />
 
-    body {
-      background: var(--bg-cream);
-      color: var(--text-dark);
-      line-height: 1.75;
-      padding-top: 0;
-    }
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
 
-    /* Navigation Header */
-    .site-header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 1000;
-      background: rgba(22, 14, 8, 0.95);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(220, 126, 73, 0.2);
-      transition: all 0.3s ease;
-    }
+    <!-- Shared Styles -->
+    <link rel="stylesheet" href="../../assets/css/shared.css" />
 
-    .site-header.scrolled {
-      background: rgba(22, 14, 8, 0.98);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    }
+    <!-- Theme-Specific Styles -->
+    <style>
+      :root {
+        /* Primary Colors - Dark Browns & Grays */
+        --primary-darkest: #160e08;
+        --primary-dark: #343434;
+        --primary-brown: #513221;
 
-    .nav-container {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 0 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 80px;
-    }
+        /* Secondary Colors - Warm Earth Tones */
+        --secondary-brown: #8e4b27;
+        --secondary-tan: #815e45;
+        --secondary-orange: #dc7e49;
 
-    .site-logo {
-      display: flex;
-      align-items: center;
-      text-decoration: none;
-      color: var(--text-light);
-      font-size: 1.5rem;
-      font-weight: 700;
-      gap: 0.75rem;
-    }
+        /* Accent Colors */
+        --accent-magenta: #84325f;
+        --accent-orange-light: #f4a460;
 
-    .logo-icon {
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-
-    .logo-icon-img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
-
-    .logo-text {
-      display: flex;
-      flex-direction: column;
-      line-height: 1.2;
-    }
-
-    .logo-text-main {
-      font-size: 1.25rem;
-      font-weight: 700;
-    }
-
-    .logo-text-sub {
-      font-size: 0.7rem;
-      opacity: 0.8;
-      font-weight: 400;
-      letter-spacing: 0.05em;
-    }
-
-    .site-nav {
-      display: flex;
-      align-items: center;
-      gap: 2.5rem;
-    }
-
-    .site-nav a {
-      color: var(--text-light);
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 0.95rem;
-      transition: all 0.3s ease;
-      position: relative;
-      padding: 0.5rem 0;
-    }
-
-    .site-nav a::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, var(--secondary-orange) 0%, var(--accent-magenta) 100%);
-      transform: scaleX(0);
-      transition: transform 0.3s ease;
-    }
-
-    .site-nav a:hover {
-      color: var(--secondary-orange);
-    }
-
-    .site-nav a:hover::after {
-      transform: scaleX(1);
-    }
-
-    /* Domains dropdown */
-    .nav-dropdown {
-      position: relative;
-    }
-
-    .nav-dropdown-trigger {
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 0.35rem;
-    }
-
-    .nav-dropdown-trigger .chevron {
-      font-size: 0.6rem;
-      transition: transform 0.3s ease;
-    }
-
-    .nav-dropdown-menu {
-      position: absolute;
-      top: 100%;
-      left: 50%;
-      transform: translateX(-50%) translateY(8px);
-      background: rgba(22, 14, 8, 0.98);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(220, 126, 73, 0.2);
-      border-radius: 12px;
-      padding: 0.5rem 0;
-      min-width: 220px;
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.25s ease;
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
-    }
-
-    .nav-dropdown:hover .nav-dropdown-menu {
-      opacity: 1;
-      visibility: visible;
-      transform: translateX(-50%) translateY(0);
-    }
-
-    .nav-dropdown:hover .chevron {
-      transform: rotate(180deg);
-    }
-
-    .nav-dropdown-menu a {
-      display: block;
-      padding: 0.65rem 1.5rem;
-      font-size: 0.9rem;
-      white-space: nowrap;
-    }
-
-    .nav-dropdown-menu a::after {
-      display: none;
-    }
-
-    .nav-dropdown-menu a:hover {
-      background: rgba(220, 126, 73, 0.15);
-    }
-
-    .nav-cta {
-      background: linear-gradient(135deg, var(--secondary-orange) 0%, var(--accent-magenta) 100%);
-      color: white !important;
-      padding: 0.75rem 1.5rem !important;
-      border-radius: 50px;
-      font-weight: 600;
-      box-shadow: 0 4px 12px rgba(220, 126, 73, 0.3);
-    }
-
-    .nav-cta::after {
-      display: none;
-    }
-
-    .nav-cta:hover {
-      color: white !important;
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(220, 126, 73, 0.4);
-    }
-
-    /* Mobile menu toggle */
-    .mobile-menu-toggle {
-      display: none;
-      flex-direction: column;
-      gap: 6px;
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 0.5rem;
-    }
-
-    .mobile-menu-toggle span {
-      width: 28px;
-      height: 3px;
-      background: var(--text-light);
-      border-radius: 2px;
-      transition: all 0.3s ease;
-    }
-
-    .mobile-menu-toggle.active span:nth-child(1) {
-      transform: rotate(45deg) translate(8px, 8px);
-    }
-
-    .mobile-menu-toggle.active span:nth-child(2) {
-      opacity: 0;
-    }
-
-    .mobile-menu-toggle.active span:nth-child(3) {
-      transform: rotate(-45deg) translate(7px, -7px);
-    }
-
-    /* Mobile menu */
-    @media (max-width: 768px) {
-      .site-nav {
-        position: fixed;
-        top: 80px;
-        left: 0;
-        right: 0;
-        background: rgba(22, 14, 8, 0.98);
-        backdrop-filter: blur(10px);
-        flex-direction: column;
-        gap: 0;
-        padding: 1rem 0;
-        transform: translateY(-100%);
-        opacity: 0;
-        transition: all 0.3s ease;
-        pointer-events: none;
-        border-bottom: 1px solid rgba(220, 126, 73, 0.2);
+        /* Neutrals */
+        --text-light: #ffffff;
+        --text-dark: #160e08;
+        --bg-cream: #fff8f0;
+        --bg-warm: #fff5e8;
       }
 
-      .site-nav.active {
-        transform: translateY(0);
-        opacity: 1;
-        pointer-events: all;
+      body {
+        background: var(--bg-cream);
+        color: var(--text-dark);
+        line-height: 1.75;
+        padding-top: 0;
+      }
+
+      /* Navigation Header */
+      .site-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        background: rgba(22, 14, 8, 0.95);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(220, 126, 73, 0.2);
+        transition: all 0.3s ease;
+      }
+
+      .site-header.scrolled {
+        background: rgba(22, 14, 8, 0.98);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      }
+
+      .nav-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 80px;
+      }
+
+      .site-logo {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: var(--text-light);
+        font-size: 1.5rem;
+        font-weight: 700;
+        gap: 0.75rem;
+      }
+
+      .logo-icon {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .logo-icon-img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+
+      .logo-text {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.2;
+      }
+
+      .logo-text-main {
+        font-size: 1.25rem;
+        font-weight: 700;
+      }
+
+      .logo-text-sub {
+        font-size: 0.7rem;
+        opacity: 0.8;
+        font-weight: 400;
+        letter-spacing: 0.05em;
+      }
+
+      .site-nav {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
       }
 
       .site-nav a {
-        width: 100%;
-        padding: 1rem 2rem;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        color: var(--text-light);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.85rem;
+        transition: all 0.3s ease;
+        position: relative;
+        padding: 0.5rem 0;
       }
 
-      .mobile-menu-toggle {
+      .site-nav a::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(
+          90deg,
+          var(--secondary-orange) 0%,
+          var(--accent-magenta) 100%
+        );
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+      }
+
+      .site-nav a:hover {
+        color: var(--secondary-orange);
+      }
+
+      .site-nav a:hover::after {
+        transform: scaleX(1);
+      }
+
+      /* Domains dropdown */
+      .nav-dropdown {
+        position: relative;
+      }
+
+      .nav-dropdown-trigger {
+        cursor: pointer;
         display: flex;
+        align-items: center;
+        gap: 0.35rem;
+      }
+
+      .nav-dropdown-trigger .chevron {
+        font-size: 0.6rem;
+        transition: transform 0.3s ease;
       }
 
       .nav-dropdown-menu {
-        position: static;
-        transform: none;
-        background: rgba(255, 255, 255, 0.05);
-        border: none;
-        border-radius: 0;
-        box-shadow: none;
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%) translateY(8px);
+        background: rgba(22, 14, 8, 0.98);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(220, 126, 73, 0.2);
+        border-radius: 12px;
+        padding: 0.5rem 0;
+        min-width: 220px;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.25s ease;
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+      }
+
+      .nav-dropdown:hover .nav-dropdown-menu {
         opacity: 1;
         visibility: visible;
-        min-width: 100%;
-        padding: 0;
+        transform: translateX(-50%) translateY(0);
+      }
+
+      .nav-dropdown:hover .chevron {
+        transform: rotate(180deg);
       }
 
       .nav-dropdown-menu a {
-        padding-left: 3rem;
-      }
-    }
-
-    /* Hero Section - Clean gradient with prominent CTA */
-    .hero {
-      background: linear-gradient(135deg, var(--primary-darkest) 0%, var(--secondary-brown) 40%, var(--secondary-orange) 100%);
-      position: relative;
-      overflow: hidden;
-      margin-top: 0;
-      min-height: 85vh;
-    }
-
-    /* Smoky overlay effect */
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: 
-        radial-gradient(ellipse at 30% 20%, rgba(220, 126, 73, 0.3) 0%, transparent 50%),
-        radial-gradient(ellipse at 70% 80%, rgba(132, 50, 95, 0.2) 0%, transparent 50%),
-        radial-gradient(ellipse at 50% 50%, rgba(142, 75, 39, 0.15) 0%, transparent 70%);
-      animation: smokeShift 20s ease-in-out infinite;
-      z-index: 1;
-    }
-
-    @keyframes smokeShift {
-      0%, 100% { opacity: 0.6; }
-      50% { opacity: 0.9; }
-    }
-
-    /* Ember/glow effect */
-    .hero::after {
-      content: '';
-      position: absolute;
-      top: 10%;
-      right: 15%;
-      width: 400px;
-      height: 400px;
-      background: radial-gradient(circle, rgba(220, 126, 73, 0.4) 0%, transparent 60%);
-      border-radius: 50%;
-      animation: emberGlow 8s ease-in-out infinite;
-      z-index: 1;
-    }
-
-    @keyframes emberGlow {
-      0%, 100% { 
-        transform: scale(1) translateY(0);
-        opacity: 0.4;
-      }
-      50% { 
-        transform: scale(1.2) translateY(-20px);
-        opacity: 0.6;
-      }
-    }
-
-    /* Hero CTA buttons - Extra prominent */
-    .hero-cta-group {
-      display: flex;
-      gap: 1.5rem;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin-top: 2.5rem;
-    }
-
-    .hero-cta-primary {
-      background: linear-gradient(135deg, var(--secondary-orange) 0%, var(--accent-magenta) 100%);
-      color: white;
-      padding: 1.5rem 3rem;
-      border-radius: 50px;
-      text-decoration: none;
-      font-weight: 700;
-      font-size: 1.25rem;
-      display: inline-block;
-      box-shadow: 0 12px 40px rgba(220, 126, 73, 0.5);
-      transition: all 0.3s ease;
-      position: relative;
-      z-index: 10;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    }
-
-    .hero-cta-primary:hover {
-      transform: translateY(-4px) scale(1.02);
-      box-shadow: 0 16px 50px rgba(220, 126, 73, 0.6);
-    }
-
-    .hero-cta-secondary {
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(10px);
-      color: white;
-      padding: 1.5rem 3rem;
-      border-radius: 50px;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 1.25rem;
-      display: inline-block;
-      border: 2px solid rgba(255, 255, 255, 0.3);
-      transition: all 0.3s ease;
-      position: relative;
-      z-index: 10;
-    }
-
-    .hero-cta-secondary:hover {
-      background: rgba(255, 255, 255, 0.25);
-      border-color: rgba(255, 255, 255, 0.5);
-      transform: translateY(-2px);
-    }
-
-    /* Video Section - Now the opening section */
-    .video-showcase {
-      position: relative;
-      width: 100%;
-      background: var(--primary-darkest);
-      padding: 0;
-      margin: 0;
-      margin-top: 80px; /* Account for fixed header */
-    }
-
-    .video-showcase-container {
-      position: relative;
-      width: 100%;
-      max-width: 100%;
-      margin: 0 auto;
-      aspect-ratio: 16 / 9;
-    }
-
-    .video-showcase video {
-      width: 100%;
-      height: 100%;
-      display: block;
-      object-fit: cover;
-    }
-
-    /* Scroll Indicator - just a clean white arrow */
-    .video-showcase .scroll-indicator {
-      position: fixed;
-      bottom: 2rem;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 1000;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: opacity 0.3s ease, transform 0.3s ease;
-    }
-
-    .scroll-indicator-icon {
-      font-size: 3rem;
-      color: white;
-      filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
-      animation: bounce 2s ease-in-out infinite;
-      transition: transform 0.3s ease;
-    }
-
-    .scroll-indicator:hover .scroll-indicator-icon {
-      transform: translateY(-5px);
-    }
-
-    @keyframes bounce {
-      0%, 100% {
-        transform: translateY(0);
-      }
-      50% {
-        transform: translateY(-10px);
-      }
-    }
-
-    /* Mobile adjustments */
-    @media (max-width: 767px) {
-      .video-showcase .scroll-indicator {
-        bottom: 1.5rem;
-      }
-      
-      .scroll-indicator-icon {
-        font-size: 2.5rem;
-      }
-    }
-
-    .hero-content {
-      position: relative;
-      z-index: 3;
-      text-align: center;
-      color: var(--text-light);
-      max-width: 900px;
-      padding: 0 2rem;
-    }
-
-    .hero-content h1 {
-      font-size: clamp(2.5rem, 5vw, 4rem);
-      font-weight: 700;
-      margin-bottom: 1.5rem;
-      text-shadow: 0 4px 24px rgba(22, 14, 8, 0.6);
-      line-height: 1.15;
-    }
-
-    .hero-content p {
-      font-size: clamp(1.125rem, 2vw, 1.5rem);
-      margin-bottom: 2rem;
-      line-height: 1.6;
-      text-shadow: 0 2px 12px rgba(22, 14, 8, 0.5);
-      opacity: 0.98;
-    }
-
-    /* Sections - Warm, layered */
-    .section {
-      padding: 5rem 0;
-    }
-
-    .section-warm {
-      background: linear-gradient(180deg, var(--bg-warm) 0%, #FFE8D8 100%);
-    }
-
-    .section-dark {
-      background: linear-gradient(135deg, var(--primary-brown) 0%, var(--primary-dark) 100%);
-      color: var(--text-light);
-    }
-
-    .section-sunset {
-      background: linear-gradient(135deg, #FFE0CC 0%, #FFD4B8 100%);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .section-sunset::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      right: 0;
-      width: 50%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent 0%, rgba(220, 126, 73, 0.1) 100%);
-      pointer-events: none;
-    }
-
-    /* Content Cards - Warm, sophisticated */
-    .tile-content {
-      padding: 2.5rem;
-      background: rgba(255, 255, 255, 0.95);
-      border-radius: 20px;
-      box-shadow: 0 8px 32px rgba(22, 14, 8, 0.12);
-      border: 1px solid rgba(142, 75, 39, 0.15);
-    }
-
-    .tile-content h2 {
-      color: var(--secondary-brown);
-      margin-bottom: 1.25rem;
-      line-height: 1.3;
-    }
-
-    .tile-content .accent-line {
-      width: 100px;
-      height: 6px;
-      background: linear-gradient(90deg, var(--secondary-orange) 0%, var(--accent-magenta) 100%);
-      margin-bottom: 1.75rem;
-      border-radius: 3px;
-      box-shadow: 0 2px 8px rgba(220, 126, 73, 0.3);
-    }
-
-    .tile-content p {
-      margin-bottom: 1.25rem;
-      line-height: 1.75;
-      color: var(--text-dark);
-    }
-
-    /* Dark section content cards */
-    .section-dark .tile-content {
-      background: rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .section-dark .tile-content h2 {
-      color: var(--secondary-orange);
-    }
-
-    .section-dark .tile-content p {
-      color: rgba(255, 255, 255, 0.9);
-    }
-
-    /* Visual elements - Dramatic shadows */
-    .tile-visual {
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow: 0 16px 48px rgba(22, 14, 8, 0.25);
-      border: 2px solid rgba(142, 75, 39, 0.2);
-    }
-
-    /* CTA Buttons - Sunset inspired */
-    .btn-theme-primary {
-      background: linear-gradient(135deg, var(--secondary-orange) 0%, var(--accent-magenta) 100%);
-      color: white;
-      padding: 1.125rem 2.75rem;
-      border-radius: 50px;
-      text-decoration: none;
-      font-weight: 600;
-      display: inline-block;
-      box-shadow: 0 8px 28px rgba(220, 126, 73, 0.4);
-      transition: all 0.3s ease;
-      font-size: 1.05rem;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-    }
-
-    .btn-theme-primary:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 12px 36px rgba(220, 126, 73, 0.5);
-      background: linear-gradient(135deg, var(--accent-magenta) 0%, var(--secondary-orange) 100%);
-    }
-
-    .btn-theme-secondary {
-      background: transparent;
-      color: var(--secondary-brown);
-      padding: 1.125rem 2.75rem;
-      border-radius: 50px;
-      text-decoration: none;
-      font-weight: 600;
-      display: inline-block;
-      border: 2px solid var(--secondary-brown);
-      transition: all 0.3s ease;
-      font-size: 1.05rem;
-    }
-
-    .btn-theme-secondary:hover {
-      background: var(--secondary-brown);
-      color: white;
-      box-shadow: 0 6px 20px rgba(142, 75, 39, 0.3);
-    }
-
-    /* Stats Grid - Warm, inviting */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 2rem;
-      margin: 3rem 0;
-    }
-
-    .stat-card {
-      text-align: center;
-      padding: 2.5rem 2rem;
-      background: linear-gradient(135deg, rgba(220, 126, 73, 0.08) 0%, rgba(132, 50, 95, 0.08) 100%);
-      border-radius: 24px;
-      border: 2px solid rgba(220, 126, 73, 0.2);
-      box-shadow: 0 6px 24px rgba(22, 14, 8, 0.08);
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .stat-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, var(--secondary-orange) 0%, var(--accent-magenta) 100%);
-    }
-
-    .stat-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 12px 36px rgba(22, 14, 8, 0.15);
-      border-color: var(--secondary-orange);
-    }
-
-    .stat-number {
-      font-size: 3rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, var(--secondary-orange) 0%, var(--accent-magenta) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 0.75rem;
-    }
-
-    .stat-label {
-      font-size: 1.125rem;
-      color: var(--text-dark);
-      font-weight: 600;
-      line-height: 1.4;
-    }
-
-    /* Domain Cards - Sunset themed */
-    .domains-sunset {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 2rem;
-      margin: 3rem 0;
-    }
-
-    .domain-card-sunset {
-      background: white;
-      border-radius: 24px;
-      padding: 2.5rem;
-      box-shadow: 0 8px 28px rgba(22, 14, 8, 0.1);
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-      border: 2px solid transparent;
-    }
-
-    .domain-card-sunset::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 6px;
-      background: linear-gradient(90deg, var(--secondary-orange) 0%, var(--accent-magenta) 100%);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .domain-card-sunset:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 16px 40px rgba(22, 14, 8, 0.15);
-      border-color: var(--secondary-orange);
-    }
-
-    .domain-card-sunset:hover::before {
-      opacity: 1;
-    }
-
-    .domain-icon-sunset {
-      font-size: 3.5rem;
-      margin-bottom: 1.5rem;
-      display: block;
-      filter: drop-shadow(0 4px 8px rgba(22, 14, 8, 0.1));
-    }
-
-    .domain-title-sunset {
-      font-size: 1.75rem;
-      font-weight: 700;
-      color: var(--secondary-brown);
-      margin-bottom: 1.25rem;
-    }
-
-    .domain-description-sunset {
-      font-size: 1rem;
-      line-height: 1.75;
-      color: var(--text-dark);
-      opacity: 0.85;
-    }
-
-    /* Quote section with sunset feel */
-    .quote-section {
-      text-align: center;
-      padding: 5rem 2rem;
-      max-width: 900px;
-      margin: 0 auto;
-      position: relative;
-    }
-
-    .quote-section::before {
-      content: '"';
-      position: absolute;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 8rem;
-      color: var(--secondary-orange);
-      opacity: 0.15;
-      font-family: Georgia, serif;
-      line-height: 1;
-    }
-
-    .quote-text {
-      font-size: clamp(1.25rem, 3vw, 1.75rem);
-      line-height: 1.6;
-      color: var(--secondary-brown);
-      font-style: italic;
-      margin-bottom: 1.5rem;
-      position: relative;
-      z-index: 2;
-    }
-
-    .quote-author {
-      font-size: 1.125rem;
-      color: var(--accent-magenta);
-      font-weight: 600;
-    }
-
-    /* Feature highlights with ember accents */
-    .feature-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 2rem;
-      margin: 3rem 0;
-    }
-
-    .feature-item {
-      text-align: center;
-      padding: 2rem;
-    }
-
-    .feature-icon {
-      width: 80px;
-      height: 80px;
-      margin: 0 auto 1.5rem;
-      background: linear-gradient(135deg, var(--secondary-orange) 0%, var(--accent-magenta) 100%);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2rem;
-      color: white;
-      box-shadow: 0 8px 24px rgba(220, 126, 73, 0.3);
-    }
-
-    .feature-title {
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: var(--secondary-brown);
-      margin-bottom: 0.75rem;
-    }
-
-    .feature-description {
-      font-size: 0.95rem;
-      line-height: 1.6;
-      color: var(--text-dark);
-      opacity: 0.85;
-    }
-
-    /* Footer */
-    .footer {
-      background: linear-gradient(135deg, var(--primary-darkest) 0%, var(--primary-brown) 100%);
-      color: white;
-      padding: 3rem 0 2rem;
-      text-align: center;
-    }
-
-    .footer a {
-      color: var(--secondary-orange);
-      text-decoration: none;
-      font-weight: 600;
-    }
-
-    .footer a:hover {
-      color: var(--accent-magenta);
-      text-decoration: underline;
-    }
-
-    /* Responsive adjustments */
-    @media (max-width: 767px) {
-      .hero-content h1 {
-        font-size: 2rem;
-      }
-      
-      .domains-sunset {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
-</head>
-<body id="top">
-
-  <!-- Site Header / Navigation -->
-  <header class="site-header" id="site-header">
-    <nav class="nav-container" id="main-nav">
-      <a href="#top" class="site-logo" id="site-logo">
-        <div class="logo-icon" id="logo-icon">
-          <img src="../../assets/icons/WWRI_logo.png" alt="WRI Logo" class="logo-icon-img" id="logo-icon-image">
-        </div>
-        <div class="logo-text" id="logo-text">
-          <span class="logo-text-main" id="logo-text-main">WRI</span>
-          <span class="logo-text-sub" id="logo-text-sub">The Wildfire Resilience Index</span>
-        </div>
-      </a>
-      
-      <div class="site-nav" id="site-nav">
-        <a href="#what-is-wri" id="nav-link-about">About</a>
-        <a href="#why-resilience" id="nav-link-why">Why Resilience</a>
-        <a href="#how-it-works" id="nav-link-how">How It Works</a>
-        <div class="nav-dropdown" id="nav-dropdown-domains">
-          <a href="#domains-overview" class="nav-dropdown-trigger" id="nav-link-domains">Domains <span class="chevron">▼</span></a>
-          <div class="nav-dropdown-menu" id="nav-dropdown-menu">
-            <a href="infrastructure.html" id="nav-dd-infrastructure">Infrastructure</a>
-            <a href="social.html" id="nav-dd-social">Social Systems</a>
-            <a href="natural-resources.html" id="nav-dd-natural">Natural Resources</a>
-            <a href="planning.html" id="nav-dd-planning">Planning &amp; Governance</a>
-          </div>
-        </div>
-        <a href="#" id="nav-link-dashboard" class="nav-cta">Dashboard</a>
-      </div>
-
-      <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle menu">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-    </nav>
-  </header>
-
-  <!-- Video Showcase Section - FIRST -->
-  <section id="video-section" class="video-showcase">
-    <div class="video-showcase-container" id="video-container">
-      <video autoplay muted loop playsinline id="showcase-video">
-        <source src="../../assets/videos/hero-video.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-      </video>
-    </div>
-    
-    <!-- Scroll Indicator - just the arrow -->
-    <div class="scroll-indicator" id="scroll-indicator">
-      <div class="scroll-indicator-icon" id="scroll-indicator-icon">↓</div>
-    </div>
-  </section>
-
-  <!-- Hero Section - SECOND with prominent CTAs -->
-  <section id="hero-section" class="section-hero hero">
-    <div class="hero-content container">
-      <h1 id="hero-heading" class="fade-in">Where Data Meets Resilience</h1>
-      <p id="hero-subheading" class="fade-in">Protecting communities from wildfire threats through comprehensive preparedness analysis</p>
-      
-      <div class="hero-cta-group fade-in" id="hero-ctas">
-        <a href="#" id="hero-cta-dashboard" class="hero-cta-primary">🔥 Launch Dashboard</a>
-        <a href="#what-is-wri" id="hero-cta-learn" class="hero-cta-secondary">Learn More</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- What is WRI Section -->
-  <section id="what-is-wri" class="section section-warm">
-    <div class="container">
-      <div class="grid-two-col tile-left-right">
-        <div class="tile-visual fade-in">
-          <div class="placeholder-image" id="wri-placeholder-image">
-            <div>
-              <strong>Visual Placeholder</strong><br>
-              Cat to provide: Wildfire resilience concept<br>
-              Suggested: Sunset landscape with community
-            </div>
-          </div>
-        </div>
-        <div class="tile-content fade-in">
-          <div class="accent-line" id="wri-accent-line"></div>
-          <h2 id="wri-heading" class="heading-lg">What is the Wildfire Resilience Index?</h2>
-          <p id="wri-description-1" class="body-text">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. The Wildfire Resilience Index is a comprehensive tool that measures how prepared Western communities are to face increasing wildfire threats.
-          </p>
-          <p id="wri-description-2" class="body-text">
-            Sed do eiusmod tempor incididunt ut labore. By analyzing infrastructure, social systems, natural resources, and planning frameworks, we provide actionable insights that help communities build lasting resilience.
-          </p>
-          <a href="#" id="wri-learn-more" class="btn-theme-secondary">Learn More</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Why Resilience Section (Dark) -->
-  <section id="why-resilience" class="section section-dark">
-    <div class="container">
-      <div class="grid-two-col tile-right-left">
-        <div class="tile-visual fade-in">
-          <div class="placeholder-image" style="background: linear-gradient(135deg, #dc7e49 0%, #84325F 100%);" id="resilience-placeholder-image">
-            <div style="color: white; padding: 2rem;">
-              <strong>Visual Placeholder</strong><br>
-              Cat to provide: Wildfire urgency imagery<br>
-              Suggested: Dramatic fire/recovery scenes
-            </div>
-          </div>
-        </div>
-        <div class="tile-content fade-in">
-          <div class="accent-line" id="resilience-accent-line"></div>
-          <h2 id="resilience-heading" class="heading-lg">The Urgent Need for Resilience</h2>
-          <p id="resilience-description-1" class="body-text">
-            Ut enim ad minim veniam, quis nostrud. Climate change is intensifying wildfire seasons—longer, hotter, more destructive. Communities across the West face unprecedented challenges.
-          </p>
-          <p id="resilience-description-2" class="body-text">
-            Duis aute irure dolor in reprehenderit. But resilience isn't just about surviving fires. It's about protecting homes, preserving ecosystems, and ensuring communities can recover and thrive.
-          </p>
-          <div class="stats-grid" id="resilience-stats">
-            <div class="stat-card fade-in" id="stat-card-1">
-              <div class="stat-number" id="stat-number-1">10M+</div>
-              <div class="stat-label" id="stat-label-1">Homes at Risk</div>
-            </div>
-            <div class="stat-card fade-in" id="stat-card-2">
-              <div class="stat-number" id="stat-number-2">15</div>
-              <div class="stat-label" id="stat-label-2">Western States</div>
-            </div>
-            <div class="stat-card fade-in" id="stat-card-3">
-              <div class="stat-number" id="stat-number-3">200+</div>
-              <div class="stat-label" id="stat-label-3">Communities Assessed</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- How the Index Works -->
-  <section id="how-it-works" class="section section-sunset">
-    <div class="container">
-      <div class="text-center mb-4" id="how-header">
-        <h2 id="how-heading" class="heading-lg fade-in">How We Measure Resilience</h2>
-        <p id="how-description" class="body-text fade-in" style="max-width: 700px; margin: 0 auto;">
-          Our comprehensive approach analyzes the interconnected systems that determine how well communities can prepare for, respond to, and recover from wildfires.
-        </p>
-      </div>
-      
-      <div class="feature-grid" id="features">
-        <div class="feature-item fade-in" id="feature-1">
-          <div class="feature-icon" id="feature-icon-1">📊</div>
-          <h3 class="feature-title" id="feature-title-1">Data Collection</h3>
-          <p class="feature-description" id="feature-description-1">
-            We gather information from over 100 sources including government databases, satellite imagery, and community surveys.
-          </p>
-        </div>
-        <div class="feature-item fade-in" id="feature-2">
-          <div class="feature-icon" id="feature-icon-2">🔍</div>
-          <h3 class="feature-title" id="feature-title-2">Multi-Domain Analysis</h3>
-          <p class="feature-description" id="feature-description-2">
-            We examine infrastructure, social systems, natural resources, and planning across four integrated domains.
-          </p>
-        </div>
-        <div class="feature-item fade-in" id="feature-3">
-          <div class="feature-icon" id="feature-icon-3">💡</div>
-          <h3 class="feature-title" id="feature-title-3">Actionable Insights</h3>
-          <p class="feature-description" id="feature-description-3">
-            Results help policy makers and community leaders make informed decisions about where to invest resources.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Domains Overview Section -->
-  <section id="domains-overview" class="section">
-    <div class="container">
-      <div class="text-center mb-4" id="domains-header">
-        <h2 id="domains-heading" class="heading-lg fade-in">Four Pillars of Resilience</h2>
-        <p id="domains-description" class="body-text fade-in" style="max-width: 700px; margin: 0 auto;">
-          Community resilience depends on interconnected systems working together. We measure all four to reveal the complete picture.
-        </p>
-      </div>
-      <div class="domains-sunset" id="domains-grid">
-        <a href="infrastructure.html" class="domain-card-sunset fade-in" id="domain-card-infrastructure" style="text-decoration:none; color:inherit;">
-          <span class="domain-icon-sunset" id="domain-icon-infrastructure">🏗️</span>
-          <h3 class="domain-title-sunset" id="domain-title-infrastructure">Infrastructure</h3>
-          <p class="domain-description-sunset" id="domain-description-infrastructure">
-            Critical systems including roads for evacuation, power grids for communication, water systems for firefighting, and emergency response capacity that keeps communities functioning.
-          </p>
-        </a>
-        <a href="social.html" class="domain-card-sunset fade-in" id="domain-card-social" style="text-decoration:none; color:inherit;">
-          <span class="domain-icon-sunset" id="domain-icon-social">👥</span>
-          <h3 class="domain-title-sunset" id="domain-title-social">Social Systems</h3>
-          <p class="domain-description-sunset" id="domain-description-social">
-            Community networks, demographic factors, and social capital that determine how well neighbors can support each other during and after disasters.
-          </p>
-        </a>
-        <a href="natural-resources.html" class="domain-card-sunset fade-in" id="domain-card-natural" style="text-decoration:none; color:inherit;">
-          <span class="domain-icon-sunset" id="domain-icon-natural">🌲</span>
-          <h3 class="domain-title-sunset" id="domain-title-natural">Natural Resources</h3>
-          <p class="domain-description-sunset" id="domain-description-natural">
-            Forest health, fuel loads, topography, and ecological conditions that influence fire behavior and support landscape recovery after burns.
-          </p>
-        </a>
-        <a href="planning.html" class="domain-card-sunset fade-in" id="domain-card-planning" style="text-decoration:none; color:inherit;">
-          <span class="domain-icon-sunset" id="domain-icon-planning">📋</span>
-          <h3 class="domain-title-sunset" id="domain-title-planning">Planning &amp; Governance</h3>
-          <p class="domain-description-sunset" id="domain-description-planning">
-            Preparedness plans, land use policies, and coordination structures that guide long-term resilience investments and emergency response.
-          </p>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Quote Section -->
-  <section id="quote-section" class="section section-warm">
-    <div class="container">
-      <div class="quote-section fade-in" id="quote-content">
-        <p class="quote-text" id="quote-text">
-          "In the face of escalating wildfire threats, resilience isn't optional—it's essential. Together, we can build communities that not only survive, but thrive."
-        </p>
-        <p class="quote-author" id="quote-author">— The WRI Team</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Call to Action Section -->
-  <section id="cta-section" class="section section-sunset">
-    <div class="container text-center" id="cta-content">
-      <h2 id="cta-heading" class="heading-lg fade-in">Discover Your Community's Resilience</h2>
-      <p id="cta-description" class="body-text fade-in" style="max-width: 600px; margin: 0 auto 2rem;">
-        Explore interactive data, compare communities, and find where investments can make the greatest impact in building wildfire resilience.
-      </p>
-      <a href="#" id="cta-button" class="btn-theme-primary fade-in">Launch Dashboard</a>
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer class="footer" id="footer">
-    <div class="container" id="footer-content">
-      <p id="footer-text">&copy; 2026 Wildfire Resilience Index. Supported by the <a href="#" id="footer-link-moore">Moore Foundation</a>.</p>
-      <p id="footer-disclaimer" class="caption-text mt-2">
-        Design mockup with placeholder content. Final content provided by Cat Fong.
-      </p>
-    </div>
-  </footer>
-
-  <!-- Shared JavaScript -->
-  <script src="../../assets/js/shared.js"></script>
-  
-  <!-- Theme-specific JavaScript -->
-  <script>
-    // Scroll indicator - fades out as user scrolls
-    const scrollIndicator = document.getElementById('scroll-indicator');
-    const videoSection = document.getElementById('video-section');
-    
-    // Click to scroll to hero section
-    scrollIndicator.addEventListener('click', () => {
-      document.getElementById('hero-section').scrollIntoView({ behavior: 'smooth' });
-    });
-
-    // Fade out as user scrolls down
-    function handleScrollIndicator() {
-      const videoRect = videoSection.getBoundingClientRect();
-      const videoBottom = videoRect.bottom;
-      const scrollProgress = Math.max(0, 1 - (window.scrollY / (videoRect.height * 0.5)));
-      
-      // Fade out the indicator as user scrolls
-      scrollIndicator.style.opacity = scrollProgress;
-      
-      // Hide completely when scrolled past video
-      if (videoBottom < 100) {
-        scrollIndicator.style.display = 'none';
-      } else {
-        scrollIndicator.style.display = 'flex';
-      }
-    }
-
-    // Listen to scroll events
-    window.addEventListener('scroll', handleScrollIndicator);
-    
-    // Initial check
-    handleScrollIndicator();
-
-    // Mobile menu toggle
-    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-    const siteNav = document.getElementById('site-nav');
-
-    mobileMenuToggle.addEventListener('click', () => {
-      mobileMenuToggle.classList.toggle('active');
-      siteNav.classList.toggle('active');
-    });
-
-    // Close mobile menu when clicking a link
-    document.querySelectorAll('.site-nav a').forEach(link => {
-      link.addEventListener('click', () => {
-        mobileMenuToggle.classList.remove('active');
-        siteNav.classList.remove('active');
-      });
-    });
-
-    // Header scroll effect
-    const siteHeader = document.getElementById('site-header');
-    let lastScrollTop = 0;
-
-    window.addEventListener('scroll', () => {
-      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-      
-      // Add scrolled class for style changes
-      if (scrollTop > 50) {
-        siteHeader.classList.add('scrolled');
-      } else {
-        siteHeader.classList.remove('scrolled');
+        display: block;
+        padding: 0.65rem 1.5rem;
+        font-size: 0.9rem;
+        white-space: nowrap;
       }
 
-      lastScrollTop = scrollTop;
-    });
+      .nav-dropdown-menu a::after {
+        display: none;
+      }
 
-    // Smooth scroll for all anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const targetId = this.getAttribute('href');
-        if (targetId === '#' || targetId === '#top') {
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        } else {
-          const targetElement = document.querySelector(targetId);
-          if (targetElement) {
-            const headerOffset = 80; // Height of fixed header
-            const elementPosition = targetElement.getBoundingClientRect().top;
-            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+      .nav-dropdown-menu a:hover {
+        background: rgba(220, 126, 73, 0.15);
+      }
 
-            window.scrollTo({
-              top: offsetPosition,
-              behavior: 'smooth'
-            });
-          }
+      .nav-cta {
+        background: linear-gradient(
+          135deg,
+          var(--secondary-orange) 0%,
+          var(--accent-magenta) 100%
+        );
+        color: white !important;
+        padding: 0.75rem 1.5rem !important;
+        border-radius: 50px;
+        font-weight: 600;
+        box-shadow: 0 4px 12px rgba(220, 126, 73, 0.3);
+      }
+
+      .nav-cta::after {
+        display: none;
+      }
+
+      .nav-cta:hover {
+        color: white !important;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(220, 126, 73, 0.4);
+      }
+
+      /* Mobile menu toggle */
+      .mobile-menu-toggle {
+        display: none;
+        flex-direction: column;
+        gap: 6px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0.5rem;
+      }
+
+      .mobile-menu-toggle span {
+        width: 28px;
+        height: 3px;
+        background: var(--text-light);
+        border-radius: 2px;
+        transition: all 0.3s ease;
+      }
+
+      .mobile-menu-toggle.active span:nth-child(1) {
+        transform: rotate(45deg) translate(8px, 8px);
+      }
+
+      .mobile-menu-toggle.active span:nth-child(2) {
+        opacity: 0;
+      }
+
+      .mobile-menu-toggle.active span:nth-child(3) {
+        transform: rotate(-45deg) translate(7px, -7px);
+      }
+
+      /* Mobile menu */
+      @media (max-width: 768px) {
+        .site-nav {
+          position: fixed;
+          top: 80px;
+          left: 0;
+          right: 0;
+          background: rgba(22, 14, 8, 0.98);
+          backdrop-filter: blur(10px);
+          flex-direction: column;
+          gap: 0;
+          padding: 1rem 0;
+          transform: translateY(-100%);
+          opacity: 0;
+          transition: all 0.3s ease;
+          pointer-events: none;
+          border-bottom: 1px solid rgba(220, 126, 73, 0.2);
         }
+
+        .site-nav.active {
+          transform: translateY(0);
+          opacity: 1;
+          pointer-events: all;
+        }
+
+        .site-nav a {
+          width: 100%;
+          padding: 1rem 2rem;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .mobile-menu-toggle {
+          display: flex;
+        }
+
+        .nav-dropdown-menu {
+          position: static;
+          transform: none;
+          background: rgba(255, 255, 255, 0.05);
+          border: none;
+          border-radius: 0;
+          box-shadow: none;
+          opacity: 1;
+          visibility: visible;
+          min-width: 100%;
+          padding: 0;
+        }
+
+        .nav-dropdown-menu a {
+          padding-left: 3rem;
+        }
+      }
+
+      /* Hero Section - Clean gradient with prominent CTA */
+      .hero {
+        background: linear-gradient(
+          135deg,
+          var(--primary-darkest) 0%,
+          var(--secondary-brown) 40%,
+          var(--secondary-orange) 100%
+        );
+        position: relative;
+        overflow: hidden;
+        margin-top: 0;
+        min-height: 85vh;
+      }
+
+      /* Smoky overlay effect */
+      .hero::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(
+            ellipse at 30% 20%,
+            rgba(220, 126, 73, 0.3) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            ellipse at 70% 80%,
+            rgba(132, 50, 95, 0.2) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            ellipse at 50% 50%,
+            rgba(142, 75, 39, 0.15) 0%,
+            transparent 70%
+          );
+        animation: smokeShift 20s ease-in-out infinite;
+        z-index: 1;
+      }
+
+      @keyframes smokeShift {
+        0%,
+        100% {
+          opacity: 0.6;
+        }
+        50% {
+          opacity: 0.9;
+        }
+      }
+
+      /* Ember/glow effect */
+      .hero::after {
+        content: "";
+        position: absolute;
+        top: 10%;
+        right: 15%;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(
+          circle,
+          rgba(220, 126, 73, 0.4) 0%,
+          transparent 60%
+        );
+        border-radius: 50%;
+        animation: emberGlow 8s ease-in-out infinite;
+        z-index: 1;
+      }
+
+      @keyframes emberGlow {
+        0%,
+        100% {
+          transform: scale(1) translateY(0);
+          opacity: 0.4;
+        }
+        50% {
+          transform: scale(1.2) translateY(-20px);
+          opacity: 0.6;
+        }
+      }
+
+      /* Hero CTA buttons - Extra prominent */
+      .hero-cta-group {
+        display: flex;
+        gap: 1.5rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 2.5rem;
+      }
+
+      .hero-cta-primary {
+        background: linear-gradient(
+          135deg,
+          var(--secondary-orange) 0%,
+          var(--accent-magenta) 100%
+        );
+        color: white;
+        padding: 1.5rem 3rem;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 1.25rem;
+        display: inline-block;
+        box-shadow: 0 12px 40px rgba(220, 126, 73, 0.5);
+        transition: all 0.3s ease;
+        position: relative;
+        z-index: 10;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+
+      .hero-cta-primary:hover {
+        transform: translateY(-4px) scale(1.02);
+        box-shadow: 0 16px 50px rgba(220, 126, 73, 0.6);
+      }
+
+      .hero-cta-secondary {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        color: white;
+        padding: 1.5rem 3rem;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 1.25rem;
+        display: inline-block;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        transition: all 0.3s ease;
+        position: relative;
+        z-index: 10;
+      }
+
+      .hero-cta-secondary:hover {
+        background: rgba(255, 255, 255, 0.25);
+        border-color: rgba(255, 255, 255, 0.5);
+        transform: translateY(-2px);
+      }
+
+      /* Video Section - Now the opening section */
+      .video-showcase {
+        position: relative;
+        width: 100%;
+        background: var(--primary-darkest);
+        padding: 0;
+        margin: 0;
+        margin-top: 80px; /* Account for fixed header */
+      }
+
+      .video-showcase-container {
+        position: relative;
+        width: 100%;
+        max-width: 100%;
+        margin: 0 auto;
+        aspect-ratio: 16 / 9;
+      }
+
+      .video-showcase video {
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: cover;
+      }
+
+      /* Scroll Indicator - just a clean white arrow */
+      .video-showcase .scroll-indicator {
+        position: fixed;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition:
+          opacity 0.3s ease,
+          transform 0.3s ease;
+      }
+
+      .scroll-indicator-icon {
+        font-size: 3rem;
+        color: white;
+        filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+        animation: bounce 2s ease-in-out infinite;
+        transition: transform 0.3s ease;
+      }
+
+      .scroll-indicator:hover .scroll-indicator-icon {
+        transform: translateY(-5px);
+      }
+
+      @keyframes bounce {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+
+      /* Mobile adjustments */
+      @media (max-width: 767px) {
+        .video-showcase .scroll-indicator {
+          bottom: 1.5rem;
+        }
+
+        .scroll-indicator-icon {
+          font-size: 2.5rem;
+        }
+      }
+
+      .hero-content {
+        position: relative;
+        z-index: 3;
+        text-align: center;
+        color: var(--text-light);
+        max-width: 900px;
+        padding: 0 2rem;
+      }
+
+      .hero-content h1 {
+        font-size: clamp(2.5rem, 5vw, 4rem);
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        text-shadow: 0 4px 24px rgba(22, 14, 8, 0.6);
+        line-height: 1.15;
+      }
+
+      .hero-content p {
+        font-size: clamp(1.125rem, 2vw, 1.5rem);
+        margin-bottom: 2rem;
+        line-height: 1.6;
+        text-shadow: 0 2px 12px rgba(22, 14, 8, 0.5);
+        opacity: 0.98;
+      }
+
+      /* Sections - Warm, layered */
+      .section {
+        padding: 5rem 0;
+      }
+
+      .section-warm {
+        background: linear-gradient(180deg, var(--bg-warm) 0%, #ffe8d8 100%);
+      }
+
+      .section-dark {
+        background: linear-gradient(
+          135deg,
+          var(--primary-brown) 0%,
+          var(--primary-dark) 100%
+        );
+        color: var(--text-light);
+      }
+
+      .section-sunset {
+        background: linear-gradient(135deg, #ffe0cc 0%, #ffd4b8 100%);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .section-sunset::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 50%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent 0%,
+          rgba(220, 126, 73, 0.1) 100%
+        );
+        pointer-events: none;
+      }
+
+      /* Content Cards - Warm, sophisticated */
+      .tile-content {
+        padding: 2.5rem;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(22, 14, 8, 0.12);
+        border: 1px solid rgba(142, 75, 39, 0.15);
+      }
+
+      .tile-content h2 {
+        color: var(--secondary-brown);
+        margin-bottom: 1.25rem;
+        line-height: 1.3;
+      }
+
+      .tile-content .accent-line {
+        width: 100px;
+        height: 6px;
+        background: linear-gradient(
+          90deg,
+          var(--secondary-orange) 0%,
+          var(--accent-magenta) 100%
+        );
+        margin-bottom: 1.75rem;
+        border-radius: 3px;
+        box-shadow: 0 2px 8px rgba(220, 126, 73, 0.3);
+      }
+
+      .tile-content p {
+        margin-bottom: 1.25rem;
+        line-height: 1.75;
+        color: var(--text-dark);
+      }
+
+      /* Dark section content cards */
+      .section-dark .tile-content {
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .section-dark .tile-content h2 {
+        color: var(--secondary-orange);
+      }
+
+      .section-dark .tile-content p {
+        color: rgba(255, 255, 255, 0.9);
+      }
+
+      /* Visual elements - Dramatic shadows */
+      .tile-visual {
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 16px 48px rgba(22, 14, 8, 0.25);
+        border: 2px solid rgba(142, 75, 39, 0.2);
+      }
+
+      /* CTA Buttons - Sunset inspired */
+      .btn-theme-primary {
+        background: linear-gradient(
+          135deg,
+          var(--secondary-orange) 0%,
+          var(--accent-magenta) 100%
+        );
+        color: white;
+        padding: 1.125rem 2.75rem;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 600;
+        display: inline-block;
+        box-shadow: 0 8px 28px rgba(220, 126, 73, 0.4);
+        transition: all 0.3s ease;
+        font-size: 1.05rem;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+      }
+
+      .btn-theme-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 36px rgba(220, 126, 73, 0.5);
+        background: linear-gradient(
+          135deg,
+          var(--accent-magenta) 0%,
+          var(--secondary-orange) 100%
+        );
+      }
+
+      .btn-theme-secondary {
+        background: transparent;
+        color: var(--secondary-brown);
+        padding: 1.125rem 2.75rem;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 600;
+        display: inline-block;
+        border: 2px solid var(--secondary-brown);
+        transition: all 0.3s ease;
+        font-size: 1.05rem;
+      }
+
+      .btn-theme-secondary:hover {
+        background: var(--secondary-brown);
+        color: white;
+        box-shadow: 0 6px 20px rgba(142, 75, 39, 0.3);
+      }
+
+      /* Stats Grid - Warm, inviting */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        margin: 3rem 0;
+      }
+
+      .stat-card {
+        text-align: center;
+        padding: 2.5rem 2rem;
+        background: linear-gradient(
+          135deg,
+          rgba(220, 126, 73, 0.08) 0%,
+          rgba(132, 50, 95, 0.08) 100%
+        );
+        border-radius: 24px;
+        border: 2px solid rgba(220, 126, 73, 0.2);
+        box-shadow: 0 6px 24px rgba(22, 14, 8, 0.08);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .stat-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(
+          90deg,
+          var(--secondary-orange) 0%,
+          var(--accent-magenta) 100%
+        );
+      }
+
+      .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 36px rgba(22, 14, 8, 0.15);
+        border-color: var(--secondary-orange);
+      }
+
+      .stat-number {
+        font-size: 3rem;
+        font-weight: 700;
+        background: linear-gradient(
+          135deg,
+          var(--secondary-orange) 0%,
+          var(--accent-magenta) 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.75rem;
+      }
+
+      .stat-label {
+        font-size: 1.125rem;
+        color: var(--text-dark);
+        font-weight: 600;
+        line-height: 1.4;
+      }
+
+      /* Domain Cards - Sunset themed */
+      .domains-sunset {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+        margin: 3rem 0;
+      }
+
+      .domain-card-sunset {
+        background: white;
+        border-radius: 24px;
+        padding: 2.5rem;
+        box-shadow: 0 8px 28px rgba(22, 14, 8, 0.1);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        border: 2px solid transparent;
+      }
+
+      .domain-card-sunset::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 6px;
+        background: linear-gradient(
+          90deg,
+          var(--secondary-orange) 0%,
+          var(--accent-magenta) 100%
+        );
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .domain-card-sunset:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 16px 40px rgba(22, 14, 8, 0.15);
+        border-color: var(--secondary-orange);
+      }
+
+      .domain-card-sunset:hover::before {
+        opacity: 1;
+      }
+
+      .domain-icon-sunset {
+        font-size: 3.5rem;
+        margin-bottom: 1.5rem;
+        display: block;
+        filter: drop-shadow(0 4px 8px rgba(22, 14, 8, 0.1));
+      }
+
+      .domain-title-sunset {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--secondary-brown);
+        margin-bottom: 1.25rem;
+      }
+
+      .domain-description-sunset {
+        font-size: 1rem;
+        line-height: 1.75;
+        color: var(--text-dark);
+        opacity: 0.85;
+      }
+
+      /* Quote section with sunset feel */
+      .quote-section {
+        text-align: center;
+        padding: 5rem 2rem;
+        max-width: 900px;
+        margin: 0 auto;
+        position: relative;
+      }
+
+      .quote-section::before {
+        content: '"';
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 8rem;
+        color: var(--secondary-orange);
+        opacity: 0.15;
+        font-family: Georgia, serif;
+        line-height: 1;
+      }
+
+      .quote-text {
+        font-size: clamp(1.25rem, 3vw, 1.75rem);
+        line-height: 1.6;
+        color: var(--secondary-brown);
+        font-style: italic;
+        margin-bottom: 1.5rem;
+        position: relative;
+        z-index: 2;
+      }
+
+      .quote-author {
+        font-size: 1.125rem;
+        color: var(--accent-magenta);
+        font-weight: 600;
+      }
+
+      /* Feature highlights with ember accents */
+      .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        margin: 3rem 0;
+      }
+
+      .feature-item {
+        text-align: center;
+        padding: 2rem;
+      }
+
+      .feature-icon {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 1.5rem;
+        background: linear-gradient(
+          135deg,
+          var(--secondary-orange) 0%,
+          var(--accent-magenta) 100%
+        );
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        color: white;
+        box-shadow: 0 8px 24px rgba(220, 126, 73, 0.3);
+      }
+
+      .feature-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--secondary-brown);
+        margin-bottom: 0.75rem;
+      }
+
+      .feature-description {
+        font-size: 0.95rem;
+        line-height: 1.6;
+        color: var(--text-dark);
+        opacity: 0.85;
+      }
+
+      /* Footer */
+      .footer {
+        background: linear-gradient(
+          135deg,
+          var(--primary-darkest) 0%,
+          var(--primary-brown) 100%
+        );
+        color: white;
+        padding: 3rem 0 2rem;
+        text-align: center;
+      }
+
+      .footer a {
+        color: var(--secondary-orange);
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      .footer a:hover {
+        color: var(--accent-magenta);
+        text-decoration: underline;
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 767px) {
+        .hero-content h1 {
+          font-size: 2rem;
+        }
+
+        .domains-sunset {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* Unified Header Overrides */
+      .site-header,
+      .site-header * {
+        font-family: "Be Vietnam Pro", sans-serif !important;
+      }
+
+      .site-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        background: rgba(22, 14, 8, 0.95);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(220, 126, 73, 0.2);
+        transition: all 0.3s ease;
+      }
+
+      .site-header.scrolled {
+        background: rgba(22, 14, 8, 0.98);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      }
+
+      .nav-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 80px;
+      }
+
+      .site-nav {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .site-nav a {
+        color: var(--text-light);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.85rem;
+        transition: all 0.3s ease;
+        position: relative;
+        padding: 0.5rem 0;
+        white-space: nowrap;
+      }
+
+      .site-nav a::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: var(--secondary-orange);
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+      }
+
+      .site-nav a:hover {
+        color: var(--secondary-orange);
+      }
+
+      .site-nav a:hover::after {
+        transform: scaleX(1);
+      }
+
+      .nav-dropdown {
+        position: relative;
+      }
+
+      .nav-dropdown-trigger {
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+      }
+
+      .nav-dropdown-trigger .chevron {
+        font-size: 0.6rem;
+        transition: transform 0.3s ease;
+      }
+
+      .nav-dropdown-menu {
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%) translateY(8px);
+        background: rgba(22, 14, 8, 0.98);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(220, 126, 73, 0.2);
+        border-radius: 12px;
+        padding: 0.5rem 0;
+        min-width: 220px;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.25s ease;
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+      }
+
+      .nav-dropdown:hover .nav-dropdown-menu {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(-50%) translateY(0);
+      }
+
+      .nav-dropdown:hover .chevron {
+        transform: rotate(180deg);
+      }
+
+      .nav-dropdown-menu a {
+        display: block;
+        padding: 0.65rem 1.5rem;
+        font-size: 0.9rem;
+        white-space: nowrap;
+        border-radius: 0;
+      }
+
+      .nav-dropdown-menu a::after {
+        display: none;
+      }
+
+      .nav-dropdown-menu a:hover {
+        background: rgba(220, 126, 73, 0.15);
+      }
+
+      .nav-cta {
+        background: var(--secondary-orange);
+        color: white !important;
+        padding: 0.75rem 1.5rem !important;
+        border-radius: 50px;
+        font-weight: 600;
+        box-shadow: 0 4px 12px rgba(220, 126, 73, 0.3);
+      }
+
+      .nav-cta::after {
+        display: none;
+      }
+
+      .nav-cta:hover {
+        color: white !important;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(220, 126, 73, 0.4);
+      }
+
+      @media (max-width: 768px) {
+        .site-nav {
+          position: fixed;
+          top: 80px;
+          left: 0;
+          right: 0;
+          background: rgba(22, 14, 8, 0.98);
+          backdrop-filter: blur(10px);
+          flex-direction: column;
+          gap: 0;
+          padding: 1rem 0;
+          transform: translateY(-100%);
+          opacity: 0;
+          transition: all 0.3s ease;
+          pointer-events: none;
+          border-bottom: 1px solid rgba(220, 126, 73, 0.2);
+        }
+
+        .site-nav.active {
+          transform: translateY(0);
+          opacity: 1;
+          pointer-events: all;
+        }
+
+        .site-nav a {
+          width: 100%;
+          padding: 1rem 2rem;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .mobile-menu-toggle {
+          display: flex;
+        }
+
+        .nav-dropdown-menu {
+          position: static;
+          transform: none;
+          background: rgba(255, 255, 255, 0.05);
+          border: none;
+          border-radius: 0;
+          box-shadow: none;
+          opacity: 1;
+          visibility: visible;
+          min-width: 100%;
+          padding: 0;
+        }
+
+        .nav-dropdown-menu a {
+          padding-left: 3rem;
+        }
+      }
+
+      /* Header Size Consistency Lock */
+      .site-logo {
+        display: flex !important;
+        align-items: center !important;
+        text-decoration: none !important;
+        color: var(--text-light) !important;
+        font-size: 1.5rem !important;
+        font-weight: 700 !important;
+        gap: 0.75rem !important;
+      }
+
+      .logo-icon {
+        width: 40px !important;
+        height: 40px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        flex-shrink: 0 !important;
+      }
+
+      .logo-icon-img {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: contain !important;
+      }
+
+      .logo-text {
+        display: flex !important;
+        flex-direction: column !important;
+        line-height: 1.2 !important;
+      }
+
+      .logo-text-main {
+        font-size: 1.25rem !important;
+        font-weight: 700 !important;
+        line-height: 1.2 !important;
+      }
+
+      .logo-text-sub {
+        font-size: 0.7rem !important;
+        opacity: 0.8 !important;
+        font-weight: 400 !important;
+        letter-spacing: 0.05em !important;
+        line-height: 1.2 !important;
+      }
+
+      .nav-cta {
+        background: var(--secondary-orange) !important;
+        color: white !important;
+        padding: 0.75rem 1.5rem !important;
+        border-radius: 50px !important;
+        font-weight: 600 !important;
+        box-shadow: 0 4px 12px rgba(220, 126, 73, 0.3) !important;
+        font-size: 0.85rem !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        line-height: 1 !important;
+      }
+    </style>
+  </head>
+  <body id="top">
+    <!-- Site Header / Navigation -->
+    <header class="site-header" id="site-header">
+      <nav class="nav-container" id="main-nav">
+        <a href="index.html" class="site-logo" id="site-logo">
+          <div class="logo-icon" id="logo-icon">
+            <img
+              src="../../assets/icons/WWRI_logo.png"
+              alt="WRI Logo"
+              class="logo-icon-img"
+              id="logo-icon-image"
+            />
+          </div>
+          <div class="logo-text" id="logo-text">
+            <span class="logo-text-main" id="logo-text-main">WRI</span>
+            <span class="logo-text-sub" id="logo-text-sub"
+              >The Wildfire Resilience Index</span
+            >
+          </div>
+        </a>
+
+        <div class="site-nav" id="site-nav">
+          <a href="index.html" id="nav-link-home" class="active">Home</a>
+          <a href="about.html" id="nav-link-about">About</a>
+          <a href="why-resilience.html" id="nav-link-why-resilience"
+            >Why Resilience</a
+          >
+          <a href="why-index.html" id="nav-link-why-index">Why an Index</a>
+          <a href="how-it-works.html" id="nav-link-how-it-works"
+            >How it Works</a
+          >
+          <div class="nav-dropdown" id="nav-dropdown-domains">
+            <a href="#" class="nav-dropdown-trigger" id="nav-link-domains"
+              >Domains <span class="chevron">▼</span></a
+            >
+            <div class="nav-dropdown-menu" id="nav-dropdown-menu">
+              <a href="livelihoods.html" id="nav-dd-livelihoods">Livelihoods</a>
+              <a href="infrastructure.html" id="nav-dd-infrastructure"
+                >Infrastructure</a
+              >
+              <a href="communities.html" id="nav-dd-communities">Communities</a>
+              <a href="sense-of-place.html" id="nav-dd-sense-of-place"
+                >Sense of Place</a
+              >
+              <a href="species.html" id="nav-dd-species">Species</a>
+              <a href="habitats.html" id="nav-dd-habitats">Habitats</a>
+              <a href="water.html" id="nav-dd-water">Water</a>
+              <a href="air-quality.html" id="nav-dd-air-quality">Air Quality</a>
+            </div>
+          </div>
+          <a href="resources.html" id="nav-link-resources">Resources</a>
+          <a href="in-the-news.html" id="nav-link-news">In the News</a>
+          <a href="meet-the-team.html" id="nav-link-team">Meet the Team</a>
+          <a href="#" id="nav-link-dashboard" class="nav-cta">Dashboard</a>
+        </div>
+
+        <button
+          class="mobile-menu-toggle"
+          id="mobile-menu-toggle"
+          aria-label="Toggle menu"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </nav>
+    </header>
+
+    <!-- Video Showcase Section - FIRST -->
+    <section id="video-section" class="video-showcase">
+      <div class="video-showcase-container" id="video-container">
+        <video autoplay muted loop playsinline id="showcase-video">
+          <source src="../../assets/videos/hero-video.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      </div>
+
+      <!-- Scroll Indicator - just the arrow -->
+      <div class="scroll-indicator" id="scroll-indicator">
+        <div class="scroll-indicator-icon" id="scroll-indicator-icon">↓</div>
+      </div>
+    </section>
+
+    <!-- Hero Section - SECOND with prominent CTAs -->
+    <section id="hero-section" class="section-hero hero">
+      <div class="hero-content container">
+        <h1 id="hero-heading" class="fade-in">Where Data Meets Resilience</h1>
+        <p id="hero-subheading" class="fade-in">
+          Protecting communities from wildfire threats through comprehensive
+          preparedness analysis
+        </p>
+
+        <div class="hero-cta-group fade-in" id="hero-ctas">
+          <a href="#" id="hero-cta-dashboard" class="hero-cta-primary"
+            >🔥 Launch Dashboard</a
+          >
+          <a href="#what-is-wri" id="hero-cta-learn" class="hero-cta-secondary"
+            >Learn More</a
+          >
+        </div>
+      </div>
+    </section>
+
+    <!-- What is WRI Section -->
+    <section id="what-is-wri" class="section section-warm">
+      <div class="container">
+        <div class="grid-two-col tile-left-right">
+          <div class="tile-visual fade-in">
+            <div class="placeholder-image" id="wri-placeholder-image">
+              <div>
+                <strong>Visual Placeholder</strong><br />
+                Cat to provide: Wildfire resilience concept<br />
+                Suggested: Sunset landscape with community
+              </div>
+            </div>
+          </div>
+          <div class="tile-content fade-in">
+            <div class="accent-line" id="wri-accent-line"></div>
+            <h2 id="wri-heading" class="heading-lg">
+              What is the Wildfire Resilience Index?
+            </h2>
+            <p id="wri-description-1" class="body-text">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. The
+              Wildfire Resilience Index is a comprehensive tool that measures
+              how prepared Western communities are to face increasing wildfire
+              threats.
+            </p>
+            <p id="wri-description-2" class="body-text">
+              Sed do eiusmod tempor incididunt ut labore. By analyzing
+              infrastructure, social systems, natural resources, and planning
+              frameworks, we provide actionable insights that help communities
+              build lasting resilience.
+            </p>
+            <a href="#" id="wri-learn-more" class="btn-theme-secondary"
+              >Learn More</a
+            >
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Why Resilience Section (Dark) -->
+    <section id="why-resilience" class="section section-dark">
+      <div class="container">
+        <div class="grid-two-col tile-right-left">
+          <div class="tile-visual fade-in">
+            <div
+              class="placeholder-image"
+              style="
+                background: linear-gradient(135deg, #dc7e49 0%, #84325f 100%);
+              "
+              id="resilience-placeholder-image"
+            >
+              <div style="color: white; padding: 2rem">
+                <strong>Visual Placeholder</strong><br />
+                Cat to provide: Wildfire urgency imagery<br />
+                Suggested: Dramatic fire/recovery scenes
+              </div>
+            </div>
+          </div>
+          <div class="tile-content fade-in">
+            <div class="accent-line" id="resilience-accent-line"></div>
+            <h2 id="resilience-heading" class="heading-lg">
+              The Urgent Need for Resilience
+            </h2>
+            <p id="resilience-description-1" class="body-text">
+              Ut enim ad minim veniam, quis nostrud. Climate change is
+              intensifying wildfire seasons—longer, hotter, more destructive.
+              Communities across the West face unprecedented challenges.
+            </p>
+            <p id="resilience-description-2" class="body-text">
+              Duis aute irure dolor in reprehenderit. But resilience isn't just
+              about surviving fires. It's about protecting homes, preserving
+              ecosystems, and ensuring communities can recover and thrive.
+            </p>
+            <div class="stats-grid" id="resilience-stats">
+              <div class="stat-card fade-in" id="stat-card-1">
+                <div class="stat-number" id="stat-number-1">10M+</div>
+                <div class="stat-label" id="stat-label-1">Homes at Risk</div>
+              </div>
+              <div class="stat-card fade-in" id="stat-card-2">
+                <div class="stat-number" id="stat-number-2">15</div>
+                <div class="stat-label" id="stat-label-2">Western States</div>
+              </div>
+              <div class="stat-card fade-in" id="stat-card-3">
+                <div class="stat-number" id="stat-number-3">200+</div>
+                <div class="stat-label" id="stat-label-3">
+                  Communities Assessed
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How the Index Works -->
+    <section id="how-it-works" class="section section-sunset">
+      <div class="container">
+        <div class="mb-4 text-center" id="how-header">
+          <h2 id="how-heading" class="heading-lg fade-in">
+            How We Measure Resilience
+          </h2>
+          <p
+            id="how-description"
+            class="body-text fade-in"
+            style="max-width: 700px; margin: 0 auto"
+          >
+            Our comprehensive approach analyzes the interconnected systems that
+            determine how well communities can prepare for, respond to, and
+            recover from wildfires.
+          </p>
+        </div>
+
+        <div class="feature-grid" id="features">
+          <div class="feature-item fade-in" id="feature-1">
+            <div class="feature-icon" id="feature-icon-1">📊</div>
+            <h3 class="feature-title" id="feature-title-1">Data Collection</h3>
+            <p class="feature-description" id="feature-description-1">
+              We gather information from over 100 sources including government
+              databases, satellite imagery, and community surveys.
+            </p>
+          </div>
+          <div class="feature-item fade-in" id="feature-2">
+            <div class="feature-icon" id="feature-icon-2">🔍</div>
+            <h3 class="feature-title" id="feature-title-2">
+              Multi-Domain Analysis
+            </h3>
+            <p class="feature-description" id="feature-description-2">
+              We examine infrastructure, social systems, natural resources, and
+              planning across four integrated domains.
+            </p>
+          </div>
+          <div class="feature-item fade-in" id="feature-3">
+            <div class="feature-icon" id="feature-icon-3">💡</div>
+            <h3 class="feature-title" id="feature-title-3">
+              Actionable Insights
+            </h3>
+            <p class="feature-description" id="feature-description-3">
+              Results help policy makers and community leaders make informed
+              decisions about where to invest resources.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Domains Overview Section -->
+    <section id="domains-overview" class="section">
+      <div class="container">
+        <div class="mb-4 text-center" id="domains-header">
+          <h2 id="domains-heading" class="heading-lg fade-in">
+            Four Pillars of Resilience
+          </h2>
+          <p
+            id="domains-description"
+            class="body-text fade-in"
+            style="max-width: 700px; margin: 0 auto"
+          >
+            Community resilience depends on interconnected systems working
+            together. We measure all four to reveal the complete picture.
+          </p>
+        </div>
+        <div class="domains-sunset" id="domains-grid">
+          <a
+            href="infrastructure.html"
+            class="domain-card-sunset fade-in"
+            id="domain-card-infrastructure"
+            style="text-decoration: none; color: inherit"
+          >
+            <span class="domain-icon-sunset" id="domain-icon-infrastructure"
+              >🏗️</span
+            >
+            <h3 class="domain-title-sunset" id="domain-title-infrastructure">
+              Infrastructure
+            </h3>
+            <p
+              class="domain-description-sunset"
+              id="domain-description-infrastructure"
+            >
+              Critical systems including roads for evacuation, power grids for
+              communication, water systems for firefighting, and emergency
+              response capacity that keeps communities functioning.
+            </p>
+          </a>
+          <a
+            href="social.html"
+            class="domain-card-sunset fade-in"
+            id="domain-card-social"
+            style="text-decoration: none; color: inherit"
+          >
+            <span class="domain-icon-sunset" id="domain-icon-social">👥</span>
+            <h3 class="domain-title-sunset" id="domain-title-social">
+              Social Systems
+            </h3>
+            <p class="domain-description-sunset" id="domain-description-social">
+              Community networks, demographic factors, and social capital that
+              determine how well neighbors can support each other during and
+              after disasters.
+            </p>
+          </a>
+          <a
+            href="natural-resources.html"
+            class="domain-card-sunset fade-in"
+            id="domain-card-natural"
+            style="text-decoration: none; color: inherit"
+          >
+            <span class="domain-icon-sunset" id="domain-icon-natural">🌲</span>
+            <h3 class="domain-title-sunset" id="domain-title-natural">
+              Natural Resources
+            </h3>
+            <p
+              class="domain-description-sunset"
+              id="domain-description-natural"
+            >
+              Forest health, fuel loads, topography, and ecological conditions
+              that influence fire behavior and support landscape recovery after
+              burns.
+            </p>
+          </a>
+          <a
+            href="planning.html"
+            class="domain-card-sunset fade-in"
+            id="domain-card-planning"
+            style="text-decoration: none; color: inherit"
+          >
+            <span class="domain-icon-sunset" id="domain-icon-planning">📋</span>
+            <h3 class="domain-title-sunset" id="domain-title-planning">
+              Planning &amp; Governance
+            </h3>
+            <p
+              class="domain-description-sunset"
+              id="domain-description-planning"
+            >
+              Preparedness plans, land use policies, and coordination structures
+              that guide long-term resilience investments and emergency
+              response.
+            </p>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quote Section -->
+    <section id="quote-section" class="section section-warm">
+      <div class="container">
+        <div class="quote-section fade-in" id="quote-content">
+          <p class="quote-text" id="quote-text">
+            "In the face of escalating wildfire threats, resilience isn't
+            optional—it's essential. Together, we can build communities that not
+            only survive, but thrive."
+          </p>
+          <p class="quote-author" id="quote-author">— The WRI Team</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Call to Action Section -->
+    <section id="cta-section" class="section section-sunset">
+      <div class="container text-center" id="cta-content">
+        <h2 id="cta-heading" class="heading-lg fade-in">
+          Discover Your Community's Resilience
+        </h2>
+        <p
+          id="cta-description"
+          class="body-text fade-in"
+          style="max-width: 600px; margin: 0 auto 2rem"
+        >
+          Explore interactive data, compare communities, and find where
+          investments can make the greatest impact in building wildfire
+          resilience.
+        </p>
+        <a href="#" id="cta-button" class="btn-theme-primary fade-in"
+          >Launch Dashboard</a
+        >
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" id="footer">
+      <div class="container" id="footer-content">
+        <p id="footer-text">
+          &copy; 2026 Wildfire Resilience Index. Supported by the
+          <a href="#" id="footer-link-moore">Moore Foundation</a>.
+        </p>
+        <p id="footer-disclaimer" class="caption-text mt-2">
+          Design mockup with placeholder content. Final content provided by Cat
+          Fong.
+        </p>
+      </div>
+    </footer>
+
+    <!-- Shared JavaScript -->
+    <script src="../../assets/js/shared.js"></script>
+
+    <!-- Theme-specific JavaScript -->
+    <script>
+      // Scroll indicator - fades out as user scrolls
+      const scrollIndicator = document.getElementById("scroll-indicator");
+      const videoSection = document.getElementById("video-section");
+
+      // Click to scroll to hero section
+      scrollIndicator.addEventListener("click", () => {
+        document
+          .getElementById("hero-section")
+          .scrollIntoView({ behavior: "smooth" });
       });
-    });
-  </script>
-</body>
+
+      // Fade out as user scrolls down
+      function handleScrollIndicator() {
+        const videoRect = videoSection.getBoundingClientRect();
+        const videoBottom = videoRect.bottom;
+        const scrollProgress = Math.max(
+          0,
+          1 - window.scrollY / (videoRect.height * 0.5),
+        );
+
+        // Fade out the indicator as user scrolls
+        scrollIndicator.style.opacity = scrollProgress;
+
+        // Hide completely when scrolled past video
+        if (videoBottom < 100) {
+          scrollIndicator.style.display = "none";
+        } else {
+          scrollIndicator.style.display = "flex";
+        }
+      }
+
+      // Listen to scroll events
+      window.addEventListener("scroll", handleScrollIndicator);
+
+      // Initial check
+      handleScrollIndicator();
+
+      // Mobile menu toggle
+      const mobileMenuToggle = document.getElementById("mobile-menu-toggle");
+      const siteNav = document.getElementById("site-nav");
+
+      mobileMenuToggle.addEventListener("click", () => {
+        mobileMenuToggle.classList.toggle("active");
+        siteNav.classList.toggle("active");
+      });
+
+      // Close mobile menu when clicking a link
+      document.querySelectorAll(".site-nav a").forEach((link) => {
+        link.addEventListener("click", () => {
+          mobileMenuToggle.classList.remove("active");
+          siteNav.classList.remove("active");
+        });
+      });
+
+      // Header scroll effect
+      const siteHeader = document.getElementById("site-header");
+      let lastScrollTop = 0;
+
+      window.addEventListener("scroll", () => {
+        const scrollTop =
+          window.pageYOffset || document.documentElement.scrollTop;
+
+        // Add scrolled class for style changes
+        if (scrollTop > 50) {
+          siteHeader.classList.add("scrolled");
+        } else {
+          siteHeader.classList.remove("scrolled");
+        }
+
+        lastScrollTop = scrollTop;
+      });
+
+      // Smooth scroll for all anchor links
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", function (e) {
+          e.preventDefault();
+          const targetId = this.getAttribute("href");
+          if (targetId === "#" || targetId === "#top") {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          } else {
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+              const headerOffset = 80; // Height of fixed header
+              const elementPosition = targetElement.getBoundingClientRect().top;
+              const offsetPosition =
+                elementPosition + window.pageYOffset - headerOffset;
+
+              window.scrollTo({
+                top: offsetPosition,
+                behavior: "smooth",
+              });
+            }
+          }
+        });
+      });
+    </script>
+  </body>
 </html>

@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Infrastructure | WRI - The Wildfire Resilience Index</title>
+    <title id="communities-title">Communities | WRI</title>
     <meta
       name="description"
-      content="Critical systems for community safety — road networks, power grids, water systems, and emergency response capacity."
+      content="Community networks build resilience — social capital, vulnerable populations, and community organizations that strengthen wildfire preparedness."
     />
 
     <!-- Google Fonts -->
@@ -45,6 +45,7 @@
       }
 
       /* ── Navigation Header ── */
+      /* Navigation Header */
       .site-header {
         position: fixed;
         top: 0;
@@ -107,6 +108,7 @@
         font-size: 1.25rem;
         font-weight: 700;
       }
+
       .logo-text-sub {
         font-size: 0.7rem;
         opacity: 0.8;
@@ -137,11 +139,7 @@
         left: 0;
         right: 0;
         height: 2px;
-        background: linear-gradient(
-          90deg,
-          var(--secondary-orange) 0%,
-          var(--accent-magenta) 100%
-        );
+        background: var(--secondary-orange);
         transform: scaleX(0);
         transition: transform 0.3s ease;
       }
@@ -149,14 +147,8 @@
       .site-nav a:hover {
         color: var(--secondary-orange);
       }
-      .site-nav a:hover::after {
-        transform: scaleX(1);
-      }
 
-      .site-nav a.active {
-        color: var(--secondary-orange);
-      }
-      .site-nav a.active::after {
+      .site-nav a:hover::after {
         transform: scaleX(1);
       }
 
@@ -220,11 +212,7 @@
       }
 
       .nav-cta {
-        background: linear-gradient(
-          135deg,
-          var(--secondary-orange) 0%,
-          var(--accent-magenta) 100%
-        );
+        background: var(--secondary-orange);
         color: white !important;
         padding: 0.75rem 1.5rem !important;
         border-radius: 50px;
@@ -242,7 +230,7 @@
         box-shadow: 0 6px 20px rgba(220, 126, 73, 0.4);
       }
 
-      /* Mobile menu */
+      /* Mobile menu toggle */
       .mobile-menu-toggle {
         display: none;
         flex-direction: column;
@@ -261,6 +249,19 @@
         transition: all 0.3s ease;
       }
 
+      .mobile-menu-toggle.active span:nth-child(1) {
+        transform: rotate(45deg) translate(8px, 8px);
+      }
+
+      .mobile-menu-toggle.active span:nth-child(2) {
+        opacity: 0;
+      }
+
+      .mobile-menu-toggle.active span:nth-child(3) {
+        transform: rotate(-45deg) translate(7px, -7px);
+      }
+
+      /* Mobile menu */
       @media (max-width: 768px) {
         .site-nav {
           position: fixed;
@@ -326,8 +327,8 @@
         background: linear-gradient(
           135deg,
           var(--primary-darkest) 0%,
-          var(--primary-brown) 40%,
-          var(--secondary-brown) 100%
+          var(--accent-magenta) 45%,
+          var(--secondary-orange) 100%
         );
       }
 
@@ -336,13 +337,13 @@
         position: absolute;
         inset: 0;
         background: radial-gradient(
-            ellipse at 30% 50%,
-            rgba(220, 126, 73, 0.25) 0%,
-            transparent 60%
+            ellipse at 40% 60%,
+            rgba(220, 126, 73, 0.2) 0%,
+            transparent 55%
           ),
           radial-gradient(
-            ellipse at 70% 30%,
-            rgba(132, 50, 95, 0.2) 0%,
+            ellipse at 65% 25%,
+            rgba(132, 50, 95, 0.25) 0%,
             transparent 50%
           );
         z-index: 1;
@@ -402,7 +403,6 @@
         overflow: hidden;
       }
 
-      /* Tile cards */
       .tile-content {
         padding: 2.5rem;
         background: rgba(255, 255, 255, 0.95);
@@ -594,21 +594,19 @@
         margin-bottom: 1rem;
         display: block;
       }
-
       .domain-nav-card .card-title {
         font-size: 1.2rem;
         font-weight: 700;
         color: var(--secondary-brown);
         margin-bottom: 0.5rem;
       }
-
       .domain-nav-card .card-desc {
         font-size: 0.9rem;
         line-height: 1.5;
         opacity: 0.75;
       }
 
-      /* ── CTA & Buttons ── */
+      /* ── Buttons ── */
       .btn-theme-primary {
         background: linear-gradient(
           135deg,
@@ -668,13 +666,11 @@
         text-decoration: none;
         font-weight: 600;
       }
-
       .footer a:hover {
         color: var(--accent-magenta);
         text-decoration: underline;
       }
 
-      /* ── Responsive ── */
       @media (max-width: 767px) {
         .domain-hero {
           min-height: 40vh;
@@ -985,13 +981,12 @@
             >
             <div class="nav-dropdown-menu" id="nav-dropdown-menu">
               <a href="livelihoods.html" id="nav-dd-livelihoods">Livelihoods</a>
-              <a
-                href="infrastructure.html"
-                id="nav-dd-infrastructure"
-                class="active"
+              <a href="infrastructure.html" id="nav-dd-infrastructure"
                 >Infrastructure</a
               >
-              <a href="communities.html" id="nav-dd-communities">Communities</a>
+              <a href="communities.html" id="nav-dd-communities" class="active"
+                >Communities</a
+              >
               <a href="sense-of-place.html" id="nav-dd-sense-of-place"
                 >Sense of Place</a
               >
@@ -1020,62 +1015,64 @@
     <!-- ── Domain Hero ── -->
     <section class="domain-hero" id="domain-hero">
       <div class="domain-hero-content fade-in" id="domain-hero-content">
-        <span class="domain-hero-icon" id="domain-hero-icon">🏗️</span>
-        <h1 id="domain-hero-heading">Critical Systems for Community Safety</h1>
+        <span class="domain-hero-icon" id="domain-hero-icon">👥</span>
+        <h1 id="domain-hero-heading">Community Networks Build Resilience</h1>
         <p id="domain-hero-subtitle">
-          Evaluating the roads, utilities, and emergency services that determine
-          whether communities can protect themselves and recover from wildfire.
+          Measuring the social bonds, demographic strengths, and community
+          organizations that help neighbors support each other before, during,
+          and after wildfire events.
         </p>
       </div>
     </section>
 
-    <!-- ── Section 1: Evacuation & Road Networks ── -->
-    <section class="section section-warm" id="section-roads">
+    <!-- ── Section 1: Social Capital & Community Networks ── -->
+    <section class="section section-warm" id="section-social-capital">
       <div class="container">
         <div class="grid-two-col tile-left-right">
-          <div class="tile-visual fade-in" id="video-tile-roads">
-            <div class="video-placeholder" id="video-placeholder-roads">
-              <div class="video-play-btn" id="video-play-roads">
+          <div class="tile-visual fade-in" id="video-tile-capital">
+            <div class="video-placeholder" id="video-placeholder-capital">
+              <div class="video-play-btn" id="video-play-capital">
                 <span>▶</span>
               </div>
               <strong>Cat to provide:</strong>
               <span class="video-desc"
-                >Footage of evacuation routes, road networks, and traffic flow
-                during emergency scenarios</span
+                >Footage of community meetings, neighborhood gatherings, and
+                mutual aid activities</span
               >
               <span class="video-format-note">16:9 inline video</span>
             </div>
           </div>
-          <div class="tile-content fade-in" id="content-roads">
-            <div class="accent-line" id="accent-roads"></div>
-            <h2 id="heading-roads" class="heading-lg">
-              Evacuation Routes &amp; Road Networks
+          <div class="tile-content fade-in" id="content-capital">
+            <div class="accent-line" id="accent-capital"></div>
+            <h2 id="heading-capital" class="heading-lg">
+              Social Capital &amp; Community Networks
             </h2>
-            <p id="desc-roads-1" class="body-text">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. When
-              wildfire strikes, every minute counts. Road infrastructure
-              determines whether entire communities can evacuate safely or
-              become trapped.
+            <p id="desc-capital-1" class="body-text">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Strong
+              social networks are the invisible infrastructure of wildfire
+              resilience. Communities where neighbors know each other, share
+              resources, and organize collectively have dramatically better
+              outcomes.
             </p>
-            <p id="desc-roads-2" class="body-text">
+            <p id="desc-capital-2" class="body-text">
               Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-              We analyze road density, alternative route availability, bridge
-              capacity, and historical traffic patterns during emergencies.
+              We measure civic participation, organizational density, and the
+              informal networks that activate during emergencies to coordinate
+              evacuations and share critical information.
             </p>
-            <ul class="indicator-list" id="indicators-roads">
+            <ul class="indicator-list" id="indicators-capital">
               <li>
-                <span class="indicator-dot"></span> Road density &amp;
-                connectivity
+                <span class="indicator-dot"></span> Civic participation rates
               </li>
               <li>
-                <span class="indicator-dot"></span> Evacuation route redundancy
+                <span class="indicator-dot"></span> Community organization
+                density
               </li>
               <li>
-                <span class="indicator-dot"></span> Bridge &amp; chokepoint
-                capacity
+                <span class="indicator-dot"></span> Neighbor connectivity index
               </li>
               <li>
-                <span class="indicator-dot"></span> Emergency traffic management
+                <span class="indicator-dot"></span> Volunteer network strength
               </li>
             </ul>
           </div>
@@ -1083,107 +1080,106 @@
       </div>
     </section>
 
-    <!-- ── Section 2: Utilities & Power Systems ── -->
-    <section class="section section-dark" id="section-utilities">
+    <!-- ── Section 2: Vulnerable Populations ── -->
+    <section class="section section-dark" id="section-vulnerable">
       <div class="container">
         <div class="grid-two-col tile-right-left">
-          <div class="tile-visual fade-in" id="video-tile-utilities">
-            <div class="video-placeholder" id="video-placeholder-utilities">
-              <div class="video-play-btn" id="video-play-utilities">
+          <div class="tile-visual fade-in" id="video-tile-vulnerable">
+            <div class="video-placeholder" id="video-placeholder-vulnerable">
+              <div class="video-play-btn" id="video-play-vulnerable">
                 <span>▶</span>
               </div>
               <strong>Cat to provide:</strong>
               <span class="video-desc"
-                >Footage of power grid infrastructure, utility lines, and
-                communication towers in fire-prone areas</span
+                >Footage of demographic diversity, elderly residents, and
+                community support programs in action</span
               >
               <span class="video-format-note">16:9 inline video</span>
             </div>
           </div>
-          <div class="tile-content fade-in" id="content-utilities">
-            <div class="accent-line" id="accent-utilities"></div>
-            <h2 id="heading-utilities" class="heading-lg">
-              Power Grids &amp; Communication Systems
+          <div class="tile-content fade-in" id="content-vulnerable">
+            <div class="accent-line" id="accent-vulnerable"></div>
+            <h2 id="heading-vulnerable" class="heading-lg">
+              Vulnerable Populations &amp; Equity
             </h2>
-            <p id="desc-utilities-1" class="body-text">
+            <p id="desc-vulnerable-1" class="body-text">
               Ut enim ad minim veniam, quis nostrud exercitation ullamco
-              laboris. Power infrastructure is both a vulnerability and a
-              lifeline — utility lines can spark fires while simultaneously
-              providing the communication networks needed for evacuation alerts.
+              laboris. Wildfire risk does not fall equally. Elderly residents,
+              low-income households, non-English speakers, and people with
+              mobility challenges face disproportionate risk during evacuations
+              and recovery.
             </p>
-            <p id="desc-utilities-2" class="body-text">
+            <p id="desc-vulnerable-2" class="body-text">
               Duis aute irure dolor in reprehenderit in voluptate velit esse
-              cillum dolore. We measure grid resilience, backup power
-              availability, and the reach of emergency alert systems across
-              communities.
+              cillum dolore. Our analysis identifies where these populations are
+              concentrated and evaluates whether support systems, translations,
+              and accessibility measures are in place.
             </p>
-            <ul class="indicator-list" id="indicators-utilities">
+            <ul class="indicator-list" id="indicators-vulnerable">
+              <li><span class="indicator-dot"></span> Age dependency ratio</li>
               <li>
-                <span class="indicator-dot"></span> Power grid resilience &amp;
-                redundancy
+                <span class="indicator-dot"></span> Linguistic isolation index
               </li>
               <li>
-                <span class="indicator-dot"></span> Utility line fire-risk
-                exposure
+                <span class="indicator-dot"></span> Mobility-limited population
+                share
               </li>
               <li>
-                <span class="indicator-dot"></span> Emergency communication
-                coverage
+                <span class="indicator-dot"></span> Social service accessibility
               </li>
-              <li><span class="indicator-dot"></span> Backup power capacity</li>
             </ul>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ── Section 3: Water Systems & Emergency Response ── -->
-    <section class="section section-sunset" id="section-water">
+    <!-- ── Section 3: Community Organizations ── -->
+    <section class="section section-sunset" id="section-organizations">
       <div class="container">
         <div class="grid-two-col tile-left-right">
-          <div class="tile-visual fade-in" id="video-tile-water">
-            <div class="video-placeholder" id="video-placeholder-water">
-              <div class="video-play-btn" id="video-play-water">
+          <div class="tile-visual fade-in" id="video-tile-orgs">
+            <div class="video-placeholder" id="video-placeholder-orgs">
+              <div class="video-play-btn" id="video-play-orgs">
                 <span>▶</span>
               </div>
               <strong>Cat to provide:</strong>
               <span class="video-desc"
-                >Footage of water systems, fire hydrants, firefighting capacity,
-                and emergency response coordination</span
+                >Footage of community organizations, social cohesion events, and
+                collaborative planning sessions</span
               >
               <span class="video-format-note">16:9 inline video</span>
             </div>
           </div>
-          <div class="tile-content fade-in" id="content-water">
-            <div class="accent-line" id="accent-water"></div>
-            <h2 id="heading-water" class="heading-lg">
-              Water Systems &amp; Firefighting Capacity
+          <div class="tile-content fade-in" id="content-orgs">
+            <div class="accent-line" id="accent-orgs"></div>
+            <h2 id="heading-orgs" class="heading-lg">
+              Community Organizations &amp; Collective Action
             </h2>
-            <p id="desc-water-1" class="body-text">
-              Excepteur sint occaecat cupidatat non proident. Water availability
-              directly impacts firefighting success. Communities with robust
-              water systems and strategically placed fire stations have
-              significantly higher survival rates.
+            <p id="desc-orgs-1" class="body-text">
+              Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
+              officia deserunt mollit. Fire-adapted communities aren't built
+              overnight. They require sustained engagement through established
+              organizations that maintain institutional knowledge and mobilize
+              resources.
             </p>
-            <p id="desc-water-2" class="body-text">
-              Sunt in culpa qui officia deserunt mollit anim id est laborum. Our
-              analysis covers hydrant density, water pressure reliability, fire
-              station proximity, and volunteer firefighter availability across
-              rural and urban areas.
+            <p id="desc-orgs-2" class="body-text">
+              Sunt in culpa qui officia deserunt mollit anim id est laborum. We
+              track Fire Safe Councils, Community Emergency Response Teams
+              (CERTs), neighborhood associations, and faith-based organizations
+              that provide the backbone for community-level resilience efforts.
             </p>
-            <ul class="indicator-list" id="indicators-water">
+            <ul class="indicator-list" id="indicators-orgs">
               <li>
-                <span class="indicator-dot"></span> Fire hydrant density &amp;
-                water pressure
+                <span class="indicator-dot"></span> Fire Safe Council presence
+              </li>
+              <li><span class="indicator-dot"></span> CERT team readiness</li>
+              <li>
+                <span class="indicator-dot"></span> Nonprofit density per capita
               </li>
               <li>
-                <span class="indicator-dot"></span> Fire station response times
+                <span class="indicator-dot"></span> Faith &amp; civic
+                organization engagement
               </li>
-              <li>
-                <span class="indicator-dot"></span> Firefighting resource
-                allocation
-              </li>
-              <li><span class="indicator-dot"></span> Mutual aid agreements</li>
             </ul>
           </div>
         </div>
@@ -1202,22 +1198,22 @@
             id="other-domains-desc"
             style="max-width: 650px; margin: 0 auto"
           >
-            Wildfire resilience depends on interconnected systems. Explore how
-            social networks, natural landscapes, and governance structures
-            contribute to community preparedness.
+            Social resilience connects to every part of the system. See how
+            infrastructure, landscapes, and governance policies complete the
+            picture of community preparedness.
           </p>
         </div>
         <div class="domain-nav-grid" id="domain-nav-grid">
           <a
-            href="social.html"
+            href="infrastructure.html"
             class="domain-nav-card fade-in"
-            id="domain-nav-social"
+            id="domain-nav-infrastructure"
           >
-            <span class="card-icon">👥</span>
-            <div class="card-title">Social Systems</div>
+            <span class="card-icon">🏗️</span>
+            <div class="card-title">Infrastructure</div>
             <div class="card-desc">
-              Community networks, demographics, and social capital that support
-              mutual aid during disasters.
+              Roads, power grids, water systems, and emergency services that
+              protect communities physically.
             </div>
           </a>
           <a
@@ -1252,7 +1248,7 @@
     <section class="section section-dark" id="section-cta">
       <div class="container text-center" id="cta-content">
         <h2 class="heading-lg fade-in" id="cta-heading">
-          See Infrastructure Scores in Your Community
+          See Social Resilience Scores in Your Community
         </h2>
         <p
           class="body-text fade-in"
@@ -1263,8 +1259,9 @@
             color: rgba(255, 255, 255, 0.85);
           "
         >
-          Explore interactive maps and compare infrastructure resilience scores
-          across Western communities using the WRI Dashboard.
+          Discover how your community's social networks, demographics, and
+          organizations compare — and where investments can strengthen the bonds
+          that save lives.
         </p>
         <a href="#" class="btn-theme-primary fade-in" id="cta-button"
           >Launch Dashboard</a
@@ -1286,12 +1283,8 @@
       </div>
     </footer>
 
-    <!-- Shared JS -->
     <script src="../../assets/js/shared.js"></script>
-
-    <!-- Page JS -->
     <script>
-      // Mobile menu toggle
       const mobileMenuToggle = document.getElementById("mobile-menu-toggle");
       const siteNav = document.getElementById("site-nav");
 
@@ -1307,7 +1300,6 @@
         });
       });
 
-      // Header scroll effect
       const siteHeader = document.getElementById("site-header");
       window.addEventListener("scroll", () => {
         if (window.pageYOffset > 50) {

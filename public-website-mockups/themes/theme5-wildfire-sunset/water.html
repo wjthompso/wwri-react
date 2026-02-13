@@ -1,0 +1,656 @@
+<!doctype html>
+<html lang="en" id="water-html">
+  <head id="water-head">
+    <meta charset="UTF-8" id="water-meta-charset" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+      id="water-meta-viewport"
+    />
+    <title id="water-title">Water | WRI</title>
+    <style id="water-style">
+      :root {
+        --primary-darkest: #160e08;
+        --secondary-orange: #dc7e49;
+        --text-light: #f8f4ef;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #fffaf6;
+        color: #2a1a12;
+      }
+      /* Navigation Header */
+      .site-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        background: rgba(22, 14, 8, 0.95);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(220, 126, 73, 0.2);
+        transition: all 0.3s ease;
+      }
+
+      .site-header.scrolled {
+        background: rgba(22, 14, 8, 0.98);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      }
+
+      .nav-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 80px;
+      }
+
+      .site-logo {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: var(--text-light);
+        font-size: 1.5rem;
+        font-weight: 700;
+        gap: 0.75rem;
+      }
+
+      .logo-icon {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .logo-icon-img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+
+      .logo-text {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.2;
+      }
+
+      .logo-text-main {
+        font-size: 1.25rem;
+        font-weight: 700;
+      }
+
+      .logo-text-sub {
+        font-size: 0.7rem;
+        opacity: 0.8;
+        font-weight: 400;
+        letter-spacing: 0.05em;
+      }
+
+      .site-nav {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .site-nav a {
+        color: var(--text-light);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.85rem;
+        transition: all 0.3s ease;
+        position: relative;
+        padding: 0.5rem 0;
+      }
+
+      .site-nav a::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: var(--secondary-orange);
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+      }
+
+      .site-nav a:hover {
+        color: var(--secondary-orange);
+      }
+
+      .site-nav a:hover::after {
+        transform: scaleX(1);
+      }
+
+      /* Domains dropdown */
+      .nav-dropdown {
+        position: relative;
+      }
+
+      .nav-dropdown-trigger {
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+      }
+
+      .nav-dropdown-trigger .chevron {
+        font-size: 0.6rem;
+        transition: transform 0.3s ease;
+      }
+
+      .nav-dropdown-menu {
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%) translateY(8px);
+        background: rgba(22, 14, 8, 0.98);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(220, 126, 73, 0.2);
+        border-radius: 12px;
+        padding: 0.5rem 0;
+        min-width: 220px;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.25s ease;
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+      }
+
+      .nav-dropdown:hover .nav-dropdown-menu {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(-50%) translateY(0);
+      }
+
+      .nav-dropdown:hover .chevron {
+        transform: rotate(180deg);
+      }
+
+      .nav-dropdown-menu a {
+        display: block;
+        padding: 0.65rem 1.5rem;
+        font-size: 0.9rem;
+        white-space: nowrap;
+      }
+
+      .nav-dropdown-menu a::after {
+        display: none;
+      }
+
+      .nav-dropdown-menu a:hover {
+        background: rgba(220, 126, 73, 0.15);
+      }
+
+      .nav-cta {
+        background: var(--secondary-orange);
+        color: white !important;
+        padding: 0.75rem 1.5rem !important;
+        border-radius: 50px;
+        font-weight: 600;
+        box-shadow: 0 4px 12px rgba(220, 126, 73, 0.3);
+      }
+
+      .nav-cta::after {
+        display: none;
+      }
+
+      .nav-cta:hover {
+        color: white !important;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(220, 126, 73, 0.4);
+      }
+
+      /* Mobile menu toggle */
+      .mobile-menu-toggle {
+        display: none;
+        flex-direction: column;
+        gap: 6px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0.5rem;
+      }
+
+      .mobile-menu-toggle span {
+        width: 28px;
+        height: 3px;
+        background: var(--text-light);
+        border-radius: 2px;
+        transition: all 0.3s ease;
+      }
+
+      .mobile-menu-toggle.active span:nth-child(1) {
+        transform: rotate(45deg) translate(8px, 8px);
+      }
+
+      .mobile-menu-toggle.active span:nth-child(2) {
+        opacity: 0;
+      }
+
+      .mobile-menu-toggle.active span:nth-child(3) {
+        transform: rotate(-45deg) translate(7px, -7px);
+      }
+
+      /* Mobile menu */
+      @media (max-width: 768px) {
+        .site-nav {
+          position: fixed;
+          top: 80px;
+          left: 0;
+          right: 0;
+          background: rgba(22, 14, 8, 0.98);
+          backdrop-filter: blur(10px);
+          flex-direction: column;
+          gap: 0;
+          padding: 1rem 0;
+          transform: translateY(-100%);
+          opacity: 0;
+          transition: all 0.3s ease;
+          pointer-events: none;
+          border-bottom: 1px solid rgba(220, 126, 73, 0.2);
+        }
+
+        .site-nav.active {
+          transform: translateY(0);
+          opacity: 1;
+          pointer-events: all;
+        }
+
+        .site-nav a {
+          width: 100%;
+          padding: 1rem 2rem;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .mobile-menu-toggle {
+          display: flex;
+        }
+
+        .nav-dropdown-menu {
+          position: static;
+          transform: none;
+          background: rgba(255, 255, 255, 0.05);
+          border: none;
+          border-radius: 0;
+          box-shadow: none;
+          opacity: 1;
+          visibility: visible;
+          min-width: 100%;
+          padding: 0;
+        }
+
+        .nav-dropdown-menu a {
+          padding-left: 3rem;
+        }
+      }
+
+      /* Unified Header Overrides */
+      .site-header,
+      .site-header * {
+        font-family: "Be Vietnam Pro", sans-serif !important;
+      }
+
+      .site-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        background: rgba(22, 14, 8, 0.95);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(220, 126, 73, 0.2);
+        transition: all 0.3s ease;
+      }
+
+      .site-header.scrolled {
+        background: rgba(22, 14, 8, 0.98);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      }
+
+      .nav-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 80px;
+      }
+
+      .site-nav {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .site-nav a {
+        color: var(--text-light);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.85rem;
+        transition: all 0.3s ease;
+        position: relative;
+        padding: 0.5rem 0;
+        white-space: nowrap;
+      }
+
+      .site-nav a::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: var(--secondary-orange);
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+      }
+
+      .site-nav a:hover {
+        color: var(--secondary-orange);
+      }
+
+      .site-nav a:hover::after {
+        transform: scaleX(1);
+      }
+
+      .nav-dropdown {
+        position: relative;
+      }
+
+      .nav-dropdown-trigger {
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+      }
+
+      .nav-dropdown-trigger .chevron {
+        font-size: 0.6rem;
+        transition: transform 0.3s ease;
+      }
+
+      .nav-dropdown-menu {
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%) translateY(8px);
+        background: rgba(22, 14, 8, 0.98);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(220, 126, 73, 0.2);
+        border-radius: 12px;
+        padding: 0.5rem 0;
+        min-width: 220px;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.25s ease;
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+      }
+
+      .nav-dropdown:hover .nav-dropdown-menu {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(-50%) translateY(0);
+      }
+
+      .nav-dropdown:hover .chevron {
+        transform: rotate(180deg);
+      }
+
+      .nav-dropdown-menu a {
+        display: block;
+        padding: 0.65rem 1.5rem;
+        font-size: 0.9rem;
+        white-space: nowrap;
+        border-radius: 0;
+      }
+
+      .nav-dropdown-menu a::after {
+        display: none;
+      }
+
+      .nav-dropdown-menu a:hover {
+        background: rgba(220, 126, 73, 0.15);
+      }
+
+      .nav-cta {
+        background: var(--secondary-orange);
+        color: white !important;
+        padding: 0.75rem 1.5rem !important;
+        border-radius: 50px;
+        font-weight: 600;
+        box-shadow: 0 4px 12px rgba(220, 126, 73, 0.3);
+      }
+
+      .nav-cta::after {
+        display: none;
+      }
+
+      .nav-cta:hover {
+        color: white !important;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(220, 126, 73, 0.4);
+      }
+
+      @media (max-width: 768px) {
+        .site-nav {
+          position: fixed;
+          top: 80px;
+          left: 0;
+          right: 0;
+          background: rgba(22, 14, 8, 0.98);
+          backdrop-filter: blur(10px);
+          flex-direction: column;
+          gap: 0;
+          padding: 1rem 0;
+          transform: translateY(-100%);
+          opacity: 0;
+          transition: all 0.3s ease;
+          pointer-events: none;
+          border-bottom: 1px solid rgba(220, 126, 73, 0.2);
+        }
+
+        .site-nav.active {
+          transform: translateY(0);
+          opacity: 1;
+          pointer-events: all;
+        }
+
+        .site-nav a {
+          width: 100%;
+          padding: 1rem 2rem;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .mobile-menu-toggle {
+          display: flex;
+        }
+
+        .nav-dropdown-menu {
+          position: static;
+          transform: none;
+          background: rgba(255, 255, 255, 0.05);
+          border: none;
+          border-radius: 0;
+          box-shadow: none;
+          opacity: 1;
+          visibility: visible;
+          min-width: 100%;
+          padding: 0;
+        }
+
+        .nav-dropdown-menu a {
+          padding-left: 3rem;
+        }
+      }
+
+      /* Header Size Consistency Lock */
+      .site-logo {
+        display: flex !important;
+        align-items: center !important;
+        text-decoration: none !important;
+        color: var(--text-light) !important;
+        font-size: 1.5rem !important;
+        font-weight: 700 !important;
+        gap: 0.75rem !important;
+      }
+
+      .logo-icon {
+        width: 40px !important;
+        height: 40px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        flex-shrink: 0 !important;
+      }
+
+      .logo-icon-img {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: contain !important;
+      }
+
+      .logo-text {
+        display: flex !important;
+        flex-direction: column !important;
+        line-height: 1.2 !important;
+      }
+
+      .logo-text-main {
+        font-size: 1.25rem !important;
+        font-weight: 700 !important;
+        line-height: 1.2 !important;
+      }
+
+      .logo-text-sub {
+        font-size: 0.7rem !important;
+        opacity: 0.8 !important;
+        font-weight: 400 !important;
+        letter-spacing: 0.05em !important;
+        line-height: 1.2 !important;
+      }
+
+      .nav-cta {
+        background: var(--secondary-orange) !important;
+        color: white !important;
+        padding: 0.75rem 1.5rem !important;
+        border-radius: 50px !important;
+        font-weight: 600 !important;
+        box-shadow: 0 4px 12px rgba(220, 126, 73, 0.3) !important;
+        font-size: 0.85rem !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        line-height: 1 !important;
+      }
+    </style>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body id="water-body">
+    <header class="site-header" id="site-header">
+      <nav class="nav-container" id="main-nav">
+        <a href="index.html" class="site-logo" id="site-logo">
+          <div class="logo-icon" id="logo-icon">
+            <img
+              src="../../assets/icons/WWRI_logo.png"
+              alt="WRI Logo"
+              class="logo-icon-img"
+              id="logo-icon-image"
+            />
+          </div>
+          <div class="logo-text" id="logo-text">
+            <span class="logo-text-main" id="logo-text-main">WRI</span>
+            <span class="logo-text-sub" id="logo-text-sub"
+              >The Wildfire Resilience Index</span
+            >
+          </div>
+        </a>
+        <div class="site-nav" id="site-nav">
+          <a href="index.html" id="nav-link-home">Home</a>
+          <a href="about.html" id="nav-link-about">About</a>
+          <a href="why-resilience.html" id="nav-link-why-resilience"
+            >Why Resilience</a
+          >
+          <a href="why-index.html" id="nav-link-why-index">Why an Index</a>
+          <a href="how-it-works.html" id="nav-link-how-it-works"
+            >How it Works</a
+          >
+          <div class="nav-dropdown" id="nav-dropdown-domains">
+            <a href="#" class="nav-dropdown-trigger" id="nav-link-domains"
+              >Domains <span class="chevron">▼</span></a
+            >
+            <div class="nav-dropdown-menu" id="nav-dropdown-menu">
+              <a href="livelihoods.html" id="nav-dd-livelihoods">Livelihoods</a>
+              <a href="infrastructure.html" id="nav-dd-infrastructure"
+                >Infrastructure</a
+              >
+              <a href="communities.html" id="nav-dd-communities">Communities</a>
+              <a href="sense-of-place.html" id="nav-dd-sense-of-place"
+                >Sense of Place</a
+              >
+              <a href="species.html" id="nav-dd-species">Species</a>
+              <a href="habitats.html" id="nav-dd-habitats">Habitats</a>
+              <a href="water.html" id="nav-dd-water" class="active">Water</a>
+              <a href="air-quality.html" id="nav-dd-air-quality">Air Quality</a>
+            </div>
+          </div>
+          <a href="resources.html" id="nav-link-resources">Resources</a
+          ><a href="in-the-news.html" id="nav-link-news">In the News</a
+          ><a href="meet-the-team.html" id="nav-link-team">Meet the Team</a
+          ><a href="#" class="nav-cta" id="nav-link-dashboard">Dashboard</a>
+        </div>
+        <button
+          class="mobile-menu-toggle"
+          id="mobile-menu-toggle"
+          aria-label="Toggle menu"
+        >
+          <span id="mobile-menu-line-1"></span
+          ><span id="mobile-menu-line-2"></span
+          ><span id="mobile-menu-line-3"></span>
+        </button>
+      </nav>
+    </header>
+    <main class="placeholder-main" id="placeholder-main">
+      <section class="placeholder-card" id="placeholder-card">
+        <p class="placeholder-eyebrow" id="placeholder-eyebrow">
+          Domain Placeholder
+        </p>
+        <h1 class="placeholder-title" id="placeholder-title">Water</h1>
+        <p class="placeholder-copy" id="placeholder-copy">
+          This placeholder ensures all navigation links are functional for T2.
+          Replace this page with Cat's confirmed domain name and content in
+          T6/T7.
+        </p>
+      </section>
+    </main>
+    <footer class="footer" id="footer">
+      <p id="footer-text">&copy; 2026 Wildfire Resilience Index.</p>
+    </footer>
+    <script id="water-script">
+      const mobileMenuToggle = document.getElementById("mobile-menu-toggle");
+      const siteNav = document.getElementById("site-nav");
+      mobileMenuToggle.addEventListener("click", () =>
+        siteNav.classList.toggle("active"),
+      );
+      document.querySelectorAll(".site-nav a").forEach((linkElement) => {
+        linkElement.addEventListener("click", () =>
+          siteNav.classList.remove("active"),
+        );
+      });
+    </script>
+  </body>
+</html>

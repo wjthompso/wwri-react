@@ -12,7 +12,7 @@ Track all visual assets needed for the public website.
 
 | Asset | Type | Status | Source | Specs | Used In | Task |
 |-------|------|--------|--------|-------|---------|------|
-| WRI Logo | SVG/PNG | ⬜ Needed | Cat | Transparent BG, scalable | All pages (header) | T1 |
+| WRI Logo | PNG | ✅ Received | Cat | 758KB PNG, transparent BG | All pages (header) | T1 |
 | Hero Image | JPG/WebP | ⬜ Needed | Cat | 1920x1080+, landscape, wildfire scene | Homepage hero | T3 |
 
 ### 🟡 High Priority
@@ -120,6 +120,6 @@ Before deploying assets to production:
 
 | Date | Asset | Received From | Notes |
 |------|-------|---------------|-------|
-| - | - | - | No assets received yet |
+| Feb 13, 2026 | WRI Logo (WWRI_logo.png) | Cat | 758KB PNG, integrated into Theme 5 pages |
 
 *(Update this log as assets are received)*

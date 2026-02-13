@@ -31,7 +31,7 @@
 
 | ID | Task | Priority | Est. Effort | Status | Dependencies |
 |----|------|----------|-------------|--------|--------------|
-| T1 | Logo Integration & Branding Update (WWRI → WRI) | 🔥 Critical | Medium (2-3hrs) | ⬜ Not Started | None |
+| T1 | Logo Integration & Branding Update (WWRI → WRI) | 🔥 Critical | Medium (2-3hrs) | ✅ Complete | None |
 | T2 | Update Navigation & Page Structure | 🔥 Critical | Medium (2-3hrs) | ⬜ Not Started | None |
 | T3 | Replace Video Hero with Photo + Overlay | 🔥 Critical | Small (1-2hrs) | ⬜ Not Started | None |
 | T4 | Color Palette Refactor (Remove Purple, Add Browns) | 🔥 Critical | Medium (2-4hrs) | ⬜ Not Started | None |
@@ -40,7 +40,7 @@
 | T7 | Domain Page Content Updates | 🔴 High | Medium (2-3hrs) | ⬜ Not Started | T6 |
 | T8 | Map/Dashboard Language & Visual Fixes | 🟡 Medium | Small (1-2hrs) | ⬜ Not Started | T1 (branding) |
 
-**Progress:** 0/8 complete
+**Progress:** 1/8 complete
 
 ---
 
@@ -49,7 +49,7 @@
 ### T1: Logo Integration & Branding Update
 **Priority:** 🔥 Critical  
 **Effort:** Medium (2-3 hours)  
-**Status:** ⬜ Not Started  
+**Status:** ✅ Complete (Feb 13, 2026)  
 **Dependencies:** None
 
 #### Description
@@ -87,9 +87,13 @@ Update all branding from "WWRI" to "WRI" and integrate the actual logo asset tha
 - ✅ Logo maintains aspect ratio and quality
 - ✅ Subtitle reads "The Wildfire Resilience Index"
 
-#### Notes
-- **Action Required:** Need logo asset from Cat (SVG or high-res PNG preferred)
-- Consider adding `alt` text for accessibility: "WRI Logo"
+#### Implementation Notes
+- ✅ Completed on Feb 13, 2026
+- Updated all five target pages (`index.html`, `infrastructure.html`, `social.html`, `natural-resources.html`, `planning.html`)
+- All `WWRI` references changed to `WRI`
+- Subtitle updated to "The Wildfire Resilience Index"
+- Logo asset received from Cat: `WWRI_logo.png` (758KB PNG)
+- Logo integrated at `../../assets/icons/WWRI_logo.png` with responsive scaling and alt text
 
 ---
 
@@ -701,7 +705,7 @@ From Cat's feedback, the content document should include:
 ### Asset Tracking
 | Asset | Status | Source | Notes |
 |-------|--------|--------|-------|
-| WRI Logo | ⬜ Needed | Cat | SVG or PNG, transparent background |
+| WRI Logo | ✅ Received | Cat | SVG or PNG, transparent background |
 | Hero Image | ⬜ Needed | Cat | 1920x1080+, landscape, wildfire theme |
 | Domain Icons (x8) | ⬜ Needed | Cat | SVG preferred, or emoji placeholders OK |
 | Content Document | ⬜ Needed | Cat | All page text, domain descriptions |
@@ -750,8 +754,8 @@ T1 (Branding) → T8 (Map/Dashboard fixes)
 ## Success Criteria (Overall)
 
 ### Completion Checklist
-- [ ] All "WWRI" → "WRI" (T1)
-- [ ] Real logo integrated (T1)
+- [x] All "WWRI" → "WRI" (T1)
+- [x] Real logo integrated (T1)
 - [ ] All new pages created and linked (T2)
 - [ ] Navigation updated across all pages (T2)
 - [ ] Hero video replaced with photo + overlay (T3)

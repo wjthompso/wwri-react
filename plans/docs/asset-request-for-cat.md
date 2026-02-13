@@ -9,11 +9,11 @@
 
 We need **5 main deliverables** from you to complete the website updates:
 
-1. ✅ WRI Logo
-2. ✅ Hero Image
-3. ✅ Content Document
-4. ✅ Domain Icons (8 total)
-5. ✅ Domain Specifications (domains 5-8)
+1. ✅ WRI Logo (Received Feb 13)
+2. ⬜ Hero Image
+3. ⬜ Content Document
+4. ⬜ Domain Icons (8 total)
+5. ⬜ Domain Specifications (domains 5-8)
 
 ---
 
@@ -21,15 +21,8 @@ We need **5 main deliverables** from you to complete the website updates:
 
 ### 1. WRI Logo
 **Needed for:** Every page header/footer (T1)  
-**Format:** SVG (preferred) or PNG with transparent background  
-**Size:** Vector (SVG) or 512×512 minimum (PNG)  
-**Notes:** We'll create white/inverted versions in CSS if needed
-
-**Delivery checklist:**
-- [ ] File provided
-- [ ] Transparent background
-- [ ] High resolution or vector
-- [ ] Usage rights confirmed
+**Status:** ✅ Received (Feb 13, 2026)  
+**File:** `WWRI_logo.png` (758KB PNG, transparent background)
 
 ---
 
@@ -257,13 +250,13 @@ If you need clarification on any of these requests, or if you have assets in a d
 ## ✅ Quick Summary
 
 **Bare minimum to proceed:**
-1. ✅ Content document (text for all pages + domains)
-2. ✅ Logo
-3. ✅ Hero image
+1. ⬜ Content document (text for all pages + domains)
+2. ✅ Logo (Received)
+3. ⬜ Hero image
 
 **For complete website:**
-4. ✅ Domain icons (or we use emoji placeholders)
-5. ✅ Domain specs for domains 5-8
+4. ⬜ Domain icons (or we use emoji placeholders)
+5. ⬜ Domain specs for domains 5-8
 
 **Everything else is optional/can use placeholders.**
 

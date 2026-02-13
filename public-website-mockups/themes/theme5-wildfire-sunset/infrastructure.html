@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Infrastructure | WWRI - Wildfire Resilience Index</title>
+  <title>Infrastructure | WRI - The Wildfire Resilience Index</title>
   <meta name="description" content="Critical systems for community safety — road networks, power grids, water systems, and emergency response capacity.">
 
   <!-- Google Fonts -->
@@ -79,12 +79,16 @@
     .logo-icon {
       width: 40px;
       height: 40px;
-      background: linear-gradient(135deg, var(--secondary-orange) 0%, var(--accent-magenta) 100%);
-      border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .logo-icon-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
     }
 
     .logo-text {
@@ -608,10 +612,12 @@
   <header class="site-header" id="site-header">
     <nav class="nav-container" id="main-nav">
       <a href="index.html" class="site-logo" id="site-logo">
-        <div class="logo-icon" id="logo-icon">🔥</div>
+        <div class="logo-icon" id="logo-icon">
+          <img src="../../assets/icons/WWRI_logo.png" alt="WRI Logo" class="logo-icon-img" id="logo-icon-image">
+        </div>
         <div class="logo-text" id="logo-text">
-          <span class="logo-text-main">WWRI</span>
-          <span class="logo-text-sub">Wildfire Resilience Index</span>
+          <span class="logo-text-main">WRI</span>
+          <span class="logo-text-sub">The Wildfire Resilience Index</span>
         </div>
       </a>
 
@@ -774,7 +780,7 @@
     <div class="container text-center" id="cta-content">
       <h2 class="heading-lg fade-in" id="cta-heading">See Infrastructure Scores in Your Community</h2>
       <p class="body-text fade-in" id="cta-description" style="max-width: 600px; margin: 0 auto 2rem; color: rgba(255,255,255,0.85);">
-        Explore interactive maps and compare infrastructure resilience scores across Western communities using the WWRI Dashboard.
+        Explore interactive maps and compare infrastructure resilience scores across Western communities using the WRI Dashboard.
       </p>
       <a href="#" class="btn-theme-primary fade-in" id="cta-button">Launch Dashboard</a>
     </div>

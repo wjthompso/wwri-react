@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WWRI - Wildfire Resilience Index | Theme 5: Wildfire Sunset</title>
+  <title>WRI - The Wildfire Resilience Index | Theme 5: Wildfire Sunset</title>
   <meta name="description" content="Understanding wildfire resilience through data-driven insights and community preparedness">
   
   <!-- Google Fonts -->
@@ -86,12 +86,16 @@
     .logo-icon {
       width: 40px;
       height: 40px;
-      background: linear-gradient(135deg, var(--secondary-orange) 0%, var(--accent-magenta) 100%);
-      border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .logo-icon-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
     }
 
     .logo-text {
@@ -868,10 +872,12 @@
   <header class="site-header" id="site-header">
     <nav class="nav-container" id="main-nav">
       <a href="#top" class="site-logo" id="site-logo">
-        <div class="logo-icon" id="logo-icon">🔥</div>
+        <div class="logo-icon" id="logo-icon">
+          <img src="../../assets/icons/WWRI_logo.png" alt="WRI Logo" class="logo-icon-img" id="logo-icon-image">
+        </div>
         <div class="logo-text" id="logo-text">
-          <span class="logo-text-main" id="logo-text-main">WWRI</span>
-          <span class="logo-text-sub" id="logo-text-sub">Wildfire Resilience Index</span>
+          <span class="logo-text-main" id="logo-text-main">WRI</span>
+          <span class="logo-text-sub" id="logo-text-sub">The Wildfire Resilience Index</span>
         </div>
       </a>
       
@@ -1081,7 +1087,7 @@
         <p class="quote-text" id="quote-text">
           "In the face of escalating wildfire threats, resilience isn't optional—it's essential. Together, we can build communities that not only survive, but thrive."
         </p>
-        <p class="quote-author" id="quote-author">— The WWRI Team</p>
+        <p class="quote-author" id="quote-author">— The WRI Team</p>
       </div>
     </div>
   </section>

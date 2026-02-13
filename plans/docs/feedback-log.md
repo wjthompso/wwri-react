@@ -12,8 +12,8 @@ Track feedback received and how it was addressed.
 
 | Feedback | Task | Status | Notes |
 |----------|------|--------|-------|
-| "We have a logo let's use it" | T1 | ⬜ To Do | Need logo asset from Cat |
-| "It's WRI not WWRI" | T1 | ⬜ To Do | Global find/replace across all pages |
+| "We have a logo let's use it" | T1 | ✅ Complete | Logo asset received (WWRI_logo.png) and integrated |
+| "It's WRI not WWRI" | T1 | ✅ Complete | Global find/replace done across all Theme 5 pages |
 | "I worry a video as the 'banner' won't work everywhere" | T3 | ⬜ To Do | Replace with high-quality photo + text overlay |
 | "I don't love the orange to purple gradient. I actually kind of hate the color purple in this context." | T4 | ⬜ To Do | Remove all purple/magenta, use deep browns |
 | "Let's work in the specific text from this document. I've worked a lot to streamline it so I don't think it's too much" | T5 | ⬜ To Do | Need document from Cat |

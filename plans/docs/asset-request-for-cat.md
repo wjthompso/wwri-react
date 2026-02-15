@@ -10,7 +10,7 @@
 We need **5 main deliverables** from you to complete the website updates:
 
 1. ✅ WRI Logo (Received Feb 13)
-2. ⬜ Hero Image
+2. ✅ Hero Videos (Received — `wildfire-hillside-night.mp4`, `wildfire-drone-day.mp4`)
 3. ⬜ Content Document
 4. ⬜ Domain Icons (8 total)
 5. ⬜ Domain Specifications (domains 5-8)
@@ -26,25 +26,11 @@ We need **5 main deliverables** from you to complete the website updates:
 
 ---
 
-### 2. Hero Image (Landing Page)
+### 2. Hero Videos (Landing Page)
 **Needed for:** Homepage hero section (T3, T4)  
-**Format:** JPG or PNG (we'll convert to WebP)  
-**Size:** 1920×1080 minimum (larger is OK)  
-**Subject:** Wildfire landscape (sunset, burnt forest, resilient community, etc.)  
-**Tone:** Evocative but professional
-
-**Examples of good subjects:**
-- Wildfire sunset over forested hills
-- Healthy forest with fire-adapted trees
-- Community resilience (homes, infrastructure)
-- Post-fire landscape recovery
-
-**Delivery checklist:**
-- [ ] File provided
-- [ ] High resolution (1920×1080+)
-- [ ] Professional quality (sharp, well-lit)
-- [ ] Appropriate subject matter
-- [ ] Usage rights confirmed
+**Status:** ✅ Received (Feb 2026)  
+**Files:** `wildfire-hillside-night.mp4`, `wildfire-drone-day.mp4`  
+**Note:** Cat provided videos with text removed; we add overlay ("The Wildfire Resilience Index" + subtitle)
 
 ---
 

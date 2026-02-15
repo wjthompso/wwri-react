@@ -26,7 +26,7 @@
 - Tasks are independent where possible to enable parallel development
 - Dependencies are clearly marked
 
-**Blocked on assets?** Check "Asset Tracking" section below. T5 and T6 can proceed (content in `docs/website-written-content.txt`). T3 needs hero image. Suggested order: T3 → T4 → T5 → T6 → T7 → T8.
+**Blocked on assets?** Check "Asset Tracking" section below. T5 and T6 can proceed (content in `docs/website-written-content.txt`). T3 has Cat's hero videos. Suggested order: T3 → T4 → T5 → T6 → T7 → T8.
 
 ---
 
@@ -36,7 +36,7 @@
 |----|------|----------|-------------|--------------|
 | T1 | ✅ Logo Integration & Branding Update (WWRI → WRI) | 🔥 Critical | Medium (2-3hrs) | None |
 | T2 | ✅ Update Navigation & Page Structure | 🔥 Critical | Medium (2-3hrs) | None |
-| T3 | ⬜ Replace Video Hero with Photo + Overlay | 🔥 Critical | Small (1-2hrs) | None |
+| T3 | ⬜ Replace Hero Video with Cat's Videos + Text Overlay | 🔥 Critical | Small (1-2hrs) | None |
 | T4 | ⏳ Color Palette Refactor (Remove Purple, Add Browns) | 🔥 Critical | Medium (2-4hrs) | None |
 | T5 | ⬜ Content Integration from Cat's Document | 🔴 High | Large (4-6hrs) | T2 (pages must exist) |
 | T6 | ⬜ Update Domains Section (4 Pillars → 8 Domains) | 🔴 High | Medium (2-3hrs) | None (content in `docs/website-written-content.txt`) |
@@ -197,63 +197,61 @@ Header Nav:
 
 ---
 
-### T3: Replace Video Hero with Photo + Overlay
+### T3: Replace Hero Video with Cat's Videos + Text Overlay
 **Priority:** 🔥 Critical  
 **Effort:** Small (1-2 hours)  
 **Status:** ⬜ Not Started  
 **Dependencies:** None
 
 #### Description
-Replace the auto-playing video hero section with a high-quality photo and floating text overlay. Cat is concerned that video won't work everywhere and prefers a static image approach.
+Replace the placeholder hero video with one of Cat's videos and add a floating text overlay. Cat provided two videos with text removed so we can overlay our own copy. Use `wildfire-hillside-night.mp4` (~14 sec) or `wildfire-drone-day.mp4` — pick the best fit for the hero.
+
+#### Video Assets (from Cat)
+- `public-website-mockups/assets/videos/wildfire-hillside-night.mp4` — night scene, ~14 sec
+- `public-website-mockups/assets/videos/wildfire-drone-day.mp4` — daytime drone footage
 
 #### Current Implementation
-- Auto-playing video in hero section
+- Placeholder video (`hero-video.mp4`) in hero section
 - Video takes up full viewport height
 - Scroll indicator at bottom
 
 #### New Implementation
-1. **Background Image:**
-   - High-quality wildfire landscape photo
-   - Optimized for web (compressed but high-res)
-   - Fallback color in case image doesn't load
-   - Consider multiple sizes for responsive loading
+1. **Video:**
+   - Swap `hero-video.mp4` for one of Cat's videos (choose `wildfire-hillside-night.mp4` or `wildfire-drone-day.mp4`)
+   - Autoplay, muted, loop
+   - Optional: use `wildfire-landscape.png` as `poster` attribute for faster perceived load
 
-2. **Floating Text Overlay:**
+2. **Floating Text Overlay (critical per Cat):**
    - **Top Line (Large):** "The Wildfire Resilience Index"
-   - **Subtitle (updated):** "Measuring community and landscape wildfire resilience"
-   - Text should "float" over image with subtle backdrop/shadow
+   - **Subtitle:** "Measuring community and landscape wildfire resilience"
+   - Text should "float" over video with subtle backdrop/shadow
    - Ensure readability (white text with dark semi-transparent backdrop)
 
 3. **Styling:**
    - Maintain current hero height (full viewport or 80vh)
-   - Add subtle gradient overlay to ensure text contrast
-   - Consider parallax scroll effect (optional enhancement)
+   - Add subtle overlay to ensure text contrast (no gradients per Cat)
    - Keep scroll indicator
 
 #### CSS Changes
-- Update `.video-section` → `.hero-section`
-- Replace `video` element with `background-image` or `<img>` tag
+- Keep `.video-section` or rename to `.hero-section` as preferred
+- Update `video` `src` to point to Cat's video
 - Add text overlay container with proper z-index
 - Add text backdrop (e.g., `backdrop-filter: blur()` or semi-transparent box)
 
 #### Files to Update
-- `index.html` (main hero section, ~lines 600-700)
+- `public-website-mockups/themes/theme5-wildfire-sunset/index.html` (main hero section)
 
 #### Acceptance Criteria
-- ✅ Video removed, replaced with static image
-- ✅ Image loads quickly and looks professional
-- ✅ Text overlay is readable on all screen sizes
-- ✅ Text reads: "The Wildfire Resilience Index"
+- ✅ Placeholder video replaced with Cat's video
+- ✅ Text overlay reads: "The Wildfire Resilience Index"
 - ✅ Subtitle reads: "Measuring community and landscape wildfire resilience"
+- ✅ Text overlay is readable on all screen sizes
 - ✅ Scroll indicator still present and functional
 - ✅ Responsive on mobile (text scales appropriately)
 
 #### Notes
-- **Action Required:** Need high-quality hero image from Cat
-  - Suggested specs: 1920x1080 minimum, landscape orientation
-  - Subject: Wildfire landscape (sunset, burnt forest, resilient community, etc.)
-  - Should evoke emotion but remain professional
-- Consider using placeholder from Unsplash temporarily: wildfire sunset landscape
+- Cat removed text from her videos so we add our overlay
+- `wildfire-landscape.png` available at `assets/images/wildfire-landscape.png` — optional poster for video
 
 ---
 
@@ -278,12 +276,12 @@ Remove purple/magenta accent colors and regenerate palette using deep browns fro
 #### New Color Palette Strategy
 1. **Base Color:** Burnt orange (`#dc7e49`) - MAIN BRAND COLOR
 2. **Generate Palette from Landing Page:**
-   - Use eyedropper tool on hero image (once Cat provides it)
+   - Use eyedropper tool on hero video frames or `wildfire-landscape.png`
    - Extract 2-3 complementary colors
    - Focus on deep browns, warm earth tones
    - Avoid purples, pinks, magentas entirely
 
-3. **Suggested Palette (pending hero image):**
+3. **Suggested Palette (from hero video/landscape):**
 ```css
 /* Primary - Deep Browns */
 --primary-darkest: #160e08;         /* Almost black */
@@ -340,7 +338,7 @@ Remove purple/magenta accent colors and regenerate palette using deep browns fro
 - ✅ Consistent palette across all pages
 
 #### Notes
-- **Best Practice:** Generate palette AFTER hero image is provided (T3)
+- **Best Practice:** Generate palette AFTER hero video is integrated (T3); can use `wildfire-landscape.png` or video frames for color extraction
 - Consider using tool like [Coolors.co](https://coolors.co/) or Adobe Color to extract palette
 - Test in both light and dark sections
 
@@ -352,7 +350,7 @@ Remove purple/magenta accent colors and regenerate palette using deep browns fro
   - `--secondary-tan` → `#a67c52`
   - Added `--accent-warm`, `--accent-ember`, `--accent-dark`
 - ✅ **Gradient vs Solid toggle (Feb 13, 2026):** Added visual review toggle on `index.html` header. When "Solid" is selected, gradients are disabled across ALL Theme 5 elements/pages via shared CSS (`data-accent-mode="solid"`) and shared JS (`initAccentMode`). Choice persists in `localStorage.theme5AccentMode`.
-- ⏳ Remaining follow-up: replace legacy `--accent-magenta` variable name/usages with new accent token names across all Theme 5 pages after final hero image is integrated (T3/T5 pass)
+- ⏳ Remaining follow-up: replace legacy `--accent-magenta` variable name/usages with new accent token names across all Theme 5 pages after hero video is integrated (T3/T5 pass)
 
 ---
 
@@ -672,8 +670,8 @@ Apply Cat's specific feedback about the map/dashboard mockup visuals and languag
 ### Questions for Cat
 1. **T1 (Logo):** Can you provide the WRI logo asset? (SVG or high-res PNG preferred) — *Logo received*
 2. **T2 (Navigation):** Should we include "In the News" page, or defer that?
-3. **T3 (Hero Image):** Can you provide high-quality hero image for landing page? (1920x1080+ recommended)
-4. **T4 (Color Palette):** Would you like us to generate palette from hero image once provided?
+3. ~~**T3 (Hero Image):** Can you provide high-quality hero image?~~ — Resolved: Cat provided hero videos (`wildfire-hillside-night.mp4`, `wildfire-drone-day.mp4`)
+4. **T4 (Color Palette):** Generate palette from hero video frames or `wildfire-landscape.png`
 5. **T5 (Content):** Content in `docs/website-written-content.txt` — is Methodology Deep Dive "Coming Soon" until paper acceptance?
 6. **T6 (Domains):** Can you provide icon assets or suggestions for all 8 domains? Rainbow color scheme for signposting?
 7. **T8 (Map):** Are the map/dashboard fixes for the React dashboard app or the HTML mockup?
@@ -690,7 +688,7 @@ Includes:
 
 ### Technical Considerations
 - **Color Accessibility:** After T4, run WCAG contrast checks on all text/background combinations
-- **Image Optimization:** Ensure hero image (T3) is optimized for web (consider WebP format with JPEG fallback)
+- **Video/Image Optimization:** Hero videos from Cat (T3); optional poster `wildfire-landscape.png` for faster perceived load
 - **Performance:** Test page load times after content integration (T5)
 - **Responsive Design:** Verify 8-domain grid (T6) works on tablet/mobile without crowding
 - **Cross-Browser:** Test in Chrome, Firefox, Safari after major changes
@@ -699,7 +697,7 @@ Includes:
 | Asset | Status | Source | Notes |
 |-------|--------|--------|-------|
 | WRI Logo | ✅ Received | Cat | SVG or PNG, transparent background |
-| Hero Image | ⬜ Needed | Cat | 1920x1080+, landscape, wildfire theme |
+| Hero Videos | ✅ Received | Cat | `wildfire-hillside-night.mp4`, `wildfire-drone-day.mp4` |
 | Domain Icons (x8) | ⬜ Needed | Cat | SVG preferred, or emoji placeholders OK |
 | Content Document | ✅ Received | Cat | `docs/website-written-content.txt` |
 | Rainbow Color Scheme | ⬜ Maybe | Cat | For domain signposting (optional) |
@@ -714,7 +712,7 @@ These tasks can be worked on simultaneously in separate chat windows:
 **Batch 1 (Independent):**
 - T1 (Logo/Branding) - once asset received
 - T2 (Navigation/Pages) - structure only
-- T3 (Hero Image) - once asset received
+- T3 (Hero Videos) - assets received, ready to implement
 - T4 (Color Palette) - after T3 if using hero for palette
 
 **Batch 2 (After Batch 1):**
@@ -737,8 +735,8 @@ T1 (Branding) → T8 (Map/Dashboard fixes)
 ### Suggested Order for Solo Development
 1. **T2** (Navigation/Pages) - Get structure in place first
 2. **T1** (Logo/Branding) - Once Cat provides logo
-3. **T3** (Hero Image) - Once Cat provides image
-4. **T4** (Color Palette) - Generate from hero image
+3. **T3** (Hero Videos) - Assets received, implement now
+4. **T4** (Color Palette) - Generate from hero video/landscape
 5. **T5** (Content Integration) - Once Cat provides document
 6. **T6** (Domains Section) - After content is in
 7. **T7** (Domain Pages) - After domains defined
@@ -753,7 +751,7 @@ T1 (Branding) → T8 (Map/Dashboard fixes)
 - [x] Real logo integrated (T1)
 - [ ] All new pages created and linked (T2)
 - [ ] Navigation updated across all pages (T2)
-- [ ] Hero video replaced with photo + overlay (T3)
+- [ ] Hero video replaced with Cat's video + text overlay (T3)
 - [ ] Purple/magenta colors removed (T4)
 - [ ] New brown-based palette applied (T4)
 - [ ] All Lorem Ipsum replaced with real content (T5)
@@ -792,4 +790,4 @@ T1 (Branding) → T8 (Map/Dashboard fixes)
 ---
 
 **Last Updated:** Feb 15, 2026  
-**Next Review:** After Cat provides requested assets (hero image, domain icons)
+**Next Review:** After Cat provides requested assets (domain icons)

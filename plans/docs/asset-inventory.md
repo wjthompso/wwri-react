@@ -1,6 +1,6 @@
 # Asset Inventory
 
-**Last Updated:** Feb 13, 2026
+**Last Updated:** Feb 15, 2026
 
 Track all visual assets needed for the public website.
 
@@ -13,7 +13,8 @@ Track all visual assets needed for the public website.
 | Asset | Type | Status | Source | Specs | Used In | Task |
 |-------|------|--------|--------|-------|---------|------|
 | WRI Logo | PNG | ✅ Received | Cat | 758KB PNG, transparent BG | All pages (header) | T1 |
-| Hero Image | JPG/WebP | ⬜ Needed | Cat | 1920x1080+, landscape, wildfire scene | Homepage hero | T3 |
+| Hero Videos | MP4 | ✅ Received | Cat | `wildfire-hillside-night.mp4`, `wildfire-drone-day.mp4` | Homepage hero | T3 |
+| Hero Poster (optional) | PNG | ✅ Available | - | `wildfire-landscape.png` | Video poster | T3 |
 
 ### 🟡 High Priority
 
@@ -47,12 +48,8 @@ Track all visual assets needed for the public website.
 - Size: Vector (SVG) or 512x512 minimum (PNG)
 - Color: Full color version (we'll create white version in CSS if needed)
 
-**Hero Image:**
-- Format: JPG or PNG (we'll convert to WebP)
-- Size: 1920x1080 minimum (larger OK)
-- Subject: Wildfire landscape, sunset, burnt forest recovery, or resilient community
-- Tone: Evocative but professional
-- Quality: High resolution, sharp, well-lit
+**Hero Videos:** ✅ Received
+- `wildfire-hillside-night.mp4`, `wildfire-drone-day.mp4` — Cat provided; we add text overlay
 
 **Domain Icons:**
 - Format: SVG (preferred) or PNG with transparent background

@@ -24,7 +24,7 @@ This is your single source of truth. It contains:
 Open the task tracker and pick a task:
 - **T1:** Logo Integration & Branding (WRI not WWRI)
 - **T2:** Navigation & Page Structure (8 new pages)
-- **T3:** Replace Video Hero with Photo
+- **T3:** Replace Hero Video with Cat's Videos + Text Overlay
 - **T4:** Color Palette Refactor (remove purple, add browns)
 - **T5:** Content Integration (Cat's document)
 - **T6:** Eight Domains Section (update from 4 pillars)
@@ -94,8 +94,8 @@ T1 (Branding) → T8 (Dashboard)
 **Before starting a task, check if its dependencies are complete in the tracker.**
 
 ### Assets Needed from Cat
-- WRI Logo (T1)
-- Hero Image (T3)
+- WRI Logo (T1) ✅
+- Hero Videos (T3) ✅
 - Content Document (T5)
 - Domain Icons (x8) (T6)
 - Domain Details (domains 5-8) (T6)
@@ -104,7 +104,7 @@ T1 (Branding) → T8 (Dashboard)
 
 ### Parallel Work Strategy
 These can be worked on simultaneously:
-- T1, T2, T3 (if assets available)
+- T1, T2, T3 (hero videos received — ready)
 - T4 (after T3)
 - T5, T6 (after T2, if content available)
 

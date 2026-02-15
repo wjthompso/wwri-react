@@ -17,7 +17,7 @@ Visual representation of how tasks relate to each other.
       ┌────────┐         ┌────────┐        ┌────────┐
       │   T2   │         │   T1   │        │   T3   │
       │  Pages │         │  Logo  │        │  Hero  │
-      │ & Nav  │         │Branding│        │ Image  │
+      │ & Nav  │         │Branding│        │ Videos │
       └────┬───┘         └────┬───┘        └────┬───┘
            │                  │                  │
            │                  │                  ▼
@@ -59,14 +59,14 @@ Can all work in parallel once assets received:
 ┌─────────┐  ┌─────────┐  ┌─────────┐
 │   T1    │  │   T2    │  │   T3    │
 │  Logo   │  │  Pages  │  │  Hero   │
-│Branding │  │  & Nav  │  │  Image  │
+│Branding │  │  & Nav  │  │ Videos  │
 └─────────┘  └─────────┘  └─────────┘
 ```
 
 **Requirements:**
 - T1: Need WRI logo from Cat
 - T2: Can start immediately
-- T3: Need hero image from Cat
+- T3: Hero videos received from Cat — ready to implement
 
 ---
 
@@ -84,7 +84,7 @@ T4 depends on T3; T5 depends on T2:
 ```
 
 **Requirements:**
-- T4: Needs hero image to extract color palette
+- T4: Needs hero video/landscape to extract color palette
 - T5: Needs content document from Cat + pages from T2
 
 ---
@@ -125,7 +125,7 @@ Can work independently:
 
 **Window 1:** T2 (Pages & Nav)  
 **Window 2:** T1 (Logo - when asset received)  
-**Window 3:** T3 (Hero - when asset received)  
+**Window 3:** T3 (Hero - videos received, ready)  
 **Window 4:** T8 (Map Fixes - after T1)
 
 Once Batch 1 complete:
@@ -148,8 +148,8 @@ If working in a single chat window, follow this order:
 
 1. **T2** - Pages & Nav (no blockers)
 2. **T1** - Logo & Branding (when asset available)
-3. **T3** - Hero Image (when asset available)
-4. **T4** - Color Palette (use hero image)
+3. **T3** - Hero Videos (assets received, ready)
+4. **T4** - Color Palette (use hero video/landscape)
 5. **T5** - Content Integration (when document available)
 6. **T6** - Eight Domains (use content from T5)
 7. **T7** - Domain Page Updates (use specs from T6)
@@ -182,9 +182,9 @@ These assets block multiple tasks:
 - **Impact:** All page content, domain specifications
 - **Workaround:** Use placeholder content, but critical path is blocked
 
-### Hero Image (blocks T3, T4)
-- **Impact:** Landing page visual, color palette generation
-- **Workaround:** Use stock image temporarily, update colors later
+### Hero Videos (T3, T4)
+- **Status:** ✅ Received from Cat (`wildfire-hillside-night.mp4`, `wildfire-drone-day.mp4`)
+- **Impact:** Landing page visual, color palette generation (use video frames or `wildfire-landscape.png`)
 
 ### Domain Icons (blocks T6, T7)
 - **Impact:** Domain cards, domain pages
@@ -199,7 +199,7 @@ These assets block multiple tasks:
 - ⚠️ Logo delay → blocks T1, T8 (branding inconsistency)
 
 ### Medium Risk
-- ⚠️ Hero image delay → blocks T3, T4 (affects visual identity)
+- ~~Hero image delay~~ — Resolved: Cat provided hero videos
 - ⚠️ Domain specs delay → blocks T6, T7 (but not T1-T5)
 
 ### Low Risk (Can use placeholders)

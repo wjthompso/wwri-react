@@ -14,7 +14,7 @@ Track feedback received and how it was addressed.
 |----------|------|--------|-------|
 | "We have a logo let's use it" | T1 | ✅ Complete | Logo asset received (WWRI_logo.png) and integrated |
 | "It's WRI not WWRI" | T1 | ✅ Complete | Global find/replace done across all Theme 5 pages |
-| "I worry a video as the 'banner' won't work everywhere" | T3 | ⬜ To Do | Replace with high-quality photo + text overlay |
+| "I worry a video as the 'banner' won't work everywhere" | T3 | ✅ Resolved | Cat provided new videos; use with our text overlay |
 | "I don't love the orange to purple gradient. I actually kind of hate the color purple in this context." | T4 | ⬜ To Do | Remove all purple/magenta, use deep browns |
 | "Let's work in the specific text from this document. I've worked a lot to streamline it so I don't think it's too much" | T5 | ⬜ To Do | Need document from Cat |
 
@@ -28,7 +28,7 @@ Track feedback received and how it was addressed.
 
 | Feedback | Task | Status | Notes |
 |----------|------|--------|-------|
-| Video concern: "won't work everywhere" | T3 | ⬜ To Do | Use photo instead |
+| Video concern: "won't work everywhere" | T3 | ✅ Resolved | Cat provided new videos (text removed); we add overlay |
 | Text: "The specific language will actually have to change" | T3, T5 | ⬜ To Do | Use: "The Wildfire Resilience Index" (top) and "measuring community and landscape wildfire resilience" (subtitle) |
 | "I would just have the top be 'The Wildfire Resilience Index'" | T3 | ⬜ To Do | - |
 

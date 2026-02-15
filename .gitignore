@@ -1,2 +1,5 @@
 node_modules
 .DS_Store
+
+# Large video assets - compress to <100MB before adding; use git add -f if needed
+public-website-mockups/assets/videos/*.mp4

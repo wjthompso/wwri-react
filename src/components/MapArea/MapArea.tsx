@@ -2183,8 +2183,8 @@ const MapArea: React.FC<MapAreaProps> = ({
         startColor={startColorRef.current}
         endColor={endColorRef.current}
         label={selectedMetricIdObject.label}
-        minValue={gradientConfig?.domains[selectedMetricIdObject.domainId as DomainKey]?.minValue}
-        maxValue={gradientConfig?.domains[selectedMetricIdObject.domainId as DomainKey]?.maxValue}
+        minValue={0}
+        maxValue={100}
       />
 
       {/* Debug overlay: Zoom/Pan tuning (only in DEBUG mode) */}

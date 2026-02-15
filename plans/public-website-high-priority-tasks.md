@@ -46,9 +46,9 @@
 | T10 | ✅ Remove Button Translate-Up Hover Effect | 🟡 Medium | Small (30min) | None |
 | T11 | ✅ Hide Scroll Arrow When Footer In View | 🟡 Medium | Small (30-45min) | None |
 | T12 | ✅ Remove "Accent: Gradient" Toggle Button | 🟡 Medium | Small (15min) | None |
-| T13 | ⏳ Map Scale Bar: 0–100 Across Dashboard | 🟡 Medium | Small (1–2hrs) | None |
+| T13 | ✅ Map Scale Bar: 0–100 Across Dashboard | 🟡 Medium | Small (1–2hrs) | None |
 
-**Progress:** 8/13 complete
+**Progress:** 9/13 complete
 
 ---
 
@@ -896,7 +896,7 @@ Remove the "Accent: Gradient" toggle button from the header. This was a design e
 ### T13: Map Scale Bar — 0–100 Across Dashboard
 **Priority:** 🟡 Medium  
 **Effort:** Small (1–2 hours)  
-**Status:** ⬜ Not Started  
+**Status:** ✅ Complete (Feb 15, 2026)  
 **Dependencies:** None
 
 #### Description
@@ -932,6 +932,14 @@ Change the map scale bar to display 0–100 across the board. Same color gradien
 #### Notes
 - Cat acknowledges this may affect color distribution ("makes the colors weird") — proceed per requirement
 - Consider testing with sample data to verify color distribution
+
+#### Implementation Notes
+- ✅ Completed Feb 15, 2026
+- Updated `MapArea.tsx` to explicitly pass `minValue={0}` and `maxValue={100}` to `MapLegend` component (lines 2186-2187)
+- Removed conditional gradient config min/max overrides to ensure consistent 0-100 display
+- Map tooltip already displays values in 0-100 range (multiplies by 100, line 2047)
+- RightSidebar already formats values correctly for 0-100 display (multiplies by 100 when in 0-1 range, lines 135-137, 233-235)
+- No changes needed to color mapping logic - colors continue to use 0-1 internally for interpolation, only display formatting uses 0-100
 
 ---
 
@@ -1032,7 +1040,7 @@ T1 (Branding) → T8 (Map/Dashboard fixes)
 - [x] Button hover translate-up effect removed (T10)
 - [ ] Scroll arrow hides when footer in view (T11)
 - [x] "Accent: Gradient" toggle button removed (T12)
-- [ ] Map scale bar 0–100 across dashboard (T13)
+- [x] Map scale bar 0–100 across dashboard (T13)
 
 ### Quality Checks
 - [ ] Mobile responsive (all pages)

@@ -36,9 +36,9 @@
 |----|------|----------|-------------|--------------|
 | T1 | ✅ Logo Integration & Branding Update (WWRI → WRI) | 🔥 Critical | Medium (2-3hrs) | None |
 | T2 | ✅ Update Navigation & Page Structure | 🔥 Critical | Medium (2-3hrs) | None |
-| T3 | ✅ Replace Hero Video with Cat's Videos + Text Overlay | 🔥 Critical | Small (1-2hrs) | None |
+| T3 | ⏳ Replace Hero Video with Cat's Videos + Text Overlay | 🔥 Critical | Small (1-2hrs) | None |
 | T4 | ⏳ Color Palette Refactor (Remove Purple, Add Browns) | 🔥 Critical | Medium (2-4hrs) | None |
-| T5 | ⬜ Content Integration from Cat's Document | 🔴 High | Large (4-6hrs) | T2 (pages must exist) |
+| T5 | ⏳ Content Integration from Cat's Document | 🔴 High | Large (4-6hrs) | T2 (pages must exist) |
 | T6 | ⬜ Update Domains Section (4 Pillars → 8 Domains) | 🔴 High | Medium (2-3hrs) | None (content in `docs/website-written-content.txt`) |
 | T7 | ⬜ Domain Page Content Updates | 🔴 High | Medium (2-3hrs) | T6 |
 | T8 | ⬜ Map/Dashboard Language & Visual Fixes | 🟡 Medium | Small (1-2hrs) | T1 (branding) |
@@ -367,7 +367,7 @@ Remove purple/magenta accent colors and regenerate palette using deep browns fro
 ### T5: Content Integration from Cat's Document
 **Priority:** 🔴 High  
 **Effort:** Large (4-6 hours)  
-**Status:** ⬜ Not Started  
+**Status:** ⏳ In Progress (Feb 15, 2026)  
 **Dependencies:** T2 (pages must exist first)
 
 #### Description
@@ -428,6 +428,12 @@ Integrate the specific text content that Cat has written and streamlined. Replac
 #### Notes
 - **Question for Cat:** Is "Methodology Deep Dive" content ready, or should it be "Coming Soon"? (Doc says "pending, based on paper acceptance")
 - Consider creating a content checklist to track which sections are complete
+
+#### Implementation Notes
+- ✅ Replaced placeholder scaffold copy in `about.html`, `why-resilience.html`, `why-index.html`, `how-it-works.html`, `resources.html`, and `meet-the-team.html` with content mapped from `docs/website-written-content.txt`
+- ✅ Updated `index.html` core sections (`what-is-wri`, `why-resilience`, `how-it-works`, domains intro, quote, CTA) to remove lorem ipsum and align language with Cat's source document
+- ✅ Added structured lists and heading hierarchy on content pages; all new elements include descriptive `id` attributes for anchor/link readiness
+- ⏳ Remaining follow-up: Cat review for tone/wording polish and confirmation on final Methodology deep-dive publication timing
 
 ---
 

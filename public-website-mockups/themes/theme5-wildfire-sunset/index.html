@@ -537,6 +537,52 @@
         object-fit: cover;
       }
 
+      .video-showcase::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: rgba(22, 14, 8, 0.35);
+        z-index: 1;
+        pointer-events: none;
+      }
+
+      .video-overlay {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 2rem;
+        pointer-events: none;
+      }
+
+      .video-overlay-content {
+        max-width: 680px;
+        width: min(680px, 100%);
+        padding: 0 1.5rem;
+        margin: 0 auto;
+        text-align: left;
+      }
+
+      .video-overlay-title {
+        color: var(--text-light);
+        font-size: clamp(2rem, 5vw, 4rem);
+        font-weight: 700;
+        line-height: 1.12;
+        margin: 0 0 0.85rem;
+        text-shadow: 0 4px 20px rgba(22, 14, 8, 0.75);
+      }
+
+      .video-overlay-subtitle {
+        color: var(--text-light);
+        font-size: clamp(1.05rem, 1.75vw, 1.45rem);
+        line-height: 1.45;
+        margin: 0;
+        text-shadow: 0 2px 12px rgba(22, 14, 8, 0.7);
+      }
+
       /* Scroll Indicator - just a clean white arrow */
       .video-showcase .scroll-indicator {
         position: fixed;
@@ -583,6 +629,14 @@
 
         .scroll-indicator-icon {
           font-size: 2.5rem;
+        }
+
+        .video-overlay {
+          padding: 1.25rem;
+        }
+
+        .video-overlay-content {
+          padding: 0 0.8rem;
         }
       }
 
@@ -1321,35 +1375,36 @@
     <!-- Video Showcase Section - FIRST -->
     <section id="video-section" class="video-showcase">
       <div class="video-showcase-container" id="video-container">
-        <video autoplay muted loop playsinline id="showcase-video">
-          <source src="../../assets/videos/hero-video.mp4" type="video/mp4" />
+        <video
+          autoplay
+          muted
+          loop
+          playsinline
+          poster="../../assets/images/wildfire-landscape.png"
+          id="showcase-video"
+        >
+          <source
+            src="../../assets/videos/wildfire-hillside-night.mp4"
+            type="video/mp4"
+          />
           Your browser does not support the video tag.
         </video>
+      </div>
+
+      <div class="video-overlay" id="video-overlay">
+        <div class="video-overlay-content" id="video-overlay-content">
+          <h1 class="video-overlay-title" id="video-overlay-title">
+            The Wildfire Resilience Index
+          </h1>
+          <p class="video-overlay-subtitle" id="video-overlay-subtitle">
+            Measuring community and landscape wildfire resilience
+          </p>
+        </div>
       </div>
 
       <!-- Scroll Indicator - just the arrow -->
       <div class="scroll-indicator" id="scroll-indicator">
         <div class="scroll-indicator-icon" id="scroll-indicator-icon">↓</div>
-      </div>
-    </section>
-
-    <!-- Hero Section - SECOND with prominent CTAs -->
-    <section id="hero-section" class="section-hero hero">
-      <div class="hero-content container">
-        <h1 id="hero-heading" class="fade-in">Where Data Meets Resilience</h1>
-        <p id="hero-subheading" class="fade-in">
-          Protecting communities from wildfire threats through comprehensive
-          preparedness analysis
-        </p>
-
-        <div class="hero-cta-group fade-in" id="hero-ctas">
-          <a href="#" id="hero-cta-dashboard" class="hero-cta-primary"
-            >🔥 Launch Dashboard</a
-          >
-          <a href="#what-is-wri" id="hero-cta-learn" class="hero-cta-secondary"
-            >Learn More</a
-          >
-        </div>
       </div>
     </section>
 
@@ -1651,11 +1706,9 @@
       const scrollIndicator = document.getElementById("scroll-indicator");
       const videoSection = document.getElementById("video-section");
 
-      // Click to scroll to hero section
+      // Click to scroll to the first content section
       scrollIndicator.addEventListener("click", () => {
-        document
-          .getElementById("hero-section")
-          .scrollIntoView({ behavior: "smooth" });
+        document.getElementById("what-is-wri").scrollIntoView({ behavior: "smooth" });
       });
 
       // Fade out as user scrolls down

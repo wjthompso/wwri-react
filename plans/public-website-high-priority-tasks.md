@@ -36,14 +36,15 @@
 |----|------|----------|-------------|--------------|
 | T1 | ✅ Logo Integration & Branding Update (WWRI → WRI) | 🔥 Critical | Medium (2-3hrs) | None |
 | T2 | ✅ Update Navigation & Page Structure | 🔥 Critical | Medium (2-3hrs) | None |
-| T3 | ⬜ Replace Hero Video with Cat's Videos + Text Overlay | 🔥 Critical | Small (1-2hrs) | None |
+| T3 | ✅ Replace Hero Video with Cat's Videos + Text Overlay | 🔥 Critical | Small (1-2hrs) | None |
 | T4 | ⏳ Color Palette Refactor (Remove Purple, Add Browns) | 🔥 Critical | Medium (2-4hrs) | None |
 | T5 | ⬜ Content Integration from Cat's Document | 🔴 High | Large (4-6hrs) | T2 (pages must exist) |
 | T6 | ⬜ Update Domains Section (4 Pillars → 8 Domains) | 🔴 High | Medium (2-3hrs) | None (content in `docs/website-written-content.txt`) |
 | T7 | ⬜ Domain Page Content Updates | 🔴 High | Medium (2-3hrs) | T6 |
 | T8 | ⬜ Map/Dashboard Language & Visual Fixes | 🟡 Medium | Small (1-2hrs) | T1 (branding) |
+| T9 | ⬜ Header Layout: Logo Left, Nav Right (Visual Separation) | 🟡 Medium | Small (1hr) | None |
 
-**Progress:** 2/8 complete
+**Progress:** 3/9 complete
 
 ---
 
@@ -200,7 +201,7 @@ Header Nav:
 ### T3: Replace Hero Video with Cat's Videos + Text Overlay
 **Priority:** 🔥 Critical  
 **Effort:** Small (1-2 hours)  
-**Status:** ⬜ Not Started  
+**Status:** ✅ Complete (Feb 15, 2026) — **Needs Cat review**  
 **Dependencies:** None
 
 #### Description
@@ -252,6 +253,13 @@ Replace the placeholder hero video with one of Cat's videos and add a floating t
 #### Notes
 - Cat removed text from her videos so we add our overlay
 - `wildfire-landscape.png` available at `assets/images/wildfire-landscape.png` — optional poster for video
+
+#### Implementation Notes
+- ✅ Completed Feb 15, 2026
+- Swapped hero to `wildfire-hillside-night.mp4`; added poster `wildfire-landscape.png`
+- Overlay: "The Wildfire Resilience Index" + "Measuring community and landscape wildfire resilience" (left-aligned within centered block, no background box)
+- Scroll indicator targets `#what-is-wri`; removed duplicate hero section
+- **Needs Cat review** before final sign-off
 
 ---
 
@@ -665,6 +673,38 @@ Apply Cat's specific feedback about the map/dashboard mockup visuals and languag
 
 ---
 
+### T9: Header Layout — Logo Left, Nav Right (Visual Separation)
+**Priority:** 🟡 Medium  
+**Effort:** Small (~1 hour)  
+**Status:** ⬜ Not Started  
+**Dependencies:** None
+
+#### Description
+Improve header visual balance by separating the logo block from the nav links. Currently the logo (WRI + The Wildfire Resilience Index) and the Home link sit close together and feel awkward. Push the logo to the far left, and group all nav links (including Dashboard) to the far right for clearer visual separation.
+
+#### Current Layout
+- Logo and nav links share a flex container with `justify-content: space-between`
+- Home sits immediately next to the logo; spacing feels cramped
+
+#### Proposed Layout
+- **Left:** Logo (WRI + "The Wildfire Resilience Index") anchored to far left corner
+- **Right:** All nav items (Home, About, Why Resilience, etc.) + Accent toggle + Dashboard CTA grouped and pushed to far right corner
+- Clear visual gap between logo and nav so they read as distinct blocks
+
+#### Files to Update
+- All Theme 5 HTML files (header/nav markup and CSS)
+- `public-website-mockups/themes/theme5-wildfire-sunset/index.html` and all other pages in `theme5-wildfire-sunset/`
+- Shared CSS if nav is centralized
+
+#### Acceptance Criteria
+- ✅ Logo block visually anchored to far left
+- ✅ Nav links + Dashboard grouped and anchored to far right
+- ✅ Clear visual separation between logo and nav (no awkward cramping)
+- ✅ Mobile hamburger behavior preserved
+- ✅ Consistent across all Theme 5 pages
+
+---
+
 ## 📝 Notes & Open Questions
 
 ### Questions for Cat
@@ -751,13 +791,14 @@ T1 (Branding) → T8 (Map/Dashboard fixes)
 - [x] Real logo integrated (T1)
 - [ ] All new pages created and linked (T2)
 - [ ] Navigation updated across all pages (T2)
-- [ ] Hero video replaced with Cat's video + text overlay (T3)
+- [x] Hero video replaced with Cat's video + text overlay (T3) — needs Cat review
 - [ ] Purple/magenta colors removed (T4)
 - [ ] New brown-based palette applied (T4)
 - [ ] All Lorem Ipsum replaced with real content (T5)
 - [ ] "Eight Domains" section on homepage (T6)
 - [ ] All 8 domain pages populated (T7)
 - [ ] Map/dashboard fixes applied (T8)
+- [ ] Header layout: logo left, nav right (T9)
 
 ### Quality Checks
 - [ ] Mobile responsive (all pages)

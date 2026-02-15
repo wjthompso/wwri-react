@@ -29,16 +29,16 @@
 
 ## Task Summary
 
-| ID | Task | Priority | Est. Effort | Status | Dependencies |
-|----|------|----------|-------------|--------|--------------|
-| T1 | Logo Integration & Branding Update (WWRI → WRI) | 🔥 Critical | Medium (2-3hrs) | ✅ Complete | None |
-| T2 | Update Navigation & Page Structure | 🔥 Critical | Medium (2-3hrs) | ✅ Complete | None |
-| T3 | Replace Video Hero with Photo + Overlay | 🔥 Critical | Small (1-2hrs) | ⬜ Not Started | None |
-| T4 | Color Palette Refactor (Remove Purple, Add Browns) | 🔥 Critical | Medium (2-4hrs) | ⏳ Waiting for Visual Validation from Cat | None |
-| T5 | Content Integration from Cat's Document | 🔴 High | Large (4-6hrs) | ⬜ Not Started | T2 (pages must exist) |
-| T6 | Update Domains Section (4 Pillars → 8 Domains) | 🔴 High | Medium (2-3hrs) | ⬜ Not Started | T5 (need domain text) |
-| T7 | Domain Page Content Updates | 🔴 High | Medium (2-3hrs) | ⬜ Not Started | T6 |
-| T8 | Map/Dashboard Language & Visual Fixes | 🟡 Medium | Small (1-2hrs) | ⬜ Not Started | T1 (branding) |
+| ID | Task | Priority | Est. Effort | Dependencies |
+|----|------|----------|-------------|--------------|
+| T1 | ✅ Logo Integration & Branding Update (WWRI → WRI) | 🔥 Critical | Medium (2-3hrs) | None |
+| T2 | ✅ Update Navigation & Page Structure | 🔥 Critical | Medium (2-3hrs) | None |
+| T3 | ⬜ Replace Video Hero with Photo + Overlay | 🔥 Critical | Small (1-2hrs) | None |
+| T4 | ⏳ Color Palette Refactor (Remove Purple, Add Browns) | 🔥 Critical | Medium (2-4hrs) | None |
+| T5 | ⬜ Content Integration from Cat's Document | 🔴 High | Large (4-6hrs) | T2 (pages must exist) |
+| T6 | ⬜ Update Domains Section (4 Pillars → 8 Domains) | 🔴 High | Medium (2-3hrs) | T5 (need domain text) |
+| T7 | ⬜ Domain Page Content Updates | 🔴 High | Medium (2-3hrs) | T6 |
+| T8 | ⬜ Map/Dashboard Language & Visual Fixes | 🟡 Medium | Small (1-2hrs) | T1 (branding) |
 
 **Progress:** 2/8 complete
 

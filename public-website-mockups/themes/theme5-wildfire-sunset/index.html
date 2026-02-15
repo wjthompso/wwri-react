@@ -152,7 +152,8 @@
       .site-nav {
         display: flex;
         align-items: center;
-        gap: 1rem;
+        gap: 1.25rem;
+        flex-shrink: 0;
       }
 
       .site-nav a {
@@ -163,6 +164,14 @@
         transition: all 0.3s ease;
         position: relative;
         padding: 0.5rem 0;
+      }
+
+      .site-nav a.active {
+        color: var(--secondary-orange);
+        font-weight: 700;
+      }
+      .site-nav a.active::after {
+        transform: scaleX(1);
       }
 
       .site-nav a::after {
@@ -253,34 +262,6 @@
         box-shadow: 0 4px 12px rgba(220, 126, 73, 0.3);
       }
 
-      .accent-mode-toggle {
-        border: 1px solid rgba(255, 255, 255, 0.25);
-        background: rgba(255, 255, 255, 0.08);
-        color: var(--text-light);
-        border-radius: 999px;
-        padding: 0.45rem 0.9rem;
-        font-size: 0.72rem;
-        font-weight: 700;
-        letter-spacing: 0.03em;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        white-space: nowrap;
-      }
-
-      .accent-mode-toggle:hover {
-        border-color: rgba(220, 126, 73, 0.7);
-        background: rgba(220, 126, 73, 0.16);
-      }
-
-      .accent-mode-toggle-label {
-        opacity: 0.85;
-        margin-right: 0.35rem;
-      }
-
-      .accent-mode-toggle-value {
-        color: var(--secondary-orange);
-      }
-
       .nav-cta::after {
         display: none;
       }
@@ -351,12 +332,6 @@
           width: 100%;
           padding: 1rem 2rem;
           border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .accent-mode-toggle {
-          margin: 0.8rem 2rem 0;
-          width: calc(100% - 4rem);
-          justify-self: center;
         }
 
         .mobile-menu-toggle {
@@ -1104,6 +1079,14 @@
         transform: scaleX(1);
       }
 
+      .site-nav a.active {
+        color: var(--secondary-orange);
+        font-weight: 700;
+      }
+      .site-nav a.active::after {
+        transform: scaleX(1);
+      }
+
       .nav-dropdown {
         position: relative;
       }
@@ -1348,20 +1331,6 @@
           <a href="resources.html" id="nav-link-resources">Resources</a>
           <a href="in-the-news.html" id="nav-link-news">In the News</a>
           <a href="meet-the-team.html" id="nav-link-team">Meet the Team</a>
-          <button
-            id="accent-mode-toggle"
-            class="accent-mode-toggle"
-            type="button"
-            aria-pressed="false"
-            aria-label="Toggle accent style between gradient and solid"
-          >
-            <span id="accent-mode-toggle-label" class="accent-mode-toggle-label"
-              >Accent:</span
-            >
-            <span id="accent-mode-toggle-value" class="accent-mode-toggle-value"
-              >Gradient</span
-            >
-          </button>
           <a href="#" id="nav-link-dashboard" class="nav-cta">Dashboard</a>
         </div>
 
@@ -1824,35 +1793,10 @@
       // Mobile menu toggle
       const mobileMenuToggle = document.getElementById("mobile-menu-toggle");
       const siteNav = document.getElementById("site-nav");
-      const accentModeToggle = document.getElementById("accent-mode-toggle");
-      const accentModeToggleValue = document.getElementById(
-        "accent-mode-toggle-value",
-      );
 
       mobileMenuToggle.addEventListener("click", () => {
         mobileMenuToggle.classList.toggle("active");
         siteNav.classList.toggle("active");
-      });
-
-      // Visual review toggle: gradient vs solid accent styling
-      const ACCENT_MODE_STORAGE_KEY = "theme5AccentMode";
-      const applyAccentMode = (mode) => {
-        const safeMode = mode === "solid" ? "solid" : "gradient";
-        document.documentElement.setAttribute("data-accent-mode", safeMode);
-        const isSolid = safeMode === "solid";
-        accentModeToggle.setAttribute("aria-pressed", isSolid ? "true" : "false");
-        accentModeToggleValue.textContent = isSolid ? "Solid" : "Gradient";
-      };
-
-      const savedAccentMode = localStorage.getItem(ACCENT_MODE_STORAGE_KEY);
-      applyAccentMode(savedAccentMode === "solid" ? "solid" : "gradient");
-
-      accentModeToggle.addEventListener("click", () => {
-        const currentMode =
-          document.documentElement.getAttribute("data-accent-mode") || "gradient";
-        const nextMode = currentMode === "gradient" ? "solid" : "gradient";
-        applyAccentMode(nextMode);
-        localStorage.setItem(ACCENT_MODE_STORAGE_KEY, nextMode);
       });
 
       // Close mobile menu when clicking a link

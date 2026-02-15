@@ -46,8 +46,9 @@
 | T10 | ✅ Remove Button Translate-Up Hover Effect | 🟡 Medium | Small (30min) | None |
 | T11 | ✅ Hide Scroll Arrow When Footer In View | 🟡 Medium | Small (30-45min) | None |
 | T12 | ✅ Remove "Accent: Gradient" Toggle Button | 🟡 Medium | Small (15min) | None |
+| T13 | ⏳ Map Scale Bar: 0–100 Across Dashboard | 🟡 Medium | Small (1–2hrs) | None |
 
-**Progress:** 8/12 complete
+**Progress:** 8/13 complete
 
 ---
 
@@ -892,6 +893,48 @@ Remove the "Accent: Gradient" toggle button from the header. This was a design e
 
 ---
 
+### T13: Map Scale Bar — 0–100 Across Dashboard
+**Priority:** 🟡 Medium  
+**Effort:** Small (1–2 hours)  
+**Status:** ⬜ Not Started  
+**Dependencies:** None
+
+#### Description
+Change the map scale bar to display 0–100 across the board. Same color gradients, but the scale must be 0–100 everywhere so the map and legend are consistent.
+
+#### Current State
+- Scale bar may show a different range (e.g., data-driven min–max or 0–1)
+- Cat's feedback: "The scale bar has to be 0-100. I know it makes the colors weird but we have to do it."
+
+#### Changes Required
+1. Update map scale bar/legend to show 0–100 range
+2. Update color mapping to span 0–100 (keep existing gradient colors)
+3. Ensure all map views and metrics use 0–100 consistently
+4. Update any related value formatting (e.g., RightSidebar, tooltips) to display 0–100
+
+#### Target Scope
+- **Dashboard app** (`wwri-react` repo), not the public website mockup
+- Map component, legend, and any value displays tied to map data
+
+#### Files to Update
+- Map component (e.g., `src/components/MapArea/MapArea.tsx`)
+- Legend/scale bar component
+- `src/components/RightSidebar.tsx` (value formatting for 0–1 vs 0–100)
+- Any other components that display metric values from the map
+
+#### Acceptance Criteria
+- ✅ Scale bar shows 0–100 range
+- ✅ Same color gradients preserved
+- ✅ Map choropleth colors map correctly to 0–100 scale
+- ✅ Value displays (sidebar, tooltips) show 0–100 scale consistently
+- ✅ All metrics/domains use 0–100 across the board
+
+#### Notes
+- Cat acknowledges this may affect color distribution ("makes the colors weird") — proceed per requirement
+- Consider testing with sample data to verify color distribution
+
+---
+
 ## 📝 Notes & Open Questions
 
 ### Questions for Cat
@@ -989,6 +1032,7 @@ T1 (Branding) → T8 (Map/Dashboard fixes)
 - [x] Button hover translate-up effect removed (T10)
 - [ ] Scroll arrow hides when footer in view (T11)
 - [x] "Accent: Gradient" toggle button removed (T12)
+- [ ] Map scale bar 0–100 across dashboard (T13)
 
 ### Quality Checks
 - [ ] Mobile responsive (all pages)

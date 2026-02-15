@@ -39,15 +39,15 @@
 | T3 | ⏳ Replace Hero Video with Cat's Videos + Text Overlay | 🔥 Critical | Small (1-2hrs) | None |
 | T4 | ⏳ Color Palette Refactor (Remove Purple, Add Browns) | 🔥 Critical | Medium (2-4hrs) | None |
 | T5 | ⏳ Content Integration from Cat's Document | 🔴 High | Large (4-6hrs) | T2 (pages must exist) |
-| T6 | ⬜ Update Domains Section (4 Pillars → 8 Domains) | 🔴 High | Medium (2-3hrs) | None (content in `docs/website-written-content.txt`) |
+| T6 | ✅ Update Domains Section (4 Pillars → 8 Domains) | 🔴 High | Medium (2-3hrs) | None (content in `docs/website-written-content.txt`) |
 | T7 | ⬜ Domain Page Content Updates | 🔴 High | Medium (2-3hrs) | T6 |
 | T8 | ⬜ Map/Dashboard Language & Visual Fixes | 🟡 Medium | Small (1-2hrs) | T1 (branding) |
 | T9 | ✅ Header Layout: Logo Left, Nav Right (Visual Separation) | 🟡 Medium | Small (1hr) | None |
-| T10 | ⬜ Remove Button Translate-Up Hover Effect | 🟡 Medium | Small (30min) | None |
+| T10 | ✅ Remove Button Translate-Up Hover Effect | 🟡 Medium | Small (30min) | None |
 | T11 | ⬜ Hide Scroll Arrow When Footer In View | 🟡 Medium | Small (30-45min) | None |
 | T12 | ⬜ Remove "Accent: Gradient" Toggle Button | 🟡 Medium | Small (15min) | None |
 
-**Progress:** 4/12 complete
+**Progress:** 6/12 complete
 
 ---
 
@@ -443,7 +443,7 @@ Integrate the specific text content that Cat has written and streamlined. Replac
 ### T6: Update Domains Section (Four Pillars → Eight Domains)
 **Priority:** 🔴 High  
 **Effort:** Medium (2-3 hours)  
-**Status:** ⏳ In Progress  
+**Status:** ✅ Complete (Feb 15, 2026)  
 **Dependencies:** None (domain text in `docs/website-written-content.txt`)
 
 #### Description
@@ -738,7 +738,7 @@ Improve header visual balance by separating the logo block from the nav links. C
 ### T10: Remove Button Translate-Up Hover Effect
 **Priority:** 🟡 Medium  
 **Effort:** Small (30 minutes)  
-**Status:** ⬜ Not Started  
+**Status:** ✅ Complete (Feb 15, 2026)  
 **Dependencies:** None
 
 #### Description
@@ -768,6 +768,14 @@ Remove the translate-up animation effect from all buttons on hover. Currently, b
 - ✅ Hover state still provides visual feedback (brightness/color change OK)
 - ✅ Changes applied consistently across all Theme 5 pages
 - ✅ Mobile touch states unaffected
+
+#### Implementation Notes
+- ✅ Completed Feb 15, 2026
+- Removed `translateY` hover effects from all buttons AND cards across all 16 Theme 5 pages
+- Affected selectors: `.nav-cta:hover`, `.hero-cta-primary:hover`, `.hero-cta-secondary:hover`, `.scroll-indicator:hover .scroll-indicator-icon`, `.btn-theme-primary:hover`, `.stat-card:hover`, `.domain-card-sunset:hover`, `.domain-nav-card:hover`
+- Preserved box-shadow, color, and opacity hover effects for visual feedback
+- Kept dropdown menu and mobile nav animations (non-hover translateY animations)
+- Verified no button/card hover translateY effects remain
 
 ---
 
@@ -961,7 +969,7 @@ T1 (Branding) → T8 (Map/Dashboard fixes)
 - [ ] All 8 domain pages populated (T7)
 - [ ] Map/dashboard fixes applied (T8)
 - [x] Header layout: logo left, nav right (T9)
-- [ ] Button hover translate-up effect removed (T10)
+- [x] Button hover translate-up effect removed (T10)
 - [ ] Scroll arrow hides when footer in view (T11)
 - [ ] "Accent: Gradient" toggle button removed (T12)
 

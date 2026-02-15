@@ -45,9 +45,9 @@
 | T9 | ✅ Header Layout: Logo Left, Nav Right (Visual Separation) | 🟡 Medium | Small (1hr) | None |
 | T10 | ✅ Remove Button Translate-Up Hover Effect | 🟡 Medium | Small (30min) | None |
 | T11 | ⬜ Hide Scroll Arrow When Footer In View | 🟡 Medium | Small (30-45min) | None |
-| T12 | ⬜ Remove "Accent: Gradient" Toggle Button | 🟡 Medium | Small (15min) | None |
+| T12 | ✅ Remove "Accent: Gradient" Toggle Button | 🟡 Medium | Small (15min) | None |
 
-**Progress:** 6/12 complete
+**Progress:** 7/12 complete
 
 ---
 
@@ -841,7 +841,7 @@ if (scrollArrow && footer) {
 ### T12: Remove "Accent: Gradient" Toggle Button
 **Priority:** 🟡 Medium  
 **Effort:** Small (15 minutes)  
-**Status:** ⬜ Not Started  
+**Status:** ✅ Complete (Feb 15, 2026)  
 **Dependencies:** None
 
 #### Description
@@ -874,6 +874,14 @@ Remove the "Accent: Gradient" toggle button from the header. This was a design e
 - ✅ No orphaned CSS for the removed button
 - ✅ Optional: Accent mode defaults to solid (no gradients)
 - ✅ Changes applied consistently across all Theme 5 pages
+
+#### Implementation Notes
+- Completed Feb 15, 2026
+- Removed toggle button from `index.html` header (only page that had it)
+- Removed `.accent-mode-toggle` CSS from `index.html` (desktop + mobile)
+- Removed inline toggle JS from `index.html`
+- Simplified `shared.js`: `initAccentMode()` now always sets `data-accent-mode="solid"`
+- Removed `WWRIAccentMode` export and localStorage usage
 
 ---
 
@@ -973,7 +981,7 @@ T1 (Branding) → T8 (Map/Dashboard fixes)
 - [x] Header layout: logo left, nav right (T9)
 - [x] Button hover translate-up effect removed (T10)
 - [ ] Scroll arrow hides when footer in view (T11)
-- [ ] "Accent: Gradient" toggle button removed (T12)
+- [x] "Accent: Gradient" toggle button removed (T12)
 
 ### Quality Checks
 - [ ] Mobile responsive (all pages)

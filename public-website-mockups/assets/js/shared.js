@@ -9,26 +9,9 @@ document.addEventListener('DOMContentLoaded', () => {
   initSmoothScroll();
 });
 
-const ACCENT_MODE_STORAGE_KEY = 'theme5AccentMode';
-
-function getAccentMode() {
-  return localStorage.getItem(ACCENT_MODE_STORAGE_KEY) === 'solid' ? 'solid' : 'gradient';
-}
-
-function applyAccentMode(mode) {
-  const safeMode = mode === 'solid' ? 'solid' : 'gradient';
-  document.documentElement.setAttribute('data-accent-mode', safeMode);
-  return safeMode;
-}
-
-function toggleAccentMode() {
-  const nextMode = getAccentMode() === 'solid' ? 'gradient' : 'solid';
-  localStorage.setItem(ACCENT_MODE_STORAGE_KEY, nextMode);
-  return applyAccentMode(nextMode);
-}
-
+// Accent mode: always solid (gradients disabled per design decision)
 function initAccentMode() {
-  applyAccentMode(getAccentMode());
+  document.documentElement.setAttribute('data-accent-mode', 'solid');
 }
 
 /**
@@ -115,9 +98,3 @@ window.WWRIAnimations = {
   staggerChildren
 };
 
-window.WWRIAccentMode = {
-  ACCENT_MODE_STORAGE_KEY,
-  getAccentMode,
-  applyAccentMode,
-  toggleAccentMode
-};

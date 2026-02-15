@@ -512,7 +512,7 @@ Order in doc: Infrastructure, Communities, Livelihoods, Sense of Place, Species,
 - ✅ Homepage shows "Eight Domains" (not "Four Pillars")
 - ✅ No subtitle text under "Eight Domains"
 - ✅ 8 domain cards displayed with proper text
-- ✅ Icons/assets for each domain (emoji placeholders OK temporarily)
+- ✅ Domain cards and pages use text-only styling (no emoji icons; Cat to provide icon assets if desired)
 - ✅ All 8 domains linked in navigation dropdown
 - ✅ 8 domain page files exist (4 new + 4 existing)
 - ✅ Grid layout accommodates 8 cards without crowding
@@ -527,7 +527,9 @@ Order in doc: Infrastructure, Communities, Livelihoods, Sense of Place, Species,
 - ✅ Homepage domains grid updated from 4 cards to 8 cards in `index.html`, using domain copy from `docs/website-written-content.txt`
 - ✅ Navigation links for all 8 domains are wired and functional
 - ✅ Domain copy has been added for all 8 domains (including `livelihoods.html`, `habitats.html`, `water.html`, and `air-quality.html`)
-- ⏳ Remaining follow-up: visual/style parity for `livelihoods.html`, `habitats.html`, `water.html`, and `air-quality.html` so they match the richer styled template used by `infrastructure.html`, `communities.html`, `sense-of-place.html`, and `species.html`
+- ✅ Visual/style parity pass completed for `livelihoods.html`, `habitats.html`, `water.html`, and `air-quality.html` so they now use the richer template pattern used by `infrastructure.html`, `communities.html`, `sense-of-place.html`, and `species.html` (hero + 3 styled sections + indicators + related domains + CTA)
+- ✅ Emoji icons removed from all 8 domain pages (hero + Explore Other Domains cards) per stakeholder preference
+- ✅ `shared.css` link added to `livelihoods.html`, `habitats.html`, `water.html`, and `air-quality.html` to restore blocky middle-aligned layout (container, grid-two-col, margins)
 
 ---
 

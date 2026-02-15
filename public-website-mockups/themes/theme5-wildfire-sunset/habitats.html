@@ -8,6 +8,7 @@
       id="habitats-meta-viewport"
     />
     <title id="habitats-title">Habitats | WRI</title>
+    <link rel="stylesheet" href="../../assets/css/shared.css" />
     <style id="habitats-style">
       :root {
         --primary-darkest: #160e08;
@@ -495,6 +496,231 @@
         }
       }
 
+      .domain-hero {
+        margin-top: 80px;
+        min-height: 50vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(135deg, #160e08 0%, #513221 45%, #8e4b27 100%);
+      }
+      .domain-hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+            ellipse at 30% 50%,
+            rgba(220, 126, 73, 0.28) 0%,
+            transparent 60%
+          ),
+          radial-gradient(
+            ellipse at 70% 30%,
+            rgba(220, 126, 73, 0.18) 0%,
+            transparent 55%
+          );
+      }
+      .domain-hero-content {
+        position: relative;
+        z-index: 2;
+        max-width: 860px;
+        padding: 4rem 2rem;
+        color: #fff;
+      }
+      .domain-hero-icon {
+        font-size: 4rem;
+        margin-bottom: 1.25rem;
+        display: block;
+      }
+      .domain-hero-content h1 {
+        font-size: clamp(2.1rem, 4vw, 3.3rem);
+        margin-bottom: 1rem;
+        line-height: 1.2;
+      }
+      .domain-hero-content p {
+        font-size: clamp(1.05rem, 2vw, 1.3rem);
+        line-height: 1.65;
+        opacity: 0.95;
+      }
+      .section {
+        padding: 5rem 0;
+      }
+      .section-warm {
+        background: linear-gradient(180deg, #fff5e8 0%, #ffe8d8 100%);
+      }
+      .section-dark {
+        background: linear-gradient(135deg, #513221 0%, #2a1810 100%);
+        color: #fff;
+      }
+      .section-sunset {
+        background: linear-gradient(135deg, #ffe0cc 0%, #ffd4b8 100%);
+      }
+      .tile-content {
+        padding: 2.5rem;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(22, 14, 8, 0.12);
+        border: 1px solid rgba(142, 75, 39, 0.15);
+      }
+      .section-dark .tile-content {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .tile-content .accent-line {
+        width: 100px;
+        height: 6px;
+        border-radius: 999px;
+        margin-bottom: 1.25rem;
+        background: linear-gradient(90deg, #dc7e49 0%, #a67c52 100%);
+      }
+      .tile-content h2 {
+        margin-bottom: 1rem;
+      }
+      .tile-content p {
+        margin-bottom: 1rem;
+        line-height: 1.75;
+      }
+      .section-dark .tile-content h2 {
+        color: #dc7e49;
+      }
+      .section-dark .tile-content p {
+        color: rgba(255, 255, 255, 0.9);
+      }
+      .tile-visual {
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 16px 48px rgba(22, 14, 8, 0.25);
+        border: 2px solid rgba(142, 75, 39, 0.2);
+      }
+      .video-placeholder {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 280px;
+        text-align: center;
+        padding: 3rem 2rem;
+        position: relative;
+        background: linear-gradient(135deg, #2a1a10 0%, #1a1a1a 100%);
+        color: rgba(255, 255, 255, 0.75);
+      }
+      .video-placeholder::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border: 2px dashed rgba(220, 126, 73, 0.3);
+        border-radius: 18px;
+      }
+      .video-play-btn {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+        background: linear-gradient(135deg, #dc7e49 0%, #a67c52 100%);
+      }
+      .video-play-btn span {
+        color: white;
+        font-size: 1.75rem;
+      }
+      .video-format-note {
+        margin-top: 0.75rem;
+        padding: 0.2rem 0.6rem;
+        border-radius: 4px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        font-size: 0.75rem;
+      }
+      .indicator-list {
+        list-style: none;
+        padding: 0;
+        margin: 1.25rem 0 0;
+      }
+      .indicator-list li {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.6rem 0;
+        border-bottom: 1px solid rgba(142, 75, 39, 0.12);
+      }
+      .section-dark .indicator-list li {
+        border-bottom-color: rgba(255, 255, 255, 0.1);
+      }
+      .indicator-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #dc7e49;
+        flex-shrink: 0;
+      }
+      .domain-nav-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin: 2.5rem 0;
+      }
+      .domain-nav-card {
+        background: #fff;
+        border-radius: 16px;
+        padding: 2rem;
+        text-decoration: none;
+        color: #2a1a12;
+        border: 2px solid transparent;
+        box-shadow: 0 6px 24px rgba(22, 14, 8, 0.08);
+        transition: all 0.3s ease;
+      }
+      .domain-nav-card:hover {
+        transform: translateY(-6px);
+        border-color: #dc7e49;
+        box-shadow: 0 12px 36px rgba(22, 14, 8, 0.15);
+      }
+      .card-icon {
+        display: block;
+        font-size: 2.2rem;
+        margin-bottom: 0.85rem;
+      }
+      .card-title {
+        font-size: 1.15rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: #8e4b27;
+      }
+      .card-desc {
+        font-size: 0.9rem;
+        line-height: 1.5;
+        opacity: 0.8;
+      }
+      .btn-theme-primary {
+        background: linear-gradient(135deg, #dc7e49 0%, #a67c52 100%);
+        color: #fff;
+        text-decoration: none;
+        display: inline-block;
+        padding: 1.1rem 2.7rem;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 1.05rem;
+        box-shadow: 0 8px 28px rgba(220, 126, 73, 0.4);
+      }
+      .btn-theme-primary:hover {
+        transform: translateY(-3px);
+      }
+      .footer {
+        background: linear-gradient(135deg, #160e08 0%, #513221 100%);
+        color: #fff;
+        text-align: center;
+        padding: 3rem 0 2rem;
+      }
+      .footer a {
+        color: #dc7e49;
+        text-decoration: none;
+      }
+      .footer a:hover {
+        text-decoration: underline;
+      }
+
       /* Header Size Consistency Lock */
       .site-logo {
         display: flex !important;
@@ -629,60 +855,305 @@
         </button>
       </nav>
     </header>
-    <main class="placeholder-main" id="placeholder-main">
-      <section class="placeholder-card" id="habitats-overview-section">
-        <p class="placeholder-eyebrow" id="habitats-overview-eyebrow">Domain</p>
-        <h1 class="placeholder-title" id="habitats-overview-title">Habitats</h1>
-        <p class="placeholder-copy" id="habitats-overview-copy-1">
+    <section class="domain-hero" id="domain-hero">
+      <div class="domain-hero-content fade-in" id="domain-hero-content">
+        <h1 id="domain-hero-heading">Habitats</h1>
+        <p id="domain-hero-subtitle">
           Natural habitats provide critical ecosystem services and support
-          biodiversity. This domain evaluates the extent and resilience of
-          ecosystems, combining species traits, community characteristics, and
-          environmental context to assess resistance and recovery.
+          biodiversity. This domain evaluates ecosystem extent, condition, and
+          recovery traits linked to wildfire resilience.
         </p>
-        <br />
-        <p class="placeholder-copy" id="habitats-overview-copy-2">
-          Including habitats ensures that the index captures how wildfire
-          affects landscape integrity and long-term ecosystem sustainability.
-        </p>
-        <br />
-        <h2 class="placeholder-title" id="habitats-indicators-title">
-          What is included
+      </div>
+    </section>
+
+    <section class="section section-warm" id="section-habitats-baseline">
+      <div class="container" id="habitats-baseline-container">
+        <div class="grid-two-col tile-left-right" id="habitats-baseline-grid">
+          <div class="tile-visual fade-in" id="habitats-baseline-visual">
+            <div class="video-placeholder" id="habitats-baseline-video">
+              <div class="video-play-btn" id="habitats-baseline-play">
+                <span id="habitats-baseline-play-icon">▶</span>
+              </div>
+              <strong id="habitats-baseline-label">Cat to provide:</strong>
+              <span class="video-desc" id="habitats-baseline-desc"
+                >Footage of diverse habitat types and protected ecological
+                areas</span
+              >
+              <span class="video-format-note" id="habitats-baseline-format"
+                >16:9 inline video</span
+              >
+            </div>
+          </div>
+          <div class="tile-content fade-in" id="habitats-baseline-content">
+            <div class="accent-line" id="habitats-baseline-accent"></div>
+            <h2 id="habitats-baseline-heading" class="heading-lg">
+              Extent and Protection Baselines
+            </h2>
+            <p id="habitats-baseline-copy-1" class="body-text">
+              Habitat resilience begins with how much ecosystem area remains
+              intact and how much is actively protected. These baseline measures
+              indicate the landscape foundation available for resistance and
+              recovery.
+            </p>
+            <p id="habitats-baseline-copy-2" class="body-text">
+              Baseline coverage and protection help identify places where wildfire
+              impacts could accelerate fragmentation or undermine ecological
+              function.
+            </p>
+            <ul class="indicator-list" id="habitats-baseline-indicators">
+              <li id="habitats-indicator-extent">
+                <span class="indicator-dot" id="habitats-dot-extent"></span>
+                Extent (status)
+              </li>
+              <li id="habitats-indicator-protection">
+                <span class="indicator-dot" id="habitats-dot-protection"></span>
+                Protection (status)
+              </li>
+              <li id="habitats-indicator-diversity">
+                <span class="indicator-dot" id="habitats-dot-diversity"></span>
+                Diversity
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-dark" id="section-habitats-structure">
+      <div class="container" id="habitats-structure-container">
+        <div class="grid-two-col tile-right-left" id="habitats-structure-grid">
+          <div class="tile-visual fade-in" id="habitats-structure-visual">
+            <div class="video-placeholder" id="habitats-structure-video">
+              <div class="video-play-btn" id="habitats-structure-play">
+                <span id="habitats-structure-play-icon">▶</span>
+              </div>
+              <strong id="habitats-structure-label">Cat to provide:</strong>
+              <span class="video-desc" id="habitats-structure-desc"
+                >Footage of forest structure, vegetation density, and burn
+                severity contrasts</span
+              >
+              <span class="video-format-note" id="habitats-structure-format"
+                >16:9 inline video</span
+              >
+            </div>
+          </div>
+          <div class="tile-content fade-in" id="habitats-structure-content">
+            <div class="accent-line" id="habitats-structure-accent"></div>
+            <h2 id="habitats-structure-heading" class="heading-lg">
+              Structural Traits and Resistance
+            </h2>
+            <p id="habitats-structure-copy-1" class="body-text">
+              Structural traits influence how habitats respond during fire.
+              Bark, canopy height, self-pruning, and stand density all shape
+              fire behavior and ecosystem damage pathways.
+            </p>
+            <p id="habitats-structure-copy-2" class="body-text">
+              Including these trait-level indicators helps assess whether
+              habitat composition supports resistance to severe wildfire effects.
+            </p>
+            <ul class="indicator-list" id="habitats-structure-indicators">
+              <li id="habitats-indicator-traits">
+                <span class="indicator-dot" id="habitats-dot-traits"></span>
+                Traits
+              </li>
+              <li id="habitats-indicator-bark">
+                <span class="indicator-dot" id="habitats-dot-bark"></span>
+                Bark
+              </li>
+              <li id="habitats-indicator-height">
+                <span class="indicator-dot" id="habitats-dot-height"></span>
+                Height
+              </li>
+              <li id="habitats-indicator-self-pruning">
+                <span class="indicator-dot" id="habitats-dot-self-pruning"></span>
+                Self-pruning
+              </li>
+              <li id="habitats-indicator-stand-density">
+                <span class="indicator-dot" id="habitats-dot-stand-density"></span>
+                Stand density
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-sunset" id="section-habitats-recovery">
+      <div class="container" id="habitats-recovery-container">
+        <div class="grid-two-col tile-left-right" id="habitats-recovery-grid">
+          <div class="tile-visual fade-in" id="habitats-recovery-visual">
+            <div class="video-placeholder" id="habitats-recovery-video">
+              <div class="video-play-btn" id="habitats-recovery-play">
+                <span id="habitats-recovery-play-icon">▶</span>
+              </div>
+              <strong id="habitats-recovery-label">Cat to provide:</strong>
+              <span class="video-desc" id="habitats-recovery-desc"
+                >Footage of post-fire regrowth, rainfall variability, and
+                long-term habitat monitoring plots</span
+              >
+              <span class="video-format-note" id="habitats-recovery-format"
+                >16:9 inline video</span
+              >
+            </div>
+          </div>
+          <div class="tile-content fade-in" id="habitats-recovery-content">
+            <div class="accent-line" id="habitats-recovery-accent"></div>
+            <h2 id="habitats-recovery-heading" class="heading-lg">
+              Productivity, Climate, and Recovery Dynamics
+            </h2>
+            <p id="habitats-recovery-copy-1" class="body-text">
+              Habitat recovery is shaped by vegetation productivity and climate
+              constraints. NDVI heterogeneity, NPP, VPD, and rainfall context
+              help explain where ecosystems can rebound after disturbance.
+            </p>
+            <p id="habitats-recovery-copy-2" class="body-text">
+              Longevity, seed mass, resprout potential, and serotiny provide
+              additional insight into post-fire regeneration capacity.
+            </p>
+            <ul class="indicator-list" id="habitats-recovery-indicators">
+              <li id="habitats-indicator-ndvi">
+                <span class="indicator-dot" id="habitats-dot-ndvi"></span>
+                NDVI heterogeneity
+              </li>
+              <li id="habitats-indicator-npp">
+                <span class="indicator-dot" id="habitats-dot-npp"></span>
+                NPP
+              </li>
+              <li id="habitats-indicator-vpd">
+                <span class="indicator-dot" id="habitats-dot-vpd"></span>
+                VPD
+              </li>
+              <li id="habitats-indicator-longevity">
+                <span class="indicator-dot" id="habitats-dot-longevity"></span>
+                Longevity
+              </li>
+              <li id="habitats-indicator-seed-mass">
+                <span class="indicator-dot" id="habitats-dot-seed-mass"></span>
+                Seed mass
+              </li>
+              <li id="habitats-indicator-resprout">
+                <span class="indicator-dot" id="habitats-dot-resprout"></span>
+                Resprout
+              </li>
+              <li id="habitats-indicator-serotiny">
+                <span class="indicator-dot" id="habitats-dot-serotiny"></span>
+                Serotiny
+              </li>
+              <li id="habitats-indicator-rainfall">
+                <span class="indicator-dot" id="habitats-dot-rainfall"></span>
+                30-year rainfall norm
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="section-other-domains">
+      <div class="container" id="other-domains-container">
+        <div class="mb-4 text-center" id="other-domains-header">
+          <h2 class="heading-lg fade-in" id="other-domains-heading">
+            Explore Other Domains
+          </h2>
+          <p class="body-text fade-in" id="other-domains-description">
+            Habitat resilience intersects with biodiversity, hydrology, and
+            cultural values. Explore connected domains across the system.
+          </p>
+        </div>
+        <div class="domain-nav-grid" id="other-domains-grid">
+          <a
+            href="species.html"
+            class="domain-nav-card fade-in"
+            id="other-domain-species"
+          >
+            <div class="card-title" id="other-domain-species-title">Species</div>
+            <div class="card-desc" id="other-domain-species-description">
+              Biodiversity condition and trait-based resistance and recovery
+              potential.
+            </div>
+          </a>
+          <a
+            href="water.html"
+            class="domain-nav-card fade-in"
+            id="other-domain-water"
+          >
+            <div class="card-title" id="other-domain-water-title">Water</div>
+            <div class="card-desc" id="other-domain-water-description">
+              Freshwater quantity and timing that support landscape and
+              community resilience.
+            </div>
+          </a>
+          <a
+            href="sense-of-place.html"
+            class="domain-nav-card fade-in"
+            id="other-domain-sense-of-place"
+          >
+            <div class="card-title" id="other-domain-sense-of-place-title">
+              Sense of Place
+            </div>
+            <div
+              class="card-desc"
+              id="other-domain-sense-of-place-description"
+            >
+              Cultural and ecological values connected to iconic places and
+              species.
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-dark" id="section-cta">
+      <div class="container text-center" id="cta-content">
+        <h2 class="heading-lg fade-in" id="cta-heading">
+          See Habitat Resilience Scores in Your Community
         </h2>
-        <ul class="placeholder-copy" id="habitats-indicators-list">
-          <li id="habitats-indicator-extent">Extent (status)</li>
-          <li id="habitats-indicator-protection">Protection (status)</li>
-          <li id="habitats-indicator-traits">Traits</li>
-          <li id="habitats-indicator-bark">Bark</li>
-          <li id="habitats-indicator-height">Height</li>
-          <li id="habitats-indicator-self-pruning">Self-pruning</li>
-          <li id="habitats-indicator-stand-density">Stand density</li>
-          <li id="habitats-indicator-ndvi">NDVI heterogeneity</li>
-          <li id="habitats-indicator-npp">NPP</li>
-          <li id="habitats-indicator-vpd">VPD</li>
-          <li id="habitats-indicator-longevity">Longevity</li>
-          <li id="habitats-indicator-seed-mass">Seed mass</li>
-          <li id="habitats-indicator-resprout">Resprout</li>
-          <li id="habitats-indicator-serotiny">Serotiny</li>
-          <li id="habitats-indicator-diversity">Diversity</li>
-          <li id="habitats-indicator-rainfall">
-            30-year rainfall norm
-          </li>
-        </ul>
-      </section>
-    </main>
+        <p class="body-text fade-in" id="cta-description">
+          Explore habitat condition and recovery indicators to identify where
+          conservation and restoration can strengthen wildfire resilience.
+        </p>
+        <a href="#" class="btn-theme-primary fade-in" id="cta-button"
+          >Launch Dashboard</a
+        >
+      </div>
+    </section>
+
     <footer class="footer" id="footer">
-      <p id="footer-text">&copy; 2026 Wildfire Resilience Index.</p>
+      <div class="container" id="footer-content">
+        <p id="footer-text">
+          &copy; 2026 Wildfire Resilience Index. Supported by the
+          <a href="#" id="footer-link-moore">Moore Foundation</a>.
+        </p>
+        <p class="caption-text mt-2" id="footer-disclaimer">
+          Built with content provided by Cat Fong for pre-funder review.
+        </p>
+      </div>
     </footer>
+
+    <script src="../../assets/js/shared.js"></script>
     <script id="habitats-script">
       const mobileMenuToggle = document.getElementById("mobile-menu-toggle");
       const siteNav = document.getElementById("site-nav");
-      mobileMenuToggle.addEventListener("click", () =>
-        siteNav.classList.toggle("active"),
-      );
+      const siteHeader = document.getElementById("site-header");
+
+      mobileMenuToggle.addEventListener("click", () => {
+        mobileMenuToggle.classList.toggle("active");
+        siteNav.classList.toggle("active");
+      });
+
       document.querySelectorAll(".site-nav a").forEach((linkElement) => {
-        linkElement.addEventListener("click", () =>
-          siteNav.classList.remove("active"),
-        );
+        linkElement.addEventListener("click", () => {
+          mobileMenuToggle.classList.remove("active");
+          siteNav.classList.remove("active");
+        });
+      });
+
+      window.addEventListener("scroll", () => {
+        if (window.pageYOffset > 50) {
+          siteHeader.classList.add("scrolled");
+        } else {
+          siteHeader.classList.remove("scrolled");
+        }
       });
     </script>
   </body>

@@ -8,6 +8,7 @@
       id="air-quality-meta-viewport"
     />
     <title id="air-quality-title">Air Quality | WRI</title>
+    <link rel="stylesheet" href="../../assets/css/shared.css" />
     <style id="air-quality-style">
       :root {
         --primary-darkest: #160e08;
@@ -495,6 +496,231 @@
         }
       }
 
+      .domain-hero {
+        margin-top: 80px;
+        min-height: 50vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(135deg, #160e08 0%, #513221 45%, #8e4b27 100%);
+      }
+      .domain-hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+            ellipse at 30% 50%,
+            rgba(220, 126, 73, 0.28) 0%,
+            transparent 60%
+          ),
+          radial-gradient(
+            ellipse at 70% 30%,
+            rgba(220, 126, 73, 0.18) 0%,
+            transparent 55%
+          );
+      }
+      .domain-hero-content {
+        position: relative;
+        z-index: 2;
+        max-width: 860px;
+        padding: 4rem 2rem;
+        color: #fff;
+      }
+      .domain-hero-icon {
+        font-size: 4rem;
+        margin-bottom: 1.25rem;
+        display: block;
+      }
+      .domain-hero-content h1 {
+        font-size: clamp(2.1rem, 4vw, 3.3rem);
+        margin-bottom: 1rem;
+        line-height: 1.2;
+      }
+      .domain-hero-content p {
+        font-size: clamp(1.05rem, 2vw, 1.3rem);
+        line-height: 1.65;
+        opacity: 0.95;
+      }
+      .section {
+        padding: 5rem 0;
+      }
+      .section-warm {
+        background: linear-gradient(180deg, #fff5e8 0%, #ffe8d8 100%);
+      }
+      .section-dark {
+        background: linear-gradient(135deg, #513221 0%, #2a1810 100%);
+        color: #fff;
+      }
+      .section-sunset {
+        background: linear-gradient(135deg, #ffe0cc 0%, #ffd4b8 100%);
+      }
+      .tile-content {
+        padding: 2.5rem;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(22, 14, 8, 0.12);
+        border: 1px solid rgba(142, 75, 39, 0.15);
+      }
+      .section-dark .tile-content {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .tile-content .accent-line {
+        width: 100px;
+        height: 6px;
+        border-radius: 999px;
+        margin-bottom: 1.25rem;
+        background: linear-gradient(90deg, #dc7e49 0%, #a67c52 100%);
+      }
+      .tile-content h2 {
+        margin-bottom: 1rem;
+      }
+      .tile-content p {
+        margin-bottom: 1rem;
+        line-height: 1.75;
+      }
+      .section-dark .tile-content h2 {
+        color: #dc7e49;
+      }
+      .section-dark .tile-content p {
+        color: rgba(255, 255, 255, 0.9);
+      }
+      .tile-visual {
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 16px 48px rgba(22, 14, 8, 0.25);
+        border: 2px solid rgba(142, 75, 39, 0.2);
+      }
+      .video-placeholder {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 280px;
+        text-align: center;
+        padding: 3rem 2rem;
+        position: relative;
+        background: linear-gradient(135deg, #2a1a10 0%, #1a1a1a 100%);
+        color: rgba(255, 255, 255, 0.75);
+      }
+      .video-placeholder::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border: 2px dashed rgba(220, 126, 73, 0.3);
+        border-radius: 18px;
+      }
+      .video-play-btn {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+        background: linear-gradient(135deg, #dc7e49 0%, #a67c52 100%);
+      }
+      .video-play-btn span {
+        color: white;
+        font-size: 1.75rem;
+      }
+      .video-format-note {
+        margin-top: 0.75rem;
+        padding: 0.2rem 0.6rem;
+        border-radius: 4px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        font-size: 0.75rem;
+      }
+      .indicator-list {
+        list-style: none;
+        padding: 0;
+        margin: 1.25rem 0 0;
+      }
+      .indicator-list li {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.6rem 0;
+        border-bottom: 1px solid rgba(142, 75, 39, 0.12);
+      }
+      .section-dark .indicator-list li {
+        border-bottom-color: rgba(255, 255, 255, 0.1);
+      }
+      .indicator-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #dc7e49;
+        flex-shrink: 0;
+      }
+      .domain-nav-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin: 2.5rem 0;
+      }
+      .domain-nav-card {
+        background: #fff;
+        border-radius: 16px;
+        padding: 2rem;
+        text-decoration: none;
+        color: #2a1a12;
+        border: 2px solid transparent;
+        box-shadow: 0 6px 24px rgba(22, 14, 8, 0.08);
+        transition: all 0.3s ease;
+      }
+      .domain-nav-card:hover {
+        transform: translateY(-6px);
+        border-color: #dc7e49;
+        box-shadow: 0 12px 36px rgba(22, 14, 8, 0.15);
+      }
+      .card-icon {
+        display: block;
+        font-size: 2.2rem;
+        margin-bottom: 0.85rem;
+      }
+      .card-title {
+        font-size: 1.15rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: #8e4b27;
+      }
+      .card-desc {
+        font-size: 0.9rem;
+        line-height: 1.5;
+        opacity: 0.8;
+      }
+      .btn-theme-primary {
+        background: linear-gradient(135deg, #dc7e49 0%, #a67c52 100%);
+        color: #fff;
+        text-decoration: none;
+        display: inline-block;
+        padding: 1.1rem 2.7rem;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 1.05rem;
+        box-shadow: 0 8px 28px rgba(220, 126, 73, 0.4);
+      }
+      .btn-theme-primary:hover {
+        transform: translateY(-3px);
+      }
+      .footer {
+        background: linear-gradient(135deg, #160e08 0%, #513221 100%);
+        color: #fff;
+        text-align: center;
+        padding: 3rem 0 2rem;
+      }
+      .footer a {
+        color: #dc7e49;
+        text-decoration: none;
+      }
+      .footer a:hover {
+        text-decoration: underline;
+      }
+
       /* Header Size Consistency Lock */
       .site-logo {
         display: flex !important;
@@ -629,49 +855,270 @@
         </button>
       </nav>
     </header>
-    <main class="placeholder-main" id="placeholder-main">
-      <section class="placeholder-card" id="air-overview-section">
-        <p class="placeholder-eyebrow" id="air-overview-eyebrow">Domain</p>
-        <h1 class="placeholder-title" id="air-overview-title">Air Quality</h1>
-        <p class="placeholder-copy" id="air-overview-copy-1">
-          Air quality affects public health and policy, particularly in
-          wildfire-prone regions. This domain evaluates populations' exposure to
-          poor air quality and their capacity to withstand negative health
-          outcomes.
+    <section class="domain-hero" id="domain-hero">
+      <div class="domain-hero-content fade-in" id="domain-hero-content">
+        <h1 id="domain-hero-heading">Air Quality</h1>
+        <p id="domain-hero-subtitle">
+          Air quality affects public health in wildfire-prone regions. This
+          domain tracks smoke exposure and community capacity to withstand
+          associated health impacts.
         </p>
-        <br />
-        <p class="placeholder-copy" id="air-overview-copy-2">
-          Including air quality ensures the WRI accounts for direct smoke and
-          particulate impacts on people as a key human dimension of resilience.
-        </p>
-        <br />
-        <h2 class="placeholder-title" id="air-indicators-title">
-          What is included
+      </div>
+    </section>
+
+    <section class="section section-warm" id="section-air-exposure">
+      <div class="container" id="air-exposure-container">
+        <div class="grid-two-col tile-left-right" id="air-exposure-grid">
+          <div class="tile-visual fade-in" id="air-exposure-visual">
+            <div class="video-placeholder" id="air-exposure-video">
+              <div class="video-play-btn" id="air-exposure-play">
+                <span id="air-exposure-play-icon">▶</span>
+              </div>
+              <strong id="air-exposure-label">Cat to provide:</strong>
+              <span class="video-desc" id="air-exposure-desc"
+                >Footage of regional smoke events, air quality monitors, and
+                visibility impacts</span
+              >
+              <span class="video-format-note" id="air-exposure-format"
+                >16:9 inline video</span
+              >
+            </div>
+          </div>
+          <div class="tile-content fade-in" id="air-exposure-content">
+            <div class="accent-line" id="air-exposure-accent"></div>
+            <h2 id="air-exposure-heading" class="heading-lg">
+              Smoke Exposure and Event Severity
+            </h2>
+            <p id="air-exposure-copy-1" class="body-text">
+              Wildfire smoke drives acute and chronic health risk. Exposure
+              indicators capture both moderate and severe air quality events that
+              can disrupt daily life and overwhelm local systems.
+            </p>
+            <p id="air-exposure-copy-2" class="body-text">
+              Tracking high-smoke days helps identify populations with repeated
+              exposure burden and heightened need for protective interventions.
+            </p>
+            <ul class="indicator-list" id="air-exposure-indicators">
+              <li id="air-indicator-aqi-100">
+                <span class="indicator-dot" id="air-dot-aqi-100"></span>
+                Days above AQI 100
+              </li>
+              <li id="air-indicator-aqi-300">
+                <span class="indicator-dot" id="air-dot-aqi-300"></span>
+                Days above AQI 300
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-dark" id="section-air-health">
+      <div class="container" id="air-health-container">
+        <div class="grid-two-col tile-right-left" id="air-health-grid">
+          <div class="tile-visual fade-in" id="air-health-visual">
+            <div class="video-placeholder" id="air-health-video">
+              <div class="video-play-btn" id="air-health-play">
+                <span id="air-health-play-icon">▶</span>
+              </div>
+              <strong id="air-health-label">Cat to provide:</strong>
+              <span class="video-desc" id="air-health-desc"
+                >Footage of clinics, vulnerable populations, and public-health
+                response efforts during smoke events</span
+              >
+              <span class="video-format-note" id="air-health-format"
+                >16:9 inline video</span
+              >
+            </div>
+          </div>
+          <div class="tile-content fade-in" id="air-health-content">
+            <div class="accent-line" id="air-health-accent"></div>
+            <h2 id="air-health-heading" class="heading-lg">
+              Health Vulnerability and Recovery Capacity
+            </h2>
+            <p id="air-health-copy-1" class="body-text">
+              Population health conditions influence resilience to prolonged
+              smoke. Asthma, COPD, age, and occupational exposure shape both
+              short-term harm and long-term recovery trajectories.
+            </p>
+            <p id="air-health-copy-2" class="body-text">
+              These indicators support targeted planning where vulnerability is
+              elevated and public-health support must be prioritized.
+            </p>
+            <ul class="indicator-list" id="air-health-indicators">
+              <li id="air-indicator-asthma">
+                <span class="indicator-dot" id="air-dot-asthma"></span>
+                Prevalence of adult asthma
+              </li>
+              <li id="air-indicator-copd">
+                <span class="indicator-dot" id="air-dot-copd"></span>
+                COPD
+              </li>
+              <li id="air-indicator-age">
+                <span class="indicator-dot" id="air-dot-age"></span>
+                Age
+              </li>
+              <li id="air-indicator-occupational-hazard">
+                <span class="indicator-dot" id="air-dot-occupational-hazard"></span>
+                Occupational hazard
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-sunset" id="section-air-response">
+      <div class="container" id="air-response-container">
+        <div class="grid-two-col tile-left-right" id="air-response-grid">
+          <div class="tile-visual fade-in" id="air-response-visual">
+            <div class="video-placeholder" id="air-response-video">
+              <div class="video-play-btn" id="air-response-play">
+                <span id="air-response-play-icon">▶</span>
+              </div>
+              <strong id="air-response-label">Cat to provide:</strong>
+              <span class="video-desc" id="air-response-desc"
+                >Footage of hospitals, clean-air shelters, and community smoke
+                response resources</span
+              >
+              <span class="video-format-note" id="air-response-format"
+                >16:9 inline video</span
+              >
+            </div>
+          </div>
+          <div class="tile-content fade-in" id="air-response-content">
+            <div class="accent-line" id="air-response-accent"></div>
+            <h2 id="air-response-heading" class="heading-lg">
+              Healthcare Access and Community Response
+            </h2>
+            <p id="air-response-copy-1" class="body-text">
+              Response capacity depends on access to care and timely protective
+              action. Hospital access and local emergency systems determine how
+              effectively communities manage severe smoke events.
+            </p>
+            <p id="air-response-copy-2" class="body-text">
+              Including response indicators ensures air resilience reflects both
+              exposure risk and available pathways for reducing harm.
+            </p>
+            <ul class="indicator-list" id="air-response-indicators">
+              <li id="air-indicator-hospitals">
+                <span class="indicator-dot" id="air-dot-hospitals"></span>
+                Access to hospitals
+              </li>
+              <li id="air-indicator-smoke-events">
+                <span class="indicator-dot" id="air-dot-smoke-events"></span>
+                Severe smoke event frequency (AQI thresholds)
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="section-other-domains">
+      <div class="container" id="other-domains-container">
+        <div class="mb-4 text-center" id="other-domains-header">
+          <h2 class="heading-lg fade-in" id="other-domains-heading">
+            Explore Other Domains
+          </h2>
+          <p class="body-text fade-in" id="other-domains-description">
+            Air resilience intersects with social vulnerability, economic
+            stability, and watershed systems. Explore related domains.
+          </p>
+        </div>
+        <div class="domain-nav-grid" id="other-domains-grid">
+          <a
+            href="communities.html"
+            class="domain-nav-card fade-in"
+            id="other-domain-communities"
+          >
+            <div class="card-title" id="other-domain-communities-title">
+              Communities
+            </div>
+            <div class="card-desc" id="other-domain-communities-description">
+              Preparedness and social support systems that shape smoke response
+              outcomes.
+            </div>
+          </a>
+          <a
+            href="livelihoods.html"
+            class="domain-nav-card fade-in"
+            id="other-domain-livelihoods"
+          >
+            <div class="card-title" id="other-domain-livelihoods-title">
+              Livelihoods
+            </div>
+            <div class="card-desc" id="other-domain-livelihoods-description">
+              Economic and workforce conditions that influence household recovery
+              from smoke impacts.
+            </div>
+          </a>
+          <a
+            href="water.html"
+            class="domain-nav-card fade-in"
+            id="other-domain-water"
+          >
+            <div class="card-title" id="other-domain-water-title">Water</div>
+            <div class="card-desc" id="other-domain-water-description">
+              Hydrologic resilience and public systems often impacted during the
+              same wildfire events.
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-dark" id="section-cta">
+      <div class="container text-center" id="cta-content">
+        <h2 class="heading-lg fade-in" id="cta-heading">
+          See Air Quality Resilience Scores in Your Community
         </h2>
-        <ul class="placeholder-copy" id="air-indicators-list">
-          <li id="air-indicator-aqi-100">Days above AQI 100</li>
-          <li id="air-indicator-aqi-300">Days above AQI 300</li>
-          <li id="air-indicator-asthma">Prevalence of adult asthma</li>
-          <li id="air-indicator-copd">COPD</li>
-          <li id="air-indicator-age">Age</li>
-          <li id="air-indicator-occupational-hazard">Occupational hazard</li>
-          <li id="air-indicator-hospitals">Access to hospitals</li>
-        </ul>
-      </section>
-    </main>
+        <p class="body-text fade-in" id="cta-description">
+          Compare smoke exposure and health-capacity indicators to identify where
+          planning can reduce wildfire air-quality impacts.
+        </p>
+        <a href="#" class="btn-theme-primary fade-in" id="cta-button"
+          >Launch Dashboard</a
+        >
+      </div>
+    </section>
+
     <footer class="footer" id="footer">
-      <p id="footer-text">&copy; 2026 Wildfire Resilience Index.</p>
+      <div class="container" id="footer-content">
+        <p id="footer-text">
+          &copy; 2026 Wildfire Resilience Index. Supported by the
+          <a href="#" id="footer-link-moore">Moore Foundation</a>.
+        </p>
+        <p class="caption-text mt-2" id="footer-disclaimer">
+          Built with content provided by Cat Fong for pre-funder review.
+        </p>
+      </div>
     </footer>
+
+    <script src="../../assets/js/shared.js"></script>
     <script id="air-quality-script">
       const mobileMenuToggle = document.getElementById("mobile-menu-toggle");
       const siteNav = document.getElementById("site-nav");
-      mobileMenuToggle.addEventListener("click", () =>
-        siteNav.classList.toggle("active"),
-      );
+      const siteHeader = document.getElementById("site-header");
+
+      mobileMenuToggle.addEventListener("click", () => {
+        mobileMenuToggle.classList.toggle("active");
+        siteNav.classList.toggle("active");
+      });
+
       document.querySelectorAll(".site-nav a").forEach((linkElement) => {
-        linkElement.addEventListener("click", () =>
-          siteNav.classList.remove("active"),
-        );
+        linkElement.addEventListener("click", () => {
+          mobileMenuToggle.classList.remove("active");
+          siteNav.classList.remove("active");
+        });
+      });
+
+      window.addEventListener("scroll", () => {
+        if (window.pageYOffset > 50) {
+          siteHeader.classList.add("scrolled");
+        } else {
+          siteHeader.classList.remove("scrolled");
+        }
       });
     </script>
   </body>

@@ -8,6 +8,7 @@
       id="livelihoods-meta-viewport"
     />
     <title id="livelihoods-title">Livelihoods | WRI</title>
+    <link rel="stylesheet" href="../../assets/css/shared.css" />
     <style id="livelihoods-style">
       :root {
         --primary-darkest: #160e08;
@@ -130,40 +131,229 @@
         background: #fff;
         margin: 5px 0;
       }
-      .placeholder-main {
-        max-width: 880px;
-        margin: 0 auto;
-        padding: 5.5rem 1rem 4rem;
+      .domain-hero {
+        margin-top: 80px;
+        min-height: 50vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(135deg, #160e08 0%, #513221 45%, #8e4b27 100%);
       }
-      .placeholder-card {
-        background: #fff;
-        border: 1px solid #eadfce;
-        border-radius: 14px;
-        padding: 2rem;
-        box-shadow: 0 8px 28px rgba(22, 14, 8, 0.08);
+      .domain-hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+            ellipse at 30% 50%,
+            rgba(220, 126, 73, 0.28) 0%,
+            transparent 60%
+          ),
+          radial-gradient(
+            ellipse at 70% 30%,
+            rgba(220, 126, 73, 0.18) 0%,
+            transparent 55%
+          );
       }
-      .placeholder-eyebrow {
-        color: #8e4b27;
-        font-size: 0.85rem;
-        text-transform: uppercase;
-        letter-spacing: 0.07em;
-        font-weight: 700;
-        margin: 0 0 0.8rem;
+      .domain-hero-content {
+        position: relative;
+        z-index: 2;
+        max-width: 860px;
+        padding: 4rem 2rem;
+        color: #fff;
       }
-      .placeholder-title {
-        margin: 0 0 0.8rem;
-        font-size: 2rem;
-        color: var(--primary-darkest);
+      .domain-hero-icon {
+        font-size: 4rem;
+        margin-bottom: 1.25rem;
+        display: block;
       }
-      .placeholder-copy {
-        margin: 0;
+      .domain-hero-content h1 {
+        font-size: clamp(2.1rem, 4vw, 3.3rem);
+        margin-bottom: 1rem;
+        line-height: 1.2;
+      }
+      .domain-hero-content p {
+        font-size: clamp(1.05rem, 2vw, 1.3rem);
         line-height: 1.65;
+        opacity: 0.95;
+      }
+      .section {
+        padding: 5rem 0;
+      }
+      .section-warm {
+        background: linear-gradient(180deg, #fff5e8 0%, #ffe8d8 100%);
+      }
+      .section-dark {
+        background: linear-gradient(135deg, #513221 0%, #2a1810 100%);
+        color: #fff;
+      }
+      .section-sunset {
+        background: linear-gradient(135deg, #ffe0cc 0%, #ffd4b8 100%);
+      }
+      .tile-content {
+        padding: 2.5rem;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(22, 14, 8, 0.12);
+        border: 1px solid rgba(142, 75, 39, 0.15);
+      }
+      .section-dark .tile-content {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .tile-content .accent-line {
+        width: 100px;
+        height: 6px;
+        border-radius: 999px;
+        margin-bottom: 1.25rem;
+        background: linear-gradient(90deg, #dc7e49 0%, #a67c52 100%);
+      }
+      .tile-content h2 {
+        margin-bottom: 1rem;
+      }
+      .tile-content p {
+        margin-bottom: 1rem;
+        line-height: 1.75;
+      }
+      .section-dark .tile-content h2 {
+        color: #dc7e49;
+      }
+      .section-dark .tile-content p {
+        color: rgba(255, 255, 255, 0.9);
+      }
+      .tile-visual {
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 16px 48px rgba(22, 14, 8, 0.25);
+        border: 2px solid rgba(142, 75, 39, 0.2);
+      }
+      .video-placeholder {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 280px;
+        text-align: center;
+        padding: 3rem 2rem;
+        position: relative;
+        background: linear-gradient(135deg, #2a1a10 0%, #1a1a1a 100%);
+        color: rgba(255, 255, 255, 0.75);
+      }
+      .video-placeholder::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border: 2px dashed rgba(220, 126, 73, 0.3);
+        border-radius: 18px;
+      }
+      .video-play-btn {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+        background: linear-gradient(135deg, #dc7e49 0%, #a67c52 100%);
+      }
+      .video-play-btn span {
+        color: white;
+        font-size: 1.75rem;
+      }
+      .video-format-note {
+        margin-top: 0.75rem;
+        padding: 0.2rem 0.6rem;
+        border-radius: 4px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        font-size: 0.75rem;
+      }
+      .indicator-list {
+        list-style: none;
+        padding: 0;
+        margin: 1.25rem 0 0;
+      }
+      .indicator-list li {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.6rem 0;
+        border-bottom: 1px solid rgba(142, 75, 39, 0.12);
+      }
+      .section-dark .indicator-list li {
+        border-bottom-color: rgba(255, 255, 255, 0.1);
+      }
+      .indicator-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #dc7e49;
+        flex-shrink: 0;
+      }
+      .domain-nav-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin: 2.5rem 0;
+      }
+      .domain-nav-card {
+        background: #fff;
+        border-radius: 16px;
+        padding: 2rem;
+        text-decoration: none;
+        color: #2a1a12;
+        border: 2px solid transparent;
+        box-shadow: 0 6px 24px rgba(22, 14, 8, 0.08);
+        transition: all 0.3s ease;
+      }
+      .domain-nav-card:hover {
+        transform: translateY(-6px);
+        border-color: #dc7e49;
+        box-shadow: 0 12px 36px rgba(22, 14, 8, 0.15);
+      }
+      .card-icon {
+        display: block;
+        font-size: 2.2rem;
+        margin-bottom: 0.85rem;
+      }
+      .card-title {
+        font-size: 1.15rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: #8e4b27;
+      }
+      .card-desc {
+        font-size: 0.9rem;
+        line-height: 1.5;
+        opacity: 0.8;
+      }
+      .btn-theme-primary {
+        background: linear-gradient(135deg, #dc7e49 0%, #a67c52 100%);
+        color: #fff;
+        text-decoration: none;
+        display: inline-block;
+        padding: 1.1rem 2.7rem;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 1.05rem;
+        box-shadow: 0 8px 28px rgba(220, 126, 73, 0.4);
+      }
+      .btn-theme-primary:hover {
+        transform: translateY(-3px);
       }
       .footer {
+        background: linear-gradient(135deg, #160e08 0%, #513221 100%);
+        color: #fff;
         text-align: center;
-        padding: 2rem 1rem 2.5rem;
-        font-size: 0.9rem;
-        color: #5d4435;
+        padding: 3rem 0 2rem;
+      }
+      .footer a {
+        color: #dc7e49;
+        text-decoration: none;
+      }
+      .footer a:hover {
+        text-decoration: underline;
       }
       @media (max-width: 1100px) {
         .mobile-menu-toggle {
@@ -532,63 +722,289 @@
       </nav>
     </header>
 
-    <main class="placeholder-main" id="placeholder-main">
-      <section class="placeholder-card" id="livelihoods-overview-section">
-        <p class="placeholder-eyebrow" id="livelihoods-overview-eyebrow">
-          Domain
-        </p>
-        <h1 class="placeholder-title" id="livelihoods-overview-title">
-          Livelihoods
-        </h1>
-        <p class="placeholder-copy" id="livelihoods-overview-copy-1">
+    <section class="domain-hero" id="domain-hero">
+      <div class="domain-hero-content fade-in" id="domain-hero-content">
+        <h1 id="domain-hero-heading">Livelihoods</h1>
+        <p id="domain-hero-subtitle">
           Livelihoods reflect how people make a living and are tied to
-          well-being, security, and identity. Wildfires can disrupt employment,
-          income stability, and economic diversity.
+          well-being, security, and identity. This domain tracks how local
+          economies absorb wildfire disruption and recover over time.
         </p>
-        <br />
-        <p class="placeholder-copy" id="livelihoods-overview-copy-2">
-          This domain evaluates the vulnerability of jobs to fire and the
-          capacity of local economies to recover, emphasizing that resilient
-          communities depend not only on safe structures but also on
-          sustainable, adaptable livelihoods.
-        </p>
-        <br />
-        <h2 class="placeholder-title" id="livelihoods-indicators-title">
-          What is included
+      </div>
+    </section>
+
+    <section class="section section-warm" id="section-livelihood-baseline">
+      <div class="container" id="livelihood-baseline-container">
+        <div class="grid-two-col tile-left-right" id="livelihood-baseline-grid">
+          <div class="tile-visual fade-in" id="livelihood-baseline-visual">
+            <div class="video-placeholder" id="livelihood-baseline-video">
+              <div class="video-play-btn" id="livelihood-baseline-play">
+                <span id="livelihood-baseline-play-icon">▶</span>
+              </div>
+              <strong id="livelihood-baseline-label">Cat to provide:</strong>
+              <span class="video-desc" id="livelihood-baseline-desc"
+                >Footage of local businesses, agricultural work, and main-street
+                economic activity</span
+              >
+              <span class="video-format-note" id="livelihood-baseline-format"
+                >16:9 inline video</span
+              >
+            </div>
+          </div>
+          <div class="tile-content fade-in" id="livelihood-baseline-content">
+            <div class="accent-line" id="livelihood-baseline-accent"></div>
+            <h2 id="livelihood-baseline-heading" class="heading-lg">
+              Employment and Economic Baseline
+            </h2>
+            <p id="livelihood-baseline-copy-1" class="body-text">
+              Resilience starts with current economic condition. Employment
+              rates, unemployment levels, median income, and housing burden
+              indicate how much baseline flexibility households have before fire
+              impacts occur.
+            </p>
+            <p id="livelihood-baseline-copy-2" class="body-text">
+              These indicators provide context for where financial stress is
+              already high and where wildfire shocks may have outsized effects
+              on livelihood stability.
+            </p>
+            <ul class="indicator-list" id="livelihood-baseline-indicators">
+              <li id="livelihood-indicator-employed">
+                <span class="indicator-dot" id="livelihood-dot-employed"></span>
+                Percent employed and unemployment (status)
+              </li>
+              <li id="livelihood-indicator-income">
+                <span class="indicator-dot" id="livelihood-dot-income"></span>
+                Median income (status)
+              </li>
+              <li id="livelihood-indicator-housing-burden">
+                <span
+                  class="indicator-dot"
+                  id="livelihood-dot-housing-burden"
+                ></span>
+                Housing burden (status)
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-dark" id="section-livelihood-disruption">
+      <div class="container" id="livelihood-disruption-container">
+        <div
+          class="grid-two-col tile-right-left"
+          id="livelihood-disruption-grid"
+        >
+          <div class="tile-visual fade-in" id="livelihood-disruption-visual">
+            <div class="video-placeholder" id="livelihood-disruption-video">
+              <div class="video-play-btn" id="livelihood-disruption-play">
+                <span id="livelihood-disruption-play-icon">▶</span>
+              </div>
+              <strong id="livelihood-disruption-label">Cat to provide:</strong>
+              <span class="video-desc" id="livelihood-disruption-desc"
+                >Footage of burned business districts and economic disruption
+                impacts after wildfire events</span
+              >
+              <span class="video-format-note" id="livelihood-disruption-format"
+                >16:9 inline video</span
+              >
+            </div>
+          </div>
+          <div class="tile-content fade-in" id="livelihood-disruption-content">
+            <div class="accent-line" id="livelihood-disruption-accent"></div>
+            <h2 id="livelihood-disruption-heading" class="heading-lg">
+              Job Interruption and Exposure to Fire
+            </h2>
+            <p id="livelihood-disruption-copy-1" class="body-text">
+              Wildfires can interrupt tourism, agriculture, service-sector work,
+              and supply chains. This section captures how vulnerable local job
+              structures are to fire-related interruption.
+            </p>
+            <p id="livelihood-disruption-copy-2" class="body-text">
+              Tracking exposure to disruption helps identify where recovery
+              planning should prioritize workforce continuity and rapid economic
+              stabilization.
+            </p>
+            <ul class="indicator-list" id="livelihood-disruption-indicators">
+              <li id="livelihood-indicator-job-interruption">
+                <span
+                  class="indicator-dot"
+                  id="livelihood-dot-job-interruption"
+                ></span>
+                Percent of jobs interrupted by fire and job vulnerability
+                (resistance)
+              </li>
+              <li id="livelihood-indicator-income-buffer">
+                <span
+                  class="indicator-dot"
+                  id="livelihood-dot-income-buffer"
+                ></span>
+                Median income as a financial buffer (status)
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-sunset" id="section-livelihood-recovery">
+      <div class="container" id="livelihood-recovery-container">
+        <div class="grid-two-col tile-left-right" id="livelihood-recovery-grid">
+          <div class="tile-visual fade-in" id="livelihood-recovery-visual">
+            <div class="video-placeholder" id="livelihood-recovery-video">
+              <div class="video-play-btn" id="livelihood-recovery-play">
+                <span id="livelihood-recovery-play-icon">▶</span>
+              </div>
+              <strong id="livelihood-recovery-label">Cat to provide:</strong>
+              <span class="video-desc" id="livelihood-recovery-desc"
+                >Footage of business reopening, local market activity, and
+                workforce retraining initiatives</span
+              >
+              <span class="video-format-note" id="livelihood-recovery-format"
+                >16:9 inline video</span
+              >
+            </div>
+          </div>
+          <div class="tile-content fade-in" id="livelihood-recovery-content">
+            <div class="accent-line" id="livelihood-recovery-accent"></div>
+            <h2 id="livelihood-recovery-heading" class="heading-lg">
+              Economic Diversity and Recovery Capacity
+            </h2>
+            <p id="livelihood-recovery-copy-1" class="body-text">
+              Long-term livelihood resilience depends on whether local economies
+              can adapt rather than collapse after disturbance. Diversity of jobs
+              is a key recovery factor.
+            </p>
+            <p id="livelihood-recovery-copy-2" class="body-text">
+              Communities with more diverse economic pathways are better
+              positioned to absorb shocks, maintain income, and rebuild over
+              time.
+            </p>
+            <ul class="indicator-list" id="livelihood-recovery-indicators">
+              <li id="livelihood-indicator-job-diversity">
+                <span
+                  class="indicator-dot"
+                  id="livelihood-dot-job-diversity"
+                ></span>
+                Diversity of jobs (recovery)
+              </li>
+              <li id="livelihood-indicator-housing-pressure">
+                <span
+                  class="indicator-dot"
+                  id="livelihood-dot-housing-pressure"
+                ></span>
+                Housing burden as a recovery constraint (status)
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="section-other-domains">
+      <div class="container" id="other-domains-container">
+        <div class="mb-4 text-center" id="other-domains-header">
+          <h2 class="heading-lg fade-in" id="other-domains-heading">
+            Explore Other Domains
+          </h2>
+          <p class="body-text fade-in" id="other-domains-description">
+            Economic resilience is tied to social, built, and environmental
+            systems. Explore related domains that influence livelihood outcomes.
+          </p>
+        </div>
+        <div class="domain-nav-grid" id="other-domains-grid">
+          <a
+            href="communities.html"
+            class="domain-nav-card fade-in"
+            id="other-domain-communities"
+          >
+            <div class="card-title" id="other-domain-communities-title">
+              Communities
+            </div>
+            <div class="card-desc" id="other-domain-communities-description">
+              Social cohesion, preparedness, and local capacity that shape
+              collective recovery.
+            </div>
+          </a>
+          <a
+            href="infrastructure.html"
+            class="domain-nav-card fade-in"
+            id="other-domain-infrastructure"
+          >
+            <div class="card-title" id="other-domain-infrastructure-title">
+              Infrastructure
+            </div>
+            <div class="card-desc" id="other-domain-infrastructure-description">
+              Built systems and services that keep local economies operational
+              during disruptions.
+            </div>
+          </a>
+          <a
+            href="water.html"
+            class="domain-nav-card fade-in"
+            id="other-domain-water"
+          >
+            <div class="card-title" id="other-domain-water-title">Water</div>
+            <div class="card-desc" id="other-domain-water-description">
+              Reliable water supply and timing that support people, jobs, and
+              post-fire recovery.
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-dark" id="section-cta">
+      <div class="container text-center" id="cta-content">
+        <h2 class="heading-lg fade-in" id="cta-heading">
+          See Livelihood Resilience Scores in Your Community
         </h2>
-        <ul class="placeholder-copy" id="livelihoods-indicators-list">
-          <li id="livelihoods-indicator-employed">
-            Percent employed and unemployment (status)
-          </li>
-          <li id="livelihoods-indicator-income">Median income (status)</li>
-          <li id="livelihoods-indicator-housing-burden">
-            Housing burden (status)
-          </li>
-          <li id="livelihoods-indicator-job-interruption">
-            Percent of jobs interrupted by fire and job vulnerability
-            (resistance)
-          </li>
-          <li id="livelihoods-indicator-job-diversity">
-            Diversity of jobs (recovery)
-          </li>
-        </ul>
-      </section>
-    </main>
+        <p class="body-text fade-in" id="cta-description">
+          Explore economic resilience patterns, compare communities, and identify
+          where investment can strengthen long-term livelihood stability.
+        </p>
+        <a href="#" class="btn-theme-primary fade-in" id="cta-button"
+          >Launch Dashboard</a
+        >
+      </div>
+    </section>
 
     <footer class="footer" id="footer">
-      <p id="footer-text">&copy; 2026 Wildfire Resilience Index.</p>
+      <div class="container" id="footer-content">
+        <p id="footer-text">
+          &copy; 2026 Wildfire Resilience Index. Supported by the
+          <a href="#" id="footer-link-moore">Moore Foundation</a>.
+        </p>
+        <p class="caption-text mt-2" id="footer-disclaimer">
+          Built with content provided by Cat Fong for pre-funder review.
+        </p>
+      </div>
     </footer>
 
+    <script src="../../assets/js/shared.js"></script>
     <script id="livelihoods-script">
       const mobileMenuToggle = document.getElementById("mobile-menu-toggle");
       const siteNav = document.getElementById("site-nav");
-      mobileMenuToggle.addEventListener("click", () =>
-        siteNav.classList.toggle("active"),
-      );
+      const siteHeader = document.getElementById("site-header");
+
+      mobileMenuToggle.addEventListener("click", () => {
+        mobileMenuToggle.classList.toggle("active");
+        siteNav.classList.toggle("active");
+      });
+
       document.querySelectorAll(".site-nav a").forEach((linkElement) => {
-        linkElement.addEventListener("click", () =>
-          siteNav.classList.remove("active"),
-        );
+        linkElement.addEventListener("click", () => {
+          mobileMenuToggle.classList.remove("active");
+          siteNav.classList.remove("active");
+        });
+      });
+
+      window.addEventListener("scroll", () => {
+        if (window.pageYOffset > 50) {
+          siteHeader.classList.add("scrolled");
+        } else {
+          siteHeader.classList.remove("scrolled");
+        }
       });
     </script>
   </body>

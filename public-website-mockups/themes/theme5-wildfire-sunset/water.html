@@ -8,6 +8,7 @@
       id="water-meta-viewport"
     />
     <title id="water-title">Water | WRI</title>
+    <link rel="stylesheet" href="../../assets/css/shared.css" />
     <style id="water-style">
       :root {
         --primary-darkest: #160e08;
@@ -495,6 +496,231 @@
         }
       }
 
+      .domain-hero {
+        margin-top: 80px;
+        min-height: 50vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(135deg, #160e08 0%, #513221 45%, #8e4b27 100%);
+      }
+      .domain-hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+            ellipse at 30% 50%,
+            rgba(220, 126, 73, 0.28) 0%,
+            transparent 60%
+          ),
+          radial-gradient(
+            ellipse at 70% 30%,
+            rgba(220, 126, 73, 0.18) 0%,
+            transparent 55%
+          );
+      }
+      .domain-hero-content {
+        position: relative;
+        z-index: 2;
+        max-width: 860px;
+        padding: 4rem 2rem;
+        color: #fff;
+      }
+      .domain-hero-icon {
+        font-size: 4rem;
+        margin-bottom: 1.25rem;
+        display: block;
+      }
+      .domain-hero-content h1 {
+        font-size: clamp(2.1rem, 4vw, 3.3rem);
+        margin-bottom: 1rem;
+        line-height: 1.2;
+      }
+      .domain-hero-content p {
+        font-size: clamp(1.05rem, 2vw, 1.3rem);
+        line-height: 1.65;
+        opacity: 0.95;
+      }
+      .section {
+        padding: 5rem 0;
+      }
+      .section-warm {
+        background: linear-gradient(180deg, #fff5e8 0%, #ffe8d8 100%);
+      }
+      .section-dark {
+        background: linear-gradient(135deg, #513221 0%, #2a1810 100%);
+        color: #fff;
+      }
+      .section-sunset {
+        background: linear-gradient(135deg, #ffe0cc 0%, #ffd4b8 100%);
+      }
+      .tile-content {
+        padding: 2.5rem;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(22, 14, 8, 0.12);
+        border: 1px solid rgba(142, 75, 39, 0.15);
+      }
+      .section-dark .tile-content {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .tile-content .accent-line {
+        width: 100px;
+        height: 6px;
+        border-radius: 999px;
+        margin-bottom: 1.25rem;
+        background: linear-gradient(90deg, #dc7e49 0%, #a67c52 100%);
+      }
+      .tile-content h2 {
+        margin-bottom: 1rem;
+      }
+      .tile-content p {
+        margin-bottom: 1rem;
+        line-height: 1.75;
+      }
+      .section-dark .tile-content h2 {
+        color: #dc7e49;
+      }
+      .section-dark .tile-content p {
+        color: rgba(255, 255, 255, 0.9);
+      }
+      .tile-visual {
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 16px 48px rgba(22, 14, 8, 0.25);
+        border: 2px solid rgba(142, 75, 39, 0.2);
+      }
+      .video-placeholder {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 280px;
+        text-align: center;
+        padding: 3rem 2rem;
+        position: relative;
+        background: linear-gradient(135deg, #2a1a10 0%, #1a1a1a 100%);
+        color: rgba(255, 255, 255, 0.75);
+      }
+      .video-placeholder::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border: 2px dashed rgba(220, 126, 73, 0.3);
+        border-radius: 18px;
+      }
+      .video-play-btn {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+        background: linear-gradient(135deg, #dc7e49 0%, #a67c52 100%);
+      }
+      .video-play-btn span {
+        color: white;
+        font-size: 1.75rem;
+      }
+      .video-format-note {
+        margin-top: 0.75rem;
+        padding: 0.2rem 0.6rem;
+        border-radius: 4px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        font-size: 0.75rem;
+      }
+      .indicator-list {
+        list-style: none;
+        padding: 0;
+        margin: 1.25rem 0 0;
+      }
+      .indicator-list li {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.6rem 0;
+        border-bottom: 1px solid rgba(142, 75, 39, 0.12);
+      }
+      .section-dark .indicator-list li {
+        border-bottom-color: rgba(255, 255, 255, 0.1);
+      }
+      .indicator-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #dc7e49;
+        flex-shrink: 0;
+      }
+      .domain-nav-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin: 2.5rem 0;
+      }
+      .domain-nav-card {
+        background: #fff;
+        border-radius: 16px;
+        padding: 2rem;
+        text-decoration: none;
+        color: #2a1a12;
+        border: 2px solid transparent;
+        box-shadow: 0 6px 24px rgba(22, 14, 8, 0.08);
+        transition: all 0.3s ease;
+      }
+      .domain-nav-card:hover {
+        transform: translateY(-6px);
+        border-color: #dc7e49;
+        box-shadow: 0 12px 36px rgba(22, 14, 8, 0.15);
+      }
+      .card-icon {
+        display: block;
+        font-size: 2.2rem;
+        margin-bottom: 0.85rem;
+      }
+      .card-title {
+        font-size: 1.15rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: #8e4b27;
+      }
+      .card-desc {
+        font-size: 0.9rem;
+        line-height: 1.5;
+        opacity: 0.8;
+      }
+      .btn-theme-primary {
+        background: linear-gradient(135deg, #dc7e49 0%, #a67c52 100%);
+        color: #fff;
+        text-decoration: none;
+        display: inline-block;
+        padding: 1.1rem 2.7rem;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 1.05rem;
+        box-shadow: 0 8px 28px rgba(220, 126, 73, 0.4);
+      }
+      .btn-theme-primary:hover {
+        transform: translateY(-3px);
+      }
+      .footer {
+        background: linear-gradient(135deg, #160e08 0%, #513221 100%);
+        color: #fff;
+        text-align: center;
+        padding: 3rem 0 2rem;
+      }
+      .footer a {
+        color: #dc7e49;
+        text-decoration: none;
+      }
+      .footer a:hover {
+        text-decoration: underline;
+      }
+
       /* Header Size Consistency Lock */
       .site-logo {
         display: flex !important;
@@ -627,48 +853,268 @@
         </button>
       </nav>
     </header>
-    <main class="placeholder-main" id="placeholder-main">
-      <section class="placeholder-card" id="water-overview-section">
-        <p class="placeholder-eyebrow" id="water-overview-eyebrow">Domain</p>
-        <h1 class="placeholder-title" id="water-overview-title">Water</h1>
-        <p class="placeholder-copy" id="water-overview-copy-1">
-          Freshwater availability is essential for both human and ecological
-          well-being. Wildfires can alter water quantity and timing, impacting
-          consumption, irrigation, and ecosystem health.
+    <section class="domain-hero" id="domain-hero">
+      <div class="domain-hero-content fade-in" id="domain-hero-content">
+        <h1 id="domain-hero-heading">Water</h1>
+        <p id="domain-hero-subtitle">
+          Freshwater availability is essential for human and ecological
+          well-being. This domain evaluates quantity, timing, and interventions
+          that help maintain water systems under wildfire pressure.
         </p>
-        <br />
-        <p class="placeholder-copy" id="water-overview-copy-2">
-          This domain focuses on human and landscape interventions that help
-          maintain water supply, highlighting how resilient water systems
-          support overall wildfire resilience.
-        </p>
-        <br />
-        <h2 class="placeholder-title" id="water-indicators-title">
-          What is included
+      </div>
+    </section>
+
+    <section class="section section-warm" id="section-water-baseline">
+      <div class="container" id="water-baseline-container">
+        <div class="grid-two-col tile-left-right" id="water-baseline-grid">
+          <div class="tile-visual fade-in" id="water-baseline-visual">
+            <div class="video-placeholder" id="water-baseline-video">
+              <div class="video-play-btn" id="water-baseline-play">
+                <span id="water-baseline-play-icon">▶</span>
+              </div>
+              <strong id="water-baseline-label">Cat to provide:</strong>
+              <span class="video-desc" id="water-baseline-desc"
+                >Footage of watersheds, reservoirs, and community water
+                infrastructure</span
+              >
+              <span class="video-format-note" id="water-baseline-format"
+                >16:9 inline video</span
+              >
+            </div>
+          </div>
+          <div class="tile-content fade-in" id="water-baseline-content">
+            <div class="accent-line" id="water-baseline-accent"></div>
+            <h2 id="water-baseline-heading" class="heading-lg">
+              Freshwater Quantity and Timing
+            </h2>
+            <p id="water-baseline-copy-1" class="body-text">
+              Wildfires can alter runoff, storage, and seasonal availability of
+              water. Quantity and timing metrics indicate how reliable water
+              systems remain for people and ecosystems.
+            </p>
+            <p id="water-baseline-copy-2" class="body-text">
+              These baseline indicators help identify places where fire
+              disturbance may create high downstream risk for supply and habitat.
+            </p>
+            <ul class="indicator-list" id="water-baseline-indicators">
+              <li id="water-indicator-quantity">
+                <span class="indicator-dot" id="water-dot-quantity"></span>
+                Quantity
+              </li>
+              <li id="water-indicator-timing">
+                <span class="indicator-dot" id="water-dot-timing"></span>
+                Timing
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-dark" id="section-water-interventions">
+      <div class="container" id="water-interventions-container">
+        <div class="grid-two-col tile-right-left" id="water-interventions-grid">
+          <div class="tile-visual fade-in" id="water-interventions-visual">
+            <div class="video-placeholder" id="water-interventions-video">
+              <div class="video-play-btn" id="water-interventions-play">
+                <span id="water-interventions-play-icon">▶</span>
+              </div>
+              <strong id="water-interventions-label">Cat to provide:</strong>
+              <span class="video-desc" id="water-interventions-desc"
+                >Footage of treatment plants, watershed restoration work, and
+                hydrologic projects</span
+              >
+              <span class="video-format-note" id="water-interventions-format"
+                >16:9 inline video</span
+              >
+            </div>
+          </div>
+          <div class="tile-content fade-in" id="water-interventions-content">
+            <div class="accent-line" id="water-interventions-accent"></div>
+            <h2 id="water-interventions-heading" class="heading-lg">
+              Water Infrastructure and Protection Interventions
+            </h2>
+            <p id="water-interventions-copy-1" class="body-text">
+              Human and landscape interventions can buffer post-fire water
+              disruptions. Treatment capacity and watershed projects support
+              water quality, delivery continuity, and system resilience.
+            </p>
+            <p id="water-interventions-copy-2" class="body-text">
+              These indicators capture where active planning and investment are
+              helping maintain essential water services.
+            </p>
+            <ul class="indicator-list" id="water-interventions-indicators">
+              <li id="water-indicator-wtps">
+                <span class="indicator-dot" id="water-dot-wtps"></span>
+                Water treatment plants (WTPs)
+              </li>
+              <li id="water-indicator-wrhps">
+                <span class="indicator-dot" id="water-dot-wrhps"></span>
+                Water resource and hydrologic projects (WRHPs)
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-sunset" id="section-water-recovery">
+      <div class="container" id="water-recovery-container">
+        <div class="grid-two-col tile-left-right" id="water-recovery-grid">
+          <div class="tile-visual fade-in" id="water-recovery-visual">
+            <div class="video-placeholder" id="water-recovery-video">
+              <div class="video-play-btn" id="water-recovery-play">
+                <span id="water-recovery-play-icon">▶</span>
+              </div>
+              <strong id="water-recovery-label">Cat to provide:</strong>
+              <span class="video-desc" id="water-recovery-desc"
+                >Footage of post-fire watershed monitoring and community water
+                management collaboration</span
+              >
+              <span class="video-format-note" id="water-recovery-format"
+                >16:9 inline video</span
+              >
+            </div>
+          </div>
+          <div class="tile-content fade-in" id="water-recovery-content">
+            <div class="accent-line" id="water-recovery-accent"></div>
+            <h2 id="water-recovery-heading" class="heading-lg">
+              Water Reliability and System Recovery
+            </h2>
+            <p id="water-recovery-copy-1" class="body-text">
+              Water resilience is not only about immediate resistance. Recovery
+              capacity depends on how quickly systems stabilize after fire and
+              maintain supply across changing conditions.
+            </p>
+            <p id="water-recovery-copy-2" class="body-text">
+              Integrating physical indicators with intervention data supports
+              better planning for long-term watershed and community resilience.
+            </p>
+            <ul class="indicator-list" id="water-recovery-indicators">
+              <li id="water-indicator-recovery-quantity">
+                <span class="indicator-dot" id="water-dot-recovery-quantity"></span>
+                Quantity trajectories after disturbance
+              </li>
+              <li id="water-indicator-recovery-timing">
+                <span class="indicator-dot" id="water-dot-recovery-timing"></span>
+                Timing stability across seasons
+              </li>
+              <li id="water-indicator-recovery-projects">
+                <span class="indicator-dot" id="water-dot-recovery-projects"></span>
+                Intervention support from WTPs and WRHPs
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="section-other-domains">
+      <div class="container" id="other-domains-container">
+        <div class="mb-4 text-center" id="other-domains-header">
+          <h2 class="heading-lg fade-in" id="other-domains-heading">
+            Explore Other Domains
+          </h2>
+          <p class="body-text fade-in" id="other-domains-description">
+            Water resilience depends on habitat condition, social systems, and
+            smoke impacts. Explore connected domains across the index.
+          </p>
+        </div>
+        <div class="domain-nav-grid" id="other-domains-grid">
+          <a
+            href="habitats.html"
+            class="domain-nav-card fade-in"
+            id="other-domain-habitats"
+          >
+            <div class="card-title" id="other-domain-habitats-title">
+              Habitats
+            </div>
+            <div class="card-desc" id="other-domain-habitats-description">
+              Ecosystem condition and recovery traits shaping watershed
+              resilience.
+            </div>
+          </a>
+          <a
+            href="communities.html"
+            class="domain-nav-card fade-in"
+            id="other-domain-communities"
+          >
+            <div class="card-title" id="other-domain-communities-title">
+              Communities
+            </div>
+            <div class="card-desc" id="other-domain-communities-description">
+              Preparedness and social capacity that influence water management
+              outcomes.
+            </div>
+          </a>
+          <a
+            href="air-quality.html"
+            class="domain-nav-card fade-in"
+            id="other-domain-air-quality"
+          >
+            <div class="card-title" id="other-domain-air-quality-title">
+              Air Quality
+            </div>
+            <div class="card-desc" id="other-domain-air-quality-description">
+              Smoke and health impacts that often co-occur with post-fire water
+              challenges.
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-dark" id="section-cta">
+      <div class="container text-center" id="cta-content">
+        <h2 class="heading-lg fade-in" id="cta-heading">
+          See Water Resilience Scores in Your Community
         </h2>
-        <ul class="placeholder-copy" id="water-indicators-list">
-          <li id="water-indicator-quantity">Quantity</li>
-          <li id="water-indicator-timing">Timing</li>
-          <li id="water-indicator-wtps">Water treatment plants (WTPs)</li>
-          <li id="water-indicator-wrhps">
-            Water resource and hydrologic projects (WRHPs)
-          </li>
-        </ul>
-      </section>
-    </main>
+        <p class="body-text fade-in" id="cta-description">
+          Compare freshwater resilience indicators and identify where investment
+          can protect water systems before and after wildfire events.
+        </p>
+        <a href="#" class="btn-theme-primary fade-in" id="cta-button"
+          >Launch Dashboard</a
+        >
+      </div>
+    </section>
+
     <footer class="footer" id="footer">
-      <p id="footer-text">&copy; 2026 Wildfire Resilience Index.</p>
+      <div class="container" id="footer-content">
+        <p id="footer-text">
+          &copy; 2026 Wildfire Resilience Index. Supported by the
+          <a href="#" id="footer-link-moore">Moore Foundation</a>.
+        </p>
+        <p class="caption-text mt-2" id="footer-disclaimer">
+          Built with content provided by Cat Fong for pre-funder review.
+        </p>
+      </div>
     </footer>
+
+    <script src="../../assets/js/shared.js"></script>
     <script id="water-script">
       const mobileMenuToggle = document.getElementById("mobile-menu-toggle");
       const siteNav = document.getElementById("site-nav");
-      mobileMenuToggle.addEventListener("click", () =>
-        siteNav.classList.toggle("active"),
-      );
+      const siteHeader = document.getElementById("site-header");
+
+      mobileMenuToggle.addEventListener("click", () => {
+        mobileMenuToggle.classList.toggle("active");
+        siteNav.classList.toggle("active");
+      });
+
       document.querySelectorAll(".site-nav a").forEach((linkElement) => {
-        linkElement.addEventListener("click", () =>
-          siteNav.classList.remove("active"),
-        );
+        linkElement.addEventListener("click", () => {
+          mobileMenuToggle.classList.remove("active");
+          siteNav.classList.remove("active");
+        });
+      });
+
+      window.addEventListener("scroll", () => {
+        if (window.pageYOffset > 50) {
+          siteHeader.classList.add("scrolled");
+        } else {
+          siteHeader.classList.remove("scrolled");
+        }
       });
     </script>
   </body>

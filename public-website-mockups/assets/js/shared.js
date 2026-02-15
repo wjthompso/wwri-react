@@ -4,9 +4,32 @@
 // ==========================================================================
 
 document.addEventListener('DOMContentLoaded', () => {
+  initAccentMode();
   initScrollAnimations();
   initSmoothScroll();
 });
+
+const ACCENT_MODE_STORAGE_KEY = 'theme5AccentMode';
+
+function getAccentMode() {
+  return localStorage.getItem(ACCENT_MODE_STORAGE_KEY) === 'solid' ? 'solid' : 'gradient';
+}
+
+function applyAccentMode(mode) {
+  const safeMode = mode === 'solid' ? 'solid' : 'gradient';
+  document.documentElement.setAttribute('data-accent-mode', safeMode);
+  return safeMode;
+}
+
+function toggleAccentMode() {
+  const nextMode = getAccentMode() === 'solid' ? 'gradient' : 'solid';
+  localStorage.setItem(ACCENT_MODE_STORAGE_KEY, nextMode);
+  return applyAccentMode(nextMode);
+}
+
+function initAccentMode() {
+  applyAccentMode(getAccentMode());
+}
 
 /**
  * Initialize Intersection Observer for scroll-triggered animations
@@ -90,4 +113,11 @@ window.WWRIAnimations = {
   initSmoothScroll,
   initParallax,
   staggerChildren
+};
+
+window.WWRIAccentMode = {
+  ACCENT_MODE_STORAGE_KEY,
+  getAccentMode,
+  applyAccentMode,
+  toggleAccentMode
 };

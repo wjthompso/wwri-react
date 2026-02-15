@@ -34,7 +34,7 @@
 | T1 | Logo Integration & Branding Update (WWRI → WRI) | 🔥 Critical | Medium (2-3hrs) | ✅ Complete | None |
 | T2 | Update Navigation & Page Structure | 🔥 Critical | Medium (2-3hrs) | ✅ Complete | None |
 | T3 | Replace Video Hero with Photo + Overlay | 🔥 Critical | Small (1-2hrs) | ⬜ Not Started | None |
-| T4 | Color Palette Refactor (Remove Purple, Add Browns) | 🔥 Critical | Medium (2-4hrs) | ⬜ Not Started | None |
+| T4 | Color Palette Refactor (Remove Purple, Add Browns) | 🔥 Critical | Medium (2-4hrs) | ⏳ Waiting for Visual Validation from Cat | None |
 | T5 | Content Integration from Cat's Document | 🔴 High | Large (4-6hrs) | ⬜ Not Started | T2 (pages must exist) |
 | T6 | Update Domains Section (4 Pillars → 8 Domains) | 🔴 High | Medium (2-3hrs) | ⬜ Not Started | T5 (need domain text) |
 | T7 | Domain Page Content Updates | 🔴 High | Medium (2-3hrs) | ⬜ Not Started | T6 |
@@ -257,7 +257,7 @@ Replace the auto-playing video hero section with a high-quality photo and floati
 ### T4: Color Palette Refactor
 **Priority:** 🔥 Critical  
 **Effort:** Medium (2-4 hours)  
-**Status:** ⬜ Not Started  
+**Status:** ⏳ Waiting for Visual Validation from Cat  
 **Dependencies:** None
 
 #### Description
@@ -323,9 +323,9 @@ Remove purple/magenta accent colors and regenerate palette using deep browns fro
 #### Files to Update
 - `index.html` (`:root` CSS variables, ~line 19-39)
 - `infrastructure.html` (same)
-- `social.html` (same)
-- `natural-resources.html` (same)
-- `planning.html` (same)
+- `communities.html` (renamed from `social.html`)
+- `sense-of-place.html` (renamed from `natural-resources.html`)
+- `species.html` (renamed from `planning.html`)
 - Shared CSS if applicable (`../../assets/css/shared.css`)
 
 #### Acceptance Criteria
@@ -340,6 +340,16 @@ Remove purple/magenta accent colors and regenerate palette using deep browns fro
 - **Best Practice:** Generate palette AFTER hero image is provided (T3)
 - Consider using tool like [Coolors.co](https://coolors.co/) or Adobe Color to extract palette
 - Test in both light and dark sections
+
+#### Implementation Notes
+- ✅ Applied palette token updates in Theme 5 core styled pages: `index.html`, `infrastructure.html`, `communities.html`, `sense-of-place.html`, `species.html`
+- ✅ Removed hardcoded purple gradient stop from `index.html` placeholder card (`#84325f` → `#8e4b27`)
+- ✅ Updated palette values toward warm browns:
+  - `--primary-dark` → `#2a1810`
+  - `--secondary-tan` → `#a67c52`
+  - Added `--accent-warm`, `--accent-ember`, `--accent-dark`
+- ✅ **Gradient vs Solid toggle (Feb 13, 2026):** Added visual review toggle on `index.html` header. When "Solid" is selected, gradients are disabled across ALL Theme 5 elements/pages via shared CSS (`data-accent-mode="solid"`) and shared JS (`initAccentMode`). Choice persists in `localStorage.theme5AccentMode`.
+- ⏳ Remaining follow-up: replace legacy `--accent-magenta` variable name/usages with new accent token names across all Theme 5 pages after final hero image is integrated (T3/T5 pass)
 
 ---
 

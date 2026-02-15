@@ -27,23 +27,46 @@
       :root {
         /* Primary Colors - Dark Browns & Grays */
         --primary-darkest: #160e08;
-        --primary-dark: #343434;
+        --primary-dark: #2a1810;
         --primary-brown: #513221;
 
         /* Secondary Colors - Warm Earth Tones */
         --secondary-brown: #8e4b27;
-        --secondary-tan: #815e45;
+        --secondary-tan: #a67c52;
         --secondary-orange: #dc7e49;
 
         /* Accent Colors */
-        --accent-magenta: #84325f;
-        --accent-orange-light: #f4a460;
+        --accent-warm: #d4a574;
+        --accent-ember: #e89560;
+        --accent-dark: #3d2817;
+        --accent-magenta: var(--secondary-brown);
+        --accent-gradient: linear-gradient(
+          135deg,
+          var(--secondary-orange) 0%,
+          var(--accent-magenta) 100%
+        );
+        --accent-gradient-reverse: linear-gradient(
+          135deg,
+          var(--accent-magenta) 0%,
+          var(--secondary-orange) 100%
+        );
+        --accent-gradient-line: linear-gradient(
+          90deg,
+          var(--secondary-orange) 0%,
+          var(--accent-magenta) 100%
+        );
 
         /* Neutrals */
         --text-light: #ffffff;
         --text-dark: #160e08;
         --bg-cream: #fff8f0;
         --bg-warm: #fff5e8;
+      }
+
+      :root[data-accent-mode="solid"] {
+        --accent-gradient: var(--secondary-orange);
+        --accent-gradient-reverse: var(--secondary-orange);
+        --accent-gradient-line: var(--secondary-orange);
       }
 
       body {
@@ -147,11 +170,7 @@
         left: 0;
         right: 0;
         height: 2px;
-        background: linear-gradient(
-          90deg,
-          var(--secondary-orange) 0%,
-          var(--accent-magenta) 100%
-        );
+        background: var(--accent-gradient-line);
         transform: scaleX(0);
         transition: transform 0.3s ease;
       }
@@ -224,16 +243,40 @@
       }
 
       .nav-cta {
-        background: linear-gradient(
-          135deg,
-          var(--secondary-orange) 0%,
-          var(--accent-magenta) 100%
-        );
+        background: var(--accent-gradient);
         color: white !important;
         padding: 0.75rem 1.5rem !important;
         border-radius: 50px;
         font-weight: 600;
         box-shadow: 0 4px 12px rgba(220, 126, 73, 0.3);
+      }
+
+      .accent-mode-toggle {
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        background: rgba(255, 255, 255, 0.08);
+        color: var(--text-light);
+        border-radius: 999px;
+        padding: 0.45rem 0.9rem;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        white-space: nowrap;
+      }
+
+      .accent-mode-toggle:hover {
+        border-color: rgba(220, 126, 73, 0.7);
+        background: rgba(220, 126, 73, 0.16);
+      }
+
+      .accent-mode-toggle-label {
+        opacity: 0.85;
+        margin-right: 0.35rem;
+      }
+
+      .accent-mode-toggle-value {
+        color: var(--secondary-orange);
       }
 
       .nav-cta::after {
@@ -306,6 +349,12 @@
           width: 100%;
           padding: 1rem 2rem;
           border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .accent-mode-toggle {
+          margin: 0.8rem 2rem 0;
+          width: calc(100% - 4rem);
+          justify-self: center;
         }
 
         .mobile-menu-toggle {
@@ -421,11 +470,7 @@
       }
 
       .hero-cta-primary {
-        background: linear-gradient(
-          135deg,
-          var(--secondary-orange) 0%,
-          var(--accent-magenta) 100%
-        );
+        background: var(--accent-gradient);
         color: white;
         padding: 1.5rem 3rem;
         border-radius: 50px;
@@ -623,11 +668,7 @@
       .tile-content .accent-line {
         width: 100px;
         height: 6px;
-        background: linear-gradient(
-          90deg,
-          var(--secondary-orange) 0%,
-          var(--accent-magenta) 100%
-        );
+        background: var(--accent-gradient-line);
         margin-bottom: 1.75rem;
         border-radius: 3px;
         box-shadow: 0 2px 8px rgba(220, 126, 73, 0.3);
@@ -664,11 +705,7 @@
 
       /* CTA Buttons - Sunset inspired */
       .btn-theme-primary {
-        background: linear-gradient(
-          135deg,
-          var(--secondary-orange) 0%,
-          var(--accent-magenta) 100%
-        );
+        background: var(--accent-gradient);
         color: white;
         padding: 1.125rem 2.75rem;
         border-radius: 50px;
@@ -684,11 +721,7 @@
       .btn-theme-primary:hover {
         transform: translateY(-3px);
         box-shadow: 0 12px 36px rgba(220, 126, 73, 0.5);
-        background: linear-gradient(
-          135deg,
-          var(--accent-magenta) 0%,
-          var(--secondary-orange) 100%
-        );
+        background: var(--accent-gradient-reverse);
       }
 
       .btn-theme-secondary {
@@ -741,11 +774,7 @@
         left: 0;
         right: 0;
         height: 4px;
-        background: linear-gradient(
-          90deg,
-          var(--secondary-orange) 0%,
-          var(--accent-magenta) 100%
-        );
+        background: var(--accent-gradient-line);
       }
 
       .stat-card:hover {
@@ -757,11 +786,7 @@
       .stat-number {
         font-size: 3rem;
         font-weight: 700;
-        background: linear-gradient(
-          135deg,
-          var(--secondary-orange) 0%,
-          var(--accent-magenta) 100%
-        );
+        background: var(--accent-gradient);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
@@ -801,11 +826,7 @@
         left: 0;
         right: 0;
         height: 6px;
-        background: linear-gradient(
-          90deg,
-          var(--secondary-orange) 0%,
-          var(--accent-magenta) 100%
-        );
+        background: var(--accent-gradient-line);
         opacity: 0;
         transition: opacity 0.3s ease;
       }
@@ -896,11 +917,7 @@
         width: 80px;
         height: 80px;
         margin: 0 auto 1.5rem;
-        background: linear-gradient(
-          135deg,
-          var(--secondary-orange) 0%,
-          var(--accent-magenta) 100%
-        );
+        background: var(--accent-gradient);
         border-radius: 50%;
         display: flex;
         align-items: center;
@@ -1272,6 +1289,20 @@
           <a href="resources.html" id="nav-link-resources">Resources</a>
           <a href="in-the-news.html" id="nav-link-news">In the News</a>
           <a href="meet-the-team.html" id="nav-link-team">Meet the Team</a>
+          <button
+            id="accent-mode-toggle"
+            class="accent-mode-toggle"
+            type="button"
+            aria-pressed="false"
+            aria-label="Toggle accent style between gradient and solid"
+          >
+            <span id="accent-mode-toggle-label" class="accent-mode-toggle-label"
+              >Accent:</span
+            >
+            <span id="accent-mode-toggle-value" class="accent-mode-toggle-value"
+              >Gradient</span
+            >
+          </button>
           <a href="#" id="nav-link-dashboard" class="nav-cta">Dashboard</a>
         </div>
 
@@ -1368,7 +1399,7 @@
             <div
               class="placeholder-image"
               style="
-                background: linear-gradient(135deg, #dc7e49 0%, #84325f 100%);
+                background: linear-gradient(135deg, #dc7e49 0%, #8e4b27 100%);
               "
               id="resilience-placeholder-image"
             >
@@ -1656,10 +1687,35 @@
       // Mobile menu toggle
       const mobileMenuToggle = document.getElementById("mobile-menu-toggle");
       const siteNav = document.getElementById("site-nav");
+      const accentModeToggle = document.getElementById("accent-mode-toggle");
+      const accentModeToggleValue = document.getElementById(
+        "accent-mode-toggle-value",
+      );
 
       mobileMenuToggle.addEventListener("click", () => {
         mobileMenuToggle.classList.toggle("active");
         siteNav.classList.toggle("active");
+      });
+
+      // Visual review toggle: gradient vs solid accent styling
+      const ACCENT_MODE_STORAGE_KEY = "theme5AccentMode";
+      const applyAccentMode = (mode) => {
+        const safeMode = mode === "solid" ? "solid" : "gradient";
+        document.documentElement.setAttribute("data-accent-mode", safeMode);
+        const isSolid = safeMode === "solid";
+        accentModeToggle.setAttribute("aria-pressed", isSolid ? "true" : "false");
+        accentModeToggleValue.textContent = isSolid ? "Solid" : "Gradient";
+      };
+
+      const savedAccentMode = localStorage.getItem(ACCENT_MODE_STORAGE_KEY);
+      applyAccentMode(savedAccentMode === "solid" ? "solid" : "gradient");
+
+      accentModeToggle.addEventListener("click", () => {
+        const currentMode =
+          document.documentElement.getAttribute("data-accent-mode") || "gradient";
+        const nextMode = currentMode === "gradient" ? "solid" : "gradient";
+        applyAccentMode(nextMode);
+        localStorage.setItem(ACCENT_MODE_STORAGE_KEY, nextMode);
       });
 
       // Close mobile menu when clicking a link

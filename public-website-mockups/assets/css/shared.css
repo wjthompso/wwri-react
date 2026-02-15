@@ -316,3 +316,56 @@ a, button, .btn {
     transform: translateX(-50%) translateY(-5px);
   }
 }
+
+/* ==========================================================================
+   Theme 5 Accent Mode (Global Gradient Toggle)
+   - When data-accent-mode="solid" is set on <html>, gradients are disabled.
+   ========================================================================== */
+:root[data-accent-mode="solid"] *,
+:root[data-accent-mode="solid"] *::before,
+:root[data-accent-mode="solid"] *::after {
+  background-image: none !important;
+}
+
+/* Keep key UI areas readable after gradient removal */
+:root[data-accent-mode="solid"] .site-nav a::after,
+:root[data-accent-mode="solid"] .nav-cta,
+:root[data-accent-mode="solid"] .hero-cta-primary,
+:root[data-accent-mode="solid"] .btn-theme-primary,
+:root[data-accent-mode="solid"] .video-play-btn,
+:root[data-accent-mode="solid"] .indicator-dot,
+:root[data-accent-mode="solid"] .tile-content .accent-line,
+:root[data-accent-mode="solid"] .stat-card::before,
+:root[data-accent-mode="solid"] .domain-card-sunset::before,
+:root[data-accent-mode="solid"] .feature-icon {
+  background-color: var(--secondary-orange, #dc7e49) !important;
+}
+
+:root[data-accent-mode="solid"] .hero,
+:root[data-accent-mode="solid"] .domain-hero,
+:root[data-accent-mode="solid"] .footer {
+  background-color: var(--primary-brown, #513221) !important;
+}
+
+:root[data-accent-mode="solid"] .section-dark {
+  background-color: var(--primary-dark, #2a1810) !important;
+}
+
+:root[data-accent-mode="solid"] .section-warm,
+:root[data-accent-mode="solid"] .section-sunset {
+  background-color: var(--bg-warm, #fff5e8) !important;
+}
+
+:root[data-accent-mode="solid"] .video-placeholder {
+  background-color: var(--primary-darkest, #160e08) !important;
+}
+
+:root[data-accent-mode="solid"] .placeholder-image,
+:root[data-accent-mode="solid"] .tile-visual {
+  background-color: #e0e0e0 !important;
+}
+
+:root[data-accent-mode="solid"] .stat-number {
+  color: var(--secondary-orange, #dc7e49) !important;
+  -webkit-text-fill-color: currentColor !important;
+}

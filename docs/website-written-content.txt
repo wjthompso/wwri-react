@@ -1,0 +1,290 @@
+﻿About the Index
+
+        What is the WRI?
+
+
+The Wildfire Resilience Index (WRI) is a comprehensive framework designed to assess and communicate how landscapes and communities both resist wildfire (avoid or reduce harm) and recover from it (bounce back after fire). Together these components define resilience.
+
+
+By integrating ecological, social, and infrastructural factors, the WRI provides a quantitative measure of a system’s resilience to wildfire impacts. The index is intended to inform land management, policy planning, and community preparedness, supporting evidence-based decisions that enhance safety and ecosystem sustainability. Importantly, the WRI is not prescriptive; rather, it offers a menu of options that communities can adapt to their needs.
+
+
+Grounded in the latest research, the WRI combines spatial data with expert knowledge to create actionable insights in areas living with wildfire. – put locations 
+
+
+Both WRI and the datasets it draws from are open sourced. Designed for use at multiple scales—from local communities to regional landscapes—the WRI enables a wide range of users to identify areas of high vulnerability and prioritize targeted interventions that strengthen resilience.
+
+
+The WRI reflects a core ecological reality:  wildfire is natural and inevitable.. Its purpose is not to eliminate fire, but to support people and ecosystems in living sustainably with fire.
+
+        Why wildfire resilience?
+
+
+Wildfires are an inherent and recurring part of many North American landscapes, shaped by climate, vegetation, and natural ecosystem processes. While traditional approaches often emphasize suppression, long-term ecological and social health depends on fostering resilience — the capacity of landscapes and communities to absorb and recover from fire events.
+
+
+B The WRI highlights areas where resilience can be strengthened - whether it is through vegetation management, infrastructure planning, community preparedness, or other targeted actions. It offers a science-based framework for informed stewardship and management.
+
+
+ By creating a shared, data-driven understanding of resilience, the WRI fosters collaboration among land managers, scientists, policymakers, and the public. This foundation enhances  both ecological and societal resilience, allowing fire to  fulfill its natural role while supporting sustainable human and environmental communities.
+
+
+        Why an Index?
+
+
+An index allows information from diverse datasets to be brought into a shared decision space, so that everyone is talking about the same thing in the same way. 
+
+
+Wildfire resilience is inherently a multi-dimensional concept, spanning ecological, social, and infrastructural factors. These dimensions are often studied or managed in silos, making it challenging to gain a holistic understanding or compare outcomes across places and over time. The WRI addresses this challenge by combining multiple indicators into a composite score, creating a unified framework for systematically evaluating and interpreting resilience.
+
+
+By integrating diverse data and disciplines, the WRI allows users to place multiple values on the same table, facilitating informed discussion and decision-making. It also supports benchmarking,  making it possible to compare communities and landscapes against reference conditions or predefined resilience goals.
+
+
+The index is spatially explicit and temporally trackable, providing a consistent framework for  assessing resilience across regions and monitoring changes over time. This makes it a powerful tool for adaptive management, long-term planning, and collaborative efforts to help landscapes and communities live sustainably with fire.
+
+
+Domains
+
+
+Through conversations with practitioners, researchers, and community leaders, we identified eight domains that reflect the values most important for understanding how places resist and recover from wildfire. These domains span social and environmental dimensions, and many bridge the two, since wildfire itself crosses human and ecological systems. 
+The domains are: Infrastructure, Communities, Livelihoods, Sense of Place, Species, Habitats, Water, and Air. 
+To populate the Index, we selected indicators that reflect system performance within each domain. These indicators are organized to capture both the current status of a system and its capacity to respond to wildfire, including its ability to resist negative impacts and recover afterward.
+
+        Infrastructure
+Infrastructure provides the foundation for communities to live, work and interact. Buildings offer shelter, safety, and access to resources which is essential for development and social stability.. 
+
+
+In a wildfire-prone landscape, the resilience of infrastructure reflects both its resistance to fire—through features like building codes, defensible space, and access for firefighting—and the ability of communities to recover after structural loss. 
+
+
+This domain captures how well the built environment can withstand wildfire and support post-fire restoration, highlighting areas where durable design and planning contribute to long-term resilience.
+
+
+
+
+        Communities
+
+
+Communities are shaped by social, cultural, and geographic connections that influence their ability to respond to wildfire. This domain assesses individual and collective characteristics that support preparedness, evacuation, and recovery, including social cohesion, planning efforts, and access to resources. By focusing on the capacity of communities to persist and rebuild, the WRI captures the human dimension of resilience—how people and social networks sustain themselves in the face of fire.
+
+
+        Livelihoods
+
+
+Livelihoods reflect how people make a living and are tied to well-being, security, and identity. Wildfires can disrupt employment, income stability, and economic diversity. This domain evaluates the vulnerability of jobs to fire and the capacity of local economies to recover, emphasizing that resilient communities depend not only on safe structures but also on sustainable, adaptable livelihoods.
+
+
+
+
+Sense of Place
+
+
+Sense of place encompasses the cultural, spiritual, and aesthetic values that people associate with landscapes. This domain considers iconic places and iconic species that hold special significance to people, capturing the resilience of the natural and cultural elements that shape identity and heritage. Maintaining these connections in fire-prone landscapes reflects both ecological and social resilience.
+
+
+
+        Species
+
+
+Biodiversity is a core indicator of ecological resilience. This domain measures species’ conservation status and their capacity to survive and recover from fire, using traits that influence resistance and recovery. By including species, the WRI reflects the importance of preserving the ecological functions and intrinsic values of living organisms within fire-adapted landscapes.
+
+
+Habitats
+
+
+Natural habitats provide critical ecosystem services and support biodiversity. This domain evaluates the extent and resilience of ecosystems, combining species traits, community characteristics, and environmental context to assess resistance and recovery. Including habitats ensures that the index captures how wildfire affects landscape integrity and ecosystem sustainability.
+        
+Water
+
+
+Freshwater availability is essential for both human and ecological well-being. Wildfires can alter water quantity and timing, impacting consumption, irrigation, and ecosystem health. This domain focuses on human and landscape interventions that help maintain water supply, highlighting how resilient water systems support overall wildfire resilience.
+
+
+        Air
+
+
+Air quality affects public health and policy, particularly in wildfire-prone regions. This domain evaluates populations’ exposure to poor air quality and their capacity to withstand negative health outcomes. Including air ensures the WRI accounts for the direct impacts of smoke and particulate matter on people, reflecting a key human dimension of resilience.[a]
+
+
+
+
+
+
+How to use 
+
+
+The Wildfire Resilience Index (WRI) is designed to make complex data accessible and actionable. Whether you are a land manager, policy analyst, researcher, or community leader, the web interface allows you to explore wildfire resilience across multiple spatial and administrative scales — from local communities to entire states.
+Interactive Web Interface
+The WRI web platform provides an intuitive map-based interface for exploring resilience across geographic levels:
+* Census Tract → County → State — view and compare resilience scores at nested administrative units to understand how community-scale factors aggregate into broader patterns.
+
+* Hydrologic Unit Codes (HUCs) — explore watershed-level resilience to link ecological processes with landscape management priorities.
+
+* Congressional Districts — view resilience within policy-relevant boundaries, supporting decision-making at legislative and funding levels.
+
+Users can click directly on their region of interest to generate a summary of WRI, domain, and indicator scores. Each map view dynamically updates to enable quick assessment and comparison across regions.
+Regional Reports
+For users seeking ready-to-use outputs, the platform provides automated regional reports. These PDF summaries compile domain scores, interpretive graphics, and contextual data into a concise format suitable for planning documents, grant proposals, or community presentations. Reports can be generated for any selected region, offering a consistent, reproducible snapshot of resilience conditions.
+Data Access and Integration
+All underlying WRI datasets are available for direct download to support further analysis and integration into local workflows. Data can be accessed as geospatial files (GeoJSON, shapefiles, or raster layers) and joined with other environmental or socioeconomic datasets.
+
+
+Methodology 
+– I think this will be pending, based on paper acceptance. It should be a streamlined version of the supplement with the jargon toned down
+
+
+Deep Dive: Similar to OHI
+Infrastructure
+List of what’s included:
+   * Presence of structures (status)
+   * Building codes (resistance)
+   * WUI designation (resistance)
+   * Access routes (resistance)
+   * Fire [station] resource density (resistance)
+   * Defensible space (resistance)
+   * Income (recovery)
+   * Local aid-incorporation (recovery)
+   * Home ownership 
+
+
+        Communities
+
+
+
+
+   * List of what’s included:
+   * People present/absent (status)
+   * Community Wildfire Protection Plans (CWPPs) (resistance)
+   * FireWise Communities (resistance)
+   * Volunteer firefighters (resistance)
+   * Age (resistance)
+   * Disability (resistance)
+   * Car access (resistance)
+   * Home ownership (recovery)
+   * Incorporation (recovery)
+   * Income (recovery)
+
+
+
+        Livelihoods
+
+
+
+
+   * List of what’s included:
+   * Percent employed/unemployment (status)
+   * Median income (status)
+   * Housing burden (status)
+   * 1-% of jobs interrupted by fire/job vulnerability (resistance) 
+   * Diversity of jobs (recovery)
+
+
+Sense of Place
+
+
+
+
+   * List of what’s included:
+   * Iconic Places - building, structure, district, object 
+   * National Park Service data presence (status)
+   * WUI (resistance)
+   * Fire resource density (resistance)
+   * Egress ?? (resistance)
+   * Extent of value/significance (recovery)
+   * Iconic Species - trees, animals, and plants + mushrooms  
+   * Conservation/threat/extinction status (status)
+   * Traits (resistance)
+   * Range size (resistance)
+   * Bark presence/absence & height for trees (resistance)
+   * Longevity (recovery)
+   * Age to maturity (recovery)
+   * Seed mass (recovery) 
+   * Resprout (recovery)
+   * Range (recovery)
+
+        Species
+
+
+
+
+   * List of what’s included:
+   * Conservation/threat/extinction status (status)
+   * Traits (resistance)
+   * Life: Number of reproductive events
+   * Life: Bipartite life cycle 
+   * Life: Longevity
+   * Life: Reproductive output 
+   * Life: Age to first reproduction
+   * Life: Asexual reproduction
+   * Morphology: Gills
+   * Morphology: Wings
+   * Morphology: Mass
+
+
+Habitats
+
+
+   * List of what’s included:
+   * Extent (status)
+   * Protection (status)
+   * Traits
+   * Bark
+   * Height
+   * Self-pruning
+   * Stand density
+   * NDVI Heterogeneity
+   * NPP
+   * VPD
+   * Longevity
+   * Seed mass
+   * Resprout
+   * Serotiny
+   * Diversity
+   * 30-year rainfall norm        
+Water
+
+
+   * List of what’s included:
+   * Quantity
+   * Timing
+   * WTPs
+   * WRHPs
+        Air
+
+
+   * List of what’s included:
+   * NDA AQI 100
+   * NDA AQI 300
+   * Prevalence of adult asthma
+   * COPD
+   * Age
+   * Occp. hazard
+   * Access to hospitals
+
+
+
+
+FAQs 
+– insurance rates (no certainty, public information, insurance companies have their own models around risk)
+   * Not about risk!
+
+
+Publications & Media
+        Papers
+        Press Releases
+        News Coverage
+Outreach
+Media Kit
+           Logos
+           Color / Brand / Domain Wheel
+           Images
+           Press language copy blocks
+
+Contact / Team
+
+
+[a]Eventually - videos “how to” 
+Examples of Improvement?
+Why is the water low / etc. 
+One-Pagers/usable report

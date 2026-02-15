@@ -2,7 +2,7 @@
 
 **Status:** Active Development  
 **Priority:** 🔥 HIGH - Pre-Funder Review Revisions  
-**Last Updated:** Feb 13, 2026  
+**Last Updated:** Feb 15, 2026  
 **Based on:** Cat Fong feedback from Theme 5 mockup review  
 **Next Milestone:** Funder Review (Feb 17, 2026)
 
@@ -18,12 +18,15 @@
 - Primary mockup: `/public-website-mockups/themes/theme5-wildfire-sunset/`
 - All HTML files: `index.html`, `infrastructure.html`, `social.html`, `natural-resources.html`, `planning.html`
 
+**Canonical Content Source (Cat's most critical text):**
+- `/docs/website-written-content.txt` — About the Index, Why Resilience, Why an Index, 8 Domains (descriptions + indicator lists), How to Use, Methodology, FAQs, etc.
+
 **Task Distribution Strategy:**
 - Each task is designed to be handled in a separate Cursor chat window
 - Tasks are independent where possible to enable parallel development
 - Dependencies are clearly marked
 
-**Blocked on assets?** Check "Asset Tracking" section below. T2 can start immediately (no blockers). Suggested sequential order: T2 → T1 → T3 → T4 → T5 → T6 → T7 → T8.
+**Blocked on assets?** Check "Asset Tracking" section below. T5 and T6 can proceed (content in `docs/website-written-content.txt`). T3 needs hero image. Suggested order: T3 → T4 → T5 → T6 → T7 → T8.
 
 ---
 
@@ -36,7 +39,7 @@
 | T3 | ⬜ Replace Video Hero with Photo + Overlay | 🔥 Critical | Small (1-2hrs) | None |
 | T4 | ⏳ Color Palette Refactor (Remove Purple, Add Browns) | 🔥 Critical | Medium (2-4hrs) | None |
 | T5 | ⬜ Content Integration from Cat's Document | 🔴 High | Large (4-6hrs) | T2 (pages must exist) |
-| T6 | ⬜ Update Domains Section (4 Pillars → 8 Domains) | 🔴 High | Medium (2-3hrs) | T5 (need domain text) |
+| T6 | ⬜ Update Domains Section (4 Pillars → 8 Domains) | 🔴 High | Medium (2-3hrs) | None (content in `docs/website-written-content.txt`) |
 | T7 | ⬜ Domain Page Content Updates | 🔴 High | Medium (2-3hrs) | T6 |
 | T8 | ⬜ Map/Dashboard Language & Visual Fixes | 🟡 Medium | Small (1-2hrs) | T1 (branding) |
 
@@ -364,6 +367,8 @@ Remove purple/magenta accent colors and regenerate palette using deep browns fro
 #### Description
 Integrate the specific text content that Cat has written and streamlined. Replace all Lorem Ipsum placeholder content with real copy.
 
+**Content source:** `/docs/website-written-content.txt` (Cat's most critical text)
+
 #### Pages to Update
 1. **Home/Landing** (`index.html`)
 2. **About** (`about.html`) - NEW
@@ -375,23 +380,21 @@ Integrate the specific text content that Cat has written and streamlined. Replac
 8. **All Domain Pages** (defer to T7)
 
 #### Tasks
-1. **Obtain Content Document:**
-   - **Action Required:** Cat to provide link/access to text document
-   - Document should contain finalized copy for each page
-   - Note any sections marked "TBD" or "pending review"
+1. **Content Mapping:**
+   - Source: `docs/website-written-content.txt`
+   - Map sections: About the Index (What is WRI, Why Resilience, Why an Index) → About/Why pages
+   - Domains intro + 8 domain descriptions → homepage domains section + domain pages
+   - How to Use → How it Works page
+   - Methodology (pending per doc), FAQs, Publications, Contact/Team → Resources/Meet the Team
+   - Identify headings, body text, CTAs; note any missing content (flag for Cat)
 
-2. **Content Mapping:**
-   - Map each section of document to corresponding HTML section
-   - Identify headings, body text, CTAs
-   - Note any missing content (flag for Cat)
-
-3. **HTML Integration:**
+2. **HTML Integration:**
    - Replace placeholder text with real content
    - Maintain proper heading hierarchy (h1, h2, h3)
    - Add `id` attributes for anchor linking
    - Ensure text length doesn't break layouts
 
-4. **Formatting:**
+3. **Formatting:**
    - Preserve Cat's emphasis (bold, italic)
    - Convert lists to proper HTML (`<ul>`, `<ol>`)
    - Add links where Cat has specified
@@ -417,8 +420,7 @@ Integrate the specific text content that Cat has written and streamlined. Replac
 - ✅ Consistent voice/tone across all pages
 
 #### Notes
-- **Action Required:** Need content document from Cat
-- **Question for Cat:** Is "Methodology Deep Dive" content ready, or should it be "Coming Soon"?
+- **Question for Cat:** Is "Methodology Deep Dive" content ready, or should it be "Coming Soon"? (Doc says "pending, based on paper acceptance")
 - Consider creating a content checklist to track which sections are complete
 
 ---
@@ -427,7 +429,7 @@ Integrate the specific text content that Cat has written and streamlined. Replac
 **Priority:** 🔴 High  
 **Effort:** Medium (2-3 hours)  
 **Status:** ⬜ Not Started  
-**Dependencies:** T5 (need domain text from Cat's document)
+**Dependencies:** None (domain text in `docs/website-written-content.txt`)
 
 #### Description
 Update the homepage domains section from "Four Pillars of Resilience" to "Eight Domains" with new text and icons for each domain.
@@ -446,50 +448,37 @@ Update the homepage domains section from "Four Pillars of Resilience" to "Eight 
 - No subtitle (Cat: "I would cut the text underneath it")
 - 8 domain cards with Cat's specific text
 
-#### Eight Domains (per Cat's feedback)
-1. **Economic** 
-   - Full name: "Economic livelihood resilience to wildfire impacts"
-   - Short name: "Livelihoods" (for nav/cards)
-   - Icon: [Cat to provide or suggest]
+#### Eight Domains (from `docs/website-written-content.txt`)
+| # | Short Name (nav/cards) | Full description in content doc |
+|---|------------------------|----------------------------------|
+| 1 | Infrastructure | "provides the foundation for communities to live, work and interact..." |
+| 2 | Communities | "shaped by social, cultural, and geographic connections..." |
+| 3 | Livelihoods | "how people make a living... tied to well-being, security, and identity" |
+| 4 | Sense of Place | "cultural, spiritual, and aesthetic values... iconic places and iconic species" |
+| 5 | Species | "biodiversity... conservation status and capacity to survive and recover from fire" |
+| 6 | Habitats | "natural habitats provide critical ecosystem services..." |
+| 7 | Water | "freshwater availability... human and ecological well-being" |
+| 8 | Air | "air quality affects public health and policy..." |
 
-2. **Social Systems** (keep existing)
-   - Icon: 👥 (or Cat to provide new asset)
-
-3. **Infrastructure** (keep existing)
-   - Icon: 🏗️ (or Cat to provide new asset)
-
-4. **Natural Resources** (keep existing)
-   - Icon: 🌲 (or Cat to provide new asset)
-
-5. **Planning & Governance** (keep existing)
-   - Icon: 📋 (or Cat to provide new asset)
-
-6. **[Domain 6]** - *Cat to provide name & text*
-7. **[Domain 7]** - *Cat to provide name & text*
-8. **[Domain 8]** - *Cat to provide name & text*
+Order in doc: Infrastructure, Communities, Livelihoods, Sense of Place, Species, Habitats, Water, Air. Use domain descriptions from content file for card text.
 
 #### Tasks
-1. **Get Domain Details from Cat:**
-   - Full names and short names for all 8 domains
-   - Descriptive text for each domain card
-   - Icon assets or suggestions (prefer SVG or high-quality icons)
-
-2. **Update Homepage:**
+1. **Update Homepage:**
    - Change heading "Four Pillars of Resilience" → "Eight Domains"
    - Remove subtitle text
    - Expand grid from 4 cards to 8 cards
    - Update each card with domain-specific text
 
-3. **Create 4 New Domain Pages:**
-   - Create HTML files for domains 5-8
+2. **Create 4 New Domain Pages:** (T2 may have created these—verify)
+   - Ensure HTML files exist for all 8 domains
    - Use existing domain page template
    - Placeholder content initially (will populate in T7)
 
-4. **Update Navigation:**
+3. **Update Navigation:**
    - Update domains dropdown in nav (all pages)
    - Add links to new domain pages
 
-5. **Color Coding (Optional):**
+4. **Color Coding (Optional):**
    - Cat mentioned: "would it be useful for the text to match our domain text (that rainbow) for clearer signposting?"
    - If Cat provides color scheme, apply to domain cards/pages
    - Consider using colors for domain sections (subtle accent)
@@ -510,10 +499,7 @@ Update the homepage domains section from "Four Pillars of Resilience" to "Eight 
 - ✅ Optional: Rainbow color coding applied if Cat provides scheme
 
 #### Notes
-- **Action Required:** Need from Cat:
-  1. Names and descriptions for domains 5-8
-  2. Icon assets or suggestions for all 8 domains
-  3. Rainbow color scheme (if using for signposting)
+- **Action Required:** Need from Cat: Icon assets or suggestions for all 8 domains; rainbow color scheme (if using for signposting)
 - **Design Consideration:** 8 cards may require 2 rows on desktop (4x2 grid)
 - Consider card size adjustments to fit more cards
 
@@ -524,6 +510,8 @@ Update the homepage domains section from "Four Pillars of Resilience" to "Eight 
 **Effort:** Medium (2-3 hours)  
 **Status:** ⬜ Not Started  
 **Dependencies:** T6 (new domain pages must exist)
+
+**Content source:** Domain descriptions and indicator lists from `docs/website-written-content.txt`
 
 #### Description
 Update all 8 domain pages with domain-specific content, indicators, and proper naming conventions.
@@ -549,33 +537,19 @@ Update all 8 domain pages with domain-specific content, indicators, and proper n
 
 #### Domain-Specific Updates
 
-**Economic/Livelihoods (NEW):**
-- Hero: "Economic livelihood resilience to wildfire impacts"
-- Content: [Cat to provide from document]
-- Indicators: [Cat to provide]
-
-**Social Systems:**
-- Update content per Cat's document
-- Update indicators
-
-**Infrastructure:**
-- Update content per Cat's document
-- Update indicators
-
-**Natural Resources:**
-- Update content per Cat's document
-- Update indicators
-
-**Planning & Governance:**
-- Update content per Cat's document
-- Update indicators
-
-**Domains 6-8:**
-- [Cat to provide all content]
+All 8 domains have descriptions and indicator lists in `docs/website-written-content.txt`:
+- **Infrastructure** — description + Deep Dive indicator list
+- **Communities** — description + Deep Dive indicator list
+- **Livelihoods** — description + Deep Dive indicator list
+- **Sense of Place** — description + Deep Dive indicator list
+- **Species** — description + Deep Dive indicator list
+- **Habitats** — description + Deep Dive indicator list
+- **Water** — description + Deep Dive indicator list
+- **Air** — description + Deep Dive indicator list
 
 #### Tasks
 1. **Content Mapping:**
-   - Extract domain-specific text from Cat's document
+   - Extract domain-specific text from `docs/website-written-content.txt`
    - Identify indicators for each domain
    - Map to existing HTML structure
 
@@ -595,14 +569,7 @@ Update all 8 domain pages with domain-specific content, indicators, and proper n
    - Rotate which domains are shown based on current page
 
 #### Files to Update
-- `infrastructure.html`
-- `social.html`
-- `natural-resources.html`
-- `planning.html`
-- `[economic-livelihoods].html` (NEW)
-- `[domain-6].html` (NEW)
-- `[domain-7].html` (NEW)
-- `[domain-8].html` (NEW)
+- `infrastructure.html`, `communities.html`, `livelihoods.html`, `sense-of-place.html`, `species.html`, `habitats.html`, `water.html`, `air-quality.html`
 
 #### Acceptance Criteria
 - ✅ All 8 domain pages have unique, domain-specific content
@@ -615,7 +582,6 @@ Update all 8 domain pages with domain-specific content, indicators, and proper n
 - ✅ Video placeholders retained for Cat
 
 #### Notes
-- **Action Required:** Need domain-specific content from Cat's document
 - Consider which domains are "complementary" for cross-linking strategy
 - Maintain consistent structure across all domain pages for easier navigation
 
@@ -704,24 +670,23 @@ Apply Cat's specific feedback about the map/dashboard mockup visuals and languag
 ## 📝 Notes & Open Questions
 
 ### Questions for Cat
-1. **T1 (Logo):** Can you provide the WRI logo asset? (SVG or high-res PNG preferred)
+1. **T1 (Logo):** Can you provide the WRI logo asset? (SVG or high-res PNG preferred) — *Logo received*
 2. **T2 (Navigation):** Should we include "In the News" page, or defer that?
 3. **T3 (Hero Image):** Can you provide high-quality hero image for landing page? (1920x1080+ recommended)
 4. **T4 (Color Palette):** Would you like us to generate palette from hero image once provided?
-5. **T5 (Content):** Can you share the finalized content document with streamlined text?
-6. **T6 (Domains):** Can you provide:
-   - Names and descriptions for domains 5-8
-   - Icon assets or suggestions for all 8 domains
-   - Rainbow color scheme for domain signposting (if using)
+5. **T5 (Content):** Content in `docs/website-written-content.txt` — is Methodology Deep Dive "Coming Soon" until paper acceptance?
+6. **T6 (Domains):** Can you provide icon assets or suggestions for all 8 domains? Rainbow color scheme for signposting?
 7. **T8 (Map):** Are the map/dashboard fixes for the React dashboard app or the HTML mockup?
 
-### Content Document Requirements
-From Cat's feedback, the content document should include:
-- Page-by-page text (Home, About, Why Resilience, Why an Index, How it Works, Resources, Meet the Team)
-- Domain-specific text for all 8 domains
-- Indicator lists for each domain
-- Any specific CTAs or button text
-- Footer/legal text if applicable
+### Content Document
+**Source:** `docs/website-written-content.txt` (Cat's most critical text, received)
+
+Includes:
+- About the Index (What is WRI, Why Resilience, Why an Index)
+- 8 Domains: Infrastructure, Communities, Livelihoods, Sense of Place, Species, Habitats, Water, Air — descriptions + indicator lists
+- How to Use (Interactive Web Interface, Regional Reports, Data Access)
+- Methodology (pending per doc — "based on paper acceptance")
+- FAQs, Publications & Media, Outreach, Contact/Team
 
 ### Technical Considerations
 - **Color Accessibility:** After T4, run WCAG contrast checks on all text/background combinations
@@ -736,7 +701,7 @@ From Cat's feedback, the content document should include:
 | WRI Logo | ✅ Received | Cat | SVG or PNG, transparent background |
 | Hero Image | ⬜ Needed | Cat | 1920x1080+, landscape, wildfire theme |
 | Domain Icons (x8) | ⬜ Needed | Cat | SVG preferred, or emoji placeholders OK |
-| Content Document | ⬜ Needed | Cat | All page text, domain descriptions |
+| Content Document | ✅ Received | Cat | `docs/website-written-content.txt` |
 | Rainbow Color Scheme | ⬜ Maybe | Cat | For domain signposting (optional) |
 
 ---
@@ -762,7 +727,9 @@ These tasks can be worked on simultaneously in separate chat windows:
 
 ### Sequential Dependencies
 ```
-T2 (Pages) → T5 (Content) → T6 (Domains) → T7 (Domain Pages)
+T2 (Pages) → T5 (Content)
+T2 (Pages) → T6 (Domains) — content in docs/website-written-content.txt
+T6 (Domains) → T7 (Domain Pages)
 T3 (Hero) → T4 (Color Palette)
 T1 (Branding) → T8 (Map/Dashboard fixes)
 ```
@@ -824,5 +791,5 @@ T1 (Branding) → T8 (Map/Dashboard fixes)
 
 ---
 
-**Last Updated:** Feb 13, 2026  
-**Next Review:** After Cat provides requested assets/content
+**Last Updated:** Feb 15, 2026  
+**Next Review:** After Cat provides requested assets (hero image, domain icons)

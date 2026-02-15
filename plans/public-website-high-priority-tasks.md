@@ -42,9 +42,12 @@
 | T6 | ⬜ Update Domains Section (4 Pillars → 8 Domains) | 🔴 High | Medium (2-3hrs) | None (content in `docs/website-written-content.txt`) |
 | T7 | ⬜ Domain Page Content Updates | 🔴 High | Medium (2-3hrs) | T6 |
 | T8 | ⬜ Map/Dashboard Language & Visual Fixes | 🟡 Medium | Small (1-2hrs) | T1 (branding) |
-| T9 | ⬜ Header Layout: Logo Left, Nav Right (Visual Separation) | 🟡 Medium | Small (1hr) | None |
+| T9 | ✅ Header Layout: Logo Left, Nav Right (Visual Separation) | 🟡 Medium | Small (1hr) | None |
+| T10 | ⬜ Remove Button Translate-Up Hover Effect | 🟡 Medium | Small (30min) | None |
+| T11 | ⬜ Hide Scroll Arrow When Footer In View | 🟡 Medium | Small (30-45min) | None |
+| T12 | ⬜ Remove "Accent: Gradient" Toggle Button | 🟡 Medium | Small (15min) | None |
 
-**Progress:** 3/9 complete
+**Progress:** 4/12 complete
 
 ---
 
@@ -682,7 +685,7 @@ Apply Cat's specific feedback about the map/dashboard mockup visuals and languag
 ### T9: Header Layout — Logo Left, Nav Right (Visual Separation)
 **Priority:** 🟡 Medium  
 **Effort:** Small (~1 hour)  
-**Status:** ⬜ Not Started  
+**Status:** ✅ Complete (Feb 15, 2026)  
 **Dependencies:** None
 
 #### Description
@@ -708,6 +711,146 @@ Improve header visual balance by separating the logo block from the nav links. C
 - ✅ Clear visual separation between logo and nav (no awkward cramping)
 - ✅ Mobile hamburger behavior preserved
 - ✅ Consistent across all Theme 5 pages
+
+#### Implementation Notes
+- ✅ Completed Feb 15, 2026
+- Added `gap: 3rem` to `.nav-container` for visual separation between logo and nav
+- Increased `.site-nav` internal gap from `1rem` to `1.25rem` for better nav grouping
+- Added `flex-shrink: 0` to both `.site-logo` and `.site-nav` to prevent compression
+- Updated all 16 Theme 5 pages: `index.html`, `about.html`, `why-resilience.html`, `why-index.html`, `how-it-works.html`, `resources.html`, `in-the-news.html`, `meet-the-team.html`, `infrastructure.html`, `communities.html`, `livelihoods.html`, `sense-of-place.html`, `species.html`, `habitats.html`, `water.html`, `air-quality.html`
+- Mobile hamburger menu behavior preserved
+
+---
+
+### T10: Remove Button Translate-Up Hover Effect
+**Priority:** 🟡 Medium  
+**Effort:** Small (30 minutes)  
+**Status:** ⬜ Not Started  
+**Dependencies:** None
+
+#### Description
+Remove the translate-up animation effect from all buttons on hover. Currently, buttons move slightly upward when hovered, which creates unnecessary motion. Keep the brightness change on hover, but remove the vertical translation.
+
+#### Current Behavior
+- All buttons (including Dashboard CTA and other buttons) translate upward on hover
+- This creates a "jumping" effect that can feel distracting
+
+#### New Behavior
+- Buttons can still brighten or change opacity on hover
+- No vertical translation (no `transform: translateY()` effects)
+- Maintain other hover states (color changes, brightness, etc.)
+
+#### Files to Update
+- All Theme 5 HTML files (embedded CSS in `<style>` tags)
+- Look for button hover styles with `transform: translateY(-2px)` or similar
+- Update: `index.html`, `about.html`, `why-resilience.html`, `why-index.html`, `how-it-works.html`, `resources.html`, `in-the-news.html`, `meet-the-team.html`, and all 8 domain pages
+
+#### CSS Changes
+- Remove or comment out `transform: translateY()` from button hover states
+- Keep other hover effects (brightness, opacity, color changes)
+- Consider replacing with subtle opacity or brightness change if needed
+
+#### Acceptance Criteria
+- ✅ All buttons remain stationary on hover (no vertical movement)
+- ✅ Hover state still provides visual feedback (brightness/color change OK)
+- ✅ Changes applied consistently across all Theme 5 pages
+- ✅ Mobile touch states unaffected
+
+---
+
+### T11: Hide Scroll Arrow When Footer In View
+**Priority:** 🟡 Medium  
+**Effort:** Small (30-45 minutes)  
+**Status:** ⬜ Not Started  
+**Dependencies:** None
+
+#### Description
+Add scroll listener to hide the scroll-down arrow indicator as soon as the footer comes into view. Currently the arrow remains visible throughout the page, but it should disappear once the user has scrolled enough to see the footer.
+
+#### Current Behavior
+- Scroll arrow is visible on the hero section
+- Arrow remains visible as user scrolls down the page
+- Arrow may appear even when near/at the bottom of the page
+
+#### New Behavior
+- Scroll arrow is visible initially on hero section
+- As user scrolls and footer comes into viewport, arrow fades out/disappears
+- Arrow stays hidden once footer has been in view
+
+#### Implementation Approach
+1. Add `IntersectionObserver` to watch the footer element
+2. When footer intersects with viewport, add a class to hide the arrow
+3. Optional: fade out animation for smoother transition
+
+#### Files to Update
+- `index.html` (main homepage with scroll arrow)
+- Add JavaScript at the bottom of the page or in existing `<script>` tag
+- Update arrow element CSS to support fade-out/hide state
+
+#### JavaScript Example
+```javascript
+// Intersection Observer to hide arrow when footer in view
+const scrollArrow = document.querySelector('.scroll-indicator');
+const footer = document.querySelector('footer');
+
+if (scrollArrow && footer) {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        scrollArrow.classList.add('hidden');
+      }
+    });
+  }, { threshold: 0.1 });
+  
+  observer.observe(footer);
+}
+```
+
+#### Acceptance Criteria
+- ✅ Scroll arrow is visible on initial page load
+- ✅ Arrow disappears/fades out when footer enters viewport
+- ✅ Smooth transition (fade out animation preferred)
+- ✅ Works on all screen sizes (mobile, tablet, desktop)
+- ✅ No console errors
+
+---
+
+### T12: Remove "Accent: Gradient" Toggle Button
+**Priority:** 🟡 Medium  
+**Effort:** Small (15 minutes)  
+**Status:** ⬜ Not Started  
+**Dependencies:** None
+
+#### Description
+Remove the "Accent: Gradient" toggle button from the header. This was a design exploration tool that's no longer needed since the decision has been made to not use gradients.
+
+#### Current State
+- Header contains an "Accent: Gradient" button
+- Button toggles between gradient and solid accent modes
+- Related JavaScript stores preference in localStorage
+
+#### Changes Required
+1. Remove the button HTML from header
+2. Remove or comment out related JavaScript code
+3. Remove related CSS for the toggle button
+4. Optionally: set default accent mode to "solid" permanently in CSS
+
+#### Files to Update
+- All Theme 5 HTML files (header section)
+- Look for button with text "Accent: Gradient" or similar
+- Remove related JavaScript functions (e.g., `initAccentMode()`, toggle handlers)
+- Clean up localStorage code if no longer needed
+
+#### Files Likely Affected
+- `index.html` and all other Theme 5 pages
+- Any shared JavaScript or CSS that manages accent mode
+
+#### Acceptance Criteria
+- ✅ "Accent: Gradient" button no longer visible in header
+- ✅ No broken JavaScript (no console errors)
+- ✅ No orphaned CSS for the removed button
+- ✅ Optional: Accent mode defaults to solid (no gradients)
+- ✅ Changes applied consistently across all Theme 5 pages
 
 ---
 
@@ -804,7 +947,10 @@ T1 (Branding) → T8 (Map/Dashboard fixes)
 - [ ] "Eight Domains" section on homepage (T6)
 - [ ] All 8 domain pages populated (T7)
 - [ ] Map/dashboard fixes applied (T8)
-- [ ] Header layout: logo left, nav right (T9)
+- [x] Header layout: logo left, nav right (T9)
+- [ ] Button hover translate-up effect removed (T10)
+- [ ] Scroll arrow hides when footer in view (T11)
+- [ ] "Accent: Gradient" toggle button removed (T12)
 
 ### Quality Checks
 - [ ] Mobile responsive (all pages)

@@ -40,7 +40,7 @@
 | T4 | ⏳ Color Palette Refactor (Remove Purple, Add Browns) | 🔥 Critical | Medium (2-4hrs) | None |
 | T5 | ⏳ Content Integration from Cat's Document | 🔴 High | Large (4-6hrs) | T2 (pages must exist) |
 | T6 | ✅ Update Domains Section (4 Pillars → 8 Domains) | 🔴 High | Medium (2-3hrs) | None (content in `docs/website-written-content.txt`) |
-| T7 | ⬜ Domain Page Content Updates | 🔴 High | Medium (2-3hrs) | T6 |
+| T7 | ⏳ Domain Page Content Updates (Needs Review) | 🔴 High | Medium (2-3hrs) | T6 |
 | T8 | ⬜ Map/Dashboard Language & Visual Fixes | 🟡 Medium | Small (1-2hrs) | T1 (branding) |
 | T9 | ✅ Header Layout: Logo Left, Nav Right (Visual Separation) | 🟡 Medium | Small (1hr) | None |
 | T10 | ✅ Remove Button Translate-Up Hover Effect | 🟡 Medium | Small (30min) | None |
@@ -536,7 +536,7 @@ Order in doc: Infrastructure, Communities, Livelihoods, Sense of Place, Species,
 ### T7: Domain Page Content Updates
 **Priority:** 🔴 High  
 **Effort:** Medium (2-3 hours)  
-**Status:** ⬜ Not Started  
+**Status:** ⏳ Needs Review (Feb 15, 2026)  
 **Dependencies:** T6 (new domain pages must exist)
 
 **Content source:** Domain descriptions and indicator lists from `docs/website-written-content.txt`
@@ -547,12 +547,11 @@ Update all 8 domain pages with domain-specific content, indicators, and proper n
 #### Changes for ALL Domain Pages
 1. **Domain Names:**
    - No subtitles on domain names
-   - Example current: "Infrastructure" with subtitle "Critical Systems for Community Safety"
-   - Example new: "Economic livelihood resilience to wildfire impacts" with short name "Livelihoods"
-   - Clarification: Use FULL descriptive name in hero, SHORT name in nav
+   - Use short names in hero and nav (Infrastructure, Livelihoods, etc.) to match dashboard signposting
+   - *Note:* Original spec suggested full descriptive names in hero (e.g. "Economic livelihood resilience to wildfire impacts"); reverted—not in Cat's doc, reads awkwardly, and would mismatch dashboard
 
 2. **Content Structure:**
-   - Hero section: Full domain name + description
+   - Hero section: Short domain name + description (from Cat's doc)
    - 3 content sections (keep existing "one block" per Cat)
    - Indicator lists (update with domain-specific indicators)
    - Cross-domain navigation cards
@@ -584,7 +583,7 @@ All 8 domains have descriptions and indicator lists in `docs/website-written-con
 2. **Update Existing 4 Pages:**
    - Replace placeholder content with real text
    - Update indicator lists
-   - Update hero text (full domain names)
+   - Update hero text (short domain names + description)
 
 3. **Populate New 4 Pages:**
    - Use existing template structure
@@ -601,7 +600,7 @@ All 8 domains have descriptions and indicator lists in `docs/website-written-con
 
 #### Acceptance Criteria
 - ✅ All 8 domain pages have unique, domain-specific content
-- ✅ Hero sections use full descriptive domain names
+- ✅ Hero sections use short domain names (match dashboard)
 - ✅ Navigation uses short domain names
 - ✅ No subtitles under domain names
 - ✅ Indicator lists updated with domain-specific items
@@ -612,6 +611,9 @@ All 8 domains have descriptions and indicator lists in `docs/website-written-con
 #### Notes
 - Consider which domains are "complementary" for cross-linking strategy
 - Maintain consistent structure across all domain pages for easier navigation
+
+#### Implementation Notes
+- ⏳ **Needs Cat review (Feb 15, 2026):** Domain pages currently use short labels (Infrastructure, Livelihoods, etc.) + Cat's content from `website-written-content.txt`. Content and indicators are integrated; hero/nav use short names to match dashboard. Confirm with Cat that this approach is correct before marking complete.
 
 ---
 

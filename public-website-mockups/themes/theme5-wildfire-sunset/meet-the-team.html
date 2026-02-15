@@ -38,6 +38,7 @@
         align-items: center;
         justify-content: space-between;
         height: 80px;
+        gap: 3rem; /* Visual separation between logo and nav */
       }
       .site-logo {
         display: flex;
@@ -45,6 +46,7 @@
         gap: 0.7rem;
         text-decoration: none;
         color: var(--text-light);
+        flex-shrink: 0; /* Prevent logo from shrinking */
       }
       .logo-icon-img {
         width: 40px;
@@ -68,8 +70,9 @@
         margin-left: auto;
         display: flex;
         align-items: center;
-        gap: 0.95rem;
+        gap: 1.25rem; /* Increased spacing for better visual grouping */
         font-size: 0.88rem;
+        flex-shrink: 0; /* Prevent nav from shrinking */
       }
       .site-nav a {
         color: var(--text-light);
@@ -540,14 +543,16 @@
         </p>
         <br />
         <p class="placeholder-copy" id="team-overview-copy-2">
-          This page will continue to expand with team profiles, partner
+          The content source currently includes a Contact / Team section header,
+          and this page is ready to receive named profiles, partner
           organizations, and role-specific contact pathways for technical,
           policy, and implementation questions.
         </p>
         <br />
         <p class="placeholder-copy" id="team-overview-copy-3">
-          For now, please use the Resources page for publications and outreach
-          materials while additional team details are finalized.
+          In the meantime, use the Resources and In the News pages for
+          publications, media coverage, outreach assets, and communication
+          materials connected to the WRI.
         </p>
       </section>
     </main>

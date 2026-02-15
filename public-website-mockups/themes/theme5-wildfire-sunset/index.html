@@ -102,6 +102,7 @@
         align-items: center;
         justify-content: space-between;
         height: 80px;
+        gap: 3rem; /* Visual separation between logo and nav */
       }
 
       .site-logo {
@@ -112,6 +113,7 @@
         font-size: 1.5rem;
         font-weight: 700;
         gap: 0.75rem;
+        flex-shrink: 0; /* Prevent logo from shrinking */
       }
 
       .logo-icon {
@@ -1060,12 +1062,14 @@
         align-items: center;
         justify-content: space-between;
         height: 80px;
+        gap: 3rem; /* Visual separation between logo and nav */
       }
 
       .site-nav {
         display: flex;
         align-items: center;
-        gap: 1rem;
+        gap: 1.25rem; /* Increased spacing for better visual grouping */
+        flex-shrink: 0; /* Prevent nav from shrinking */
       }
 
       .site-nav a {
@@ -1591,61 +1595,138 @@
               class="domain-description-sunset"
               id="domain-description-infrastructure"
             >
-              Critical systems including roads for evacuation, power grids for
-              communication, water systems for firefighting, and emergency
-              response capacity that keeps communities functioning.
+              Provides the foundation for communities to live, work, and
+              interact, including built systems that support resistance and
+              recovery in wildfire-prone landscapes.
             </p>
           </a>
           <a
             href="communities.html"
             class="domain-card-sunset fade-in"
-            id="domain-card-social"
+            id="domain-card-communities"
             style="text-decoration: none; color: inherit"
           >
-            <span class="domain-icon-sunset" id="domain-icon-social">👥</span>
-            <h3 class="domain-title-sunset" id="domain-title-social">
+            <span class="domain-icon-sunset" id="domain-icon-communities"
+              >👥</span
+            >
+            <h3 class="domain-title-sunset" id="domain-title-communities">
               Communities
             </h3>
-            <p class="domain-description-sunset" id="domain-description-social">
+            <p
+              class="domain-description-sunset"
+              id="domain-description-communities"
+            >
               Social, cultural, and geographic connections that shape
-              preparedness, evacuation, and post-fire recovery capacity.
+              preparedness, evacuation, and the ability to persist and rebuild.
             </p>
           </a>
           <a
             href="livelihoods.html"
             class="domain-card-sunset fade-in"
-            id="domain-card-natural"
+            id="domain-card-livelihoods"
             style="text-decoration: none; color: inherit"
           >
-            <span class="domain-icon-sunset" id="domain-icon-natural">🌲</span>
-            <h3 class="domain-title-sunset" id="domain-title-natural">
+            <span class="domain-icon-sunset" id="domain-icon-livelihoods"
+              >💼</span
+            >
+            <h3 class="domain-title-sunset" id="domain-title-livelihoods">
               Livelihoods
             </h3>
             <p
               class="domain-description-sunset"
-              id="domain-description-natural"
+              id="domain-description-livelihoods"
             >
-              How people make a living, including job stability and economic
-              diversity that support security, identity, and recovery.
+              How people make a living, including income stability and economic
+              diversity that support long-term security and post-fire recovery.
             </p>
           </a>
           <a
             href="sense-of-place.html"
             class="domain-card-sunset fade-in"
-            id="domain-card-planning"
+            id="domain-card-sense-of-place"
             style="text-decoration: none; color: inherit"
           >
-            <span class="domain-icon-sunset" id="domain-icon-planning">📋</span>
-            <h3 class="domain-title-sunset" id="domain-title-planning">
+            <span class="domain-icon-sunset" id="domain-icon-sense-of-place"
+              >🏞️</span
+            >
+            <h3 class="domain-title-sunset" id="domain-title-sense-of-place">
               Sense of Place
             </h3>
             <p
               class="domain-description-sunset"
-              id="domain-description-planning"
+              id="domain-description-sense-of-place"
             >
               Cultural, spiritual, and aesthetic values tied to iconic places
-              and species that shape identity and heritage in fire-prone
-              regions.
+              and species that shape identity and heritage.
+            </p>
+          </a>
+          <a
+            href="species.html"
+            class="domain-card-sunset fade-in"
+            id="domain-card-species"
+            style="text-decoration: none; color: inherit"
+          >
+            <span class="domain-icon-sunset" id="domain-icon-species">🦉</span>
+            <h3 class="domain-title-sunset" id="domain-title-species">
+              Species
+            </h3>
+            <p
+              class="domain-description-sunset"
+              id="domain-description-species"
+            >
+              Biodiversity, conservation status, and biological traits that
+              influence species resistance to fire and recovery afterward.
+            </p>
+          </a>
+          <a
+            href="habitats.html"
+            class="domain-card-sunset fade-in"
+            id="domain-card-habitats"
+            style="text-decoration: none; color: inherit"
+          >
+            <span class="domain-icon-sunset" id="domain-icon-habitats">🌿</span>
+            <h3 class="domain-title-sunset" id="domain-title-habitats">
+              Habitats
+            </h3>
+            <p
+              class="domain-description-sunset"
+              id="domain-description-habitats"
+            >
+              Natural habitat extent and resilience that support ecosystem
+              services, biodiversity, and long-term landscape integrity.
+            </p>
+          </a>
+          <a
+            href="water.html"
+            class="domain-card-sunset fade-in"
+            id="domain-card-water"
+            style="text-decoration: none; color: inherit"
+          >
+            <span class="domain-icon-sunset" id="domain-icon-water">💧</span>
+            <h3 class="domain-title-sunset" id="domain-title-water">Water</h3>
+            <p class="domain-description-sunset" id="domain-description-water">
+              Freshwater availability, timing, and system interventions that
+              sustain ecological and human well-being in fire-prone regions.
+            </p>
+          </a>
+          <a
+            href="air-quality.html"
+            class="domain-card-sunset fade-in"
+            id="domain-card-air-quality"
+            style="text-decoration: none; color: inherit"
+          >
+            <span class="domain-icon-sunset" id="domain-icon-air-quality"
+              >🌫️</span
+            >
+            <h3 class="domain-title-sunset" id="domain-title-air-quality">
+              Air
+            </h3>
+            <p
+              class="domain-description-sunset"
+              id="domain-description-air-quality"
+            >
+              Exposure to smoke and poor air quality, and the health-system
+              capacity needed to reduce negative human outcomes.
             </p>
           </a>
         </div>

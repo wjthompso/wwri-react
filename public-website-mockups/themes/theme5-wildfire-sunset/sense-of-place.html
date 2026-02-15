@@ -73,6 +73,7 @@
         align-items: center;
         justify-content: space-between;
         height: 80px;
+        gap: 3rem; /* Visual separation between logo and nav */
       }
 
       .site-logo {
@@ -83,6 +84,7 @@
         font-size: 1.5rem;
         font-weight: 700;
         gap: 0.75rem;
+        flex-shrink: 0; /* Prevent logo from shrinking */
       }
 
       .logo-icon {
@@ -121,7 +123,8 @@
       .site-nav {
         display: flex;
         align-items: center;
-        gap: 1rem;
+        gap: 1.25rem; /* Increased spacing for better visual grouping */
+        flex-shrink: 0; /* Prevent nav from shrinking */
       }
 
       .site-nav a {
@@ -999,12 +1002,13 @@
     <!-- ── Domain Hero ── -->
     <section class="domain-hero" id="domain-hero">
       <div class="domain-hero-content fade-in" id="domain-hero-content">
-        <span class="domain-hero-icon" id="domain-hero-icon">🌲</span>
-        <h1 id="domain-hero-heading">Landscape Health and Fire Behavior</h1>
+        <span class="domain-hero-icon" id="domain-hero-icon">🏞️</span>
+        <h1 id="domain-hero-heading">Sense of Place</h1>
         <p id="domain-hero-subtitle">
-          Assessing vegetation conditions, fuel loads, terrain, and watershed
-          health that determine how fire moves through landscapes and how
-          ecosystems recover.
+          Sense of place encompasses the cultural, spiritual, and aesthetic
+          values people associate with landscapes. This domain reflects the
+          resilience of iconic places and species that shape identity and
+          heritage.
         </p>
       </div>
     </section>
@@ -1029,33 +1033,34 @@
           <div class="tile-content fade-in" id="content-vegetation">
             <div class="accent-line" id="accent-vegetation"></div>
             <h2 id="heading-vegetation" class="heading-lg">
-              Vegetation Health &amp; Fuel Loads
+              Iconic Places and Cultural Significance
             </h2>
             <p id="desc-vegetation-1" class="body-text">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. A century
-              of fire suppression has left Western forests dangerously
-              overgrown. Dense undergrowth and accumulated dead material create
-              fuel conditions that turn manageable fires into catastrophic
-              infernos.
+              This domain includes iconic places such as buildings, structures,
+              districts, and objects that hold shared value for communities.
+              Protecting these places supports continuity of identity and
+              belonging in fire-prone landscapes.
             </p>
             <p id="desc-vegetation-2" class="body-text">
-              Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-              We analyze satellite imagery, vegetation indices, and ground-truth
-              surveys to map fuel load density, canopy closure, and areas where
-              forest management has reduced risk.
+              It combines status and resistance indicators that capture where
+              valued places are present and whether planning and fire-response
+              systems are positioned to protect them.
             </p>
             <ul class="indicator-list" id="indicators-vegetation">
               <li>
-                <span class="indicator-dot"></span> Fuel load density mapping
+                <span class="indicator-dot"></span> Iconic places (buildings,
+                structures, districts, objects)
               </li>
               <li>
-                <span class="indicator-dot"></span> Canopy closure percentage
+                <span class="indicator-dot"></span> National Park Service data
+                presence (status)
               </li>
               <li>
-                <span class="indicator-dot"></span> Defensible space compliance
+                <span class="indicator-dot"></span> WUI exposure (resistance)
               </li>
               <li>
-                <span class="indicator-dot"></span> Prescribed burn coverage
+                <span class="indicator-dot"></span> Fire resource density
+                (resistance)
               </li>
             </ul>
           </div>
@@ -1083,31 +1088,33 @@
           <div class="tile-content fade-in" id="content-topography">
             <div class="accent-line" id="accent-topography"></div>
             <h2 id="heading-topography" class="heading-lg">
-              Topography &amp; Wildland-Urban Interface
+              Iconic Species and Cultural-Ecological Values
             </h2>
             <p id="desc-topography-1" class="body-text">
-              Ut enim ad minim veniam, quis nostrud exercitation ullamco
-              laboris. Terrain is destiny in wildfire — steep slopes accelerate
-              fire spread dramatically, and narrow canyons create chimney
-              effects that propel flames at extraordinary speeds.
+              Sense of place also includes iconic species such as culturally and
+              ecologically meaningful trees, animals, plants, and mushrooms.
+              Their persistence reflects both ecological and social resilience.
             </p>
             <p id="desc-topography-2" class="body-text">
-              Duis aute irure dolor in reprehenderit in voluptate velit esse
-              cillum dolore. The wildland-urban interface (WUI) is where the
-              greatest risk concentrates. We map where communities sit relative
-              to steep terrain and continuous fuels.
+              Species status and trait indicators help assess whether these
+              living symbols can resist wildfire impacts and recover over time.
             </p>
             <ul class="indicator-list" id="indicators-topography">
               <li>
-                <span class="indicator-dot"></span> Slope &amp; aspect analysis
-              </li>
-              <li><span class="indicator-dot"></span> WUI boundary exposure</li>
-              <li>
-                <span class="indicator-dot"></span> Canyon &amp; chimney-effect
-                zones
+                <span class="indicator-dot"></span> Conservation, threat, and
+                extinction status (status)
               </li>
               <li>
-                <span class="indicator-dot"></span> Fire spread modeling inputs
+                <span class="indicator-dot"></span> Traits and range size
+                (resistance)
+              </li>
+              <li>
+                <span class="indicator-dot"></span> Bark presence and bark
+                height for trees (resistance)
+              </li>
+              <li>
+                <span class="indicator-dot"></span> Age to maturity and
+                longevity (recovery)
               </li>
             </ul>
           </div>
@@ -1135,33 +1142,33 @@
           <div class="tile-content fade-in" id="content-watersheds">
             <div class="accent-line" id="accent-watersheds"></div>
             <h2 id="heading-watersheds" class="heading-lg">
-              Watersheds &amp; Ecosystem Recovery
+              Resistance and Recovery of Valued Places
             </h2>
             <p id="desc-watersheds-1" class="body-text">
-              Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
-              officia deserunt mollit. Healthy watersheds are nature's fire
-              breaks. Riparian corridors slow fire spread while providing
-              critical water sources for firefighting operations.
+              Maintaining sense of place in fire-prone regions depends on both
+              protecting valued places during fire and supporting recovery
+              afterward. This includes social significance as well as ecological
+              regeneration.
             </p>
             <p id="desc-watersheds-2" class="body-text">
-              Sunt in culpa qui officia deserunt mollit anim id est laborum.
-              Beyond active fire, landscape recovery determines long-term
-              resilience. We assess soil stability, erosion risk after burns,
-              and the ecosystem's natural capacity to regenerate.
+              Recovery indicators include longevity, seed mass, resprouting, and
+              range dynamics that influence whether iconic species and place-based
+              values can persist through repeated fire cycles.
             </p>
             <ul class="indicator-list" id="indicators-watersheds">
               <li>
-                <span class="indicator-dot"></span> Watershed health index
+                <span class="indicator-dot"></span> Extent of value and
+                significance (recovery)
               </li>
               <li>
-                <span class="indicator-dot"></span> Riparian corridor
-                connectivity
+                <span class="indicator-dot"></span> Seed mass and resprouting
+                (recovery)
               </li>
               <li>
-                <span class="indicator-dot"></span> Post-fire erosion risk
+                <span class="indicator-dot"></span> Longevity (recovery)
               </li>
               <li>
-                <span class="indicator-dot"></span> Ecosystem recovery potential
+                <span class="indicator-dot"></span> Range dynamics (recovery)
               </li>
             </ul>
           </div>
@@ -1200,27 +1207,27 @@
             </div>
           </a>
           <a
-            href="social.html"
+            href="communities.html"
             class="domain-nav-card fade-in"
             id="domain-nav-social"
           >
             <span class="card-icon">👥</span>
-            <div class="card-title">Social Systems</div>
+            <div class="card-title">Communities</div>
             <div class="card-desc">
-              Community networks, demographics, and social capital that support
-              mutual aid during disasters.
+              Community relationships and capacity that support preparedness and
+              recovery.
             </div>
           </a>
           <a
-            href="planning.html"
+            href="species.html"
             class="domain-nav-card fade-in"
             id="domain-nav-planning"
           >
-            <span class="card-icon">📋</span>
-            <div class="card-title">Planning &amp; Governance</div>
+            <span class="card-icon">🦉</span>
+            <div class="card-title">Species</div>
             <div class="card-desc">
-              Preparedness plans, land use policies, and coordination structures
-              guiding resilience investments.
+              Biodiversity and life-history traits linked to fire resistance and
+              recovery.
             </div>
           </a>
         </div>
@@ -1259,8 +1266,7 @@
           <a href="#" id="footer-link-moore">Moore Foundation</a>.
         </p>
         <p class="caption-text mt-2" id="footer-disclaimer">
-          Design mockup with placeholder content. Final content provided by Cat
-          Fong.
+          Built with content provided by Cat Fong for pre-funder review.
         </p>
       </div>
     </footer>

@@ -49,6 +49,7 @@
         align-items: center;
         justify-content: space-between;
         height: 80px;
+        gap: 3rem; /* Visual separation between logo and nav */
       }
 
       .site-logo {
@@ -59,6 +60,7 @@
         font-size: 1.5rem;
         font-weight: 700;
         gap: 0.75rem;
+        flex-shrink: 0; /* Prevent logo from shrinking */
       }
 
       .logo-icon {
@@ -97,7 +99,8 @@
       .site-nav {
         display: flex;
         align-items: center;
-        gap: 1rem;
+        gap: 1.25rem; /* Increased spacing for better visual grouping */
+        flex-shrink: 0; /* Prevent nav from shrinking */
       }
 
       .site-nav a {
@@ -627,16 +630,33 @@
       </nav>
     </header>
     <main class="placeholder-main" id="placeholder-main">
-      <section class="placeholder-card" id="placeholder-card">
-        <p class="placeholder-eyebrow" id="placeholder-eyebrow">
-          Domain Placeholder
+      <section class="placeholder-card" id="air-overview-section">
+        <p class="placeholder-eyebrow" id="air-overview-eyebrow">Domain</p>
+        <h1 class="placeholder-title" id="air-overview-title">Air Quality</h1>
+        <p class="placeholder-copy" id="air-overview-copy-1">
+          Air quality affects public health and policy, particularly in
+          wildfire-prone regions. This domain evaluates populations' exposure to
+          poor air quality and their capacity to withstand negative health
+          outcomes.
         </p>
-        <h1 class="placeholder-title" id="placeholder-title">Air Quality</h1>
-        <p class="placeholder-copy" id="placeholder-copy">
-          This placeholder ensures all navigation links are functional for T2.
-          Replace this page with Cat's confirmed domain name and content in
-          T6/T7.
+        <br />
+        <p class="placeholder-copy" id="air-overview-copy-2">
+          Including air quality ensures the WRI accounts for direct smoke and
+          particulate impacts on people as a key human dimension of resilience.
         </p>
+        <br />
+        <h2 class="placeholder-title" id="air-indicators-title">
+          What is included
+        </h2>
+        <ul class="placeholder-copy" id="air-indicators-list">
+          <li id="air-indicator-aqi-100">Days above AQI 100</li>
+          <li id="air-indicator-aqi-300">Days above AQI 300</li>
+          <li id="air-indicator-asthma">Prevalence of adult asthma</li>
+          <li id="air-indicator-copd">COPD</li>
+          <li id="air-indicator-age">Age</li>
+          <li id="air-indicator-occupational-hazard">Occupational hazard</li>
+          <li id="air-indicator-hospitals">Access to hospitals</li>
+        </ul>
       </section>
     </main>
     <footer class="footer" id="footer">

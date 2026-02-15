@@ -38,6 +38,7 @@
         align-items: center;
         justify-content: space-between;
         height: 80px;
+        gap: 3rem; /* Visual separation between logo and nav */
       }
       .site-logo {
         display: flex;
@@ -45,6 +46,7 @@
         gap: 0.7rem;
         text-decoration: none;
         color: var(--text-light);
+        flex-shrink: 0; /* Prevent logo from shrinking */
       }
       .logo-icon-img {
         width: 40px;
@@ -68,8 +70,9 @@
         margin-left: auto;
         display: flex;
         align-items: center;
-        gap: 0.95rem;
+        gap: 1.25rem; /* Increased spacing for better visual grouping */
         font-size: 0.88rem;
+        flex-shrink: 0; /* Prevent nav from shrinking */
       }
       .site-nav a {
         color: var(--text-light);
@@ -526,15 +529,28 @@
       </nav>
     </header>
     <main class="placeholder-main" id="placeholder-main">
-      <section class="placeholder-card" id="placeholder-card">
-        <p class="placeholder-eyebrow" id="placeholder-eyebrow">
-          Conditional Page
+      <section class="placeholder-card" id="news-overview-section">
+        <p class="placeholder-eyebrow" id="news-overview-eyebrow">
+          Publications and Media
         </p>
-        <h1 class="placeholder-title" id="placeholder-title">In the News</h1>
-        <p class="placeholder-copy" id="placeholder-copy">
-          This page scaffold is in place pending Cat's final confirmation from
-          T2 notes. If approved, this section will highlight press mentions,
-          partner spotlights, and media coverage of the WRI effort.
+        <h1 class="placeholder-title" id="news-overview-title">In the News</h1>
+        <p class="placeholder-copy" id="news-overview-copy-1">
+          This page highlights external coverage related to the Wildfire
+          Resilience Index and partner communication efforts.
+        </p>
+        <br />
+        <h2 class="placeholder-title" id="news-subtitle-coverage-types">
+          Coverage Types
+        </h2>
+        <ul class="placeholder-copy" id="news-coverage-list">
+          <li id="news-coverage-item-press-releases">Press Releases</li>
+          <li id="news-coverage-item-news-coverage">News Coverage</li>
+          <li id="news-coverage-item-papers">Papers</li>
+        </ul>
+        <br />
+        <p class="placeholder-copy" id="news-overview-copy-2">
+          Individual items and links will be added as publication records are
+          finalized for public release.
         </p>
       </section>
     </main>

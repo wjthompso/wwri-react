@@ -72,6 +72,7 @@
         align-items: center;
         justify-content: space-between;
         height: 80px;
+        gap: 3rem; /* Visual separation between logo and nav */
       }
 
       .site-logo {
@@ -82,6 +83,7 @@
         font-size: 1.5rem;
         font-weight: 700;
         gap: 0.75rem;
+        flex-shrink: 0; /* Prevent logo from shrinking */
       }
 
       .logo-icon {
@@ -119,7 +121,8 @@
       .site-nav {
         display: flex;
         align-items: center;
-        gap: 1rem;
+        gap: 1.25rem; /* Increased spacing for better visual grouping */
+        flex-shrink: 0; /* Prevent nav from shrinking */
       }
 
       .site-nav a {
@@ -1023,10 +1026,11 @@
     <section class="domain-hero" id="domain-hero">
       <div class="domain-hero-content fade-in" id="domain-hero-content">
         <span class="domain-hero-icon" id="domain-hero-icon">🏗️</span>
-        <h1 id="domain-hero-heading">Critical Systems for Community Safety</h1>
+        <h1 id="domain-hero-heading">Infrastructure</h1>
         <p id="domain-hero-subtitle">
-          Evaluating the roads, utilities, and emergency services that determine
-          whether communities can protect themselves and recover from wildfire.
+          Infrastructure provides the foundation for communities to live, work,
+          and interact. In wildfire-prone landscapes, resilient infrastructure
+          supports both resistance to fire impacts and recovery after loss.
         </p>
       </div>
     </section>
@@ -1051,33 +1055,33 @@
           <div class="tile-content fade-in" id="content-roads">
             <div class="accent-line" id="accent-roads"></div>
             <h2 id="heading-roads" class="heading-lg">
-              Evacuation Routes &amp; Road Networks
+              Built Environment Readiness
             </h2>
             <p id="desc-roads-1" class="body-text">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. When
-              wildfire strikes, every minute counts. Road infrastructure
-              determines whether entire communities can evacuate safely or
-              become trapped.
+              This domain captures how well the built environment can withstand
+              wildfire and support post-fire restoration. It includes resistance
+              conditions such as building codes, wildland-urban interface
+              designation, and access routes.
             </p>
             <p id="desc-roads-2" class="body-text">
-              Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-              We analyze road density, alternative route availability, bridge
-              capacity, and historical traffic patterns during emergencies.
+              It also includes status and recovery conditions such as the
+              presence of structures, local aid incorporation, and home
+              ownership patterns that influence long-term rebuilding capacity.
             </p>
             <ul class="indicator-list" id="indicators-roads">
               <li>
-                <span class="indicator-dot"></span> Road density &amp;
-                connectivity
+                <span class="indicator-dot"></span> Presence of structures
+                (status)
               </li>
               <li>
-                <span class="indicator-dot"></span> Evacuation route redundancy
+                <span class="indicator-dot"></span> Building codes (resistance)
               </li>
               <li>
-                <span class="indicator-dot"></span> Bridge &amp; chokepoint
-                capacity
+                <span class="indicator-dot"></span> WUI designation
+                (resistance)
               </li>
               <li>
-                <span class="indicator-dot"></span> Emergency traffic management
+                <span class="indicator-dot"></span> Access routes (resistance)
               </li>
             </ul>
           </div>
@@ -1105,34 +1109,34 @@
           <div class="tile-content fade-in" id="content-utilities">
             <div class="accent-line" id="accent-utilities"></div>
             <h2 id="heading-utilities" class="heading-lg">
-              Power Grids &amp; Communication Systems
+              Emergency Access and Fire Support Systems
             </h2>
             <p id="desc-utilities-1" class="body-text">
-              Ut enim ad minim veniam, quis nostrud exercitation ullamco
-              laboris. Power infrastructure is both a vulnerability and a
-              lifeline — utility lines can spark fires while simultaneously
-              providing the communication networks needed for evacuation alerts.
+              In a wildfire-prone landscape, resistance depends on how quickly
+              communities can be reached and protected. Infrastructure resilience
+              includes access routes, fire station resource density, and
+              defensible space conditions around structures.
             </p>
             <p id="desc-utilities-2" class="body-text">
-              Duis aute irure dolor in reprehenderit in voluptate velit esse
-              cillum dolore. We measure grid resilience, backup power
-              availability, and the reach of emergency alert systems across
-              communities.
+              These features determine whether emergency response can scale fast
+              enough under pressure while reducing the chance of structural loss
+              during extreme fire events.
             </p>
             <ul class="indicator-list" id="indicators-utilities">
               <li>
-                <span class="indicator-dot"></span> Power grid resilience &amp;
-                redundancy
+                <span class="indicator-dot"></span> Fire station resource
+                density (resistance)
               </li>
               <li>
-                <span class="indicator-dot"></span> Utility line fire-risk
-                exposure
+                <span class="indicator-dot"></span> Defensible space
+                (resistance)
               </li>
               <li>
-                <span class="indicator-dot"></span> Emergency communication
-                coverage
+                <span class="indicator-dot"></span> Access routes (resistance)
               </li>
-              <li><span class="indicator-dot"></span> Backup power capacity</li>
+              <li>
+                <span class="indicator-dot"></span> WUI designation (resistance)
+              </li>
             </ul>
           </div>
         </div>
@@ -1159,33 +1163,31 @@
           <div class="tile-content fade-in" id="content-water">
             <div class="accent-line" id="accent-water"></div>
             <h2 id="heading-water" class="heading-lg">
-              Water Systems &amp; Firefighting Capacity
+              Recovery Capacity in the Built Environment
             </h2>
             <p id="desc-water-1" class="body-text">
-              Excepteur sint occaecat cupidatat non proident. Water availability
-              directly impacts firefighting success. Communities with robust
-              water systems and strategically placed fire stations have
-              significantly higher survival rates.
+              Infrastructure resilience is not only about resistance to fire. It
+              also reflects how well communities recover after structural loss
+              through economic and institutional conditions that support
+              rebuilding.
             </p>
             <p id="desc-water-2" class="body-text">
-              Sunt in culpa qui officia deserunt mollit anim id est laborum. Our
-              analysis covers hydrant density, water pressure reliability, fire
-              station proximity, and volunteer firefighter availability across
-              rural and urban areas.
+              The recovery side of this domain includes income, local aid
+              incorporation, and home ownership, which together shape the pace
+              and durability of post-fire restoration.
             </p>
             <ul class="indicator-list" id="indicators-water">
               <li>
-                <span class="indicator-dot"></span> Fire hydrant density &amp;
-                water pressure
+                <span class="indicator-dot"></span> Income (recovery)
               </li>
               <li>
-                <span class="indicator-dot"></span> Fire station response times
+                <span class="indicator-dot"></span> Local aid incorporation
+                (recovery)
               </li>
               <li>
-                <span class="indicator-dot"></span> Firefighting resource
-                allocation
+                <span class="indicator-dot"></span> Home ownership (recovery)
               </li>
-              <li><span class="indicator-dot"></span> Mutual aid agreements</li>
+              <li><span class="indicator-dot"></span> Presence of structures (status)</li>
             </ul>
           </div>
         </div>
@@ -1211,39 +1213,39 @@
         </div>
         <div class="domain-nav-grid" id="domain-nav-grid">
           <a
-            href="social.html"
+            href="communities.html"
             class="domain-nav-card fade-in"
             id="domain-nav-social"
           >
             <span class="card-icon">👥</span>
-            <div class="card-title">Social Systems</div>
+            <div class="card-title">Communities</div>
             <div class="card-desc">
-              Community networks, demographics, and social capital that support
-              mutual aid during disasters.
+              Social, cultural, and geographic connections that influence
+              preparedness, evacuation, and recovery.
             </div>
           </a>
           <a
-            href="natural-resources.html"
+            href="sense-of-place.html"
             class="domain-nav-card fade-in"
             id="domain-nav-natural"
           >
-            <span class="card-icon">🌲</span>
-            <div class="card-title">Natural Resources</div>
+            <span class="card-icon">🏞️</span>
+            <div class="card-title">Sense of Place</div>
             <div class="card-desc">
-              Forest health, fuel loads, and ecological conditions that shape
-              fire behavior and recovery.
+              Cultural, spiritual, and aesthetic values tied to iconic places
+              and species.
             </div>
           </a>
           <a
-            href="planning.html"
+            href="water.html"
             class="domain-nav-card fade-in"
             id="domain-nav-planning"
           >
-            <span class="card-icon">📋</span>
-            <div class="card-title">Planning &amp; Governance</div>
+            <span class="card-icon">💧</span>
+            <div class="card-title">Water</div>
             <div class="card-desc">
-              Preparedness plans, land use policies, and coordination structures
-              guiding resilience investments.
+              Freshwater quantity, timing, and system interventions that sustain
+              people and ecosystems.
             </div>
           </a>
         </div>
@@ -1282,8 +1284,7 @@
           <a href="#" id="footer-link-moore">Moore Foundation</a>.
         </p>
         <p class="caption-text mt-2" id="footer-disclaimer">
-          Design mockup with placeholder content. Final content provided by Cat
-          Fong.
+          Built with content provided by Cat Fong for pre-funder review.
         </p>
       </div>
     </footer>

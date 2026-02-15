@@ -39,6 +39,7 @@
         align-items: center;
         justify-content: space-between;
         height: 80px;
+        gap: 3rem; /* Visual separation between logo and nav */
       }
       .site-logo {
         display: flex;
@@ -46,6 +47,7 @@
         gap: 0.7rem;
         text-decoration: none;
         color: var(--text-light);
+        flex-shrink: 0; /* Prevent logo from shrinking */
       }
       .logo-icon-img {
         width: 40px;
@@ -69,8 +71,9 @@
         margin-left: auto;
         display: flex;
         align-items: center;
-        gap: 0.95rem;
+        gap: 1.25rem; /* Increased spacing for better visual grouping */
         font-size: 0.88rem;
+        flex-shrink: 0; /* Prevent nav from shrinking */
       }
       .site-nav a {
         color: var(--text-light);
@@ -530,16 +533,45 @@
     </header>
 
     <main class="placeholder-main" id="placeholder-main">
-      <section class="placeholder-card" id="placeholder-card">
-        <p class="placeholder-eyebrow" id="placeholder-eyebrow">
-          Domain Placeholder
+      <section class="placeholder-card" id="livelihoods-overview-section">
+        <p class="placeholder-eyebrow" id="livelihoods-overview-eyebrow">
+          Domain
         </p>
-        <h1 class="placeholder-title" id="placeholder-title">Livelihoods</h1>
-        <p class="placeholder-copy" id="placeholder-copy">
-          This domain page is a T2 placeholder so navigation stays fully
-          functional. In T6/T7, replace this with Cat's final livelihoods
-          resilience content and visuals.
+        <h1 class="placeholder-title" id="livelihoods-overview-title">
+          Livelihoods
+        </h1>
+        <p class="placeholder-copy" id="livelihoods-overview-copy-1">
+          Livelihoods reflect how people make a living and are tied to
+          well-being, security, and identity. Wildfires can disrupt employment,
+          income stability, and economic diversity.
         </p>
+        <br />
+        <p class="placeholder-copy" id="livelihoods-overview-copy-2">
+          This domain evaluates the vulnerability of jobs to fire and the
+          capacity of local economies to recover, emphasizing that resilient
+          communities depend not only on safe structures but also on
+          sustainable, adaptable livelihoods.
+        </p>
+        <br />
+        <h2 class="placeholder-title" id="livelihoods-indicators-title">
+          What is included
+        </h2>
+        <ul class="placeholder-copy" id="livelihoods-indicators-list">
+          <li id="livelihoods-indicator-employed">
+            Percent employed and unemployment (status)
+          </li>
+          <li id="livelihoods-indicator-income">Median income (status)</li>
+          <li id="livelihoods-indicator-housing-burden">
+            Housing burden (status)
+          </li>
+          <li id="livelihoods-indicator-job-interruption">
+            Percent of jobs interrupted by fire and job vulnerability
+            (resistance)
+          </li>
+          <li id="livelihoods-indicator-job-diversity">
+            Diversity of jobs (recovery)
+          </li>
+        </ul>
       </section>
     </main>
 

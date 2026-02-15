@@ -49,6 +49,7 @@
         align-items: center;
         justify-content: space-between;
         height: 80px;
+        gap: 3rem; /* Visual separation between logo and nav */
       }
 
       .site-logo {
@@ -59,6 +60,7 @@
         font-size: 1.5rem;
         font-weight: 700;
         gap: 0.75rem;
+        flex-shrink: 0; /* Prevent logo from shrinking */
       }
 
       .logo-icon {
@@ -97,7 +99,8 @@
       .site-nav {
         display: flex;
         align-items: center;
-        gap: 1rem;
+        gap: 1.25rem; /* Increased spacing for better visual grouping */
+        flex-shrink: 0; /* Prevent nav from shrinking */
       }
 
       .site-nav a {
@@ -627,16 +630,44 @@
       </nav>
     </header>
     <main class="placeholder-main" id="placeholder-main">
-      <section class="placeholder-card" id="placeholder-card">
-        <p class="placeholder-eyebrow" id="placeholder-eyebrow">
-          Domain Placeholder
+      <section class="placeholder-card" id="habitats-overview-section">
+        <p class="placeholder-eyebrow" id="habitats-overview-eyebrow">Domain</p>
+        <h1 class="placeholder-title" id="habitats-overview-title">Habitats</h1>
+        <p class="placeholder-copy" id="habitats-overview-copy-1">
+          Natural habitats provide critical ecosystem services and support
+          biodiversity. This domain evaluates the extent and resilience of
+          ecosystems, combining species traits, community characteristics, and
+          environmental context to assess resistance and recovery.
         </p>
-        <h1 class="placeholder-title" id="placeholder-title">Habitats</h1>
-        <p class="placeholder-copy" id="placeholder-copy">
-          This placeholder ensures all navigation links are functional for T2.
-          Replace this page with Cat's confirmed domain name and content in
-          T6/T7.
+        <br />
+        <p class="placeholder-copy" id="habitats-overview-copy-2">
+          Including habitats ensures that the index captures how wildfire
+          affects landscape integrity and long-term ecosystem sustainability.
         </p>
+        <br />
+        <h2 class="placeholder-title" id="habitats-indicators-title">
+          What is included
+        </h2>
+        <ul class="placeholder-copy" id="habitats-indicators-list">
+          <li id="habitats-indicator-extent">Extent (status)</li>
+          <li id="habitats-indicator-protection">Protection (status)</li>
+          <li id="habitats-indicator-traits">Traits</li>
+          <li id="habitats-indicator-bark">Bark</li>
+          <li id="habitats-indicator-height">Height</li>
+          <li id="habitats-indicator-self-pruning">Self-pruning</li>
+          <li id="habitats-indicator-stand-density">Stand density</li>
+          <li id="habitats-indicator-ndvi">NDVI heterogeneity</li>
+          <li id="habitats-indicator-npp">NPP</li>
+          <li id="habitats-indicator-vpd">VPD</li>
+          <li id="habitats-indicator-longevity">Longevity</li>
+          <li id="habitats-indicator-seed-mass">Seed mass</li>
+          <li id="habitats-indicator-resprout">Resprout</li>
+          <li id="habitats-indicator-serotiny">Serotiny</li>
+          <li id="habitats-indicator-diversity">Diversity</li>
+          <li id="habitats-indicator-rainfall">
+            30-year rainfall norm
+          </li>
+        </ul>
       </section>
     </main>
     <footer class="footer" id="footer">

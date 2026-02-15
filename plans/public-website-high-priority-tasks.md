@@ -443,7 +443,7 @@ Integrate the specific text content that Cat has written and streamlined. Replac
 ### T6: Update Domains Section (Four Pillars → Eight Domains)
 **Priority:** 🔴 High  
 **Effort:** Medium (2-3 hours)  
-**Status:** ⬜ Not Started  
+**Status:** ⏳ In Progress  
 **Dependencies:** None (domain text in `docs/website-written-content.txt`)
 
 #### Description
@@ -498,6 +498,11 @@ Order in doc: Infrastructure, Communities, Livelihoods, Sense of Place, Species,
    - If Cat provides color scheme, apply to domain cards/pages
    - Consider using colors for domain sections (subtle accent)
 
+5. **Style Parity Pass (follow-up):**
+   - Use the same full domain-page visual pattern (hero + 3 styled content blocks + indicators + related domains + CTA) on all 8 domain pages
+   - Keep existing style and structure currently used on `infrastructure.html`, `communities.html`, `sense-of-place.html`, and `species.html`
+   - Apply this format to `livelihoods.html`, `habitats.html`, `water.html`, and `air-quality.html`
+
 #### Files to Update
 - `index.html` (domains section, ~line 800-900)
 - Navigation in all pages (update domains dropdown)
@@ -517,6 +522,12 @@ Order in doc: Infrastructure, Communities, Livelihoods, Sense of Place, Species,
 - **Action Required:** Need from Cat: Icon assets or suggestions for all 8 domains; rainbow color scheme (if using for signposting)
 - **Design Consideration:** 8 cards may require 2 rows on desktop (4x2 grid)
 - Consider card size adjustments to fit more cards
+
+#### Implementation Notes
+- ✅ Homepage domains grid updated from 4 cards to 8 cards in `index.html`, using domain copy from `docs/website-written-content.txt`
+- ✅ Navigation links for all 8 domains are wired and functional
+- ✅ Domain copy has been added for all 8 domains (including `livelihoods.html`, `habitats.html`, `water.html`, and `air-quality.html`)
+- ⏳ Remaining follow-up: visual/style parity for `livelihoods.html`, `habitats.html`, `water.html`, and `air-quality.html` so they match the richer styled template used by `infrastructure.html`, `communities.html`, `sense-of-place.html`, and `species.html`
 
 ---
 

@@ -49,6 +49,7 @@
         align-items: center;
         justify-content: space-between;
         height: 80px;
+        gap: 3rem; /* Visual separation between logo and nav */
       }
 
       .site-logo {
@@ -59,6 +60,7 @@
         font-size: 1.5rem;
         font-weight: 700;
         gap: 0.75rem;
+        flex-shrink: 0; /* Prevent logo from shrinking */
       }
 
       .logo-icon {
@@ -97,7 +99,8 @@
       .site-nav {
         display: flex;
         align-items: center;
-        gap: 1rem;
+        gap: 1.25rem; /* Increased spacing for better visual grouping */
+        flex-shrink: 0; /* Prevent nav from shrinking */
       }
 
       .site-nav a {
@@ -625,16 +628,32 @@
       </nav>
     </header>
     <main class="placeholder-main" id="placeholder-main">
-      <section class="placeholder-card" id="placeholder-card">
-        <p class="placeholder-eyebrow" id="placeholder-eyebrow">
-          Domain Placeholder
+      <section class="placeholder-card" id="water-overview-section">
+        <p class="placeholder-eyebrow" id="water-overview-eyebrow">Domain</p>
+        <h1 class="placeholder-title" id="water-overview-title">Water</h1>
+        <p class="placeholder-copy" id="water-overview-copy-1">
+          Freshwater availability is essential for both human and ecological
+          well-being. Wildfires can alter water quantity and timing, impacting
+          consumption, irrigation, and ecosystem health.
         </p>
-        <h1 class="placeholder-title" id="placeholder-title">Water</h1>
-        <p class="placeholder-copy" id="placeholder-copy">
-          This placeholder ensures all navigation links are functional for T2.
-          Replace this page with Cat's confirmed domain name and content in
-          T6/T7.
+        <br />
+        <p class="placeholder-copy" id="water-overview-copy-2">
+          This domain focuses on human and landscape interventions that help
+          maintain water supply, highlighting how resilient water systems
+          support overall wildfire resilience.
         </p>
+        <br />
+        <h2 class="placeholder-title" id="water-indicators-title">
+          What is included
+        </h2>
+        <ul class="placeholder-copy" id="water-indicators-list">
+          <li id="water-indicator-quantity">Quantity</li>
+          <li id="water-indicator-timing">Timing</li>
+          <li id="water-indicator-wtps">Water treatment plants (WTPs)</li>
+          <li id="water-indicator-wrhps">
+            Water resource and hydrologic projects (WRHPs)
+          </li>
+        </ul>
       </section>
     </main>
     <footer class="footer" id="footer">

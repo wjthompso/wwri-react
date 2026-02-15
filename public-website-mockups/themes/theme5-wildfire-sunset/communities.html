@@ -73,6 +73,7 @@
         align-items: center;
         justify-content: space-between;
         height: 80px;
+        gap: 3rem; /* Visual separation between logo and nav */
       }
 
       .site-logo {
@@ -83,6 +84,7 @@
         font-size: 1.5rem;
         font-weight: 700;
         gap: 0.75rem;
+        flex-shrink: 0; /* Prevent logo from shrinking */
       }
 
       .logo-icon {
@@ -121,7 +123,8 @@
       .site-nav {
         display: flex;
         align-items: center;
-        gap: 1rem;
+        gap: 1.25rem; /* Increased spacing for better visual grouping */
+        flex-shrink: 0; /* Prevent nav from shrinking */
       }
 
       .site-nav a {
@@ -1018,11 +1021,11 @@
     <section class="domain-hero" id="domain-hero">
       <div class="domain-hero-content fade-in" id="domain-hero-content">
         <span class="domain-hero-icon" id="domain-hero-icon">👥</span>
-        <h1 id="domain-hero-heading">Community Networks Build Resilience</h1>
+        <h1 id="domain-hero-heading">Communities</h1>
         <p id="domain-hero-subtitle">
-          Measuring the social bonds, demographic strengths, and community
-          organizations that help neighbors support each other before, during,
-          and after wildfire events.
+          Communities are shaped by social, cultural, and geographic
+          connections that influence preparedness, evacuation, and recovery.
+          This domain captures the human dimension of wildfire resilience.
         </p>
       </div>
     </section>
@@ -1047,34 +1050,35 @@
           <div class="tile-content fade-in" id="content-capital">
             <div class="accent-line" id="accent-capital"></div>
             <h2 id="heading-capital" class="heading-lg">
-              Social Capital &amp; Community Networks
+              Community Presence and Preparedness
             </h2>
             <p id="desc-capital-1" class="body-text">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Strong
-              social networks are the invisible infrastructure of wildfire
-              resilience. Communities where neighbors know each other, share
-              resources, and organize collectively have dramatically better
-              outcomes.
+              This domain evaluates individual and collective characteristics
+              that support a community's ability to persist and rebuild. It
+              includes where and how people are present in fire-prone places and
+              whether planning systems are active.
             </p>
             <p id="desc-capital-2" class="body-text">
-              Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-              We measure civic participation, organizational density, and the
-              informal networks that activate during emergencies to coordinate
-              evacuations and share critical information.
+              Preparedness indicators include Community Wildfire Protection Plans
+              and FireWise Communities participation, both of which reflect
+              organized local capacity to reduce risk before events occur.
             </p>
             <ul class="indicator-list" id="indicators-capital">
               <li>
-                <span class="indicator-dot"></span> Civic participation rates
+                <span class="indicator-dot"></span> People present or absent
+                (status)
               </li>
               <li>
-                <span class="indicator-dot"></span> Community organization
-                density
+                <span class="indicator-dot"></span> Community Wildfire
+                Protection Plans (CWPPs) (resistance)
               </li>
               <li>
-                <span class="indicator-dot"></span> Neighbor connectivity index
+                <span class="indicator-dot"></span> FireWise Communities
+                (resistance)
               </li>
               <li>
-                <span class="indicator-dot"></span> Volunteer network strength
+                <span class="indicator-dot"></span> Volunteer firefighters
+                (resistance)
               </li>
             </ul>
           </div>
@@ -1102,32 +1106,28 @@
           <div class="tile-content fade-in" id="content-vulnerable">
             <div class="accent-line" id="accent-vulnerable"></div>
             <h2 id="heading-vulnerable" class="heading-lg">
-              Vulnerable Populations &amp; Equity
+              Response Capacity and Access
             </h2>
             <p id="desc-vulnerable-1" class="body-text">
-              Ut enim ad minim veniam, quis nostrud exercitation ullamco
-              laboris. Wildfire risk does not fall equally. Elderly residents,
-              low-income households, non-English speakers, and people with
-              mobility challenges face disproportionate risk during evacuations
-              and recovery.
+              Response capacity depends on whether people can act quickly under
+              stress. Age, disability, and car access affect whether households
+              can evacuate and navigate disruptions safely.
             </p>
             <p id="desc-vulnerable-2" class="body-text">
-              Duis aute irure dolor in reprehenderit in voluptate velit esse
-              cillum dolore. Our analysis identifies where these populations are
-              concentrated and evaluates whether support systems, translations,
-              and accessibility measures are in place.
+              These indicators help identify where extra support, accessibility
+              planning, and targeted preparedness investments are needed to
+              improve community-level resistance to wildfire impacts.
             </p>
             <ul class="indicator-list" id="indicators-vulnerable">
-              <li><span class="indicator-dot"></span> Age dependency ratio</li>
+              <li><span class="indicator-dot"></span> Age (resistance)</li>
               <li>
-                <span class="indicator-dot"></span> Linguistic isolation index
+                <span class="indicator-dot"></span> Disability (resistance)
               </li>
               <li>
-                <span class="indicator-dot"></span> Mobility-limited population
-                share
+                <span class="indicator-dot"></span> Car access (resistance)
               </li>
               <li>
-                <span class="indicator-dot"></span> Social service accessibility
+                <span class="indicator-dot"></span> Incorporation (recovery)
               </li>
             </ul>
           </div>
@@ -1155,32 +1155,31 @@
           <div class="tile-content fade-in" id="content-orgs">
             <div class="accent-line" id="accent-orgs"></div>
             <h2 id="heading-orgs" class="heading-lg">
-              Community Organizations &amp; Collective Action
+              Recovery and Rebuilding Capacity
             </h2>
             <p id="desc-orgs-1" class="body-text">
-              Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
-              officia deserunt mollit. Fire-adapted communities aren't built
-              overnight. They require sustained engagement through established
-              organizations that maintain institutional knowledge and mobilize
-              resources.
+              Community resilience is also about what happens after fire.
+              Recovery indicators reflect whether households and local
+              institutions have the means to rebuild and remain in place.
             </p>
             <p id="desc-orgs-2" class="body-text">
-              Sunt in culpa qui officia deserunt mollit anim id est laborum. We
-              track Fire Safe Councils, Community Emergency Response Teams
-              (CERTs), neighborhood associations, and faith-based organizations
-              that provide the backbone for community-level resilience efforts.
+              Home ownership, incorporation, and income are included because
+              they shape local decision authority, financial flexibility, and
+              long-term recovery trajectories.
             </p>
             <ul class="indicator-list" id="indicators-orgs">
               <li>
-                <span class="indicator-dot"></span> Fire Safe Council presence
-              </li>
-              <li><span class="indicator-dot"></span> CERT team readiness</li>
-              <li>
-                <span class="indicator-dot"></span> Nonprofit density per capita
+                <span class="indicator-dot"></span> Home ownership (recovery)
               </li>
               <li>
-                <span class="indicator-dot"></span> Faith &amp; civic
-                organization engagement
+                <span class="indicator-dot"></span> Incorporation (recovery)
+              </li>
+              <li>
+                <span class="indicator-dot"></span> Income (recovery)
+              </li>
+              <li>
+                <span class="indicator-dot"></span> Community Wildfire
+                Protection Plans (CWPPs) (resistance)
               </li>
             </ul>
           </div>
@@ -1219,27 +1218,27 @@
             </div>
           </a>
           <a
-            href="natural-resources.html"
+            href="livelihoods.html"
             class="domain-nav-card fade-in"
             id="domain-nav-natural"
           >
-            <span class="card-icon">🌲</span>
-            <div class="card-title">Natural Resources</div>
+            <span class="card-icon">💼</span>
+            <div class="card-title">Livelihoods</div>
             <div class="card-desc">
-              Forest health, fuel loads, and ecological conditions that shape
-              fire behavior and recovery.
+              Job stability, income, and economic diversity that support
+              adaptable post-fire recovery.
             </div>
           </a>
           <a
-            href="planning.html"
+            href="air-quality.html"
             class="domain-nav-card fade-in"
             id="domain-nav-planning"
           >
-            <span class="card-icon">📋</span>
-            <div class="card-title">Planning &amp; Governance</div>
+            <span class="card-icon">🌫️</span>
+            <div class="card-title">Air Quality</div>
             <div class="card-desc">
-              Preparedness plans, land use policies, and coordination structures
-              guiding resilience investments.
+              Exposure and health capacity factors that shape human resilience to
+              smoke impacts.
             </div>
           </a>
         </div>
@@ -1279,8 +1278,7 @@
           <a href="#" id="footer-link-moore">Moore Foundation</a>.
         </p>
         <p class="caption-text mt-2" id="footer-disclaimer">
-          Design mockup with placeholder content. Final content provided by Cat
-          Fong.
+          Built with content provided by Cat Fong for pre-funder review.
         </p>
       </div>
     </footer>

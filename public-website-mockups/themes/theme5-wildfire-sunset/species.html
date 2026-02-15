@@ -73,6 +73,7 @@
         align-items: center;
         justify-content: space-between;
         height: 80px;
+        gap: 3rem; /* Visual separation between logo and nav */
       }
 
       .site-logo {
@@ -83,6 +84,7 @@
         font-size: 1.5rem;
         font-weight: 700;
         gap: 0.75rem;
+        flex-shrink: 0; /* Prevent logo from shrinking */
       }
 
       .logo-icon {
@@ -121,7 +123,8 @@
       .site-nav {
         display: flex;
         align-items: center;
-        gap: 1rem;
+        gap: 1.25rem; /* Increased spacing for better visual grouping */
+        flex-shrink: 0; /* Prevent nav from shrinking */
       }
 
       .site-nav a {
@@ -998,14 +1001,12 @@
     <!-- ── Domain Hero ── -->
     <section class="domain-hero" id="domain-hero">
       <div class="domain-hero-content fade-in" id="domain-hero-content">
-        <span class="domain-hero-icon" id="domain-hero-icon">📋</span>
-        <h1 id="domain-hero-heading">
-          Preparedness Through Strategic Planning
-        </h1>
+        <span class="domain-hero-icon" id="domain-hero-icon">🦉</span>
+        <h1 id="domain-hero-heading">Species</h1>
         <p id="domain-hero-subtitle">
-          Evaluating the emergency plans, land use policies, and multi-agency
-          coordination that transform reactive responses into proactive
-          resilience strategies.
+          Biodiversity is a core indicator of ecological resilience. This domain
+          measures species conservation status and capacity to survive and
+          recover from fire.
         </p>
       </div>
     </section>
@@ -1030,35 +1031,33 @@
           <div class="tile-content fade-in" id="content-emergency">
             <div class="accent-line" id="accent-emergency"></div>
             <h2 id="heading-emergency" class="heading-lg">
-              Emergency Plans &amp; Community Preparedness
+              Conservation Status and Baseline Vulnerability
             </h2>
             <p id="desc-emergency-1" class="body-text">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. A plan on
-              paper is just the beginning. Effective emergency preparedness
-              means communities have practiced their response, know their
-              evacuation zones, and have clear chains of command that activate
-              within minutes.
+              Species resilience begins with baseline condition. The WRI tracks
+              conservation, threat, and extinction status to identify where fire
+              impacts may compound existing vulnerabilities.
             </p>
             <p id="desc-emergency-2" class="body-text">
-              Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-              We evaluate the comprehensiveness, recency, and tested readiness
-              of Community Wildfire Protection Plans (CWPPs), emergency
-              operation plans, and evacuation protocols.
+              Status indicators are paired with life-history information to show
+              which populations may be most sensitive to repeated fire exposure
+              and which have stronger persistence capacity.
             </p>
             <ul class="indicator-list" id="indicators-emergency">
               <li>
-                <span class="indicator-dot"></span> CWPP adoption &amp; recency
+                <span class="indicator-dot"></span> Conservation, threat, and
+                extinction status (status)
               </li>
               <li>
-                <span class="indicator-dot"></span> Evacuation drill frequency
+                <span class="indicator-dot"></span> Trait-based resistance
+                factors
               </li>
               <li>
-                <span class="indicator-dot"></span> Emergency operations plan
-                quality
+                <span class="indicator-dot"></span> Number of reproductive
+                events
               </li>
               <li>
-                <span class="indicator-dot"></span> Alert system coverage &amp;
-                testing
+                <span class="indicator-dot"></span> Bipartite life cycle
               </li>
             </ul>
           </div>
@@ -1086,37 +1085,30 @@
           <div class="tile-content fade-in" id="content-land-use">
             <div class="accent-line" id="accent-land-use"></div>
             <h2 id="heading-land-use" class="heading-lg">
-              Land Use &amp; Building Policies
+              Life-History Traits and Recovery Potential
             </h2>
             <p id="desc-land-use-1" class="body-text">
-              Ut enim ad minim veniam, quis nostrud exercitation ullamco
-              laboris. Where we build — and how we build — matters more than
-              almost any other factor. Communities that enforce WUI building
-              codes and restrict development in high-risk areas dramatically
-              reduce their exposure.
+              Recovery after fire depends on whether species can reproduce,
+              mature, and persist under changing post-fire conditions. This
+              section captures key life-history factors linked to regeneration.
             </p>
             <p id="desc-land-use-2" class="body-text">
-              Duis aute irure dolor in reprehenderit in voluptate velit esse
-              cillum dolore. We assess zoning regulations, building code
-              adoption (especially WUI-specific codes), defensible space
-              enforcement, and whether new development is being directed away
-              from high-risk zones.
+              By combining reproductive timing and output metrics, the index
+              helps identify species that may need stronger conservation
+              attention in frequently burned landscapes.
             </p>
             <ul class="indicator-list" id="indicators-land-use">
               <li>
-                <span class="indicator-dot"></span> WUI building code adoption
+                <span class="indicator-dot"></span> Longevity
               </li>
               <li>
-                <span class="indicator-dot"></span> Defensible space enforcement
-                rate
+                <span class="indicator-dot"></span> Reproductive output
               </li>
               <li>
-                <span class="indicator-dot"></span> High-risk zone development
-                controls
+                <span class="indicator-dot"></span> Age to first reproduction
               </li>
               <li>
-                <span class="indicator-dot"></span> Fire-resistant construction
-                standards
+                <span class="indicator-dot"></span> Asexual reproduction
               </li>
             </ul>
           </div>
@@ -1144,37 +1136,30 @@
           <div class="tile-content fade-in" id="content-coordination">
             <div class="accent-line" id="accent-coordination"></div>
             <h2 id="heading-coordination" class="heading-lg">
-              Multi-Agency Coordination &amp; Governance
+              Morphology and Fire Resistance
             </h2>
             <p id="desc-coordination-1" class="body-text">
-              Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
-              officia deserunt mollit. Wildfires don't respect jurisdictional
-              boundaries. Effective resilience requires seamless coordination
-              between federal, state, county, and local agencies — plus NGOs and
-              community organizations.
+              Morphological traits influence how species tolerate fire effects
+              and recover afterward. Structural characteristics can support
+              survival under heat, smoke, and habitat disturbance.
             </p>
             <p id="desc-coordination-2" class="body-text">
-              Sunt in culpa qui officia deserunt mollit anim id est laborum. We
-              evaluate mutual aid agreements, joint training exercises, shared
-              communication systems, and the institutional frameworks that
-              enable rapid multi-agency response when fires cross borders.
+              Including morphology ensures species resilience is measured through
+              both ecological status and functional traits tied to resistance.
             </p>
             <ul class="indicator-list" id="indicators-coordination">
               <li>
-                <span class="indicator-dot"></span> Mutual aid agreement
-                coverage
+                <span class="indicator-dot"></span> Morphology: gills
               </li>
               <li>
-                <span class="indicator-dot"></span> Joint training exercise
-                frequency
+                <span class="indicator-dot"></span> Morphology: wings
               </li>
               <li>
-                <span class="indicator-dot"></span> Interoperable communication
-                systems
+                <span class="indicator-dot"></span> Morphology: mass
               </li>
               <li>
-                <span class="indicator-dot"></span> Cross-jurisdictional
-                governance structures
+                <span class="indicator-dot"></span> Trait synthesis for
+                resistance and recovery
               </li>
             </ul>
           </div>
@@ -1213,27 +1198,26 @@
             </div>
           </a>
           <a
-            href="social.html"
+            href="sense-of-place.html"
             class="domain-nav-card fade-in"
             id="domain-nav-social"
           >
-            <span class="card-icon">👥</span>
-            <div class="card-title">Social Systems</div>
+            <span class="card-icon">🏞️</span>
+            <div class="card-title">Sense of Place</div>
             <div class="card-desc">
-              Community networks, demographics, and social capital that support
-              mutual aid during disasters.
+              Cultural and ecological values tied to iconic places and species.
             </div>
           </a>
           <a
-            href="natural-resources.html"
+            href="habitats.html"
             class="domain-nav-card fade-in"
             id="domain-nav-natural"
           >
-            <span class="card-icon">🌲</span>
-            <div class="card-title">Natural Resources</div>
+            <span class="card-icon">🌿</span>
+            <div class="card-title">Habitats</div>
             <div class="card-desc">
-              Forest health, fuel loads, and ecological conditions that shape
-              fire behavior and recovery.
+              Ecosystem extent, protection, and recovery traits across
+              landscapes.
             </div>
           </a>
         </div>
@@ -1273,8 +1257,7 @@
           <a href="#" id="footer-link-moore">Moore Foundation</a>.
         </p>
         <p class="caption-text mt-2" id="footer-disclaimer">
-          Design mockup with placeholder content. Final content provided by Cat
-          Fong.
+          Built with content provided by Cat Fong for pre-funder review.
         </p>
       </div>
     </footer>

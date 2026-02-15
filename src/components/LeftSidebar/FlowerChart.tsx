@@ -1,18 +1,18 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
-  DEFAULT_FLOWER_CHART_CONFIG,
-  FlowerChartConfig,
+    DEFAULT_FLOWER_CHART_CONFIG,
+    FlowerChartConfig,
 } from "types/flowerChartConfigTypes";
 import {
-  DomainKey,
-  GradientConfig,
+    DomainKey,
+    GradientConfig,
 } from "types/gradientConfigTypes";
 import {
-  DomainScores,
-  FLOWER_CHART_DOMAINS,
-  getOverallScoreColor,
-  normalizeScore,
-  normalizeScoreWithRange,
+    DomainScores,
+    FLOWER_CHART_DOMAINS,
+    getOverallScoreColor,
+    normalizeScore,
+    normalizeScoreWithRange,
 } from "utils/domainScoreColors";
 import getColor from "../../utils/getColor";
 

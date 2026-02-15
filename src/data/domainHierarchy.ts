@@ -26,7 +26,7 @@ const domainHierarchy: Domain[] = [
   {
     id: "infrastructure",
     label: "Infrastructure",
-    description: "Built infrastructure resilience to wildfire damage.",
+    description: "Infrastructure provides the foundation for communities to live, work, and access essential resources in wildfire-prone places.",
     colorGradient: {
       startColor: { r: 255, g: 255, b: 255 },
       endColor: { r: 171, g: 16, b: 78 }, // #ab104e
@@ -104,7 +104,7 @@ const domainHierarchy: Domain[] = [
   {
     id: "communities",
     label: "Communities",
-    description: "Community social resilience to wildfire impacts.",
+    description: "Communities captures the social and civic capacity to prepare for, respond to, and recover from wildfire.",
     colorGradient: {
       startColor: { r: 255, g: 255, b: 255 },
       endColor: { r: 225, g: 107, b: 93 }, // #e16b5d
@@ -187,7 +187,7 @@ const domainHierarchy: Domain[] = [
   {
     id: "livelihoods",
     label: "Livelihoods",
-    description: "Economic livelihood resilience to wildfire impacts.",
+    description: "Livelihoods reflects how wildfire affects jobs, income stability, and local economic recovery.",
     colorGradient: {
       startColor: { r: 255, g: 255, b: 255 },
       endColor: { r: 249, g: 178, b: 103 }, // #f9b267
@@ -251,7 +251,7 @@ const domainHierarchy: Domain[] = [
   {
     id: "sense_of_place",
     label: "Sense of Place",
-    description: "Cultural and iconic value resilience to wildfire.",
+    description: "Sense of Place reflects the resilience of culturally and ecologically meaningful places and species that shape identity.",
     colorGradient: {
       startColor: { r: 255, g: 255, b: 255 },
       endColor: { r: 125, g: 200, b: 165 }, // #7dc8a5
@@ -404,7 +404,7 @@ const domainHierarchy: Domain[] = [
   {
     id: "biodiversity",
     label: "Species",
-    description: "Biodiversity and species resilience to wildfire.",
+    description: "Species measures conservation status and fire-related traits that influence how species resist and recover after wildfire.",
     colorGradient: {
       startColor: { r: 255, g: 255, b: 255 },
       endColor: { r: 109, g: 169, b: 147 }, // #6da993
@@ -463,7 +463,7 @@ const domainHierarchy: Domain[] = [
   {
     id: "natural_habitats",
     label: "Habitats",
-    description: "Natural habitat resilience to wildfire.",
+    description: "Habitats evaluates ecosystem condition and recovery potential to understand how wildfire affects landscape integrity.",
     colorGradient: {
       startColor: { r: 255, g: 255, b: 255 },
       endColor: { r: 54, g: 114, b: 111 }, // #36726f
@@ -552,7 +552,7 @@ const domainHierarchy: Domain[] = [
   {
     id: "water",
     label: "Water",
-    description: "Water resources resilience to wildfire impacts.",
+    description: "Water tracks resilience in freshwater systems that communities and ecosystems rely on before and after wildfire.",
     colorGradient: {
       startColor: { r: 255, g: 255, b: 255 },
       endColor: { r: 65, g: 110, b: 146 }, // #416e92
@@ -605,7 +605,7 @@ const domainHierarchy: Domain[] = [
   {
     id: "air_quality",
     label: "Air Quality",
-    description: "Air quality resilience measures the ability to maintain healthy air during wildfire events.",
+    description: "Air Quality measures smoke exposure risk and health-related capacity to withstand wildfire-driven air pollution.",
     colorGradient: {
       startColor: { r: 255, g: 255, b: 255 },
       endColor: { r: 70, g: 69, b: 85 }, // #464555

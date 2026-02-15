@@ -3,13 +3,13 @@ import { isDebugMode } from "config/featureFlags";
 import { useCallback, useEffect, useState } from "react";
 import "../index.css";
 import SelectedMetricIdObject from "../types/componentStatetypes";
-import { FlowerChartConfig, DEFAULT_FLOWER_CHART_CONFIG, FLOWER_CHART_CONFIG_STORAGE_KEY } from "../types/flowerChartConfigTypes";
-import { GradientConfig, DEFAULT_GRADIENT_CONFIG } from "../types/gradientConfigTypes";
-import { LabelConfig, DEFAULT_LABEL_CONFIG } from "../types/labelConfigTypes";
+import { DEFAULT_FLOWER_CHART_CONFIG, FLOWER_CHART_CONFIG_STORAGE_KEY, FlowerChartConfig } from "../types/flowerChartConfigTypes";
+import { DEFAULT_GRADIENT_CONFIG, GradientConfig } from "../types/gradientConfigTypes";
+import { DEFAULT_LABEL_CONFIG, LabelConfig } from "../types/labelConfigTypes";
 import { DomainScores } from "../utils/domainScoreColors";
-import { GradientCustomizer, LabelConfigWidget, FlowerChartConfigWidget } from "./DevTools";
+import { FlowerChartConfigWidget, GradientCustomizer, LabelConfigWidget } from "./DevTools";
 import Header from "./Header/Header";
-import MapArea, { BasemapId, BASEMAP_OPTIONS, LabelSource, MapProjection, PROJECTION_OPTIONS } from "./MapArea/MapArea";
+import MapArea, { BASEMAP_OPTIONS, BasemapId, LabelSource, MapProjection } from "./MapArea/MapArea";
 import RightSidebar from "./RightSidebar";
 import Subheader from "./Subheader/Subheader";
 
@@ -80,7 +80,7 @@ function App() {
       domainId: "infrastructure",
       metricId: "infrastructure_domain_score",
       label: "Infrastructure",
-      description: "Built infrastructure resilience to wildfire damage.",
+      description: "Infrastructure provides the foundation for communities to live, work, and access essential resources in wildfire-prone places.",
       colorGradient: {
         startColor: { r: 255, g: 255, b: 255 },
         endColor: { r: 171, g: 16, b: 78 }, // #ab104e Infrastructure brand color

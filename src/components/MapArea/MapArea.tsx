@@ -1,11 +1,11 @@
 import { Country } from "components/App";
 import {
-  API_ID_FIELD,
-  getUnifiedLocationUrls,
-  getUnifiedMetricUrls,
-  LABEL_TILES_URL,
-  UNIFIED_GEO_LEVELS,
-  UnifiedGeoLevel
+    API_ID_FIELD,
+    getUnifiedLocationUrls,
+    getUnifiedMetricUrls,
+    LABEL_TILES_URL,
+    UNIFIED_GEO_LEVELS,
+    UnifiedGeoLevel
 } from "config/api";
 import { isDebugMode } from "config/featureFlags";
 import { getRegionAbbreviation } from "data/StateNameToAbbrevsMap";

@@ -41,13 +41,13 @@
 | T5 | ⏳ Content Integration from Cat's Document | 🔴 High | Large (4-6hrs) | T2 (pages must exist) |
 | T6 | ✅ Update Domains Section (4 Pillars → 8 Domains) | 🔴 High | Medium (2-3hrs) | None (content in `docs/website-written-content.txt`) |
 | T7 | ⏳ Domain Page Content Updates (Needs Review) | 🔴 High | Medium (2-3hrs) | T6 |
-| T8 | ⬜ Map/Dashboard Language & Visual Fixes | 🟡 Medium | Small (1-2hrs) | T1 (branding) |
+| T8 | ✅ Map/Dashboard Language & Visual Fixes | 🟡 Medium | Small (1-2hrs) | T1 (branding) |
 | T9 | ✅ Header Layout: Logo Left, Nav Right (Visual Separation) | 🟡 Medium | Small (1hr) | None |
 | T10 | ✅ Remove Button Translate-Up Hover Effect | 🟡 Medium | Small (30min) | None |
-| T11 | ⬜ Hide Scroll Arrow When Footer In View | 🟡 Medium | Small (30-45min) | None |
+| T11 | ✅ Hide Scroll Arrow When Footer In View | 🟡 Medium | Small (30-45min) | None |
 | T12 | ✅ Remove "Accent: Gradient" Toggle Button | 🟡 Medium | Small (15min) | None |
 
-**Progress:** 7/12 complete
+**Progress:** 8/12 complete
 
 ---
 
@@ -622,7 +622,7 @@ All 8 domains have descriptions and indicator lists in `docs/website-written-con
 ### T8: Map/Dashboard Language & Visual Fixes
 **Priority:** 🟡 Medium  
 **Effort:** Small (1-2 hours)  
-**Status:** ⬜ Not Started  
+**Status:** ✅ Complete (Feb 15, 2026)  
 **Dependencies:** T1 (branding must be updated first)
 
 #### Description
@@ -694,6 +694,13 @@ Apply Cat's specific feedback about the map/dashboard mockup visuals and languag
 - **Clarification Needed:** Confirm this is for dashboard app vs. mockup
 - **Scale Bar:** Cat's comment "I know it makes the colors weird" suggests she's aware of trade-offs
 - Consider testing scale bar with sample data to see color distribution impact
+
+#### Implementation Notes
+- ✅ Completed Feb 15, 2026 — Domain description copy only (per user scope)
+- Updated domain-level `description` text in `src/data/domainHierarchy.ts` for all 8 domains
+- Updated default Infrastructure description in `src/components/App.tsx` for first-load consistency
+- Domain labels unchanged; only subheader description text above map was edited
+- Flower plot centering and scale bar (0–100) remain as future work if needed
 
 ---
 

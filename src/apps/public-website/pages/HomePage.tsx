@@ -60,7 +60,7 @@ function HomePage() {
             description="Cat to provide: Wildfire urgency imagery. Suggested: dramatic fire/recovery scenes."
           />
           <div id="why-resilience-content-wrapper">
-            <SectionHeader idPrefix="why-resilience" title="Why wildfire resilience?" />
+            <SectionHeader idPrefix="why-resilience" title="Why wildfire resilience?" light />
             <ContentBlock id="why-resilience-content" className="text-white/90">
               <p id="why-resilience-paragraph-1">
                 Wildfires are a natural and recurring part of many North American
@@ -110,6 +110,7 @@ function HomePage() {
             title="How to Use the WRI"
             description="Explore wildfire resilience across local to state scales, compare places consistently, and generate outputs for planning, policy, and community conversations."
             centered
+            light
           />
           <div id="how-it-works-grid" className="grid gap-5 md:grid-cols-3">
             <article id="how-it-works-card-1" className="rounded-2xl border border-white/30 bg-white/10 p-6">

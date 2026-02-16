@@ -10,7 +10,7 @@ Quick pre-meeting discussion the day before Cat's investor meeting (Feb 17, 2026
 | ID | Status | Last Updated (Timestamp) | Task Description | Notes |
 |----|--------|--------------------------|------------------|-------|
 | **4a** | **✅** | **2026-02-16 13:05 PST** | **[PRIORITY] Refactor: Foundation (Shared Components + Homepage)** | **Completed: Shared components + HomePage conversion + React Router routes/placeholders + hero viewport-height fix** |
-| **4b** | **🟢** | **2026-02-16 13:05 PST** | **[PRIORITY] Refactor: Domain Pages (8 pages)** | **Now unblocked; convert Infrastructure, Air Quality, Water, Habitats, Species, Livelihoods, Communities, Sense of Place** |
+| **4b** | **✅** | **2026-02-16 13:19 PST** | **[PRIORITY] Refactor: Domain Pages (8 pages)** | **Completed: 8 domain routes now use React page components with extracted section copy, indicators, related-domain navigation, and CTA** |
 | **4c** | **🔴** | **2026-02-16 13:05 PST** | **[PRIORITY] Refactor: About/Info Pages + Polish (7 pages)** | **Convert About, Why Resilience, Why Index, How It Works, Team, Resources, News; wire up all routes** |
 | 3 | 🟡 | 2026-02-16 13:05 PST | Will to reduce hero video height on homepage | Video should fit viewport without requiring scroll to see bottom |
 | 5 | 🔴 | 2026-02-16 13:05 PST | Remove icons from domain cards (Ben's feedback) | Each domain should use its wheel color instead of icon |
@@ -226,7 +226,7 @@ Cat expects random feedback, such as:
    - Create ~10 shared components + 1 page component
    - Goal: Establish component architecture for remaining pages
 
-2. **🔴 [PRIORITY] Refactor Phase 2: Domain Pages (New Chat Window 2)**
+2. **✅ [PRIORITY] Refactor Phase 2: Domain Pages (New Chat Window 2)**
    - Convert 8 domain pages to React using shared components from Phase 1
    - Pages: Infrastructure, Air Quality, Water, Habitats, Species, Livelihoods, Communities, Sense of Place
    - Reuse Navigation, Footer, Hero patterns

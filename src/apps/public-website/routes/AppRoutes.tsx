@@ -1,6 +1,14 @@
 import DashboardApp from "components/App";
 import { Navigate, Route, Routes } from "react-router-dom";
 import PublicWebsiteLayout from "../components/PublicWebsiteLayout";
+import AirQualityPage from "../pages/domain/AirQualityPage";
+import CommunitiesPage from "../pages/domain/CommunitiesPage";
+import HabitatsPage from "../pages/domain/HabitatsPage";
+import InfrastructurePage from "../pages/domain/InfrastructurePage";
+import LivelihoodsPage from "../pages/domain/LivelihoodsPage";
+import SenseOfPlacePage from "../pages/domain/SenseOfPlacePage";
+import SpeciesPage from "../pages/domain/SpeciesPage";
+import WaterPage from "../pages/domain/WaterPage";
 import HomePage from "../pages/HomePage";
 import PlaceholderPage from "../pages/PlaceholderPage";
 import { PUBLIC_ROUTES } from "./routeConfig";
@@ -10,94 +18,14 @@ function AppRoutes() {
     <Routes>
       <Route element={<PublicWebsiteLayout />}>
         <Route path={PUBLIC_ROUTES.home} element={<HomePage />} />
-        <Route
-          path={PUBLIC_ROUTES.infrastructure}
-          element={
-            <PlaceholderPage
-              id="infrastructure-page"
-              title="Infrastructure"
-              sourceHtmlFile="infrastructure.html"
-              phaseLabel="Phase 2"
-            />
-          }
-        />
-        <Route
-          path={PUBLIC_ROUTES.airQuality}
-          element={
-            <PlaceholderPage
-              id="air-quality-page"
-              title="Air Quality"
-              sourceHtmlFile="air-quality.html"
-              phaseLabel="Phase 2"
-            />
-          }
-        />
-        <Route
-          path={PUBLIC_ROUTES.water}
-          element={
-            <PlaceholderPage
-              id="water-page"
-              title="Water"
-              sourceHtmlFile="water.html"
-              phaseLabel="Phase 2"
-            />
-          }
-        />
-        <Route
-          path={PUBLIC_ROUTES.habitats}
-          element={
-            <PlaceholderPage
-              id="habitats-page"
-              title="Habitats"
-              sourceHtmlFile="habitats.html"
-              phaseLabel="Phase 2"
-            />
-          }
-        />
-        <Route
-          path={PUBLIC_ROUTES.species}
-          element={
-            <PlaceholderPage
-              id="species-page"
-              title="Species"
-              sourceHtmlFile="species.html"
-              phaseLabel="Phase 2"
-            />
-          }
-        />
-        <Route
-          path={PUBLIC_ROUTES.livelihoods}
-          element={
-            <PlaceholderPage
-              id="livelihoods-page"
-              title="Livelihoods"
-              sourceHtmlFile="livelihoods.html"
-              phaseLabel="Phase 2"
-            />
-          }
-        />
-        <Route
-          path={PUBLIC_ROUTES.communities}
-          element={
-            <PlaceholderPage
-              id="communities-page"
-              title="Communities"
-              sourceHtmlFile="communities.html"
-              phaseLabel="Phase 2"
-            />
-          }
-        />
-        <Route
-          path={PUBLIC_ROUTES.senseOfPlace}
-          element={
-            <PlaceholderPage
-              id="sense-of-place-page"
-              title="Sense of Place"
-              sourceHtmlFile="sense-of-place.html"
-              phaseLabel="Phase 2"
-            />
-          }
-        />
+        <Route path={PUBLIC_ROUTES.infrastructure} element={<InfrastructurePage />} />
+        <Route path={PUBLIC_ROUTES.airQuality} element={<AirQualityPage />} />
+        <Route path={PUBLIC_ROUTES.water} element={<WaterPage />} />
+        <Route path={PUBLIC_ROUTES.habitats} element={<HabitatsPage />} />
+        <Route path={PUBLIC_ROUTES.species} element={<SpeciesPage />} />
+        <Route path={PUBLIC_ROUTES.livelihoods} element={<LivelihoodsPage />} />
+        <Route path={PUBLIC_ROUTES.communities} element={<CommunitiesPage />} />
+        <Route path={PUBLIC_ROUTES.senseOfPlace} element={<SenseOfPlacePage />} />
         <Route
           path={PUBLIC_ROUTES.about}
           element={

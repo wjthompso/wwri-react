@@ -7,20 +7,20 @@ Quick pre-meeting discussion the day before Cat's investor meeting (Feb 17, 2026
 
 ## Quick Task Summary
 
-| ID | Status | Task Description | Notes |
-|----|--------|------------------|-------|
-| **4a** | **🟢** | **[PRIORITY] Refactor: Foundation (Shared Components + Homepage)** | **Extract reusable components, convert index.html to React, set up routing** |
-| **4b** | **🔴** | **[PRIORITY] Refactor: Domain Pages (8 pages)** | **Convert Infrastructure, Air Quality, Water, Habitats, Species, Livelihoods, Communities, Sense of Place** |
-| **4c** | **🔴** | **[PRIORITY] Refactor: About/Info Pages + Polish (7 pages)** | **Convert About, Why Resilience, Why Index, How It Works, Team, Resources, News; wire up all routes** |
-| 3 | 🟡 | Will to reduce hero video height on homepage | Video should fit viewport without requiring scroll to see bottom |
-| 5 | 🔴 | Remove icons from domain cards (Ben's feedback) | Each domain should use its wheel color instead of icon |
-| 1 | 🟡 | Cat to provide annotated screenshots with specific text changes | Minor language tweaks (e.g., remove "presence of structure status" on Infrastructure page) |
-| 2 | 🟡 | Cat to provide visual assets (video clips, images) | Many will be placeholders initially; waiting for funder feedback |
-| 8 | 🟡 | Cat to review text on all pages before investor meeting | Priority: ensure text doesn't cause negative reactions from funders |
-| 6 | 🔴 | Style "About: Why Resilience?" pages similar to domain pages | Lower priority - can wait until after investor feedback (Feb 17) |
-| 7 | 🔴 | Break up "About" pages with visual elements | Add color blocks, images, domain wheel assets between paragraphs |
-| 9 | 🟡 | Will to consider adding inline edit feature for Cat | Optional: Let Cat edit sections temporarily, take screenshots, revert |
-| 10 | 🔴 | Wait for investor feedback before finalizing "About" page styling | Meeting tomorrow (Feb 17) may shift priorities based on funder reactions |
+| ID | Status | Last Updated (Timestamp) | Task Description | Notes |
+|----|--------|--------------------------|------------------|-------|
+| **4a** | **✅** | **2026-02-16 13:05 PST** | **[PRIORITY] Refactor: Foundation (Shared Components + Homepage)** | **Completed: Shared components + HomePage conversion + React Router routes/placeholders + hero viewport-height fix** |
+| **4b** | **🟢** | **2026-02-16 13:05 PST** | **[PRIORITY] Refactor: Domain Pages (8 pages)** | **Now unblocked; convert Infrastructure, Air Quality, Water, Habitats, Species, Livelihoods, Communities, Sense of Place** |
+| **4c** | **🔴** | **2026-02-16 13:05 PST** | **[PRIORITY] Refactor: About/Info Pages + Polish (7 pages)** | **Convert About, Why Resilience, Why Index, How It Works, Team, Resources, News; wire up all routes** |
+| 3 | 🟡 | 2026-02-16 13:05 PST | Will to reduce hero video height on homepage | Video should fit viewport without requiring scroll to see bottom |
+| 5 | 🔴 | 2026-02-16 13:05 PST | Remove icons from domain cards (Ben's feedback) | Each domain should use its wheel color instead of icon |
+| 1 | 🟡 | 2026-02-16 13:05 PST | Cat to provide annotated screenshots with specific text changes | Minor language tweaks (e.g., remove "presence of structure status" on Infrastructure page) |
+| 2 | 🟡 | 2026-02-16 13:05 PST | Cat to provide visual assets (video clips, images) | Many will be placeholders initially; waiting for funder feedback |
+| 8 | 🟡 | 2026-02-16 13:05 PST | Cat to review text on all pages before investor meeting | Priority: ensure text doesn't cause negative reactions from funders |
+| 6 | 🔴 | 2026-02-16 13:05 PST | Style "About: Why Resilience?" pages similar to domain pages | Lower priority - can wait until after investor feedback (Feb 17) |
+| 7 | 🔴 | 2026-02-16 13:05 PST | Break up "About" pages with visual elements | Add color blocks, images, domain wheel assets between paragraphs |
+| 9 | 🟡 | 2026-02-16 13:05 PST | Will to consider adding inline edit feature for Cat | Optional: Let Cat edit sections temporarily, take screenshots, revert |
+| 10 | 🔴 | 2026-02-16 13:05 PST | Wait for investor feedback before finalizing "About" page styling | Meeting tomorrow (Feb 17) may shift priorities based on funder reactions |
 
 **Status Legend:**
 - 🟢 = Ready to Start / High Priority

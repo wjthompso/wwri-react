@@ -1,0 +1,405 @@
+﻿Speaker 1   00:00
+Oh no,
+
+
+Speaker 2   00:01
+I'm one who's never gonna leave Southern California because I can't do weather, I guess. Oh gosh. Um, did
+
+
+Speaker 1   00:13
+You get a haircut?
+
+
+Speaker 2   00:14
+What was that? Did
+
+
+Speaker 1   00:15
+You get a haircut by the way?
+
+
+Speaker 2   00:17
+I did. It's like, quite short now
+
+
+Speaker 1   00:19
+As comparatively. Yeah,
+
+
+Speaker 2   00:22
+My hair used to be like.
+
+
+Speaker 1   00:25
+Three
+
+
+Speaker 2   00:25
+Feet long, and now it's not.
+
+
+Speaker 1   00:27
+Well, we're getting used to
+
+
+Speaker 2   00:28
+It.
+
+
+Speaker 1   00:30
+That's cool.
+
+
+Speaker 2   00:32
+That's awesome, okay, um, so this could be like. This might be a very short meeting
+
+
+Speaker 1   00:35
+Cool, um?
+
+
+Speaker 2   00:39
+Basically, so there's like, there's maybe three things okay, at least three that I wanted to talk about. Yes, number one. Okay, I'm getting really hung up as I review it on image assets and content, and I'm realizing that that is my responsibility. Okay.
+
+
+Speaker 1   00:58
+Right,
+
+
+Speaker 2   00:58
+Like you don't. Why would you know the specific words that I want in which specific places? Yeah, so. Um, I think I'm guessing what you did, is you fed some of Tessa's stuff? Into, are you? Are you a clot, or you're a cursor or whatever into whatever?
+
+
+Speaker 1   01:19
+Yeah, and
+
+
+Speaker 2   01:20
+It reassembled things in ways that I wouldn't find intuitive, cool. And so. I, it's definitely on me to tell you. What words go where and my question is is like? Um. Is the bet, like, is this, like, my?
+
+
+Speaker 1   01:44
+Cut. Hello! Hello!
+
+
+Hi, hey, sorry, I'm sure
+
+
+Speaker 2   02:59
+That's me, are like our power is flickering.
+
+
+Speaker 1   03:03
+Hmm,
+
+
+Speaker 2   03:04
+And it's super windy downtown,
+
+
+Speaker 1   03:06
+Darn. Okay, so you, you cut out. Um, you were saying that you need to decide the content. And if you were, you were talking about talking about content, which which makes a lot of sense. Um and. Yeah, definitely curious. You know, it's interesting, because there's like the high level and the low level like the high level would be like. Like, for example, just like the, uh, the general structure of the web of the the website, not the dashboard, but the actual website. Do you like that, you know, I mean, like, um, having this, uh, yeah, the
+
+
+Speaker 2   03:40
+Video in
+
+
+Speaker 1   03:41
+The background, you know, Wildfire resilience index, like, is that kind of, you know, great green light there? Or do you want to go a different direction? Terms of? I kind of figured that, um, the way that AI was laying out. The content might not be. What you're looking for. But the question is, are we moving in the right direction, or do we need to Pivot?
+
+
+Speaker 2   04:06
+No, so super high level. I like. How everything looks? There's some things I'm a little confused about, but super high level. I like how everything looks okay, and the only Hang-Ups that I have are like the specific language. Yeah, and so I feel like in terms of like difficulty of addressing. It's more difficult for me than for you. Because once I tell you the the word changes to implement, I feel like that's not.
+
+
+Speaker 1   04:36
+Hmm,
+
+
+Speaker 2   04:36
+Okay.
+
+
+Speaker 1   04:37
+Okay, interesting. Yeah, my question? Go
+
+
+Speaker 2   04:41
+Ahead.
+
+
+Speaker 1   04:41
+Yeah, with that, I'm kind of, I'm I'm wondering, um. Would it be? I'm wondering if it might be useful for me to try and find some way of like letting you edit sections so that you know you wouldn't persist like you would edit a section, and then it would not persist, but you could like take a screenshot of like. This is kind of how I wanted to to look, um. Because I, I'm just, I kind of have a feeling that, like, you might go to a Google doc and might type out what you think looks good. And then, like, you see it on the map, and you scroll up and down, you're like. This is, this is awful. So, I kind of feel, I mean, and let me know if you think this is a good approach, but I kind of feel like. What I could do is make all these sections, um, like I can have like a button at the top that says, like, edit, you know, like, and you know, enable editing or something, and then you can go in. You can edit the sections would not persist. So, yeah, take a screenshot, uh, but it would let you see. Yeah, how things look does that feel like something that might help you, or do you just want to do a Google doc and and then just send it over?
+
+
+Speaker 2   05:45
+Yeah, I think that feels like too much work, um. Like, the changes aren't that major. Oh, okay, right?
+
+
+Speaker 1   05:54
+It's like,
+
+
+Speaker 2   05:54
+Um. Like, it's things like? If you go to domains and you look at infrastructure.
+
+
+Speaker 1   06:04
+Yeah, it's things
+
+
+Speaker 2   06:05
+Like presence of structure status, like. This domain doesn't have a status, so it's like, it's remove that phrase. Yeah,
+
+
+Speaker 1   06:12
+Okay. So,
+
+
+Speaker 2   06:13
+Like my thought was that I would take like a screenshot or something like that, and then say like these words become these words. Oh
+
+
+Speaker 1   06:20
+Yeah, basically.
+
+
+Speaker 2   06:23
+Because
+
+
+Speaker 1   06:23
+It's
+
+
+Speaker 2   06:24
+Like, it's not that much stuff. It's just like little things.
+
+
+Speaker 1   06:29
+Does
+
+
+Speaker 2   06:29
+That make sense? Yeah, that's
+
+
+Speaker 1   06:30
+Perfect.
+
+
+Speaker 2   06:30
+That's
+
+
+Speaker 1   06:31
+Yeah, super doable.
+
+
+Speaker 2   06:34
+Yeah, and then it's like that's just me. Putting like being really consistent and going across all these things and? Doing that, and then also putting in some of like just making some. Of the visual assets, like some of the little video clips. Yeah, just
+
+
+Speaker 1   06:49
+To see
+
+
+Speaker 2   06:50
+If that works. Yeah, totally,
+
+
+Speaker 1   06:52
+Which is like,
+
+
+Speaker 2   06:53
+Not hard because a lot of them will be placeholders. Yeah,
+
+
+Speaker 1   06:56
+Can I ask a nitpicky question that, um? So, for the first page? The Wildfire resilience index video. It, like the height is so big that you have to scroll down to see the bottom of the video. Do you want it to be like, I'll show my screen real fast. Sorry, you might have had more like high level question, uh, stuff, or difference I'm talking about. But um, do you want it? We're like basically as soon as you scroll down. Like the video, like the like, like, do me to like squash, like the height? So that, like, it just fits into whatever whatever is left in your viewport and your. Yeah, you wanna okay. I was thinking that, okay,
+
+
+Speaker 2   07:40
+Yeah, cool. Okay, sorry,
+
+
+Speaker 1   07:42
+Just quick thing I tried to.
+
+
+Speaker 2   07:45
+Uh, these videos. And I was working in Canada, and I couldn't. Yeah, I can. There's
+
+
+Speaker 1   07:52
+Stuff I can do. Um, I can kind of zoom in a little bit, and then, um, so
+
+
+Speaker 2   07:55
+That's like the back to me. Like, I guess you're. Your question. The pieces are there. And like, I can see where everything should go. I just need to give you the assets to put there. Oh, perfect.
+
+
+Speaker 1   08:07
+Okay, that's like, easy, something I don't understand.
+
+
+Speaker 2   08:10
+Yes. Yeah, so something I and there's going to be. There's going to be things like, um. You know, Ben hates icons. I learned recently. And so, like, in the. Domains.
+
+
+Speaker 1   08:28
+Oh, I'm with you icons like, yeah, okay. Yeah, I'm
+
+
+Speaker 2   08:34
+Like, really agnostic. Like, I don't. It doesn't evoke strong feelings for me. Frankly,
+
+
+Speaker 1   08:38
+Yeah, um.
+
+
+Speaker 2   08:40
+But it's things like, you know? Take out the icons and and each domain should be the color that it is in the wheel. Oh, like, that's a pretty easy. Fits
+
+
+Speaker 1   08:53
+Okay.
+
+
+Speaker 2   08:53
+Okay, so what I don't understand, I want to share my screen. Yes, hopefully. All right, you should be. And I'm also, I don't think that everyone sees this the same way I do. Okay, so I'm like seeing all this, and this is all lovely and la la, la. But what I don't get is like when you go to these tabs?
+
+
+Connects to things. Okay, so it goes to.
+
+
+So? This is one of those things where I would probably break it. Break up the text with some. Like, do this like, over here. You did this thing where it's like a panel and an image and a panel, and then an image, right? It's like, there's color blocks as you go down. That makes sense to do here, too, just to break it up. Literally, just paragraph by paragraph with, like, like, here, I would give you the asset of the domain Wheels, right, or something like that? So, like, on the website a long time ago. We just sort of bounced it around, so it'd be like a lot of text. And then, like something related to the project, which this is not accurate anymore. And then, like, does that make sense to you, uh, I think
+
+
+Speaker 1   10:10
+So? Let me repeat back. I may not be fully understanding what you're saying. So, what I'm hearing is that in all the other Pages, we are like, delivering, you know, a single like two to three sentence paragraph, and then we're breaking it up with images or different sections. Whereas in this one about section, it's almost like no styling just there. It is kind of like Bare Bones and your it sounds. It sounds like what you're saying is, let's add some more of those visual assets. Let's maybe break break apart, the paragraphs.
+
+
+Mains is that? Is that what I'm hearing? That's what I'm
+
+
+Speaker 2   10:50
+Thinking. Yeah, okay, yeah,
+
+
+Speaker 1   10:53
+And I think actually,
+
+
+Speaker 2   10:54
+It's about. Four, five, six. It's the seven that we haven't really worked on very much. Okay, yeah,
+
+
+Speaker 1   11:00
+Because these are, these are kind of like, ugly. They're kind of like 2004. Like web pages, it's like
+
+
+Speaker 2   11:07
+It looks like a Blog.
+
+
+Speaker 1   11:07
+Yeah, not with you. The other
+
+
+Speaker 2   11:10
+Thing I would say is like, like, in terms of like the, so we're meeting with our funders tomorrow in terms of like the big priorities. I would say these are, that's a pretty low one because we can say, like, here's the text. We'll make it look pretty like these other ones, sure. A baseline, because like again, they may just see the text, and they may freak out for whatever reason. I don't know what it is, yeah, like
+
+
+Speaker 1   11:32
+They,
+
+
+Speaker 2   11:32
+Like, every time I feel like, every time I meet with these funders. They, like, say the most random things and the project goes sideways. So? Yeah, maybe let's like, wait to get feedback? Okay.
+
+
+Speaker 1   11:47
+Okay.
+
+
+Speaker 2   11:49
+Oh,
+
+
+Speaker 1   11:49
+When is your meeting again?
+
+
+Speaker 2   11:51
+Tomorrow at a time. It is in the afternoon. And let's! My unfortunate life. Yeah, I think I'm hot spotting right now. That is, how bad our internet is. That makes sense. That makes sense, I'm thinking.
+
+
+Speaker 1   12:11
+So, what I need to do so like, right now, uh, this website is working is it's it's. I'm just creating full HTML for every single page. Um, and there's a lot of repetition. Yeah, in the code. Is having a hard time because that's to like generate the entire thing, so I think we're actually, I mean, like the index at HTML is 2, 000 lines of code, and whenever you, you start running into situations where you have one file, and it's 2, 000 lines like it needs to be broken up. Um, so I think what I will do this is not highly relevant to you, but I'm just telling you what I'm going to do is, I'm gonna take a little bit of time today, and I'm gonna have cursor like turn into a react, like, react components. See if I can like wire it up to the dashboard, so things can actually like you can actually go like the URL, you know, uh, and Tinker with things in the URL, um, and then, so that might take me like an hour or two to have like direct cursor to do that. Um, but then, from there, I think iterating will be faster. Like, I think at once, that step is done then for then in future iterations will be quicker.
+
+
+You don't really need the edit feature. But yeah, like if I I might be able to like set you up with that because that way it, you can just figure out how you want it to look. Um, and then, like, take a screenshot and send me, but, um, yeah, anyway. Uh, is there any other? So there's text changes. You want the about why resilience? To be styled. Homes in in similar ways to kind of like how the domains are. Yeah,
+
+
+Speaker 2   13:49
+So I would say for that, like, eventually, that's the goal. But I'm hearing myself talk, and I'm realizing that, like. With the review that we're doing tomorrow at two o'clock. That's a lower priority because I think that they can squint and like. Imagine that it looks that way.
+
+
+Speaker 1   14:05
+Okay, okay, right? And
+
+
+Speaker 2   14:08
+Like, I feel like, so, like, what I anticipate with this group is like them. Looking at this photo and being, like, Oh my God, you can't have something on fire. Well, it's a fire index. Like, what do you like, so, like, what do you envision then? Yeah, and like working. That kind of?
+
+
+Speaker 1   14:32
+Yeah, I'm curious. I'm actually curious if they end up not basically like,
+
+
+Speaker 2   14:35
+I'm, like, I think that they're gonna they might freak out, for example. On this evidence planning and?
+
+
+I don't think it's going to be the styling. I think it's going to be the content. Oh, okay,
+
+
+Speaker 1   14:49
+Yeah.
+
+
+Speaker 2   14:57
+Right, so I think the best way to give feedback is for me to do screenshots. Annotate the changes, provide the assets like the visual assets that I want, because like, even for things like livelihoods like I would have this, be a photo, right?
+
+
+Or the color of the domain wheel. Something where you're like, or maybe not, like?
+
+
+If it's a photo, they'll connect with what it is. If it's the color of the domain wheel, it helps cue people into, like, what they should be looking at on the maps.
+
+
+Speaker 1   15:34
+Yeah, both. I mean, you can do both. You can find a way of doing both. Yeah, good thoughts. These make sense. Yeah, connections reporting mental model good stuff. Yeah,
+
+
+Speaker 2   15:44
+Yeah, it's just like it's hard. So, let me go through. You've got work to do. I'll do some work too. Um, and hopefully we'll get somewhere in something resembling a time frame that works. Yeah,
+
+
+Speaker 1   15:57
+All right, cool, all right. Yeah,
+
+
+Speaker 2   15:58
+Sorry to take away your day off. Oh, your dream is rainy and terrible. I, I have
+
+
+Speaker 1   16:03
+A lot on my plate, so I'm honestly just working today, but that's it's. It's nice, it's nice to have a day off where I can actually get ahead, so it works. It works out cool. All right, uh, take care.
+
+
+For chatting cool. I'll see you.

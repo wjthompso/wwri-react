@@ -14,13 +14,14 @@ Quick pre-meeting discussion the day before Cat's investor meeting (Feb 17, 2026
 | **4c** | **✅** | **2026-02-16 13:25 PST** | **[PRIORITY] Refactor: About/Info Pages + Polish (7 pages)** | **Completed: Converted About, Why Resilience, Why Index, How It Works, Team, Resources, and News into React pages via a shared info template and routed all seven pages** |
 | 3 | 🟡 | 2026-02-16 13:05 PST | Will to reduce hero video height on homepage | Video should fit viewport without requiring scroll to see bottom |
 | 5 | 🔴 | 2026-02-16 13:05 PST | Remove icons from domain cards (Ben's feedback) | Each domain should use its wheel color instead of icon |
-| 1 | 🟡 | 2026-02-16 13:05 PST | Cat to provide annotated screenshots with specific text changes | Minor language tweaks (e.g., remove "presence of structure status" on Infrastructure page) |
-| 2 | 🟡 | 2026-02-16 13:05 PST | Cat to provide visual assets (video clips, images) | Many will be placeholders initially; waiting for funder feedback |
+| 1 | ✅ | 2026-02-16 17:10 PST | Cat provided detailed text/content feedback | Received via "February 16 detailed website feedback.pdf" with page-by-page revisions |
+| 2 | 🟡 | 2026-02-16 17:10 PST | Cat to provide visual assets (video clips, images) | Text notes are in; specific image/video files still needed for implementation |
 | 8 | 🟡 | 2026-02-16 13:05 PST | Cat to review text on all pages before investor meeting | Priority: ensure text doesn't cause negative reactions from funders |
 | 6 | 🔴 | 2026-02-16 13:05 PST | Style "About: Why Resilience?" pages similar to domain pages | Lower priority - can wait until after investor feedback (Feb 17) |
 | 7 | 🔴 | 2026-02-16 13:05 PST | Break up "About" pages with visual elements | Add color blocks, images, domain wheel assets between paragraphs |
-| 9 | 🟡 | 2026-02-16 13:05 PST | Will to consider adding inline edit feature for Cat | Optional: Let Cat edit sections temporarily, take screenshots, revert |
+| 9 | 🔴 | 2026-02-16 17:10 PST | Will to consider adding inline edit feature for Cat | Optional and currently not needed; screenshot/PDF annotation workflow is working |
 | 10 | 🔴 | 2026-02-16 13:05 PST | Wait for investor feedback before finalizing "About" page styling | Meeting tomorrow (Feb 17) may shift priorities based on funder reactions |
+| 11 | 🟢 | 2026-02-16 17:10 PST | Implement Cat's Feb 16 detailed text edits | Apply copy/layout requests from PDF to landing + domain pages |
 
 **Status Legend:**
 - 🟢 = Ready to Start / High Priority
@@ -73,6 +74,45 @@ Quick pre-meeting discussion the day before Cat's investor meeting (Feb 17, 2026
 - Go through all pages systematically
 - Document text changes via annotated screenshots
 - Ensure consistency across the site
+
+---
+
+### 2b. Detailed Website Feedback Received (PDF - Feb 16)
+
+Cat sent a detailed feedback PDF with concrete copy and layout edits to apply immediately.
+
+**Landing Page Updates Requested:**
+- Center hero text and resize/rescale hero video
+- Replace Section 2 visual placeholder with Cat's teaser asset
+- Remove/rework "Natural, Shared, Open" blocks in Section 3 and test image placeholder option
+- In Section 4, change "Data access and integration" to **"Data Access"**
+- In Section 5, remove icons and use domain/map color coding for visual signposting
+- In final quote + map launcher area, reduce excess whitespace
+
+**Domain-Wide Structural Updates Requested:**
+- Replace or reduce the top brown banner treatment (current look is too muted)
+- Normalize color block order on domain pages to:
+  1. Overview
+  2. Status
+  3. Resistance
+  4. Recovery
+- Move banner descriptor text into a dedicated "Overview" color block
+
+**Livelihoods-Specific Updates Requested:**
+- Add explicit block labels: Overview, Status, Resistance, Recovery
+- Use revised overview copy provided by Cat
+- Resistance copy: remove reference to "supply chains"
+- Status copy: remove "Median income as a financial buffer"
+- Recovery copy: remove "Housing burden as a recovery constraint" and add "Recovery potential" to title language
+
+**Species-Specific Updates Requested:**
+- Resistance and Recovery are currently switched; correct order to Overview -> Status -> Resistance -> Recovery
+- Update overview text to focus on conservation status and fire survival/recovery capacity
+- Apply status/resistance/recovery copy edits from PDF (remove strike-through items and use revised indicator wording)
+
+**Implementation Note:**
+- Text revision guidance is available now.
+- Image/video references are still placeholders until Cat sends the source files.
 
 ---
 
@@ -252,25 +292,26 @@ Cat expects random feedback, such as:
    - Use alternating layout pattern like other pages
 
 7. **🟡 Implement Cat's annotated text changes** (when provided)
-   - Wait for Cat's screenshots with annotations
-   - Make specific text edits as documented
+   - Source now available: detailed PDF feedback document
+   - Implement page-by-page text edits from PDF first
+   - Fold in screenshot-level adjustments later if any additional notes come in
 
 8. **🟡 Add Cat's visual assets** (when provided)
    - Place video clips, images, and graphics as specified
    - Use domain wheel colors for domain cards
+   - Pending: exact image/video source files and filenames from Cat
 
 ### Cat Fong
 
-1. **🟡 Create annotated screenshots with text changes**
-   - Go through all pages systematically
-   - Document specific wording changes
-   - Note: Changes are "little things," not major rewrites
+1. **✅ Provide detailed text/content edits**
+   - Delivered via PDF with landing page and domain-page specific updates
+   - Includes copy revisions plus structure/order guidance for domain blocks
 
 2. **🟡 Provide visual assets**
    - Video clips for various sections
    - Photos for domain pages
    - Domain wheel graphics
-   - Note: Many will be placeholders initially
+   - Note: Many will be placeholders initially; exact files still needed
 
 3. **🟡 Review all page text before investor meeting**
    - Ensure content won't trigger negative reactions
@@ -333,13 +374,14 @@ Cat expects random feedback, such as:
 ### Immediate (Before Investor Meeting - Feb 17, 2pm)
 1. Will completes React refactoring
 2. Will fixes hero video height
-3. Cat reviews all text for accuracy
-4. Cat prepares for investor meeting
+3. Will applies Cat's detailed PDF copy edits where text is unambiguous
+4. Cat sends source files for referenced teaser/video/image placeholders
+5. Cat prepares for investor meeting
 
 ### After Investor Meeting (Feb 17+)
 1. Cat shares investor feedback with Will
-2. Cat provides annotated screenshots with text changes
-3. Cat provides visual assets
+2. Cat provides any additional line-item text corrections not already in PDF
+3. Cat provides remaining visual assets
 4. Will implements changes based on feedback
 5. Will styles About pages (if green-lighted by investors)
 

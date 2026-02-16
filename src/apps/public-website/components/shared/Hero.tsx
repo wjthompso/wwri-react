@@ -29,7 +29,7 @@ function Hero({ id, navHeightPx }: HeroProps) {
     <section
       id={id}
       className="relative"
-      style={{ marginTop: `${navHeightPx}px`, height: `min(calc(100vh - ${navHeightPx}px), 42rem)` }}
+      style={{ marginTop: `${navHeightPx}px`, height: `calc(100vh - ${navHeightPx}px)` }}
     >
       <VideoBackground
         id={`${id}-video`}

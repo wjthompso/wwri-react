@@ -129,17 +129,17 @@ export const INFO_PAGE_CONTENT: Record<InfoPageKey, InfoPageContent> = {
     ],
     sections: [
       {
-        heading: "Why a resistance + recovery lens matters",
-        paragraphs: [
-          "Some interventions reduce near-term harm, while others support long-term rebound. Measuring both prevents one-sided planning and reveals where additional support is needed.",
-          "A resilience lens also improves communication by linking immediate preparedness decisions to durable outcomes communities care about.",
-        ],
-      },
-      {
         heading: "Why this matters for communities",
         paragraphs: [
           "Wildfire impacts are uneven. Exposure, vulnerability, and access to support vary widely across populations and geographies.",
           "Resilience framing helps decision-makers identify who may need targeted assistance and where capacity-building investments can create more equitable outcomes.",
+        ],
+      },
+      {
+        heading: "Why a resistance + recovery lens matters",
+        paragraphs: [
+          "Some interventions reduce near-term harm, while others support long-term rebound. Measuring both prevents one-sided planning and reveals where additional support is needed.",
+          "A resilience lens also improves communication by linking immediate preparedness decisions to durable outcomes communities care about.",
         ],
       },
       {

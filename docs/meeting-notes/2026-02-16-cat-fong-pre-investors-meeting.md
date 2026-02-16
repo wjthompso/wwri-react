@@ -21,11 +21,12 @@ Quick pre-meeting discussion the day before Cat's investor meeting (Feb 17, 2026
 | 7 | 🔴 | 2026-02-16 13:05 PST | Break up "About" pages with visual elements | Add color blocks, images, domain wheel assets between paragraphs |
 | 9 | 🔴 | 2026-02-16 17:10 PST | Will to consider adding inline edit feature for Cat | Optional and currently not needed; screenshot/PDF annotation workflow is working |
 | 10 | 🔴 | 2026-02-16 13:05 PST | Wait for investor feedback before finalizing "About" page styling | Meeting tomorrow (Feb 17) may shift priorities based on funder reactions |
-| 11 | 🟢 | 2026-02-16 17:10 PST | Implement Cat's Feb 16 detailed text edits | Apply copy/layout requests from PDF to landing + domain pages |
+| 11 | 🔵 | 2026-02-16 17:55 PST | Implement Cat's Feb 16 detailed text edits | Needs review |
 
 **Status Legend:**
 - 🟢 = Ready to Start / High Priority
 - 🟡 = In Progress / Cat's task
+- 🔵 = Needs Review / Awaiting review
 - 🔴 = Not Started / Blocked / Lower Priority
 - ✅ = Complete
 

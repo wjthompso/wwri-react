@@ -21,7 +21,7 @@ function HomePage() {
           <ImageBlock
             id="what-is-wri-image"
             title="Visual Placeholder"
-            description="Cat to provide: Wildfire resilience concept. Suggested: Sunset landscape with community."
+            description="Cat to provide: Teaser asset for landing page section 2."
           />
           <div id="what-is-wri-content-wrapper">
             <SectionHeader
@@ -73,32 +73,12 @@ function HomePage() {
                 around practical actions.
               </p>
             </ContentBlock>
-            <div id="why-resilience-stat-grid" className="mt-8 grid gap-4 md:grid-cols-3">
-              <div id="why-resilience-stat-natural" className="rounded-xl border border-white/20 bg-white/10 p-4">
-                <p id="why-resilience-stat-natural-title" className="text-lg font-semibold text-white">
-                  Natural
-                </p>
-                <p id="why-resilience-stat-natural-text" className="text-sm text-white/80">
-                  Wildfire is inevitable
-                </p>
-              </div>
-              <div id="why-resilience-stat-shared" className="rounded-xl border border-white/20 bg-white/10 p-4">
-                <p id="why-resilience-stat-shared-title" className="text-lg font-semibold text-white">
-                  Shared
-                </p>
-                <p id="why-resilience-stat-shared-text" className="text-sm text-white/80">
-                  Common decision space
-                </p>
-              </div>
-              <div id="why-resilience-stat-open" className="rounded-xl border border-white/20 bg-white/10 p-4">
-                <p id="why-resilience-stat-open-title" className="text-lg font-semibold text-white">
-                  Open
-                </p>
-                <p id="why-resilience-stat-open-text" className="text-sm text-white/80">
-                  Transparent datasets
-                </p>
-              </div>
-            </div>
+            <ImageBlock
+              id="why-resilience-secondary-image"
+              title="Image Placeholder"
+              description="Cat to provide: replacement image for this section."
+              className="mt-8 border-white/30 bg-white/5"
+            />
           </div>
         </div>
       </ColorBlock>
@@ -143,7 +123,7 @@ function HomePage() {
                 💡
               </p>
               <h3 id="how-it-works-card-3-title" className="mt-3 text-xl font-semibold text-white">
-                Data Access and Integration
+                Data Access
               </h3>
               <p id="how-it-works-card-3-text" className="mt-3 text-sm leading-7 text-white/85">
                 Download underlying geospatial data to integrate WRI outputs into local
@@ -170,14 +150,14 @@ function HomePage() {
                 title={domain.title}
                 description={domain.description}
                 to={domain.route}
-                icon={domain.icon}
+                accentColorHex={domain.colorHex}
               />
             ))}
           </div>
         </div>
       </ColorBlock>
 
-      <ColorBlock id="quote-section" tone="warm" className="py-16">
+      <ColorBlock id="quote-section" tone="warm" className="py-10">
         <div id="quote-section-container" className="mx-auto max-w-4xl px-6 text-center">
           <p id="quote-section-text" className="text-2xl font-medium leading-10 text-[#2a1810]">
             "Wildfire is natural and inevitable. The goal is not to eliminate fire,
@@ -189,7 +169,7 @@ function HomePage() {
         </div>
       </ColorBlock>
 
-      <ColorBlock id="cta-section" tone="sunset" className="py-16">
+      <ColorBlock id="cta-section" tone="sunset" className="py-10">
         <div id="cta-section-container" className="mx-auto max-w-4xl px-6 text-center">
           <h2 id="cta-section-title" className="text-3xl font-bold text-white md:text-4xl">
             Explore resilience in your region

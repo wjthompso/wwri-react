@@ -204,7 +204,7 @@ export const DOMAIN_PAGE_CONTENT: Record<DomainPageKey, DomainPageContent> = {
       {
         heading: "Conservation Status and Baseline Vulnerability",
         paragraphs: [
-          "Species resilience begins with baseline condition. The WRI tracks conservation, threat, and extinction status to identify where fire impacts may compound existing vulnerabilities.",
+          "Species resilience begins with baseline conditions. The WRI tracks conservation, threat, and extinction status to identify where fire impacts may compound existing vulnerabilities.",
           "Status indicators are paired with life-history information to show which populations may be most sensitive to repeated fire exposure and which have stronger persistence capacity.",
         ],
         indicators: [
@@ -212,6 +212,19 @@ export const DOMAIN_PAGE_CONTENT: Record<DomainPageKey, DomainPageContent> = {
           "Trait-based resistance factors",
           "Number of reproductive events",
           "Bipartite life cycle",
+        ],
+      },
+      {
+        heading: "Morphology and Fire Resistance",
+        paragraphs: [
+          "Morphological traits influence how species tolerate fire effects and recover afterward. Structural characteristics can support survival under heat, smoke, and habitat disturbance. Examples of traits include gills, wings, mass, and bark.",
+          "Including morphology ensures species resilience is measured through both ecological status and functional traits tied to resistance.",
+        ],
+        indicators: [
+          "Morphology: gills",
+          "Morphology: wings",
+          "Morphology: mass",
+          "Trait synthesis for resistance and recovery",
         ],
       },
       {
@@ -225,19 +238,6 @@ export const DOMAIN_PAGE_CONTENT: Record<DomainPageKey, DomainPageContent> = {
           "Reproductive output",
           "Age to first reproduction",
           "Asexual reproduction",
-        ],
-      },
-      {
-        heading: "Morphology and Fire Resistance",
-        paragraphs: [
-          "Morphological traits influence how species tolerate fire effects and recover afterward. Structural characteristics can support survival under heat, smoke, and habitat disturbance.",
-          "Including morphology ensures species resilience is measured through both ecological status and functional traits tied to resistance.",
-        ],
-        indicators: [
-          "Morphology: gills",
-          "Morphology: wings",
-          "Morphology: mass",
-          "Trait synthesis for resistance and recovery",
         ],
       },
     ],
@@ -264,24 +264,18 @@ export const DOMAIN_PAGE_CONTENT: Record<DomainPageKey, DomainPageContent> = {
       {
         heading: "Job Interruption and Exposure to Fire",
         paragraphs: [
-          "Wildfires can interrupt tourism, agriculture, service-sector work, and supply chains. This section captures how vulnerable local job structures are to fire-related interruption.",
+          "Wildfires can interrupt tourism, agriculture, and service-sector work. This section captures how vulnerable local job structures are to fire-related interruption.",
           "Tracking exposure to disruption helps identify where recovery planning should prioritize workforce continuity and rapid economic stabilization.",
         ],
-        indicators: [
-          "Percent of jobs interrupted by fire and job vulnerability (resistance)",
-          "Median income as a financial buffer (status)",
-        ],
+        indicators: ["Percent of jobs interrupted by fire and job vulnerability (resistance)"],
       },
       {
-        heading: "Economic Diversity and Recovery Capacity",
+        heading: "Economic Diversity and Recovery Potential",
         paragraphs: [
           "Long-term livelihood resilience depends on whether local economies can adapt rather than collapse after disturbance. Diversity of jobs is a key recovery factor.",
           "Communities with more diverse economic pathways are better positioned to absorb shocks, maintain income, and rebuild over time.",
         ],
-        indicators: [
-          "Diversity of jobs (recovery)",
-          "Housing burden as a recovery constraint (status)",
-        ],
+        indicators: ["Diversity of jobs (recovery)"],
       },
     ],
   },

@@ -16,9 +16,23 @@ interface DomainPageTemplateProps {
 }
 
 const SECTION_TONES: Array<"warm" | "dark" | "sunset"> = ["warm", "dark", "sunset"];
+const SECTION_LABELS = ["Status", "Resistance", "Recovery"] as const;
+const DOMAIN_PAGE_TO_DEFINITION_KEY: Record<DomainPageKey, string> = {
+  infrastructure: "infrastructure",
+  airQuality: "air-quality",
+  water: "water",
+  habitats: "habitats",
+  species: "species",
+  livelihoods: "livelihoods",
+  communities: "communities",
+  senseOfPlace: "sense-of-place",
+};
 
 function DomainPageTemplate({ domainKey }: DomainPageTemplateProps) {
   const content = DOMAIN_PAGE_CONTENT[domainKey];
+  const currentDomainDefinition = DOMAIN_DEFINITIONS.find(
+    (domain) => domain.key === DOMAIN_PAGE_TO_DEFINITION_KEY[domainKey],
+  );
   const relatedDomains = DOMAIN_DEFINITIONS.filter((domain) => domain.title !== content.title);
 
   return (
@@ -30,32 +44,39 @@ function DomainPageTemplate({ domainKey }: DomainPageTemplateProps) {
       <ColorBlock
         id={`${domainKey}-hero-section`}
         tone="cream"
-        className="border-b border-[#dc7e49]/20 py-16"
+        className="border-b border-[#dc7e49]/20 py-10"
       >
         <div id={`${domainKey}-hero-container`} className="mx-auto max-w-6xl px-6">
-          <p
-            id={`${domainKey}-hero-eyebrow`}
-            className="text-sm font-semibold uppercase tracking-[0.16em] text-[#8e4b27]"
-          >
-            Domain Overview
-          </p>
+          <span
+            id={`${domainKey}-hero-accent-bar`}
+            className="block h-2 w-16 rounded-full"
+            style={{ backgroundColor: currentDomainDefinition?.colorHex ?? "#dc7e49" }}
+          />
           <h1 id={`${domainKey}-hero-title`} className="mt-3 text-4xl font-bold text-[#160e08] md:text-5xl">
             {content.title}
           </h1>
-          <p id={`${domainKey}-hero-subtitle`} className="mt-5 max-w-4xl text-lg leading-8 text-[#513221]">
-            {content.subtitle}
-          </p>
-          <p
-            id={`${domainKey}-hero-source-file`}
-            className="mt-6 inline-block rounded-full bg-[#fff5e8] px-4 py-2 text-xs font-semibold tracking-wide text-[#8e4b27]"
-          >
-            Source: {content.sourceHtmlFile}
-          </p>
+        </div>
+      </ColorBlock>
+
+      <ColorBlock id={`${domainKey}-overview-section-wrapper`} tone="warm" className={PUBLIC_WEBSITE_THEME.layout.sectionSpacing}>
+        <div id={`${domainKey}-overview-section-container`} className="mx-auto grid max-w-6xl gap-10 px-6 lg:grid-cols-2">
+          <ImageBlock
+            id={`${domainKey}-overview-section-media`}
+            title="Overview Asset Placeholder"
+            description={`Cat to provide: Overview media for ${content.title} (image or short video still).`}
+          />
+          <div id={`${domainKey}-overview-section-content-wrapper`}>
+            <SectionHeader idPrefix={`${domainKey}-overview-header`} title="Overview" />
+            <ContentBlock id={`${domainKey}-overview-copy`}>
+              <p id={`${domainKey}-overview-paragraph-1`}>{content.subtitle}</p>
+            </ContentBlock>
+          </div>
         </div>
       </ColorBlock>
 
       {content.sections.map((section, sectionIndex) => {
         const tone = SECTION_TONES[sectionIndex];
+        const sectionLabel = SECTION_LABELS[sectionIndex];
         const sectionId = `${domainKey}-section-${sectionIndex + 1}`;
         const isVisualFirst = sectionIndex % 2 === 0;
         const isDarkTone = tone !== "warm";
@@ -78,7 +99,7 @@ function DomainPageTemplate({ domainKey }: DomainPageTemplateProps) {
               <div id={`${sectionId}-content-wrapper`} className={isVisualFirst ? "" : "lg:order-1"}>
                 <SectionHeader
                   idPrefix={`${sectionId}-header`}
-                  title={section.heading}
+                  title={`${sectionLabel}: ${section.heading}`}
                   description={undefined}
                   light={isDarkTone}
                 />
@@ -95,7 +116,7 @@ function DomainPageTemplate({ domainKey }: DomainPageTemplateProps) {
                     id={`${sectionId}-indicators-title`}
                     className={`text-lg font-semibold ${isDarkTone ? "text-white" : "text-[#160e08]"}`}
                   >
-                    Key Indicators
+                    {sectionLabel} Indicators
                   </h3>
                   <ul id={`${sectionId}-indicators-list`} className="mt-4 grid gap-2">
                     {section.indicators.map((indicator, indicatorIndex) => (
@@ -135,6 +156,7 @@ function DomainPageTemplate({ domainKey }: DomainPageTemplateProps) {
                 title={domain.title}
                 description={domain.description}
                 to={domain.route}
+                accentColorHex={domain.colorHex}
               />
             ))}
           </div>

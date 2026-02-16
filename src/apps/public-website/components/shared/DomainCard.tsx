@@ -6,15 +6,21 @@ interface DomainCardProps {
   description: string;
   to: string;
   icon?: string;
+  accentColorHex?: string;
 }
 
-function DomainCard({ id, title, description, to, icon }: DomainCardProps) {
+function DomainCard({ id, title, description, to, icon, accentColorHex }: DomainCardProps) {
   return (
     <Link
       id={id}
       to={to}
       className="group rounded-2xl border border-[#dc7e49]/20 bg-white p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg"
     >
+      <span
+        id={`${id}-accent-bar`}
+        className="mb-4 block h-1.5 w-12 rounded-full"
+        style={{ backgroundColor: accentColorHex ?? "#dc7e49" }}
+      />
       {icon ? (
         <span id={`${id}-icon`} className="mb-4 block text-2xl">
           {icon}
@@ -26,7 +32,11 @@ function DomainCard({ id, title, description, to, icon }: DomainCardProps) {
       <p id={`${id}-description`} className="mt-3 text-sm leading-7 text-[#513221]">
         {description}
       </p>
-      <span id={`${id}-cta`} className="mt-5 inline-block text-sm font-semibold text-[#dc7e49]">
+      <span
+        id={`${id}-cta`}
+        className="mt-5 inline-block text-sm font-semibold"
+        style={{ color: accentColorHex ?? "#dc7e49" }}
+      >
         Explore {title}
       </span>
     </Link>

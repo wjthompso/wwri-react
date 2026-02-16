@@ -8,7 +8,7 @@ interface InfoPageTemplateProps {
   pageKey: InfoPageKey;
 }
 
-const SECTION_TONES: Array<"warm" | "dark" | "cream"> = ["warm", "dark", "cream"];
+const SECTION_TONES: Array<"dark" | "warm" | "cream"> = ["dark", "warm", "cream"];
 
 function InfoPageTemplate({ pageKey }: InfoPageTemplateProps) {
   const content = INFO_PAGE_CONTENT[pageKey];
@@ -65,13 +65,14 @@ function InfoPageTemplate({ pageKey }: InfoPageTemplateProps) {
         const tone = SECTION_TONES[sectionIndex];
         const sectionId = `${pageKey}-section-${sectionIndex + 1}`;
         const isDarkTone = tone === "dark";
+        const sectionToneClassName = tone === "warm" ? "bg-[#f0e2d1]" : "";
 
         return (
           <ColorBlock
             id={`${sectionId}-wrapper`}
             key={`${sectionId}-wrapper`}
             tone={tone}
-            className={PUBLIC_WEBSITE_THEME.layout.sectionSpacing}
+            className={`${PUBLIC_WEBSITE_THEME.layout.sectionSpacing} ${sectionToneClassName}`}
           >
             <div id={`${sectionId}-container`} className="mx-auto max-w-5xl px-6">
               <SectionHeader

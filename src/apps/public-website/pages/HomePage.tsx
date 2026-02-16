@@ -1,15 +1,15 @@
+import {
+    Button,
+    ColorBlock,
+    ContentBlock,
+    DomainCard,
+    Hero,
+    ImageBlock,
+    SectionHeader,
+} from "../components/shared";
+import { DOMAIN_DEFINITIONS } from "../data/domains";
 import { PUBLIC_ROUTES } from "../routes/routeConfig";
 import { PUBLIC_WEBSITE_THEME } from "../styles/theme";
-import { DOMAIN_DEFINITIONS } from "../data/domains";
-import {
-  Button,
-  ColorBlock,
-  ContentBlock,
-  DomainCard,
-  Hero,
-  ImageBlock,
-  SectionHeader,
-} from "../components/shared";
 
 function HomePage() {
   return (

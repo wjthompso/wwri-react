@@ -1,14 +1,14 @@
+import {
+    Button,
+    ColorBlock,
+    ContentBlock,
+    DomainCard,
+    ImageBlock,
+    SectionHeader,
+} from "../../components/shared";
 import { DOMAIN_DEFINITIONS } from "../../data/domains";
 import { PUBLIC_ROUTES } from "../../routes/routeConfig";
 import { PUBLIC_WEBSITE_THEME } from "../../styles/theme";
-import {
-  Button,
-  ColorBlock,
-  ContentBlock,
-  DomainCard,
-  ImageBlock,
-  SectionHeader,
-} from "../../components/shared";
 import { DOMAIN_PAGE_CONTENT, DomainPageKey } from "./domainPageData";
 
 interface DomainPageTemplateProps {

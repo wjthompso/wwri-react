@@ -1,247 +1,70 @@
-import type { ReactNode } from "react";
-import { Link } from "react-router-dom";
-import whenWriMeetsAi from "../../../assets/public-website-redesign/images/media/when-wri-meets-ai.png";
-import fromDataToAction from "../../../assets/public-website-redesign/images/media/from-data-to-action.jpeg";
-import newsFireAdapted from "../../../assets/public-website-redesign/images/media/news-fire-adapted-communities.png";
-import newsUcsbCurrent from "../../../assets/public-website-redesign/images/media/news-ucsb-current-wildfire.jpeg";
-import newsTaskForce from "../../../assets/public-website-redesign/images/media/news-wildfire-task-force.png";
-import newsKcbx from "../../../assets/public-website-redesign/images/media/news-kcbx-prescribed-burn.png";
-// 🛣️ "Six exits to safety" egress-threshold study (PNAS, June 2026) press coverage.
-import newsSixRoadsEvacuation from "../../../assets/public-website-redesign/images/media/news-six-roads-evacuation.jpg";
-import newsSixPathwaysDiagram from "../../../assets/public-website-redesign/images/media/news-six-pathways-diagram.jpg";
-import newsSixRoadsWildfire from "../../../assets/public-website-redesign/images/media/news-six-roads-wildfire.jpg";
-import newsIndependentSixRoads from "../../../assets/public-website-redesign/images/media/news-independent-six-roads.png";
-import newsHprEvacuationRoutes from "../../../assets/public-website-redesign/images/media/news-hpr-evacuation-routes.jpg";
-import newsMercuryFiretrapMap from "../../../assets/public-website-redesign/images/media/news-mercury-firetrap-map.jpg";
-import newsNbcEvacuationRisk from "../../../assets/public-website-redesign/images/media/news-nbc-evacuation-risk.jpg";
-import newsSixExitsBolinas from "../../../assets/public-website-redesign/images/media/news-six-exits-road-to-bolinas.webp";
-import newsKseeCentralValley from "../../../assets/public-website-redesign/images/media/news-ksee-central-valley-map.png";
-import newsKcluWildfireTool from "../../../assets/public-website-redesign/images/media/news-kclu-wildfire-tool.jpg";
-import newsCoastsideExitsFatalities from "../../../assets/public-website-redesign/images/media/news-coastside-exits-fatalities.jpg";
-import newsMorningagSixExits from "../../../assets/public-website-redesign/images/media/news-morningag-six-exits.webp";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import newsHero from "../../../assets/public-website-redesign/images/hero/home-hero.jpg";
 import MossDivider from "../components/shared/MossDivider";
+import NewsCard from "../components/shared/NewsCard";
+import {
+  NEWS_ARTICLES,
+  NEWS_TOPICS,
+  type NewsArticle,
+  type NewsTopicId,
+} from "../config/news";
+import { getPublicationBySlug } from "../config/publications";
 import { REDESIGN_ROUTES } from "../routes/routeConfig";
 
-type Article = {
-  id: string;
-  /** Writing organization (Montserrat Bold Sage 14.2 — Canva spec). */
-  source: string;
-  /** Publication date (Montserrat Sage 14.2). */
-  date: string;
-  /** Article title (Montserrat Bold Moss 20.8). */
-  title: string;
-  /** Hero image shown inside the Forest-outlined card. */
-  image: string;
-  /** External URL the whole card links to. */
-  href: string;
-  /** Call-to-action verb in the card footer (default "Read"; e.g. "Listen" for audio). */
-  cta?: string;
-};
-
-// 📰 Most recent first. Card shows org (above), title, then publication date. ===
-const ARTICLES: Article[] = [
-  {
-    id: "morning-ag-clips-six-exits",
-    source: "Morning Ag Clips",
-    date: "June 18, 2026",
-    title: "Six Exits to Safety: UC Study Finds Wildfire Survival Depends on Roads for Evacuation",
-    image: newsMorningagSixExits,
-    href: "https://www.morningagclips.com/six-exits-to-safety-uc-study-finds-wildfire-survival-depends-on-roads-for-evacuation/",
-  },
-  {
-    id: "coastside-buzz-evacuation-thresholds",
-    source: "Coastside Buzz",
-    date: "June 17, 2026",
-    title:
-      "How Evacuation Thresholds Relate to Wildfire Fatalities and Interactive Map for Wildfire Evacuation Risk",
-    image: newsCoastsideExitsFatalities,
-    href: "https://coastsidebuzz.com/how-evacuation-thresholds-relate-to-wildfire-fatalities-and-interactive-map-for-wildfire-evacuation-risk/",
-  },
-  {
-    id: "kclu-new-resiliency-tool",
-    source: "KCLU",
-    date: "June 16, 2026",
-    title:
-      "Santa Barbara research team launches a new tool to determine a community's wildfire resiliency",
-    image: newsKcluWildfireTool,
-    href: "https://www.kclu.org/local-news/2026-06-16/santa-barbara-research-team-launches-a-new-tool-to-determine-a-communitys-wildfire-resiliency",
-    cta: "Listen",
-  },
-  {
-    id: "sierra-sun-times-six-exits",
-    source: "Sierra Sun Times",
-    date: "June 15, 2026",
-    title: "Six exits to safety: UC study finds wildfire survival depends on roads for evacuation",
-    image: newsSixExitsBolinas,
-    href: "https://www.goldrushcam.com/sierrasuntimes/index.php/news/local-news/79001-six-exits-to-safety-uc-study-finds-wildfire-survival-depends-on-roads-for-evacuation",
-  },
-  {
-    id: "ksee-kgpe-new-map-central-valley",
-    source: "KSEE/KGPE",
-    date: "June 11, 2026",
-    title: "New map shows chances of wildfire survival, much of Central Valley at undue risk",
-    image: newsKseeCentralValley,
-    href: "https://www.yourcentralvalley.com/news/local-news/wildfire-evacuation-road-study/",
-  },
-  {
-    id: "ucanr-six-exits",
-    source: "University of California, Agriculture and Natural Resources",
-    date: "June 10, 2026",
-    title: "Six exits to safety: UC study finds wildfire survival depends on roads for evacuation",
-    image: newsSixExitsBolinas,
-    href: "https://ucanr.edu/blog/green-blog/article/wildfire6exits",
-  },
-  {
-    id: "nbc-bay-area-closer-look",
-    source: "NBC Bay Area",
-    date: "June 9, 2026",
-    title: "A closer look: New wildfire evacuation risk study",
-    image: newsNbcEvacuationRisk,
-    href: "https://www.nbcbayarea.com/video/local/a-closer-look-new-wildfire-evacuation-risk-study/4096492/",
-    cta: "Watch",
-  },
-  {
-    id: "mercury-news-few-roads-out",
-    source: "The Mercury News",
-    date: "June 8, 2026",
-    title: "Few roads out, higher wildfire risk: New study maps Bay Area evacuation danger",
-    image: newsMercuryFiretrapMap,
-    href: "https://www.mercurynews.com/2026/06/08/is-your-community-wildfire-death-trap-study-deaths-number-escape-routes/",
-  },
-  {
-    id: "edhat-six-roads",
-    source: "Edhat",
-    date: "June 7, 2026",
-    title: "Six Roads to Safety: New Study Finds a Critical Threshold for Wildfire Survival",
-    image: newsSixRoadsEvacuation,
-    href: "https://www.edhat.com/news/six-roads-to-safety-new-study-finds-a-critical-threshold-for-wildfire-survival/",
-  },
-  {
-    id: "daily-dispatch-six-roads",
-    source: "Daily Dispatch",
-    date: "June 4, 2026",
-    title:
-      "Six roads to safety: UC Santa Barbara study finds critical threshold for wildfire survival",
-    image: newsSixRoadsWildfire,
-    href: "https://dailydispatch.com/fire-news/california/six-roads-to-safety-uc-santa-barbara-study-finds-critical-threshold-for-wildfire-survival/",
-  },
-  {
-    id: "hawaii-public-radio-magic-number",
-    source: "Hawaiʻi Public Radio",
-    date: "June 4, 2026",
-    title: "Why 6 is the magic number of evacuation routes for wildfire survival",
-    image: newsHprEvacuationRoutes,
-    href: "https://www.hawaiipublicradio.org/the-conversation/2026-06-04/why-6-is-the-safest-number-of-evacuation-routes-for-wildfire-survival",
-    cta: "Listen",
-  },
-  {
-    id: "university-of-california-six-exits",
-    source: "University of California",
-    date: "June 4, 2026",
-    title: "Six exits to safety: UC study finds wildfire survival depends on roads for evacuation",
-    image: newsSixRoadsEvacuation,
-    href: "https://www.universityofcalifornia.edu/news/six-roads-safety-new-study-finds-critical-threshold-wildfire-survival",
-  },
-  {
-    id: "sb-independent-six-roads",
-    source: "The Santa Barbara Independent",
-    date: "June 2, 2026",
-    title: "Six Roads to Safety: New Study Finds a Critical Threshold for Wildfire Survival",
-    image: newsIndependentSixRoads,
-    href: "https://www.independent.com/2026/06/02/six-roads-to-safety-new-study-finds-a-critical-threshold-for-wildfire-survival/",
-  },
-  {
-    id: "phys-org-six-roads",
-    source: "Phys.org",
-    date: "June 2, 2026",
-    title: "Six roads to safety: A critical threshold for wildfire survival",
-    image: newsSixRoadsWildfire,
-    href: "https://phys.org/news/2026-06-roads-safety-critical-threshold-wildfire.html",
-  },
-  {
-    id: "bioengineer-six-pathways",
-    source: "Bioengineer",
-    date: "June 2, 2026",
-    title: "Six Pathways to Safety: New Research Identifies Key Threshold for Wildfire Survival",
-    image: newsSixPathwaysDiagram,
-    href: "https://bioengineer.org/six-pathways-to-safety-new-research-identifies-key-threshold-for-wildfire-survival/",
-  },
-  {
-    id: "science-magazine-six-exits",
-    source: "Science Magazine",
-    date: "June 2, 2026",
-    title: "Six exits to safety: UC study finds wildfire survival depends on roads for evacuation",
-    image: newsSixPathwaysDiagram,
-    href: "https://scienmag.com/six-pathways-to-safety-new-research-identifies-key-threshold-for-wildfire-survival/",
-  },
-  {
-    id: "ucsb-current-six-roads",
-    source: "The Current UCSB",
-    date: "June 1, 2026",
-    title: "Six roads to safety: New study finds a critical threshold for wildfire survival",
-    image: newsSixRoadsEvacuation,
-    href: "https://news.ucsb.edu/2026/022617/six-roads-safety-new-study-finds-critical-threshold-wildfire-survival",
-  },
-  {
-    id: "fire-adapted-communities-lookup-score",
-    source: "Fire Adapted Communities",
-    date: "May 7, 2026",
-    title: "You Can Now Look Up Your Community's Wildfire Resilience Score",
-    image: newsFireAdapted,
-    href: "https://fireadaptednetwork.org/wildfire-resilience-index/",
-  },
-  {
-    id: "edhat-resilience-now-a-number",
-    source: "EdHat",
-    date: "May 7, 2026",
-    title: "Wildfire resilience has always been the goal. Now it's a number",
-    image: newsUcsbCurrent,
-    href: "https://www.edhat.com/news/wildfire-resilience-has-always-been-the-goal-now-its-a-number/",
-  },
-  {
-    id: "task-force-index-now-live",
-    source: "The California Wildfire & Forest Resilience Task Force",
-    date: "May 5, 2026",
-    title:
-      "Wildfire Resilience Index is Now Live — Providing a New Interactive Tool to Support Communities and Landscapes Living with Wildfire",
-    image: newsTaskForce,
-    href: "https://wildfiretaskforce.org/wildfire-resilience-index-is-now-live-providing-a-new-interactive-tool-to-support-communities-and-landscapes-living-with-wildfire/",
-  },
-  {
-    id: "ucsb-current-resilience-now-a-number",
-    source: "The Current UCSB",
-    date: "May 5, 2026",
-    title: "Wildfire resilience has always been the goal. Now it's a number",
-    image: newsUcsbCurrent,
-    href: "https://news.ucsb.edu/2026/022548/wildfire-resilience-has-always-been-goal-now-its-number",
-  },
-  {
-    id: "kcbx-new-tool-scores-communities",
-    source: "KCBX",
-    date: "May 5, 2026",
-    title: "New tool from UCSB scores communities on wildfire resilience",
-    image: newsKcbx,
-    href: "https://www.kcbx.org/environment-and-energy/2026-05-05/new-tool-from-ucsb-scores-communities-on-wildfire-resilience",
-    cta: "Listen",
-  },
-  {
-    id: "when-wildfire-meets-ai",
-    source: "NCEAS",
-    date: "October 16, 2025",
-    title: "When Wildfire Resilience Meets Artificial Intelligence",
-    image: whenWriMeetsAi,
-    href: "https://www.nceas.ucsb.edu/news/when-wildfire-resilience-meets-artificial-intelligence",
-  },
-  {
-    id: "from-data-to-action",
-    source: "NCEAS",
-    date: "May 22, 2023",
-    title: "From data to action: announcing the Wildfire Resilience Index",
-    image: fromDataToAction,
-    href: "https://www.nceas.ucsb.edu/news/announcing-WWRI",
-  },
+// ⚙️ Display settings ========================================================
+// 🌟 The three highest-profile hits, pinned above the feed in this order. Edit
+// this list (ids from NEWS_ARTICLES in config/news.ts) to re-cast the row.
+const FEATURED_ARTICLE_IDS = [
+  "bloomberg-evacuation-grows-more-urgent",
+  "mercury-news-evacuation-plans",
+  "abc7-bay-area-evacuation-risks",
 ];
+// 🔍 Filters =================================================================
+// Chips sit above the feed: "all", one per topic, plus a cross-cutting
+// audio/video chip (radio segments and TV hits are a common ask).
+type FilterId = "all" | NewsTopicId | "audio-video";
+
+const AUDIO_VIDEO_CTAS = ["Listen", "Watch"];
+
+/** Is this story a radio segment or a TV/video hit rather than a written piece? */
+function isAudioOrVideo(article: NewsArticle): boolean {
+  return article.cta !== undefined && AUDIO_VIDEO_CTAS.includes(article.cta);
+}
+
+function matchesFilter(article: NewsArticle, filter: FilterId): boolean {
+  if (filter === "all") return true;
+  if (filter === "audio-video") return isAudioOrVideo(article);
+  return article.topic === filter;
+}
+
+/** Free-text search across outlet, headline, and topic label. */
+function matchesQuery(article: NewsArticle, normalizedQuery: string): boolean {
+  if (!normalizedQuery) return true;
+  const topicLabel =
+    NEWS_TOPICS.find((topic) => topic.id === article.topic)?.chipLabel ?? "";
+  return `${article.source} ${article.title} ${topicLabel}`
+    .toLowerCase()
+    .includes(normalizedQuery);
+}
+
+const FILTERS: ReadonlyArray<{ id: FilterId; label: string }> = [
+  { id: "all", label: "All coverage" },
+  ...NEWS_TOPICS.map((topic) => ({
+    id: topic.id as FilterId,
+    label: topic.chipLabel,
+  })),
+  { id: "audio-video", label: "Audio & video" },
+];
+
+
+// 🌟 Resolve the pinned ids into articles, keeping FEATURED_ARTICLE_IDS order.
+const FEATURED_ARTICLES: readonly NewsArticle[] = FEATURED_ARTICLE_IDS.flatMap(
+  (id) => {
+    const match = NEWS_ARTICLES.find((article) => article.id === id);
+    return match ? [match] : [];
+  },
+);
 
 // 🧭 "Keep exploring" quick links so a reader who reaches the bottom of the feed
 // can branch out to the sibling Media pages and other main sections instead of
@@ -256,11 +79,21 @@ const NEXT_LINKS: ReadonlyArray<{
   {
     id: "outreach",
     label: "Outreach",
-    description: "Webinar recordings, public talks, and community events about the Index.",
+    description:
+      "Webinar recordings, public talks, and community events about the Index.",
     to: REDESIGN_ROUTES.outreach,
     icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
-        <path d="M3 10v4a1 1 0 0 0 1 1h2l5 4V5L6 9H4a1 1 0 0 0-1 1Z" strokeLinejoin="round" />
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        aria-hidden="true"
+      >
+        <path
+          d="M3 10v4a1 1 0 0 0 1 1h2l5 4V5L6 9H4a1 1 0 0 0-1 1Z"
+          strokeLinejoin="round"
+        />
         <path d="M16 8.5a4 4 0 0 1 0 7" strokeLinecap="round" />
         <path d="M18.5 6a7 7 0 0 1 0 12" strokeLinecap="round" />
       </svg>
@@ -269,11 +102,21 @@ const NEXT_LINKS: ReadonlyArray<{
   {
     id: "publications",
     label: "Publications",
-    description: "Peer-reviewed papers and reports behind the science of the Index.",
+    description:
+      "Peer-reviewed papers and reports behind the science of the Index.",
     to: REDESIGN_ROUTES.publications,
     icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
-        <path d="M6 3h8l4 4v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z" strokeLinejoin="round" />
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        aria-hidden="true"
+      >
+        <path
+          d="M6 3h8l4 4v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z"
+          strokeLinejoin="round"
+        />
         <path d="M13 3v5h5" strokeLinejoin="round" />
         <path d="M8 13h8M8 16.5h6" strokeLinecap="round" />
       </svg>
@@ -282,10 +125,17 @@ const NEXT_LINKS: ReadonlyArray<{
   {
     id: "about",
     label: "About the Index",
-    description: "Learn what the Wildfire Resilience Index is and why it matters.",
+    description:
+      "Learn what the Wildfire Resilience Index is and why it matters.",
     to: REDESIGN_ROUTES.about,
     icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        aria-hidden="true"
+      >
         <circle cx="12" cy="12" r="9" />
         <path d="M12 11v5" strokeLinecap="round" />
         <circle cx="12" cy="7.75" r="0.5" fill="currentColor" stroke="none" />
@@ -298,8 +148,18 @@ const NEXT_LINKS: ReadonlyArray<{
     description: "Dig into the data, indicators, and methods behind the Index.",
     to: REDESIGN_ROUTES.methodology,
     icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
-        <path d="M9 3v6.5L4.3 17a2 2 0 0 0 1.7 3h12a2 2 0 0 0 1.7-3L15 9.5V3" strokeLinecap="round" strokeLinejoin="round" />
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        aria-hidden="true"
+      >
+        <path
+          d="M9 3v6.5L4.3 17a2 2 0 0 0 1.7 3h12a2 2 0 0 0 1.7-3L15 9.5V3"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
         <path d="M8 3h8" strokeLinecap="round" />
         <path d="M8 14h8" strokeLinecap="round" />
       </svg>
@@ -311,6 +171,14 @@ const NEXT_LINKS: ReadonlyArray<{
  * News & Features (PDF page 18 / change-requests doc).
  *   Skinny image hero (mirrors the Media landing + Publications pages) opens the
  *   page with an eyebrow, title, moss rule, and short intro.
+ *   "Featured" row pins the three highest-profile hits (FEATURED_ARTICLE_IDS);
+ *     they also remain in the feed below so it has no gaps.
+ *   "All news" then opens with a collapsed "Filter & search" bar. Expanding it
+ *     reveals the search box and topic chips with counts, which subset the feed
+ *     in place — the feed itself always stays newest-first.
+ *   Picking a topic chip also opens a short context panel above the feed: the
+ *     launch date for the Index launch, and journal/citation/DOI plus a link to
+ *     the paper page for each study. `?topic=<id>` opens that state directly.
  *   Responsive 1/2/3-column card grid. Each card:
  *     • Soft rounded-2xl panel, hairline Forest border + ring, hover lift/shadow
  *     • 16/9 hero (object-cover, gentle zoom on hover). 16/9 ≈ the ~1.91:1 OG
@@ -324,8 +192,67 @@ const NEXT_LINKS: ReadonlyArray<{
  *   sections) — a way to move on, not more news content.
  */
 function NewsFeaturesPage() {
+  const [activeFilter, setActiveFilter] = useState<FilterId>("all");
+  const [query, setQuery] = useState("");
+  // Search + chips stay tucked behind the "Filter" bar until asked for, so the
+  // page opens on stories rather than on controls.
+  const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false);
+
+  // 🔗 Deep link: /media/news?topic=egress opens pre-filtered with the panel
+  // expanded, which is what the "See all coverage" link on each paper page uses.
+  const [searchParams] = useSearchParams();
+  const topicParam = searchParams.get("topic");
+  useEffect(() => {
+    const requestedTopic = NEWS_TOPICS.find((topic) => topic.id === topicParam);
+    if (!requestedTopic) return;
+    setActiveFilter(requestedTopic.id);
+    setIsFilterPanelOpen(true);
+  }, [topicParam]);
+
+  const normalizedQuery = query.trim().toLowerCase();
+
+  const matches = useMemo(
+    () =>
+      NEWS_ARTICLES.filter(
+        (article) =>
+          matchesFilter(article, activeFilter) &&
+          matchesQuery(article, normalizedQuery),
+      ),
+    [activeFilter, normalizedQuery],
+  );
+
+  function countFor(filterId: FilterId): number {
+    return NEWS_ARTICLES.filter((article) => matchesFilter(article, filterId))
+      .length;
+  }
+
+  // 📎 Context for a topic chip: what the coverage is about, plus the paper's
+  // journal, DOI, and citation when that topic is one of our studies. "All
+  // coverage" and "Audio & video" are cross-cutting, so they get no panel.
+  const activeTopic = NEWS_TOPICS.find((topic) => topic.id === activeFilter);
+  const activeTopicPublication = getPublicationBySlug(
+    activeTopic?.publicationSlug,
+  );
+  const activeTopicFullText = activeTopicPublication?.links.find(
+    (link) => link.kind === "html",
+  );
+
+  // Summary shown on the collapsed Filter bar so an active filter is never
+  // invisible once the panel is closed again.
+  const activeFilterSummary = [
+    activeFilter === "all"
+      ? null
+      : FILTERS.find((filter) => filter.id === activeFilter)?.label,
+    normalizedQuery ? `“${query.trim()}”` : null,
+  ]
+    .filter(Boolean)
+    .join(" · ");
+
   return (
-    <div id="public-website-redesign-news-page" className="mx-auto max-w-[1400px] px-6 py-12 md:py-16">
+    <div
+      id="public-website-redesign-news-page"
+      className="mx-auto max-w-[1400px] px-6 py-12 md:py-16"
+    >
       {/* ===== Hero (skinny variant matching Media landing / Publications) === */}
       <section
         id="public-website-redesign-news-hero"
@@ -369,80 +296,284 @@ function NewsFeaturesPage() {
               id="public-website-redesign-news-hero-subtitle"
               className="mt-4 max-w-xl font-Poppins text-[clamp(15px,1.4vw,17px)] leading-relaxed text-wriSmokeFog/85"
             >
-              Press, articles, and announcements covering the Wildfire Resilience Index and the
-              communities it serves across the American West.
+              Press, articles, and announcements covering the Wildfire
+              Resilience Index and the communities it serves across the American
+              West.
             </p>
           </div>
         </div>
       </section>
 
-      {/* ===== Article grid ============================================== */}
-      <div
-        id="public-website-redesign-news-grid"
-        className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 md:mt-16"
-      >
-        {ARTICLES.map((a) => (
-          <a
-            key={a.id}
-            id={`public-website-redesign-news-article-${a.id}`}
-            href={a.href}
-            target="_blank"
-            rel="noreferrer"
-            className="group flex flex-col overflow-hidden rounded-2xl border border-wriForest/15 bg-white shadow-sm ring-1 ring-black/5 transition duration-300 ease-out hover:-translate-y-1 hover:border-wriForest/30 hover:shadow-xl"
+      {/* ===== Featured coverage ========================================= */}
+      {FEATURED_ARTICLES.length > 0 ? (
+        <section
+          id="public-website-redesign-news-featured"
+          className="mt-12 md:mt-16"
+        >
+          <span
+            id="public-website-redesign-news-featured-rule"
+            aria-hidden
+            className="block h-px w-full bg-wriMoss/30"
+          />
+          <h2
+            id="public-website-redesign-news-featured-title"
+            className="mt-3 font-Poppins text-[clamp(1.5rem,2.8vw,2rem)] font-bold leading-tight text-wriForest"
           >
-            {/* 🖼️ Hero — 16/9 keeps wide OG share images from being side-cropped */}
-            <div
-              id={`public-website-redesign-news-article-${a.id}-media`}
-              className="relative aspect-video w-full overflow-hidden bg-wriSmokeFog"
-            >
-              <img
-                id={`public-website-redesign-news-article-${a.id}-image`}
-                src={a.image}
-                alt=""
-                loading="lazy"
-                className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+            Featured stories
+          </h2>
+          <div
+            id="public-website-redesign-news-featured-grid"
+            className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+          >
+            {FEATURED_ARTICLES.map((article) => (
+              <NewsCard
+                key={article.id}
+                article={article}
+                variant="featured"
+                idPrefix="public-website-redesign-news-featured-article"
               />
-              <span
-                id={`public-website-redesign-news-article-${a.id}-source`}
-                className="absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1 font-Montserrat text-[11px] font-bold uppercase tracking-wide text-wriForest shadow-sm backdrop-blur"
-              >
-                {a.source}
-              </span>
-            </div>
+            ))}
+          </div>
+        </section>
+      ) : null}
 
-            {/* 📝 Body */}
-            <div
-              id={`public-website-redesign-news-article-${a.id}-body`}
-              className="flex flex-1 flex-col gap-4 p-5"
+      {/* ===== All news: heading + collapsible filter bar ================= */}
+      <section id="public-website-redesign-news-all" className="mt-16 md:mt-20">
+        <div className="flex items-center gap-3">
+          <span
+            id="public-website-redesign-news-all-eyebrow"
+            className="font-Montserrat text-[11px] font-bold uppercase tracking-[0.18em] text-wriSage"
+          >
+            {NEWS_ARTICLES.length} stories
+          </span>
+          <span aria-hidden className="h-px flex-1 bg-wriForest/15" />
+        </div>
+        <h2
+          id="public-website-redesign-news-all-title"
+          className="mt-3 font-Poppins text-[clamp(1.5rem,2.8vw,2rem)] font-bold leading-tight text-wriForest"
+        >
+          All news
+        </h2>
+
+        {/* 🔎 Bar + panel share one outline so hovering either highlights the
+            whole control, expanded or collapsed. */}
+        <div
+          id="public-website-redesign-news-filter"
+          className="mt-5 overflow-hidden rounded-2xl border border-wriForest/20 bg-white shadow-sm transition-colors focus-within:border-wriMoss hover:border-wriMoss"
+        >
+          <button
+            id="public-website-redesign-news-filter-toggle"
+            type="button"
+            aria-expanded={isFilterPanelOpen}
+            aria-controls="public-website-redesign-news-filter-panel"
+            onClick={() => setIsFilterPanelOpen((isOpen) => !isOpen)}
+            className="flex w-full items-center gap-3 px-5 py-3.5 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-wriMoss/50"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              aria-hidden="true"
+              className="h-4 w-4 shrink-0 text-wriForest"
             >
-              <h3
-                id={`public-website-redesign-news-article-${a.id}-title`}
-                className="font-Montserrat text-[17px] font-bold leading-snug text-wriCanopy line-clamp-3 transition-colors group-hover:text-wriForest"
+              <path d="M4 6h16M7 12h10M10 18h4" strokeLinecap="round" />
+            </svg>
+            <span className="font-Montserrat text-[13px] font-bold uppercase tracking-[0.1em] text-wriForest">
+              Filter &amp; search
+            </span>
+            {activeFilterSummary ? (
+              <span
+                id="public-website-redesign-news-filter-summary"
+                className="truncate rounded-full bg-wriForest/10 px-3 py-1 font-Montserrat text-[12px] font-bold text-wriForest"
               >
-                {a.title}
-              </h3>
-              <div className="mt-auto flex items-center justify-between border-t border-wriForest/10 pt-4">
-                <time
-                  id={`public-website-redesign-news-article-${a.id}-date`}
-                  className="font-Montserrat text-[13px] text-wriSage"
+                {activeFilterSummary}
+              </span>
+            ) : null}
+          </button>
+
+          {isFilterPanelOpen ? (
+            <div
+              id="public-website-redesign-news-filter-panel"
+              className="px-5 pb-5 sm:px-6 sm:pb-6"
+            >
+              {/* 🫧 Search sits in the same wrapping row as the topic bubbles. */}
+              <div
+                id="public-website-redesign-news-filter-chips"
+                role="group"
+                aria-label="Filter news coverage by topic"
+                className="flex flex-wrap items-center gap-2"
+              >
+                <label
+                  htmlFor="public-website-redesign-news-search"
+                  className="relative block w-full sm:w-64"
                 >
-                  {a.date}
-                </time>
-                <span
-                  id={`public-website-redesign-news-article-${a.id}-cta`}
-                  className="inline-flex items-center gap-1 font-Montserrat text-[13px] font-bold text-wriForest"
-                  aria-hidden="true"
-                >
-                  {a.cta ?? "Read"}
-                  <span className="transition-transform duration-300 group-hover:translate-x-1">
-                    →
-                  </span>
-                </span>
+                  <span className="sr-only">Search news coverage</span>
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    aria-hidden="true"
+                    className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-wriSage"
+                  >
+                    <circle cx="11" cy="11" r="6.5" />
+                    <path d="m16 16 4 4" strokeLinecap="round" />
+                  </svg>
+                  <input
+                    id="public-website-redesign-news-search"
+                    type="search"
+                    value={query}
+                    onChange={(event) => setQuery(event.target.value)}
+                    placeholder="Search outlet or headline"
+                    className="w-full rounded-full border border-wriForest/20 bg-wriSmokeFog/40 py-2 pl-10 pr-4 font-Poppins text-sm text-wriCanopy placeholder:text-wriSage/80 focus:border-wriMoss focus:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-wriMoss/40"
+                  />
+                </label>
+
+                {FILTERS.map((filter) => {
+                  const isActive = activeFilter === filter.id;
+                  return (
+                    <button
+                      key={filter.id}
+                      id={`public-website-redesign-news-filter-${filter.id}`}
+                      type="button"
+                      aria-pressed={isActive}
+                      onClick={() => setActiveFilter(filter.id)}
+                      className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 font-Montserrat text-[13px] font-bold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-wriMoss/50 ${
+                        isActive
+                          ? "border-wriForest bg-wriForest text-white"
+                          : "border-wriForest/20 bg-white text-wriForest hover:border-wriMoss hover:bg-wriSmokeFog/60"
+                      }`}
+                    >
+                      {filter.label}
+                      <span
+                        className={`font-Montserrat text-[11px] font-bold ${
+                          isActive ? "text-white/70" : "text-wriSage"
+                        }`}
+                      >
+                        {countFor(filter.id)}
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
+
+              {/* 🏷️ Topic context — inside the box, full width, and kept to four
+                  tight rows: chip-label eyebrow (with the paper links pulled up
+                  onto the same row), title, one sentence, then the citation.
+                  Study topics read their title, journal, DOI, and citation from
+                  `config/publications.ts` so nothing is written twice. Chips
+                  with no `blurb` (all coverage, audio & video, earlier
+                  milestones) show nothing — the label already says it. */}
+              {activeTopic?.blurb ? (
+                <div
+                  id={`public-website-redesign-news-topic-blurb-${activeTopic.id}`}
+                  className="mt-4 border-t border-wriForest/10 pt-3"
+                >
+                  <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
+                    <p className="font-Montserrat text-[11px] font-bold uppercase tracking-[0.18em] text-wriSage">
+                      {activeTopic.chipLabel}
+                    </p>
+                    {activeTopicPublication ? (
+                      <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1 font-Montserrat text-[12px] font-bold">
+                        <Link
+                          to={REDESIGN_ROUTES.publication(
+                            activeTopicPublication.slug,
+                          )}
+                          className="text-wriForest underline decoration-wriMoss/50 decoration-2 underline-offset-4 transition-colors hover:text-wriMossMenuHighlight"
+                        >
+                          Paper page &rarr;
+                        </Link>
+                        {activeTopicFullText ? (
+                          <a
+                            href={activeTopicFullText.href}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-wriForest underline decoration-wriMoss/50 decoration-2 underline-offset-4 transition-colors hover:text-wriMossMenuHighlight"
+                          >
+                            Read the full text &#8599;
+                          </a>
+                        ) : null}
+                        {activeTopicPublication.doi ? (
+                          <a
+                            href={`https://doi.org/${activeTopicPublication.doi}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-wriSage underline decoration-wriMoss/40 decoration-2 underline-offset-4 transition-colors hover:text-wriForest"
+                          >
+                            doi.org/{activeTopicPublication.doi}
+                          </a>
+                        ) : null}
+                      </div>
+                    ) : null}
+                  </div>
+                  <p className="mt-1 font-Montserrat text-[15px] font-bold leading-snug text-wriForest">
+                    {activeTopicPublication?.title ?? activeTopic.heading}
+                    {activeTopicPublication ? (
+                      <span className="ml-2 font-Poppins text-[13px] font-normal text-wriSage">
+                        {activeTopicPublication.journalShort},{" "}
+                        {activeTopicPublication.year}
+                      </span>
+                    ) : null}
+                  </p>
+                  <p className="mt-1 font-Poppins text-[14px] leading-relaxed text-wriCanopy/80">
+                    {activeTopic.blurb}
+                  </p>
+                  {activeTopicPublication ? (
+                    <p className="mt-1.5 font-Poppins text-[12px] italic leading-snug text-wriCanopy/55">
+                      {activeTopicPublication.citation}
+                    </p>
+                  ) : null}
+                </div>
+              ) : null}
             </div>
-          </a>
-        ))}
-      </div>
+          ) : null}
+        </div>
+
+        {/* 🗓️ Feed — every story, newest first (array order). Filters and
+            search narrow this same grid rather than switching layouts. */}
+        {activeFilterSummary ? (
+          <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
+            <p
+              id="public-website-redesign-news-results-count"
+              aria-live="polite"
+              className="font-Montserrat text-[13px] font-bold text-wriSage"
+            >
+              Showing {matches.length} of {NEWS_ARTICLES.length} stories
+            </p>
+            <button
+              id="public-website-redesign-news-results-reset"
+              type="button"
+              onClick={() => {
+                setActiveFilter("all");
+                setQuery("");
+              }}
+              className="font-Montserrat text-[13px] font-bold text-wriForest underline decoration-wriMoss/50 decoration-2 underline-offset-4 transition-colors hover:text-wriMossMenuHighlight"
+            >
+              Clear filters
+            </button>
+          </div>
+        ) : null}
+
+        {matches.length > 0 ? (
+          <div
+            id="public-website-redesign-news-grid"
+            className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+          >
+            {matches.map((article) => (
+              <NewsCard key={article.id} article={article} />
+            ))}
+          </div>
+        ) : (
+          <p
+            id="public-website-redesign-news-results-empty"
+            className="mt-8 rounded-2xl border border-dashed border-wriForest/25 bg-white px-6 py-12 text-center font-Poppins text-[15px] leading-relaxed text-wriCanopy/70"
+          >
+            No stories match that search yet. Try a different outlet or clear
+            the filters to see all {NEWS_ARTICLES.length} stories.
+          </p>
+        )}
+      </section>
 
       {/* ===== End-of-page divider ====================================== */}
       {/* 🚩 Hard visual break so the footer below reads as "you've reached the
@@ -489,8 +620,9 @@ function NewsFeaturesPage() {
                 id="public-website-redesign-news-keep-exploring-copy"
                 className="mt-3 font-Poppins text-[clamp(15px,1.1vw,17px)] leading-relaxed text-white/85"
               >
-                That&apos;s the news feed. Jump straight into the interactive map, or pick up one of
-                the other sections below to keep exploring the Index.
+                That&apos;s the news feed. Jump straight into the interactive
+                map, or pick up one of the other sections below to keep
+                exploring the Index.
               </p>
             </div>
             <Link
@@ -499,7 +631,10 @@ function NewsFeaturesPage() {
               className="group inline-flex shrink-0 items-center gap-2 rounded-full bg-white px-7 py-3.5 font-Montserrat text-sm font-bold uppercase tracking-[0.08em] text-wriForest shadow-sm transition-all hover:bg-wriSmokeFog hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-wriForest"
             >
               Explore the Index
-              <span aria-hidden className="text-base leading-none transition-transform group-hover:translate-x-1">
+              <span
+                aria-hidden
+                className="text-base leading-none transition-transform group-hover:translate-x-1"
+              >
                 →
               </span>
             </Link>
@@ -541,7 +676,9 @@ function NewsFeaturesPage() {
                 className="mt-4 inline-flex items-center gap-1.5 font-Montserrat text-xs font-bold uppercase tracking-[0.08em] text-wriMossMenuHighlight"
               >
                 Visit page
-                <span className="text-sm leading-none transition-transform group-hover:translate-x-1">→</span>
+                <span className="text-sm leading-none transition-transform group-hover:translate-x-1">
+                  →
+                </span>
               </span>
             </Link>
           ))}

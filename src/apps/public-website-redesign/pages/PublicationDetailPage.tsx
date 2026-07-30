@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import MossDivider from "../components/shared/MossDivider";
+import NewsCard from "../components/shared/NewsCard";
 import PublicationLinkButtons from "../components/shared/PublicationLinkButtons";
+import { getNewsByTopic, getNewsTopicByPublicationSlug } from "../config/news";
 import { getPublicationBySlug } from "../config/publications";
 import { REDESIGN_ROUTES } from "../routes/routeConfig";
 import publicationHero from "../../../assets/public-website-redesign/images/methodology/methodology-hero.jpg";
@@ -14,6 +16,10 @@ import publicationHero from "../../../assets/public-website-redesign/images/meth
  * headline findings, the complete set of links (full text, PDF, DOI, code), and
  * a copy-to-clipboard citation. Content is looked up by `:slug` from
  * `config/publications.ts`, so every paper added there gets this page for free.
+ *
+ * Papers that drew press also close with an "In the news" strip — the same news
+ * cards used on News & Features, pulled from `config/news.ts` by topic, so the
+ * coverage lives in one place and shows up in both.
  */
 function PublicationDetailPage() {
   const { slug } = useParams();
@@ -24,6 +30,11 @@ function PublicationDetailPage() {
   if (!publication) {
     return <Navigate to={REDESIGN_ROUTES.publications} replace />;
   }
+
+  // 📰 Coverage of this paper, newest first. Papers with no news topic (or no
+  // stories yet) simply skip the section.
+  const newsTopic = getNewsTopicByPublicationSlug(publication.slug);
+  const coverage = newsTopic ? getNewsByTopic(newsTopic.id) : [];
 
   const handleCopyCitation = async () => {
     try {
@@ -205,6 +216,49 @@ function PublicationDetailPage() {
           </div>
         </aside>
       </div>
+
+      {/* ===== In the news ============================================== */}
+      {/* 📰 Full-width so the 4-up chips aren't squeezed into the body column. */}
+      {coverage.length > 0 ? (
+        <section id="publication-detail-news" className="mt-16 md:mt-20">
+          <div className="flex items-center gap-3">
+            <span
+              id="publication-detail-news-eyebrow"
+              className="font-Montserrat text-[11px] font-bold uppercase tracking-[0.18em] text-wriSage"
+            >
+              {coverage.length} stories
+            </span>
+            <span aria-hidden className="h-px flex-1 bg-wriForest/15" />
+          </div>
+          <h2
+            id="publication-detail-news-title"
+            className="mt-3 font-Montserrat text-[clamp(1.25rem,2.4vw,1.6rem)] font-bold text-wriForest"
+          >
+            In the news
+          </h2>
+          <MossDivider className="mt-3" widthClassName="w-16" />
+          <p
+            id="publication-detail-news-intro"
+            className="mt-4 max-w-3xl font-Poppins text-[clamp(15px,1.4vw,17px)] leading-relaxed text-wriCanopy/75"
+          >
+            Press coverage of this paper. Each card opens the story at its
+            original outlet.
+          </p>
+          <div
+            id="publication-detail-news-grid"
+            className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4"
+          >
+            {coverage.map((article) => (
+              <NewsCard
+                key={article.id}
+                article={article}
+                variant="compact"
+                idPrefix="publication-detail-news-article"
+              />
+            ))}
+          </div>
+        </section>
+      ) : null}
     </div>
   );
 }

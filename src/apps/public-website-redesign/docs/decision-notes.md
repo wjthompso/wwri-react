@@ -20,6 +20,8 @@ Legacy public site is untouched and still served at `/` by `RootAppRoutes`.
 | D-08 | Resolved | 2026-04-22   | Legacy routing glue                                  | `RootAppRoutes` already splits on `/redesign`; left untouched. |
 | D-09 | Resolved | 2026-04-22   | Domain icon tile color-coding (PDF)                  | Hex values transcribed from the PDF swatches. See `config/domains.ts`. |
 | D-10 | Resolved | 2026-04-22   | “Explore the Index” CTA destination                  | Links to `/` (the legacy interactive index app). Update once the redesign is promoted to root. |
+| D-11 | Resolved | 2026-07-29   | News & Features had grown to 29 cards in one feed    | Added a three-story featured row and a collapsed "Filter & search" bar (topic chips + search) above a single newest-first feed. See §7. |
+| D-12 | Resolved | 2026-07-29   | Coverage of a paper was only reachable from the news page | Moved the stories into `config/news.ts`, added a topic context panel (journal / citation / DOI) to the filter chips, and gave each paper page an "In the news" strip. See §8. |
 
 ---
 
@@ -78,3 +80,61 @@ Per-domain hero photos were cropped directly from each domain page in the PDF (p
 - **Region map** now uses the supplied cropped `Location Map for WRI, 1 What is the WRI (1).png` image in `AboutPage.tsx`. A future geodata-driven map is optional if interactive fidelity is needed.
 - **Methology / Contact / Publications / Resources** pages — currently placeholders. Awaiting design.
 - **“Explore the Index” CTA** currently links to `/` (the legacy interactive map). Rewire once the redesign becomes the root app.
+
+## §7 News & Features organization (D-11)
+
+The page started as a single reverse-chronological grid. By July 2026 it held 29 cards, ~20 of
+which were one news cycle (the PNAS egress paper), so the Index launch coverage and the newer
+cultural-sites paper were effectively invisible below the fold.
+
+Structure now:
+
+- **Featured row first.** `FEATURED_ARTICLE_IDS` pins the three highest-profile hits (currently
+  Bloomberg, The Mercury News, ABC7 Bay Area) above the feed, using the same card with a moss ring
+  and a slightly larger headline. Featured stories also stay in the feed below, so it has no gaps.
+- **One chronological feed.** "All news" is a single newest-first grid of every story. We tried
+  grouping the feed into per-topic sections with a jump nav, and dropped both: the bands added
+  chrome, and readers expect a news page to read as a timeline.
+- **Controls stay hidden until asked for.** "All news" opens with a collapsed "Filter & search"
+  bar; expanding it reveals the search box and the topic bubbles on one wrapping row, and it can be
+  collapsed again. The bar carries a summary chip of the active filter/query so a narrowed feed is
+  never unexplained.
+- **Topic per article.** Each entry in `NEWS_ARTICLES` carries a `topic` (`index-launch`, `egress`,
+  `cultural-sites`, `milestones`), declared once in `NEWS_TOPICS`. Topics drive the filter chips,
+  search matching, and the context panel — they do not affect layout.
+- **Cross-cutting chip.** "Audio & video" filters on the existing `cta` field (`Listen` / `Watch`)
+  instead of introducing a second taxonomy.
+- **Judgment call:** the KCLU segment (June 16) aired during the egress news cycle but is about the
+  Index tool itself, so it is tagged `index-launch`. Flagged inline in the data.
+
+Display order is array order — no date parsing anywhere — so new entries must be inserted in
+reverse-chronological position.
+
+## §8 News ↔ publications cross-references (D-12)
+
+Coverage of a paper used to be reachable only by scrolling the news feed, and a reader on a paper
+page had no way to know it had been picked up by 20 outlets.
+
+- **One source of truth.** The stories, their topics, and their image imports moved out of
+  `pages/NewsFeaturesPage.tsx` into `config/news.ts` (`NEWS_ARTICLES`, `NEWS_TOPICS`, plus
+  `getNewsByTopic` / `getNewsTopicByPublicationSlug`). The card moved to
+  `components/shared/NewsCard.tsx` with `default` / `featured` / `compact` variants, so the feed and
+  the paper pages render identical cards.
+- **Topics link to papers.** A topic may carry a `publicationSlug` matching a slug in
+  `config/publications.ts`. That one field powers both directions of the cross-reference, so nothing
+  duplicates the journal, DOI, or citation — they are read from the publication record.
+- **Context note inside the filter box.** Picking a topic chip adds a short note below the chips,
+  inside the same white box and spanning its full width — not a second panel below it. It is four
+  tight rows: the chip label as a small uppercase eyebrow (with the paper links pulled onto the same
+  row, right-aligned), the bold title plus `journalShort, year`, one sentence, then the citation in
+  small italics. The Index launch chip uses the first three rows only. Running it as one block of
+  text was tried first and was hard to scan.
+- **Paper topics own no prose.** Their title, journal, DOI, and citation are read from the
+  publication record, so only the one-sentence `blurb` lives in `config/news.ts`.
+- **Chips with no `blurb` show nothing.** "All coverage", "Audio & video", and "Earlier milestones"
+  are self-explanatory from the label.
+- **"In the news" on paper pages.** Each paper with a matching topic closes with a 4-up grid of
+  compact news cards (full-width, below the two-column body so the chips aren't squeezed). Papers
+  with no coverage skip the section entirely.
+- **Deep link.** `/media/news?topic=<id>` opens the feed pre-filtered with the panel expanded, for
+  sharing a filtered view. Unknown values are ignored.

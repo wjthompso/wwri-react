@@ -308,7 +308,7 @@ function MethodologyPage() {
             >
               <a
                 id="methodology-download-button"
-                href="https://knb.ecoinformatics.org/view/urn%3Auuid%3Ac62b0d69-995b-41e3-af44-edb61915d569"
+                href="https://knb.ecoinformatics.org/view/doi%3A10.5063%2FF1S46QFR"
                 target="_blank"
                 rel="noreferrer"
                 className="group inline-flex items-center gap-2.5 rounded-full bg-wriMoss px-7 py-3 font-Montserrat text-sm font-semibold uppercase tracking-[0.12em] text-wriCanopy transition-colors hover:bg-wriMossClicked"

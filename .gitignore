@@ -1,8 +1,15 @@
 node_modules
 .DS_Store
 dist/*
+# Preview-site build output (served at preview.wildfireindex.org — see docs/deployment.md)
+dist-preview
 .env.local
 .env.*.local
 
 # Large video assets - compress to <100MB before adding; use git add -f if needed
 public-website-mockups/assets/videos/*.mp4
+# Raw video drops awaiting encoding (see scripts/encode-home-hero-videos.sh)
+src/assets/public-website-redesign/videos/incoming/*.mp4
+
+# Editor / conversion leftovers
+*.bak

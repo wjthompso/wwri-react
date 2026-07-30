@@ -241,7 +241,16 @@ const FAQ_SECTIONS: FaqSection[] = [
         answer: (
           <p>
             Yes! The underlying pixel-level data, domain scores, aggregated geographies, full methods
-            documentation, and all code are freely available for download on KNB. For code
+            documentation, and all code are freely available for download on{" "}
+            <a
+              href="https://knb.ecoinformatics.org/view/doi%3A10.5063%2FF1S46QFR"
+              target="_blank"
+              rel="noreferrer"
+              className="font-semibold text-wriMoss hover:underline"
+            >
+              KNB
+            </a>
+            . For code
             specifically, please visit our{" "}
             <a
               href="https://github.com/WRI-Science/wri-public"

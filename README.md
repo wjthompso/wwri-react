@@ -121,6 +121,10 @@ Smoke test:
 curl -I https://wildfireindex.org/
 ```
 
+Rollback snapshots of previous `dist` bundles live in `/home/woverbyethompson/deploy-backups/`,
+outside this repo. See `docs/deployment.md` for the preview site, the promote/rollback procedure,
+and the unprivileged `openclaw` agent account that can edit and deploy this site over SSH.
+
 ## API And Tile Integration
 
 The frontend builds metrics API URLs through `src/config/api.ts`.

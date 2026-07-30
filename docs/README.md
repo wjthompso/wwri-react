@@ -13,6 +13,7 @@ _No active trackers._ All prior trackers archived on 2026-04-22 — a new websit
 | File | Description |
 |------|-------------|
 | [design-guidelines.md](./design-guidelines.md) | Design principles, patterns, do's and don'ts |
+| [deployment.md](./deployment.md) | How production (`wildfireindex.org`) and preview (`preview.wildfireindex.org`) are built, deployed, and rolled back |
 | [website-written-content.txt](./website-written-content.txt) | Written copy for the public website |
 
 ## Meeting Notes
@@ -37,6 +38,7 @@ Completed plans and historical task trackers live in [`./archive/`](./archive/).
 ```
 docs/
 ├── README.md                          ← you are here
+├── deployment.md
 ├── design-guidelines.md
 ├── website-written-content.txt
 ├── meeting-notes/

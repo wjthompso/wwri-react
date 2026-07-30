@@ -125,9 +125,10 @@ function DomainsPage() {
               id="public-website-redesign-domains-hero-body"
               className="font-Poppins text-[clamp(16px,1.6vw,20px)] leading-relaxed text-wriSmokeFog/90"
             >
-              Working with experts, the team identified eight key areas—called{" "}
-              <strong className="font-semibold text-white">domains</strong>—that capture how
-              communities and landscapes respond to wildfire.
+              Drawing on the wildfire science and working closely with experts, our team defined
+              eight key areas—called{" "}
+              <strong className="font-semibold text-white">domains</strong>—that together capture
+              how communities and landscapes respond to wildfire.
             </p>
             <div
               id="public-website-redesign-domains-hero-ctas"

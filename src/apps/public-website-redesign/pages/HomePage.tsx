@@ -1,40 +1,157 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import homeHeroVideo from "../../../assets/public-website-redesign/videos/looped-hero.mp4";
+import homeHeroVideo1 from "../../../assets/public-website-redesign/videos/home-hero-1.mp4";
+import homeHeroVideo2 from "../../../assets/public-website-redesign/videos/home-hero-2.mp4";
+import homeHeroVideo3 from "../../../assets/public-website-redesign/videos/home-hero-3.mp4";
 import nceasLogoWhite from "../../../assets/public-website-redesign/images/logos/nceas-white.png";
 import mooreLogoWhite from "../../../assets/public-website-redesign/images/logos/moore-white.png";
 import { PARTNER_LINKS } from "../../../config/partnerLinks";
 import MossDivider from "../components/shared/MossDivider";
 import { REDESIGN_ROUTES } from "../routes/routeConfig";
 
+// Playlist order: original hero → new 24fps → new 30fps → loop.
+const HERO_VIDEO_SOURCES = [homeHeroVideo3, homeHeroVideo1, homeHeroVideo2] as const;
+const MAX_CLIP_SECONDS = 30;
+const LAST_CLIP_INDEX = HERO_VIDEO_SOURCES.length - 1;
+const LAST_CLIP_START_SECONDS = 4;
+const CROSSFADE_MS = 1200;
+const CROSSFADE_LEAD_SECONDS = CROSSFADE_MS / 1000;
+
+function getClipStartTime(sourceIndex: number, video?: HTMLVideoElement | null) {
+  if (sourceIndex !== LAST_CLIP_INDEX) return 0;
+  const duration = video && Number.isFinite(video.duration) ? video.duration : MAX_CLIP_SECONDS;
+  return Math.min(LAST_CLIP_START_SECONDS, Math.max(0, duration - 1));
+}
+
+function seekHeroClipToStart(video: HTMLVideoElement, sourceIndex: number) {
+  video.currentTime = getClipStartTime(sourceIndex, video);
+}
+
 /**
- * Homepage — a single full-viewport cinematic hero (looping muted video,
- * heading, subtitle, CTA, partner logos). Same content as before, refreshed
- * with a cleaner brand-tinted scrim, a moss accent, and a modern CTA pill.
+ * Homepage — full-viewport cinematic hero (three crossfading muted clips in a
+ * loop (original → new 24fps → new 30fps), heading, subtitle, CTA, partner logos).
  */
 function HomePage() {
-  const heroVideoRef = useRef<HTMLVideoElement>(null);
+  const videoRefs = [useRef<HTMLVideoElement>(null), useRef<HTMLVideoElement>(null)];
+  const transitionLockRef = useRef(false);
+  const [visibleLayer, setVisibleLayer] = useState(0);
+  const [layerSourceIndexes, setLayerSourceIndexes] = useState<[number, number]>([0, 1]);
   const [isHeroPlaying, setIsHeroPlaying] = useState(true);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
-  // Respect prefers-reduced-motion: pause the autoplaying background video so
-  // it does not move for users who asked the OS to minimize motion (WCAG 2.3.3).
-  useEffect(() => {
-    const video = heroVideoRef.current;
-    if (!video) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      video.pause();
-      setIsHeroPlaying(false);
-    }
+  const getClipLimit = useCallback((video: HTMLVideoElement) => {
+    const duration = Number.isFinite(video.duration) ? video.duration : MAX_CLIP_SECONDS;
+    return Math.min(duration, MAX_CLIP_SECONDS);
   }, []);
 
+  const pauseAllHeroVideos = useCallback(() => {
+    videoRefs.forEach((ref) => ref.current?.pause());
+  }, [videoRefs]);
+
+  const playVisibleHeroVideo = useCallback(async () => {
+    const video = videoRefs[visibleLayer].current;
+    if (!video || prefersReducedMotion) return;
+    try {
+      await video.play();
+      setIsHeroPlaying(true);
+    } catch {
+      setIsHeroPlaying(false);
+    }
+  }, [prefersReducedMotion, videoRefs, visibleLayer]);
+
+  const advanceHeroPlaylist = useCallback(() => {
+    if (transitionLockRef.current || prefersReducedMotion) return;
+
+    const frontVideo = videoRefs[visibleLayer].current;
+    const backLayer = 1 - visibleLayer;
+    const backVideo = videoRefs[backLayer].current;
+    if (!frontVideo || !backVideo) return;
+
+    transitionLockRef.current = true;
+    const nextSourceIndex = (layerSourceIndexes[visibleLayer] + 1) % HERO_VIDEO_SOURCES.length;
+
+    backVideo.src = HERO_VIDEO_SOURCES[nextSourceIndex];
+    backVideo.load();
+
+    const startBackVideo = () => {
+      seekHeroClipToStart(backVideo, nextSourceIndex);
+      void backVideo.play().then(
+        () => {
+          setLayerSourceIndexes((current) => {
+            const next: [number, number] = [...current];
+            next[backLayer] = nextSourceIndex;
+            return next;
+          });
+          setVisibleLayer(backLayer);
+
+          window.setTimeout(() => {
+            frontVideo.pause();
+            frontVideo.currentTime = 0;
+            transitionLockRef.current = false;
+          }, CROSSFADE_MS);
+        },
+        () => {
+          transitionLockRef.current = false;
+        },
+      );
+    };
+
+    if (backVideo.readyState >= 1) {
+      startBackVideo();
+    } else {
+      backVideo.addEventListener("loadedmetadata", startBackVideo, { once: true });
+    }
+  }, [layerSourceIndexes, prefersReducedMotion, videoRefs, visibleLayer]);
+
+  const handleHeroTimeUpdate = useCallback(
+    (layer: number) => {
+      if (layer !== visibleLayer || transitionLockRef.current || prefersReducedMotion) return;
+
+      const video = videoRefs[layer].current;
+      if (!video) return;
+
+      const clipLimit = getClipLimit(video);
+      if (video.currentTime >= clipLimit - CROSSFADE_LEAD_SECONDS) {
+        void advanceHeroPlaylist();
+      }
+    },
+    [advanceHeroPlaylist, getClipLimit, prefersReducedMotion, videoRefs, visibleLayer],
+  );
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const syncReducedMotion = () => {
+      const reduced = mediaQuery.matches;
+      setPrefersReducedMotion(reduced);
+      if (reduced) {
+        pauseAllHeroVideos();
+        setIsHeroPlaying(false);
+      } else {
+        void playVisibleHeroVideo();
+      }
+    };
+
+    syncReducedMotion();
+    mediaQuery.addEventListener("change", syncReducedMotion);
+    return () => mediaQuery.removeEventListener("change", syncReducedMotion);
+  }, [pauseAllHeroVideos, playVisibleHeroVideo]);
+
+  useEffect(() => {
+    if (prefersReducedMotion) return;
+    void playVisibleHeroVideo();
+  }, [playVisibleHeroVideo, prefersReducedMotion, visibleLayer]);
+
   const toggleHeroPlayback = () => {
-    const video = heroVideoRef.current;
+    if (prefersReducedMotion) return;
+
+    const video = videoRefs[visibleLayer].current;
     if (!video) return;
+
     if (video.paused) {
       void video.play();
       setIsHeroPlaying(true);
     } else {
-      video.pause();
+      pauseAllHeroVideos();
       setIsHeroPlaying(false);
     }
   };
@@ -46,17 +163,29 @@ function HomePage() {
         id="public-website-redesign-home-hero"
         className="relative -mt-px flex h-[calc(100vh-6rem)] min-h-[620px] w-full items-center overflow-hidden bg-wriCanopy"
       >
-        <video
-          id="public-website-redesign-home-hero-video"
-          ref={heroVideoRef}
-          src={homeHeroVideo}
-          autoPlay
-          muted
-          loop
-          playsInline
-          aria-hidden
-          className="absolute inset-0 h-full w-full object-cover"
-        />
+        {[0, 1].map((layer) => (
+          <video
+            key={`public-website-redesign-home-hero-video-${layer}`}
+            id={`public-website-redesign-home-hero-video-${layer}`}
+            ref={videoRefs[layer]}
+            src={HERO_VIDEO_SOURCES[layerSourceIndexes[layer]]}
+            autoPlay={layer === 0 && !prefersReducedMotion}
+            muted
+            playsInline
+            preload={layer === visibleLayer ? "auto" : "metadata"}
+            aria-hidden
+            onTimeUpdate={() => handleHeroTimeUpdate(layer)}
+            onEnded={() => {
+              if (layer === visibleLayer) {
+                void advanceHeroPlaylist();
+              }
+            }}
+            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-[1200ms] ease-in-out ${
+              layer === visibleLayer ? "opacity-100" : "opacity-0"
+            }`}
+          />
+        ))}
+
         {/* Brand-tinted scrim (wriCanopy rather than flat black) plus a soft
             vignette so the type stays crisp and the hero shares the same depth
             and color temperature as the rest of the site. */}

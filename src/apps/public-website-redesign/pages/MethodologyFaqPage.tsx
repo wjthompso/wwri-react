@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useMemo, useState, type MouseEvent } from "react";
 import { Link } from "react-router-dom";
 import MossDivider from "../components/shared/MossDivider";
-import { REDESIGN_ROUTES } from "../routes/routeConfig";
+import { REDESIGN_ROUTES, WRI_DATA_DOWNLOAD_URL } from "../routes/routeConfig";
 import methodologyHero from "../../../assets/public-website-redesign/images/methodology/methodology-hero.jpg";
 
 type FaqItem = { id: string; question: string; answer: ReactNode };
@@ -228,9 +228,27 @@ const FAQ_SECTIONS: FaqSection[] = [
             </ul>
             <p>
               In addition, we have calculated scores for ecoregions, national parks, and watersheds,
-              which are available online to download. If you need a geography that isn't
-              pre-calculated, the underlying 90-meter pixel data is available for download so you
-              can aggregate to any boundary you need. If you need assistance, please reach out!
+              which are available online to{" "}
+              <a
+                href={WRI_DATA_DOWNLOAD_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="font-semibold text-wriMoss hover:underline"
+              >
+                download
+              </a>
+              . If you need a geography that isn&apos;t pre-calculated, the underlying 90-meter
+              pixel data is available for{" "}
+              <a
+                href={WRI_DATA_DOWNLOAD_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="font-semibold text-wriMoss hover:underline"
+              >
+                download
+              </a>{" "}
+              so you can aggregate to any boundary you need. If you need assistance, please reach
+              out!
             </p>
           </>
         ),
@@ -243,7 +261,7 @@ const FAQ_SECTIONS: FaqSection[] = [
             Yes! The underlying pixel-level data, domain scores, aggregated geographies, full methods
             documentation, and all code are freely available for download on{" "}
             <a
-              href="https://knb.ecoinformatics.org/view/doi%3A10.5063%2FF1S46QFR"
+              href={WRI_DATA_DOWNLOAD_URL}
               target="_blank"
               rel="noreferrer"
               className="font-semibold text-wriMoss hover:underline"

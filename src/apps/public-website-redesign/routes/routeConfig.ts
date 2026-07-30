@@ -31,3 +31,7 @@ export const REDESIGN_ROUTES = {
   /** Link out to the interactive index map dashboard. */
   exploreIndex: "/dashboard",
 } as const;
+
+/** KNB data package for downloading WRI geospatial data, scores, and methods. */
+export const WRI_DATA_DOWNLOAD_URL =
+  "https://knb.ecoinformatics.org/view/doi%3A10.5063%2FF1NC5ZPK";

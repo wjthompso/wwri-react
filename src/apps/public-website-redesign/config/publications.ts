@@ -10,6 +10,10 @@
  * Keep `slug` URL-safe and stable — it is the public link to the paper's page.
  */
 
+// Self-hosted paper PDFs. Imported so Vite fingerprints + bundles them and we
+// serve the file from our own domain rather than hot-linking the publisher.
+import culturalResourcesPdf from "../../../assets/public-website-redesign/papers/farnisa-2026-wildfire-risk-to-us-cultural-resources.pdf";
+
 /** The kind of resource a link points to (drives its icon + grouping). */
 export type PublicationLinkKind = "html" | "pdf" | "doi" | "code" | "data" | "external";
 
@@ -52,6 +56,70 @@ export type Publication = {
 };
 
 export const PUBLICATIONS: Publication[] = [
+  {
+    slug: "wildfire-risk-to-us-cultural-resources",
+    status: "Published",
+    journal: "Scientific Reports",
+    journalShort: "Sci Rep",
+    year: "2026",
+    title: "Wildfire risk to United States cultural resources",
+    authors: "Mona M. Farnisa, Benjamin S. Halpern, Caitlin R. Fong",
+    doi: "10.1038/s41598-026-52407-9",
+    abstract:
+      "Wildfire research and management typically emphasize risks to ecosystems and infrastructure, " +
+      "especially homes. Yet, communities and countries designate certain places and structures as " +
+      "culturally important for all; because they are often immovable and irreplaceable, they are " +
+      "uniquely at risk from wildfire. We present the first national-scale assessment of wildfire " +
+      "risk to cultural heritage assets in the U.S. Here, wildfire risk is defined as the spatial " +
+      "coincidence of cultural heritage resources and modeled wildfire hazard. Our analysis " +
+      "integrates high-resolution burn probability models from the Fire Simulation project with " +
+      "spatial data for 56,103 National Register of Historic Places (NRHP). Places were further " +
+      "assessed by type, reflecting potential cultural loss if destroyed, including buildings, " +
+      "districts, structures, objects, and sites. Places were also categorized by cultural " +
+      "significance (local, state, national) to evaluate how risk varies across levels of " +
+      "importance. Risk was concentrated in the western United States, with hotspots in the " +
+      "Southeast. Buildings and districts comprise 90% of listed resources and may be more " +
+      "vulnerable because their value depends on physical form; other resource types may be less " +
+      "vulnerable. Only 36% of exposed places are nationally significant; most are state or locally " +
+      "significant. By identifying where and what is most at risk, this study provides a foundation " +
+      "for proactive planning to safeguard the places that anchor community identity, collective " +
+      "memory, and national heritage before they are permanently lost.",
+    abstractSnippet:
+      "The first national-scale assessment of wildfire risk to U.S. cultural heritage, overlaying " +
+      "high-resolution burn-probability models with 56,103 National Register of Historic Places to " +
+      "reveal where and what is most at risk \u2014 concentrated in the West, with hotspots in the " +
+      "Southeast.",
+    highlights: [
+      "First national-scale assessment of wildfire risk to U.S. cultural heritage assets.",
+      "Integrates Fire Simulation burn-probability models with 56,103 National Register of Historic Places.",
+      "Risk is concentrated in the western U.S., with notable hotspots in the Southeast.",
+      "Buildings and districts make up 90% of listed resources and may be the most vulnerable.",
+      "Only 36% of exposed places are nationally significant \u2014 most are state or locally significant.",
+    ],
+    links: [
+      {
+        label: "Read the full text",
+        href: "https://www.nature.com/articles/s41598-026-52407-9",
+        kind: "html",
+        primary: true,
+      },
+      {
+        label: "Download PDF",
+        href: culturalResourcesPdf,
+        kind: "pdf",
+      },
+      {
+        // Persistent identifier: the direct Nature URL may change over time, but
+        // this DOI should always resolve to the paper's canonical home.
+        label: "View on Nature (DOI)",
+        href: "https://doi.org/10.1038/s41598-026-52407-9",
+        kind: "doi",
+      },
+    ],
+    citation:
+      "Farnisa, M. M., Halpern, B. S., & Fong, C. R. (2026). Wildfire risk to United States " +
+      "cultural resources. Scientific Reports. https://doi.org/10.1038/s41598-026-52407-9",
+  },
   {
     slug: "egress-thresholds-and-wildfire-fatalities",
     status: "Published",

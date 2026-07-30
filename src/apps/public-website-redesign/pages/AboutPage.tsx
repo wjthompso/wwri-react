@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { REDESIGN_ROUTES } from "../routes/routeConfig";
+import { REDESIGN_ROUTES, WRI_DATA_DOWNLOAD_URL } from "../routes/routeConfig";
 import MossDivider from "../components/shared/MossDivider";
 import heroForestRegrowth from "../../../assets/public-website-redesign/images/about/forest-regrowth.jpg";
 import regionMap from "../../../assets/public-website-redesign/icons/Location Map for WRI, 1 What is the WRI (1).png";
@@ -126,7 +126,16 @@ const ABOUT_CONTENT_ROWS: ReadonlyArray<{
     imagePosition: "left",
     paragraphs: [
       <>
-        Because the index and its underlying datasets are open source (free to all), it is accessible to a
+        Because the index and its{" "}
+        <a
+          href={WRI_DATA_DOWNLOAD_URL}
+          target="_blank"
+          rel="noreferrer"
+          className="font-semibold text-wriMoss hover:underline"
+        >
+          underlying datasets
+        </a>{" "}
+        are open source (free to all), it is accessible to a
         wide range of users. It can be applied at multiple scales, from local communities to regional
         landscapes, helping identify areas of higher vulnerability and prioritize effective interventions.
       </>,

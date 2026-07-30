@@ -1,7 +1,7 @@
 import { useEffect, useState, type MouseEvent, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import MossDivider from "../components/shared/MossDivider";
-import { REDESIGN_ROUTES } from "../routes/routeConfig";
+import { REDESIGN_ROUTES, WRI_DATA_DOWNLOAD_URL } from "../routes/routeConfig";
 import methodologyHero from "../../../assets/public-website-redesign/images/methodology/methodology-hero.jpg";
 
 import eqDomainScore from "../../../assets/public-website-redesign/images/methodology/eq-domain-score.png";
@@ -308,7 +308,7 @@ function MethodologyPage() {
             >
               <a
                 id="methodology-download-button"
-                href="https://knb.ecoinformatics.org/view/doi%3A10.5063%2FF1S46QFR"
+                href={WRI_DATA_DOWNLOAD_URL}
                 target="_blank"
                 rel="noreferrer"
                 className="group inline-flex items-center gap-2.5 rounded-full bg-wriMoss px-7 py-3 font-Montserrat text-sm font-semibold uppercase tracking-[0.12em] text-wriCanopy transition-colors hover:bg-wriMossClicked"
@@ -616,8 +616,16 @@ function MethodologyPage() {
 
         <P>
           We make both resilience components as well as all indicators informing
-          each component, available on the website for download should users wish
-          to recalculate scores with their own weighting system. We also make
+          each component, available on the website for{" "}
+          <a
+            href={WRI_DATA_DOWNLOAD_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="font-semibold text-wriMoss hover:underline"
+          >
+            download
+          </a>{" "}
+          should users wish to recalculate scores with their own weighting system. We also make
           these data viewable on the dashboard.
         </P>
       </section>
